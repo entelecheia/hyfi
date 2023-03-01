@@ -19,9 +19,9 @@ __config_module__ = "hyfi.conf"
 
 
 def __version__():
+    """Returns the version of HyFI"""
     from ._version import __version__
 
-    """Returns the version of HyFI"""
     return __version__
 
 

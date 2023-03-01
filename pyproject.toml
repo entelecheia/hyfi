@@ -78,7 +78,7 @@ per-file-ignores = [
     '_version.py:W292',
     '*:E501,E203',
     'notebook.py:F821,E501',
-    'motion.py:W605,E501'
+    'motion.py:W605,E501',
 ]
 
 [tool.mypy]

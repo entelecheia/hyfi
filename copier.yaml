@@ -1,0 +1,87 @@
+_subdirectory: .copier-template
+
+# Configure jinja2 defaults to make syntax highlighters lives easier
+_templates_suffix: .jinja
+_envops:
+  block_end_string: "%}"
+  block_start_string: "{%"
+  comment_end_string: "#}"
+  comment_start_string: "{#"
+  keep_trailing_newline: true
+  variable_end_string: "}}"
+  variable_start_string: "{{"
+
+_answers_file: .copier-config.yaml
+
+_tasks:
+    # Strings get executed under system's default shell
+    - "[ -d .git ] || git init"
+    - "{% if github_repo_name %}git add remote origin https://github.com/{{ github_username }}/{{ github_repo_name }}.git 2>/dev/null || echo 'origin already exists'{% else %}echo 'No GitHub repository name provided. Skipping git remote add.'{% endif %}"
+
+# questions
+project_name:
+  type: str
+  help: What is your project name? (it will be used in `pip install {{ project_name }}`)
+
+friendly_name:
+  default: "{{ project_name }}"
+  type: str
+  help: What is your project friendly name? (it will be used fro the title of the documentation)
+
+package_name:
+  default: "{{ project_name | replace('-', '_') }}"
+  type: str
+  help: What is your Python module name? (it will be used in `import {{ package_name }}`)
+
+project_short_description:
+  type: str
+  help: What is your project short description?
+
+project_description:
+  type: str
+  help: What is your project description?
+
+project_license:
+  type: str
+  choices:
+    - MIT
+    - CC-BY-4.0
+    - Apache-2.0
+    - GPLv3
+    - None
+
+author:
+  type: str
+  help: What is your name?
+
+email:
+  type: str
+  help: What is your email?
+
+github_username:
+  type: str
+  help: What is your GitHub username?
+
+github_repo_name:
+  default: "{{ project_name }}"
+  type: str
+  help: What is your GitHub repository name?
+
+documentaion_tool:
+  default: mkdocs
+  type: str
+  choices:
+    - mkdocs
+    - jupyter-book
+    - none
+  help: What documentation tool do you want to use?
+
+copyright_year:
+  default: "{{ '%Y' | strftime }}"
+  type: int
+  help: What is the copyright year?
+
+documentation_url:
+  default: "https://{{ github_username }}.github.io/{{ github_repo_name }}"
+  type: str
+  help: What is your documentation URL?

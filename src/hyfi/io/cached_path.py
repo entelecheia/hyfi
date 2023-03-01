@@ -1,12 +1,10 @@
 import os
 from pathlib import Path
 
+import cached_path as _cpath
 import gdown
 
 from ..utils.logging import getLogger
-from .cpath import _cached_path as _cpath
-
-# import cached_path as _cpath
 
 logger = getLogger(__name__)
 

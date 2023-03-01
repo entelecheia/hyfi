@@ -1,5 +1,5 @@
 ---
-name: semantic-prerelease
+name: semantic-prerelease-test
 
 on:
   workflow_call:

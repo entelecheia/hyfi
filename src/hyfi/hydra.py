@@ -11,11 +11,11 @@ from typing import IO, Any, Dict, List, Tuple, Union
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
-from .env import __global_config__, __hydra_version_base__, _compose, _select, _to_dict
+from .env import __global_config__, _compose, _select, _to_dict
 from .io.cached_path import cached_path
 from .io.file import check_path, exists, join_path, mkdir
 from .utils.env import dotenv_values, getcwd
-from .utils.func import strptime, today, lower_case_with_underscores
+from .utils.func import lower_case_with_underscores, strptime, today
 from .utils.logging import getLogger
 
 logger = getLogger(__name__)

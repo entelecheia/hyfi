@@ -165,11 +165,11 @@ class HyFI:
         structured_config_mode: SCMode = SCMode.DICT,
     ):
         return _to_container(
-            cfg,
-            resolve,
-            throw_on_missing,
-            enum_to_str,
-            structured_config_mode,
+            cfg=cfg,
+            resolve=resolve,
+            throw_on_missing=throw_on_missing,
+            enum_to_str=enum_to_str,
+            structured_config_mode=structured_config_mode,
         )
 
     @staticmethod
@@ -265,10 +265,17 @@ class HyFI:
 
     @staticmethod
     def load_dotenv(
-        verbose: bool = False,
         override: bool = False,
-    ):
-        load_dotenv(verbose, override)
+        dotenv_dir: str = None,
+        dotenv_filename: str = ".env",
+        verbose: bool = False,
+    ) -> None:
+        load_dotenv(
+            override=override,
+            dotenv_filename=dotenv_filename,
+            dotenv_dir=dotenv_dir,
+            verbose=verbose,
+        )
 
     @staticmethod
     def path(

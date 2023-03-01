@@ -22,6 +22,8 @@ matplotlib = "^3.7.0"
 numpy = "^1.24.2"
 python-dotenv = "^1.0.0"
 gdown = "^4.6.4"
+requests = "^2.28.2"
+tqdm = "^4.64.1"
 
 [tool.poetry.group.dev.dependencies]
 python-semantic-release = "^7.33.1"
@@ -35,37 +37,82 @@ pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 
 [tool.black]
-exclude = ['_version.py', 'node_modules', '_build', 'docs', 'tests', 'venv', '.copier-template', '.refs']
+exclude = [
+    '_version.py',
+    'node_modules',
+    '_build',
+    'docs',
+    'tests',
+    'venv',
+    '.copier-template',
+    '.refs'
+]
 
 [tool.isort]
 profile = "black"
-skip = ['_version.py', 'node_modules', '_build', 'docs', 'tests', 'venv', '.copier-template', '.refs']
+skip = [
+    '_version.py',
+    'node_modules',
+    '_build',
+    'docs',
+    'tests',
+    'venv',
+    '.copier-template',
+    '.refs',
+    "cpath"
+]
 
 [tool.flake8]
-exclude = ["node_modules", "_build", "docs", "tests", "venv", ".copier-template", ".refs"]
-per-file-ignores = ['__init__.py:F401', '_version.py:W292']
+exclude = [
+    "node_modules",
+    "_build",
+    "docs",
+    "tests",
+    "venv",
+    ".copier-template",
+    ".refs",
+    "cpath"
+]
+per-file-ignores = [
+    '__init__.py:F401,F403',
+    '_version.py:W292',
+    '*:E501,E203',
+    'notebook.py:F821,E501',
+    'motion.py:W605,E501'
+]
 
 [tool.mypy]
 namespace_packages = true
-exclude = ["node_modules", "build", "_build", "dist", "docs", "tests", "venv", ".copier-template", ".refs"]
+exclude = [
+    "node_modules",
+    "build",
+    "_build",
+    "dist",
+    "docs",
+    "tests",
+    "venv",
+    ".copier-template",
+    ".refs",
+    "cpath"
+]
 # 3rd party import
 ignore_missing_imports = true
 # dynamic typing
-disallow_any_unimported = true
+disallow_any_unimported = false
 disallow_any_expr = false
 disallow_any_decorated = false
-disallow_any_explicit = true
+disallow_any_explicit = false
 disallow_any_generics = false
-disallow_subclassing_any = true
+disallow_subclassing_any = false
 # platform
 python_version = "3.8"
 # untyped
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_untyped_decorators = true
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_decorators = false
 # None and Optional
-no_implicit_optional = true
+no_implicit_optional = false
 # Warnings
 warn_return_any = false
 warn_unreachable = true

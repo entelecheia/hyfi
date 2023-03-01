@@ -30,7 +30,6 @@ def cached_path(
 
     try:
         if url_or_filename.startswith("gd://"):
-
             _path = cached_gdown(
                 url_or_filename,
                 verbose=verbose,

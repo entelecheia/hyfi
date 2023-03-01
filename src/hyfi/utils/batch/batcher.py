@@ -466,7 +466,7 @@ class Batcher(object):
             setattr(self, key, params[key])
 
 
-batcher_instance: Batcher = None
+batcher_instance: Batcher
 
 
 @contextlib.contextmanager

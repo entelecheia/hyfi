@@ -1,8 +1,8 @@
 """Google Colab utilities."""
 import os
-from .logging import getLogger
-from .env import set_osenv
 
+from .env import set_osenv
+from .logging import getLogger
 
 logger = getLogger(__name__)
 

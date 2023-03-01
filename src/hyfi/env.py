@@ -156,10 +156,10 @@ class JobLibConfig(BaseModel):
         """Stop the backend for joblib"""
         backend = self.distributed_framework.backend
         if batcher.batcher_instance:
-            logger.info(f"stopping batcher")
+            logger.info("stopping batcher")
             del batcher.batcher_instance
 
-        logger.info(f"stopping distributed framework")
+        logger.info("stopping distributed framework")
         if self.distributed_framework.initialize:
             if backend == "ray":
                 import ray

@@ -1,12 +1,13 @@
 """Environment variable utilities"""
 import os
+from pathlib import Path
+from typing import Any
+
 import dotenv
 import hydra
-from typing import Any
-from pathlib import Path
-from .logging import getLogger
-from ..io.file import is_dir
 
+from ..io.file import is_dir
+from .logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -30,7 +31,7 @@ def load_dotenv(
     dotenv_dir: str = None,
     dotenv_filename: str = ".env",
     verbose: bool = False,
-):
+) -> None:
     """Load dotenv file from the given directory or from the current directory"""
     dotenv_dir = dotenv_dir or getcwd()
     dotenv_path = Path(dotenv_dir, dotenv_filename)

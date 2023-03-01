@@ -3,7 +3,6 @@
 [![license-image]][license-url]
 [![version-image]][release-url]
 [![release-date-image]][release-url]
-[![conventional-commits-image]][conventional commits]
 [![jupyter-book-image]][jupyter book]
 
 <!-- Links: -->

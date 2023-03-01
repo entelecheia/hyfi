@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.1.1-rc.2 (2023-03-01)
+### Documentation
+* Update README ([`ccad7b8`](https://github.com/entelecheia/hyfi/commit/ccad7b8640cf87c8a15fee94721d81957144f0d7))
+
 ## v0.1.1-rc.1 (2023-03-01)
 
 

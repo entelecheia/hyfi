@@ -1,0 +1,16 @@
+dotenv_path: ${.runtime}/.env
+workspace: ${oc.select:..workspace_root,${.home}/.hyfi}
+project: ${.workspace}/projects/${oc.select:..project_name,${oc.env:HYFI_PROJECT_NAME,hyfi-default}}
+data: ${alt:${oc.env:HYFI_DATA_ROOT,null},${.workspace}/data}
+home: ${__home_path__:}
+hyfi: ${__hyfi_path__:}
+resources: ${alt:${oc.env:HYFI_RESOURCE_DIR,null},${.hyfi}/resources}
+runtime: ${get_original_cwd:}
+archive: ${.data}/archive
+datasets: ${.data}/datasets
+logs: ${.project}/logs
+models: ${.data}/models
+outputs: ${.project}/outputs
+cache: ${.workspace}/.cache
+tmp: ${.workspace}/.tmp
+library: ${join_path:${.data}, libs}

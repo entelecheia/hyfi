@@ -60,7 +60,7 @@ lint: lint-black lint-isort lint-flake8 lint-mypy ## run all linters
 
 .PHONY: run
 run: ## run the main script
-	@poetry run hyperfastpy
+	@poetry run hyfi
 
 ##@ Testing
 
@@ -191,10 +191,11 @@ remove-template: ## remove the template files (Warning: if you do this, you can'
 	@rm -rf .copier-template
 
 init-project: install-copier install-precommit-hooks ## initialize the project (Warning: do this only once!)
-	@copier gh:entelecheia/hyperfast-template .
+	@copier gh:entelecheia/hyperfast-python-template .
 
 init-git: ## initialize git
 	@git init
 
-reinit-project-force: install-copier ## initialize the project ignoring existing files (*Warning* this will overwrite existing files!)
-	@copier --answers-file .copier-config.yaml --force --vcs-ref=HEAD . .
+
+reinit-project: install-copier ## reinitialize the project
+	@copier --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .

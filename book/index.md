@@ -7,15 +7,15 @@
 [![jupyter-book-image]][jupyter book]
 
 <!-- Links: -->
+[hyperfast python template]: https://github.com/entelecheia/hyperfast-python-template
+
 [license-image]: https://img.shields.io/github/license/entelecheia/hyfi
 [license-url]: https://github.com/entelecheia/hyfi/blob/main/LICENSE
 [version-image]: https://img.shields.io/github/v/release/entelecheia/hyfi?sort=semver
 [release-date-image]: https://img.shields.io/github/release-date/entelecheia/hyfi
 [release-url]: https://github.com/entelecheia/hyfi/releases
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
-[conventional commits]: https://conventionalcommits.org
 [jupyter-book-image]: https://jupyterbook.org/en/stable/_images/badge.svg
-[jupyter book]: https://jupyterbook.org
 
 [repo-url]: https://github.com/entelecheia/hyfi
 [pypi-url]: https://pypi.org/project/hyfi
@@ -32,6 +32,8 @@ Hydra Fast Interface (Hydra and Pydantic based interface framework)
 
 HyFI is a framework for building interfaces for Python applications. It is based on [Hydra] and [Pydantic] and provides a set of tools to build interfaces for Python applications.
 
+
+
 ## Changelog
 
 See the [CHANGELOG] for more information.
@@ -43,3 +45,9 @@ Contributions are welcome! Please see the [contributing guidelines] for more inf
 ## License
 
 This project is released under the [MIT License][license-url].
+
+
+## Table of Contents
+
+```{tableofcontents}
+```

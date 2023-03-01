@@ -25,10 +25,3 @@ coverage.xml
 htmlcov/
 pytest-coverage.*
 
-# for template test
-src/hyperfastpy/
-tests/hyperfastpy/
-/book/
-/docs/
-/mkdocs.yaml
-/.readthedocs.yaml

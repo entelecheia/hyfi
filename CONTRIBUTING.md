@@ -25,8 +25,8 @@ and "help wanted" is open to whoever wants to implement it.
 
 ## Write Documentation
 
-Hyperfast Python Template could always use more documentation, whether as part of the
-official Hyperfast Python Template docs, in docstrings, or even on the web in blog posts,
+HyFI: Hydra Fast Interface could always use more documentation, whether as part of the
+official HyFI: Hydra Fast Interface docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 ## Submit Feedback
@@ -42,7 +42,7 @@ If you are proposing a feature:
 
 ## Get Started
 
-Ready to contribute? Here's how to set up `Hyperfast Python Template` for local development.
+Ready to contribute? Here's how to set up `HyFI: Hydra Fast Interface` for local development.
 
 1. Fork the repo on GitHub.
 2. Clone your fork locally.
@@ -52,4 +52,4 @@ Ready to contribute? Here's how to set up `Hyperfast Python Template` for local 
 
 ## Code of Conduct
 
-Please note that the Hyperfast Python Template project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project you agree to abide by its terms.
+Please note that the HyFI: Hydra Fast Interface project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project you agree to abide by its terms.

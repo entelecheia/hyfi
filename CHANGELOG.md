@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.1 (2023-03-01)
+### Fix
+* Version var, dependencies ([`ad3596d`](https://github.com/entelecheia/hyfi/commit/ad3596dbc26e3263515da9efe6ef06ec231cff52))
+
 ## v0.2.0 (2023-03-01)
 ### Feature
 * First draft of the package ([`ebbf6f5`](https://github.com/entelecheia/hyfi/commit/ebbf6f56ec4ff95c356f3f9211b05e1f9908a54b))

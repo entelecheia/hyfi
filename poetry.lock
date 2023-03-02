@@ -633,13 +633,14 @@ woff = ["brotli (>=1.0.1)", "brotlicffi (>=0.8.0)", "zopfli (>=0.1.4)"]
 
 [[package]]
 name = "gdown"
-version = "4.4.0"
+version = "4.6.4"
 description = "Google Drive direct download of big files."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "gdown-4.4.0.tar.gz", hash = "sha256:18fc3a4da4a2273deb7aa29c7486be4df3919d904158ad6a6a3e25c8115470d7"},
+    {file = "gdown-4.6.4-py3-none-any.whl", hash = "sha256:03eb456d43611d7f8531a68662cae0d5c65cb74c7159365f2d1fbe882b39ce6b"},
+    {file = "gdown-4.6.4.tar.gz", hash = "sha256:d33210b1b3d7b12fef05d6b9ea7f22a513739909ca511d5d9d236dc676667f79"},
 ]
 
 [package.dependencies]
@@ -2587,4 +2588,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1, <3.12"
-content-hash = "f60847d4e01541e7c368c91660598f5665db3f705d9f55308c4096e54bb91683"
+content-hash = "fc5210ca7f60161905e07b483eb753ec1eed5e8b0be68894df599474ef6acfc7"

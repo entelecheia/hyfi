@@ -10,6 +10,9 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+  pull_request:
+    branches:
+      - main
       
 jobs:
   build:

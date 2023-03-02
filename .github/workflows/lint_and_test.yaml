@@ -6,11 +6,17 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "*"
+      - main
     paths:
       - "src/**"
       - "tests/**"
-      
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+
 jobs:
   build:
     # Name the Job
@@ -75,5 +81,5 @@ jobs:
         uses: MishaKav/pytest-coverage-comment@main
         with:
           title: Coverage Report
-          pytest-coverage-path: pytest-coverage.txt
-          junitxml-path: pytest.xml
+          pytest-coverage-path: ./tests/pytest-coverage.txt
+          junitxml-path: ./tests/pytest.xml

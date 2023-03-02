@@ -1,11 +1,14 @@
 # HyFI: Hydra Fast Interface
 
-[![license-image]][license-url]
+[![pypi-image]][pypi-url]
 [![version-image]][release-url]
 [![release-date-image]][release-url]
 [![jupyter-book-image]][jupyter book]
+[![license-image]][license-url]
 
 <!-- Links: -->
+[pypi-image]: https://badge.fury.io/py/hyfi.svg
+[pypi-url]: https://badge.fury.io/py/hyfi
 [license-image]: https://img.shields.io/github/license/entelecheia/hyfi
 [license-url]: https://github.com/entelecheia/hyfi/blob/main/LICENSE
 [version-image]: https://img.shields.io/github/v/release/entelecheia/hyfi?sort=semver
@@ -14,7 +17,7 @@
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
 [conventional commits]: https://conventionalcommits.org
 [jupyter-book-image]: https://jupyterbook.org/en/stable/_images/badge.svg
-[jupyter book]: https://jupyterbook.org
+[jupyter book]: https://hyfi.entelecheia.cc
 
 [repo-url]: https://github.com/entelecheia/hyfi
 [pypi-url]: https://pypi.org/project/hyfi

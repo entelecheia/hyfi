@@ -1,13 +1,14 @@
 # HyFI: Hydra Fast Interface
 
-[![license-image]][license-url]
+[![pypi-image]][pypi-url]
 [![version-image]][release-url]
 [![release-date-image]][release-url]
 [![jupyter-book-image]][jupyter book]
+[![license-image]][license-url]
 
 <!-- Links: -->
-[hyperfast python template]: https://github.com/entelecheia/hyperfast-python-template
-
+[pypi-image]: https://badge.fury.io/py/hyfi.svg
+[pypi-url]: https://badge.fury.io/py/hyfi
 [license-image]: https://img.shields.io/github/license/entelecheia/hyfi
 [license-url]: https://github.com/entelecheia/hyfi/blob/main/LICENSE
 [version-image]: https://img.shields.io/github/v/release/entelecheia/hyfi?sort=semver

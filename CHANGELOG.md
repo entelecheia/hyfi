@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.3 (2023-04-08)
+### Fix
+* Update dependencies ([`8333186`](https://github.com/entelecheia/hyfi/commit/8333186c45f56e12825db154c6b631e8f8758858))
+
 ## v0.2.2 (2023-04-08)
 ### Fix
 * Update optional dependencies in pyproject.toml ([`4f5c1a2`](https://github.com/entelecheia/hyfi/commit/4f5c1a28a172deb883a7a5d1561d943243a68632))

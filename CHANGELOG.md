@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.2.2 (2023-04-08)
+### Fix
+* Update optional dependencies in pyproject.toml ([`4f5c1a2`](https://github.com/entelecheia/hyfi/commit/4f5c1a28a172deb883a7a5d1561d943243a68632))
+
+### Documentation
+* Update badges on README ([`919c11e`](https://github.com/entelecheia/hyfi/commit/919c11e99fd48e40d35358b25de7797cb3f4bf6e))
+* Update index ([`e3882fd`](https://github.com/entelecheia/hyfi/commit/e3882fd7b9ae8f82a2774e6995e29c077088fecd))
+
 ## v0.2.2-rc.5 (2023-03-01)
 
 

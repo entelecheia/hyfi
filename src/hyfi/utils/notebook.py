@@ -376,7 +376,10 @@ def load_extentions(exts=["autotime"]):
                     ip.extentension_manager.load_extension(ext)
         except AttributeError:
             for ext in exts:
-                ip.magic("load_ext {}".format(ext))
+                try:
+                    ip.magic("load_ext {}".format(ext))
+                except ModuleNotFoundError:
+                    logger.info("Extension %s not found. Install it first.", ext)
 
 
 def set_matplotlib_formats(*formats, **kwargs):

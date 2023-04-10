@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.4 (2023-04-10)
+### Fix
+* **utils:** Catch and log in load_extentions() ([`75e0c6c`](https://github.com/entelecheia/hyfi/commit/75e0c6cc5af5f106cba3bb147d513996ef2ad9d8))
+
 ## v0.2.3 (2023-04-08)
 ### Fix
 * Update dependencies ([`8333186`](https://github.com/entelecheia/hyfi/commit/8333186c45f56e12825db154c6b631e8f8758858))

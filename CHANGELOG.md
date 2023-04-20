@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.6 (2023-04-20)
+### Fix
+* **deps:** Update deps (gdown, matplotlib) ([`7c6d221`](https://github.com/entelecheia/hyfi/commit/7c6d2217dc363ba9165218bdb11fd3dcfea68ef7))
+
 ## v0.2.5 (2023-04-20)
 ### Fix
 * **deps:** Update deps ([`8adf62b`](https://github.com/entelecheia/hyfi/commit/8adf62b7a795f06db0869ede5c40c57ada5f4f28))

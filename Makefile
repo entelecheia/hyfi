@@ -101,7 +101,10 @@ clean-cov: ## remove output files from pytest & coverage
 clean-book-build: ## remove output files from mkdocs
 	@rm -rf book/_build
 
-clean: clean-cov clean-book-build ## run all clean commands
+clean-pycache: ## remove __pycache__ directories
+	@find . -name __pycache__ -type d -exec rm -rf {} +
+
+clean: clean-cov clean-book-build clean-pycache ## run all clean commands
 
 ##@ Releases
 
@@ -153,6 +156,17 @@ dev-checkout-upstream: ## create and checkout the dev branch, and set the upstre
 main-checkout: ## checkout the main branch
 	@git checkout main
 
+##@ Utilities
+
+large-files: ## show the 20 largest files in the repo
+	@find . -printf '%s %p\n'| sort -nr | head -20
+
+disk-usage: ## show the disk usage of the repo
+	@du -h -d 2 .
+
+git-sizer: ## run git-sizer
+	@git-sizer --verbose
+
 ##@ Setup
 
 install-pipx: ## install pipx (pre-requisite for external tools)
@@ -164,16 +178,14 @@ install-copier: install-pipx ## install copier (pre-requisite for init-project)
 install-poetry: install-pipx ## install poetry (pre-requisite for install)
 	@poetry --version &> /dev/null || pipx install poetry || true
 
-install-commitzen: install-pipx ## install commitzen (pre-requisite for commit)
-	@cz version &> /dev/null || pipx install commitizen || true
+install-commitzen: install-poetry ## install commitzen (pre-requisite for commit)
+	@cz version &> /dev/null || poetry add commitizen --group dev || true
 
 install-precommit: install-commitzen ## install pre-commit
-	@pre-commit --version &> /dev/null || pipx install pre-commit || true
+	@pre-commit --version &> /dev/null || poetry add pre-commit --group dev || true
 
-install-piptools: install-pipx ## install pip-tools (pre-requisite for install)
-	@pip-compile --version &> /dev/null || pipx install pip-tools || true
-
-install-prereqs: install-pipx  install-copier install-poetry install-piptools install-precommit ## install all prerequisites
+install-precommit-hooks: install-precommit ## install pre-commit hooks
+	@pre-commit install
 
 install: ## install the package
 	@poetry install --without dev
@@ -181,21 +193,19 @@ install: ## install the package
 install-dev: ## install the package in development mode
 	@poetry install --with dev
 
-install-precommit-hooks: install-precommit ## install pre-commit hooks
+initialize: install-precommit ## install pre-commit hooks
 	@pre-commit install
 
-generate-mkdocs-reqs: ## generate requirements.txt from requirements.in
-	@poetry run pip-compile --resolver=backtracking --output-file=docs/requirements.txt docs/requirements.in
-
-remove-template: ## remove the template files (Warning: if you do this, you can't re-run init-project)
+remove-template: ## remove the template files (Warning: make sure you don't need them anymore!)
 	@rm -rf .copier-template
+	@rm -rf .copier.yaml
 
-init-project: install-copier install-precommit-hooks ## initialize the project (Warning: do this only once!)
-	@copier gh:entelecheia/hyperfast-python-template .
+init-project: install-copier install-precommit-hooks remove-template ## initialize the project (Warning: do this only once!)
+	@copier --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .
 
 init-git: ## initialize git
 	@git init
 
+reinit-project: install-copier ## reinitialize the project (Warning: this may overwrite existing files!)
+	@copier --skip pyproject.toml --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .
 
-reinit-project: install-copier ## reinitialize the project
-	@copier --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .

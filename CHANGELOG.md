@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.10 (2023-04-21)
+### Fix
+* **task:** Change cli module location ([`92f2d03`](https://github.com/entelecheia/hyfi/commit/92f2d034dc4ba6d07e2e0d2dac1017047d50c6f8))
+
 ## v0.2.9 (2023-04-21)
 ### Fix
 * **cli:** Update hyfi script command ([`8b55a97`](https://github.com/entelecheia/hyfi/commit/8b55a97291b4ee79ec28ed7f1db3b3869c62e419))

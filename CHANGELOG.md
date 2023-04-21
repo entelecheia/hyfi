@@ -1,5 +1,10 @@
 <!--next-version-placeholder-->
 
+## v0.2.7 (2023-04-21)
+### Fix
+* Apply updated template ([`7b0c4b9`](https://github.com/entelecheia/hyfi/commit/7b0c4b92021134a9123c01fc2c486ba55f389d44))
+* **main:** Add aliases for HyFI class ([`b42300e`](https://github.com/entelecheia/hyfi/commit/b42300e9348d76cf977eb6c380e0ff0cc7401c0c))
+
 ## v0.2.6 (2023-04-20)
 ### Fix
 * **deps:** Update deps (gdown, matplotlib) ([`7c6d221`](https://github.com/entelecheia/hyfi/commit/7c6d2217dc363ba9165218bdb11fd3dcfea68ef7))

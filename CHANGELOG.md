@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.2.8 (2023-04-21)
+### Fix
+* **version:** Add pre-commit command to make scm-version ([`99d54a4`](https://github.com/entelecheia/hyfi/commit/99d54a47cb3f37dae176658fcc8154f963aad26a))
+* Add pre_commit_coomand (scm-version) ([`cb1d114`](https://github.com/entelecheia/hyfi/commit/cb1d1142153971e8e34dd0186546cdd1d4438c9e))
+* Add pre_commit_coomand ([`4f9b227`](https://github.com/entelecheia/hyfi/commit/4f9b2274820e5327fe0df527e817496782cc628c))
+* Version variable ([`9849ce3`](https://github.com/entelecheia/hyfi/commit/9849ce3637f8ddb587f87e1643b88cab528c4c1e))
+* Version bump ([`849d165`](https://github.com/entelecheia/hyfi/commit/849d165711610b3bcd29ad1f45d0423abbbc8f35))
+
 ## v0.2.7 (2023-04-21)
 ### Fix
 * Apply updated template ([`7b0c4b9`](https://github.com/entelecheia/hyfi/commit/7b0c4b92021134a9123c01fc2c486ba55f389d44))

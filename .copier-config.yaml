@@ -4,7 +4,7 @@ _src_path: gh:entelecheia/hyperfast-python-template
 author: Young Joon Lee
 copyright_year: 2023
 documentaion_tool: jupyter-book
-documentation_url: https://hyfi.entelecheia.cc
+documentation_url: https://hyfi.entelecheia.ai
 email: entelecheia@hotmail.com
 friendly_name: 'HyFI: Hydra Fast Interface'
 github_repo_name: hyfi

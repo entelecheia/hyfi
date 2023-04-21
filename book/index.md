@@ -16,18 +16,18 @@
 [release-url]: https://github.com/entelecheia/hyfi/releases
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
 [jupyter-book-image]: https://jupyterbook.org/en/stable/_images/badge.svg
-[jupyter book]: https://hyfi.entelecheia.cc
+[jupyter book]: https://hyfi.entelecheia.ai
 
 [repo-url]: https://github.com/entelecheia/hyfi
 [pypi-url]: https://pypi.org/project/hyfi
-[docs-url]: https://hyfi.entelecheia.cc
+[docs-url]: https://hyfi.entelecheia.ai
 [changelog]: https://github.com/entelecheia/hyfi/blob/main/CHANGELOG.md
 [contributing guidelines]: https://github.com/entelecheia/hyfi/blob/main/CONTRIBUTING.md
 <!-- Links: -->
 
 Hydra Fast Interface (Hydra and Pydantic based interface framework)
 
-- Documentation: [https://hyfi.entelecheia.cc][docs-url]
+- Documentation: [https://hyfi.entelecheia.ai][docs-url]
 - GitHub: [https://github.com/entelecheia/hyfi][repo-url]
 - PyPI: [https://pypi.org/project/hyfi][pypi-url]
 

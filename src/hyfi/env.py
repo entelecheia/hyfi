@@ -72,7 +72,7 @@ class AboutConfig(BaseModel):
     description: str = (
         "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
     )
-    homepage: str = "https://hyfi.entelecheia.cc"
+    homepage: str = "https://hyfi.entelecheia.ai"
     version: str = __version__()
 
 

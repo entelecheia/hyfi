@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.9 (2023-04-21)
+### Fix
+* **cli:** Update hyfi script command ([`8b55a97`](https://github.com/entelecheia/hyfi/commit/8b55a97291b4ee79ec28ed7f1db3b3869c62e419))
+
 ## v0.2.8 (2023-04-21)
 ### Fix
 * **version:** Add pre-commit command to make scm-version ([`99d54a4`](https://github.com/entelecheia/hyfi/commit/99d54a47cb3f37dae176658fcc8154f963aad26a))

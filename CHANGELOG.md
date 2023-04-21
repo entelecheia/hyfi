@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.11 (2023-04-21)
+### Fix
+* **version:** Disable scm-version ([`b99319e`](https://github.com/entelecheia/hyfi/commit/b99319e69e09f6dc2c0f54404ee35cc4f486581a))
+
 ## v0.2.10 (2023-04-21)
 ### Fix
 * **task:** Change cli module location ([`92f2d03`](https://github.com/entelecheia/hyfi/commit/92f2d034dc4ba6d07e2e0d2dac1017047d50c6f8))

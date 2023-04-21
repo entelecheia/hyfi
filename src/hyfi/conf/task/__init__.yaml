@@ -2,4 +2,4 @@
 defaults:
   - /project: __init__
 
-_target_: hyfi.cli.about
+_target_: hyfi.__cli__.about

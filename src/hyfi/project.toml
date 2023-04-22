@@ -1,6 +1,0 @@
-[metadata]
-name = "hyfi"
-description = "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
-authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
-license = "MIT"
-homepage = "https://hyfi.entelecheia.ai"

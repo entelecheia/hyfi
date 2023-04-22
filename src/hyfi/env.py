@@ -68,11 +68,12 @@ class AboutConfig(BaseModel):
     """About Configuration"""
 
     name: str = "HyFI"
-    author: str = "Young Joon Lee <entelecheia@hotmail.com>"
+    authors: str = "Young Joon Lee <entelecheia@hotmail.com>"
     description: str = (
         "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
     )
     homepage: str = "https://hyfi.entelecheia.ai"
+    license: str = "MIT"
     version: str = __version__()
 
 

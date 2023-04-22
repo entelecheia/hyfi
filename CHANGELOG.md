@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.12 (2023-04-22)
+### Fix
+* **pyproject.toml:** Add version_pattern to update the version in the config file ([`59469a1`](https://github.com/entelecheia/hyfi/commit/59469a16744f1fdbf30b8a19b639c56c894cff63))
+
 ## v0.2.11 (2023-04-21)
 ### Fix
 * **version:** Disable scm-version ([`b99319e`](https://github.com/entelecheia/hyfi/commit/b99319e69e09f6dc2c0f54404ee35cc4f486581a))

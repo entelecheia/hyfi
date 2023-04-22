@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.13 (2023-04-22)
+### Fix
+* **config:** Update authors and license info in about config; remove project.toml file ([`41070f2`](https://github.com/entelecheia/hyfi/commit/41070f22db23aff2e38b49a48c2df8a6de99f168))
+
 ## v0.2.12 (2023-04-22)
 ### Fix
 * **pyproject.toml:** Add version_pattern to update the version in the config file ([`59469a1`](https://github.com/entelecheia/hyfi/commit/59469a16744f1fdbf30b8a19b639c56c894cff63))

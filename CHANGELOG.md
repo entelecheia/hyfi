@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.15 (2023-04-25)
+### Fix
+* Add about method to HyFI class ([`fe37759`](https://github.com/entelecheia/hyfi/commit/fe37759e2bf1613f9fe66730a5cb7db8dfa5078f))
+
 ## v0.2.14 (2023-04-25)
 ### Fix
 * Authors name change ([`541c226`](https://github.com/entelecheia/hyfi/commit/541c226359e1cd79a002e2d54093bb87feb4af69))

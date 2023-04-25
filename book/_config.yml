@@ -13,7 +13,10 @@ copyright: "2023" # Copyright year to be placed in the footer
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: force
+  execute_notebooks: cache
+  exclude_patterns:
+    - "*.ipynb"
+  allow_errors: true
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -39,7 +42,6 @@ html:
 
 sphinx:
   config:
-    html_theme: furo
     intersphinx_mapping:
       ebp:
         - "https://executablebooks.org/en/latest/"

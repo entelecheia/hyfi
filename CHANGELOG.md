@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.14 (2023-04-25)
+### Fix
+* Authors name change ([`541c226`](https://github.com/entelecheia/hyfi/commit/541c226359e1cd79a002e2d54093bb87feb4af69))
+
 ## v0.2.13 (2023-04-22)
 ### Fix
 * **config:** Update authors and license info in about config; remove project.toml file ([`41070f2`](https://github.com/entelecheia/hyfi/commit/41070f22db23aff2e38b49a48c2df8a6de99f168))

@@ -4,6 +4,8 @@ version = "0.2.13"
 description = "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
 authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
 license = "MIT"
+homepage = "https://hyfi.entelecheia.ai"
+repository = "https://github.com/entelecheia/hyfi"
 readme = "README.md"
 packages = [{ include = "hyfi", from = "src" }]
 
@@ -38,7 +40,6 @@ ipython = ["ipython", "ipython-autotime", "rich", "pygments"]
 
 [tool.poetry.group.dev.dependencies]
 python-semantic-release = "^7.33.1"
-setuptools-scm = "^7.1.0"
 isort = "^5.12.0"
 black = "^23.1.0"
 flake8 = "^6.0.0"
@@ -164,5 +165,5 @@ build_command = "poetry build --no-cache"
 hvcs = "github"                                                            # hosting version control system, gitlab is also supported
 
 [build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = 'setuptools.build_meta'
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

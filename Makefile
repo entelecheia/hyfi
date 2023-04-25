@@ -65,14 +65,14 @@ run: ## run the main script
 ##@ Testing
 
 .PHONY: tests
-tests: scm-version ## run tests with pytest
+tests: ## run tests with pytest
 	@poetry run pytest --doctest-modules
 
 .PHONY: tests-cov
-tests-cov: scm-version ## run tests with pytest and show coverage (terminal + html)
+tests-cov: ## run tests with pytest and show coverage (terminal + html)
 	@poetry run pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html
 
-.PHONY: scm-version tests-cov-fail
+.PHONY: tests-cov-fail
 tests-cov-fail: ## run unit tests with pytest and show coverage (terminal + html) & fail if coverage too low & create files for CI
 	@poetry run pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
 
@@ -131,9 +131,6 @@ prerelease-noop: ## release a pre-release without changing anything
 
 prerelease-ci: ## release a pre-release in CI
 	@poetry run semantic-release publish --prerelease -v DEBUG -D commit_author="github-actions <action@github.com>"
-
-scm-version: ## returns the version from the setuptools_scm
-	@poetry run python -m setuptools_scm
 
 build: ## build the package
 	@poetry build

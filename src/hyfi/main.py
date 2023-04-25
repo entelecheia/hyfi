@@ -83,6 +83,16 @@ class HyFI:
         raise NotImplementedError("Use one of the static construction functions")
 
     @staticmethod
+    def about() -> None:
+        """Print the about information"""
+        cfg = __global_config__
+        name = cfg.about.name
+        print()
+        for k, v in cfg.about.dict().items():
+            print(f"{k:11} : {v}")
+        print(f"\nExecute `{name} --help` to see what you can do with {name}")
+
+    @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):
         """Initialize the global config"""
         __global_config__.initialize(config)

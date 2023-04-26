@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.19 (2023-04-26)
+### Fix
+* **env:** Add AboutConfig metadata configuration ([`c265204`](https://github.com/entelecheia/hyfi/commit/c265204c56405aea93e8c246f96d3cee29103d47))
+
 ## v0.2.18 (2023-04-26)
 ### Fix
 * **cli:** Remove unused import in HyfiConfig ([`c89361b`](https://github.com/entelecheia/hyfi/commit/c89361bba08c0fd724e091e5bdca3668923fecc0))

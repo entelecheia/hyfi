@@ -3,7 +3,6 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, SCMode
 
-from .__cli__ import _about
 from .env import DotEnvConfig, ProjectConfig, __global_config__, _to_config
 from .hydra import (
     DictKeyType,
@@ -69,6 +68,18 @@ from .utils.notebook import (
 )
 
 logger = getLogger(__name__)
+
+
+def _about(cfg):
+    pkg_name = cfg.about._package_name_
+    name = cfg.about.name
+    print()
+    for k, v in cfg.about.dict().items():
+        if k.startswith("_"):
+            continue
+        print(f"{k:11} : {v}")
+    if pkg_name:
+        print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
 
 
 class HyFI:

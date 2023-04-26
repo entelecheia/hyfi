@@ -4,7 +4,7 @@ import os
 import hydra
 
 from .env import HyfiConfig, __hydra_version_base__
-from .main import DictConfig, HyFI, getLogger
+from .main import DictConfig, HyFI, getLogger, _about
 
 logger = getLogger(__name__)
 
@@ -12,18 +12,6 @@ logger = getLogger(__name__)
 def cmd(**args):
     """Run the command defined in the config file"""
     HyFI.run(args)
-
-
-def _about(cfg):
-    pkg_name = cfg.about._package_name_
-    name = cfg.about.name
-    print()
-    for k, v in cfg.about.dict().items():
-        if k.startswith("_"):
-            continue
-        print(f"{k:11} : {v}")
-    if pkg_name:
-        print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
 
 
 def about(**args):

@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.20 (2023-04-26)
+### Fix
+* **dependencies:** Bump boto3 and botocore to latest versions ([`67d7e6b`](https://github.com/entelecheia/hyfi/commit/67d7e6bb2a3a1a439887ed1886e937e8b0e5c30c))
+
 ## v0.2.19 (2023-04-26)
 ### Fix
 * **env:** Add AboutConfig metadata configuration ([`c265204`](https://github.com/entelecheia/hyfi/commit/c265204c56405aea93e8c246f96d3cee29103d47))

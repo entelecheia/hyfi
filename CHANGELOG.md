@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.17 (2023-04-26)
+### Fix
+* **main:** Move "_about" from __cli__.py to main.py ([`a379ac6`](https://github.com/entelecheia/hyfi/commit/a379ac67808d4cd27fc6f0f494907c372198b789))
+
 ## v0.2.16 (2023-04-26)
 ### Fix
 * **hyfi:** Move about printing logic to separate function ([`b89a595`](https://github.com/entelecheia/hyfi/commit/b89a5957d03252b434adb9025debe63f059ce871))

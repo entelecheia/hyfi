@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.18 (2023-04-26)
+### Fix
+* **cli:** Remove unused import in HyfiConfig ([`c89361b`](https://github.com/entelecheia/hyfi/commit/c89361bba08c0fd724e091e5bdca3668923fecc0))
+
 ## v0.2.17 (2023-04-26)
 ### Fix
 * **main:** Move "_about" from __cli__.py to main.py ([`a379ac6`](https://github.com/entelecheia/hyfi/commit/a379ac67808d4cd27fc6f0f494907c372198b789))

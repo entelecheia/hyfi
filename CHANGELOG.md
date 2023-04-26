@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.2.16 (2023-04-26)
+### Fix
+* **hyfi:** Move about printing logic to separate function ([`b89a595`](https://github.com/entelecheia/hyfi/commit/b89a5957d03252b434adb9025debe63f059ce871))
+
 ## v0.2.15 (2023-04-25)
 ### Fix
 * Add about method to HyFI class ([`fe37759`](https://github.com/entelecheia/hyfi/commit/fe37759e2bf1613f9fe66730a5cb7db8dfa5078f))

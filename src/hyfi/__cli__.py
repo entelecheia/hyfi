@@ -4,7 +4,7 @@ import os
 import hydra
 
 from .env import HyfiConfig, __hydra_version_base__
-from .main import DictConfig, HyFI, getLogger, _about
+from .main import DictConfig, HyFI, _about, getLogger
 
 logger = getLogger(__name__)
 

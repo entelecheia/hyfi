@@ -3,6 +3,7 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, SCMode
 
+from .__cli__ import _about
 from .env import DotEnvConfig, ProjectConfig, __global_config__, _to_config
 from .hydra import (
     DictKeyType,
@@ -86,11 +87,7 @@ class HyFI:
     def about() -> None:
         """Print the about information"""
         cfg = __global_config__
-        name = cfg.about.name
-        print()
-        for k, v in cfg.about.dict().items():
-            print(f"{k:11} : {v}")
-        print(f"\nExecute `{name} --help` to see what you can do with {name}")
+        _about(cfg)
 
     @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):

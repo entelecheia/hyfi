@@ -14,14 +14,22 @@ def cmd(**args):
     HyFI.run(args)
 
 
-def about(**args):
-    """Print the about information"""
-    cfg = HyfiConfig(**args)
+def _about(cfg):
+    pkg_name = cfg.about._package_name_
     name = cfg.about.name
     print()
     for k, v in cfg.about.dict().items():
+        if k.startswith("_"):
+            continue
         print(f"{k:11} : {v}")
-    print(f"\nExecute `{name} --help` to see what you can do with {name}")
+    if pkg_name:
+        print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
+
+
+def about(**args):
+    """Print the about information"""
+    cfg = HyfiConfig(**args)
+    _about(cfg)
 
 
 def cli_main(cfg: DictConfig) -> None:

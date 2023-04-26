@@ -67,6 +67,7 @@ def _to_config(
 class AboutConfig(BaseModel):
     """About Configuration"""
 
+    _package_name_: str = "hyfi"
     name: str = "HyFI"
     authors: str = "Young Joon Lee <entelecheia@hotmail.com>"
     description: str = (

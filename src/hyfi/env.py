@@ -77,6 +77,10 @@ class AboutConfig(BaseModel):
     license: str = "MIT"
     version: str = __version__()
 
+    class Config:
+        extra = "allow"
+        underscore_attrs_are_private = False
+
 
 __about__ = AboutConfig()
 

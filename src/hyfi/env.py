@@ -438,7 +438,7 @@ def _check_and_set_value(key, value):
 class HyfiConfig(BaseModel):
     """HyFI config primary class"""
 
-    hyfi_package_config_path: str = __about__.config_path
+    hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
     hyfi_user_config_path: str = None
 
@@ -464,7 +464,7 @@ class HyfiConfig(BaseModel):
 
     @root_validator()
     def _check_and_set_values(cls, values):
-        key = "hyfi_package_config_path"
+        key = "hyfi_config_path"
         val = _check_and_set_value(key, values.get(key))
         values[key] = val
         if val is not None:

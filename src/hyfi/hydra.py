@@ -330,7 +330,7 @@ def __home_path__():
 
 
 def __search_package_path__():
-    return __global_config__.hyfi_package_config_path
+    return __global_config__.hyfi_config_path
 
 
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)

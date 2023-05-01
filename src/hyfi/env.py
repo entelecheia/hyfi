@@ -15,7 +15,6 @@ from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
 logger = getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
-__config_module__ = "hyfi.conf"
 
 
 def __version__():
@@ -81,6 +80,14 @@ class AboutConfig(BaseModel):
         extra = "allow"
         underscore_attrs_are_private = False
 
+    @property
+    def config_module(self) -> str:
+        return f"{self._package_name_}.conf"
+
+    @property
+    def config_path(self) -> str:
+        return f"pkg://{self.config_module}"
+
 
 __about__ = AboutConfig()
 
@@ -122,7 +129,9 @@ class JobLibConfig(BaseModel):
         **data: Any,
     ):
         if not data:
-            data = _compose(f"joblib={config_name}", config_module=__config_module__)
+            data = _compose(
+                f"joblib={config_name}", config_module=__about__.config_module
+            )
             logger.debug(
                 "There are no arguments to initilize a config, using default config."
             )
@@ -213,7 +222,9 @@ class PathConfig(BaseModel):
         **data: Any,
     ):
         if not data:
-            data = _compose(f"path={config_name}", config_module=__config_module__)
+            data = _compose(
+                f"path={config_name}", config_module=__about__.config_module
+            )
             logger.debug(
                 "There are no arguments to initilize a config, using default config."
             )
@@ -326,7 +337,9 @@ class ProjectConfig(BaseModel):
         **data: Any,
     ):
         if not data:
-            data = _compose(f"project={config_name}", config_module=__config_module__)
+            data = _compose(
+                f"project={config_name}", config_module=__about__.config_module
+            )
             logger.debug(
                 "There are no arguments to initilize a config, using default config."
             )
@@ -425,8 +438,8 @@ def _check_and_set_value(key, value):
 class HyfiConfig(BaseModel):
     """HyFI config primary class"""
 
-    hyfi_package_config_path: str = "pkg://hyfi.conf"
-    hyfi_config_module: str = __config_module__
+    hyfi_package_config_path: str = __about__.config_path
+    hyfi_config_module: str = __about__.config_module
     hyfi_user_config_path: str = None
 
     debug_mode: bool = False
@@ -510,7 +523,7 @@ class HyfiConfig(BaseModel):
             return
         if config is None:
             config = _compose(
-                overrides=["+project=__init__"], config_module=__config_module__
+                overrides=["+project=__init__"], config_module=__about__.config_module
             )
             logger.debug("Using default config.")
 
@@ -585,7 +598,7 @@ def _compose(
             key, value = _task
         else:
             key = _task[0]
-            value = "default"
+            value = "__init__"
         config_group = f"{key}={value}"
     else:
         key = None

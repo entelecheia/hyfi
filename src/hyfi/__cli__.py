@@ -1,9 +1,10 @@
 """Command line interface for HyFI"""
 import os
+from typing import Optional
 
 import hydra
 
-from .env import HyfiConfig, __hydra_version_base__
+from .env import HyfiConfig, __about__, __hydra_version_base__
 from .main import DictConfig, HyFI, _about, getLogger
 
 logger = getLogger(__name__)
@@ -49,10 +50,25 @@ def cli_main(cfg: DictConfig) -> None:
     HyFI.terminate()
 
 
-def hydra_main() -> None:
-    """Main function for the command line interface of Hydra"""
+def hydra_main(
+    config_path: Optional[str] = "conf", config_name: Optional[str] = "config"
+) -> None:
+    """
+    Main function for the command line interface of Hydra
+    :param config_path: The config path, a directory where Hydra will search for
+                        config files. This path is added to Hydra's searchpath.
+                        Relative paths are interpreted relative to the declaring python
+                        file. Alternatively, you can use the prefix `pkg://` to specify
+                        a python package to add to the searchpath.
+                        If config_path is None no directory is added to the Config search path.
+    :param config_name: The name of the config (usually the file name without the .yaml extension)
+    """
+    if config_path is None:
+        config_path = __about__.config_path
     hydra.main(
-        config_path="conf", config_name="config", version_base=__hydra_version_base__
+        config_path=config_path,
+        config_name=config_name,
+        version_base=__hydra_version_base__,
     )(cli_main)()
 
 

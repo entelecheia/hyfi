@@ -14,5 +14,4 @@ hyfi_config_module: ${oc.env:HYFI_CONFIG_MODULE,hyfi.conf}
 hyfi_user_config_path: ${oc.env:HYFI_USER_CONFIG_PATH,.}
 hydra:
   searchpath:
-    - ${hyfi_package_config_path}
     - ${hyfi_user_config_path}

@@ -74,7 +74,7 @@ class AboutConfig(BaseModel):
     )
     homepage: str = "https://hyfi.entelecheia.ai"
     license: str = "MIT"
-    version: str = __version__()
+    version: str = "0.0.0"
 
     class Config:
         extra = "allow"
@@ -486,7 +486,7 @@ class HyfiConfig(BaseModel):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        self.about = __about__
+        # self.about = __about__
 
     def init_workspace(
         self,
@@ -598,7 +598,7 @@ def _compose(
             key, value = _task
         else:
             key = _task[0]
-            value = "__init__"
+            value = "default"
         config_group = f"{key}={value}"
     else:
         key = None

@@ -15,7 +15,6 @@ from typing import Any, Callable, Optional, Sequence, TextIO, Tuple, Union
 import colorama
 from pydantic import StrictBool
 
-
 colorama.init()
 
 IntSeq = Sequence[int]

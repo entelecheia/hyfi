@@ -85,6 +85,9 @@ class Copier:
         self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)
         self.dst_path_existed = self.dst_path.exists()
 
+    def __enter__(self):
+        return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         """Exit the context manager, handling cleanup if needed."""
         if exc_type is not None and not self.dst_path_existed and self.cleanup_on_error:

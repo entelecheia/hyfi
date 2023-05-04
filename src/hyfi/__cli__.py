@@ -6,6 +6,7 @@ import hydra
 
 from .env import HyfiConfig, __about__, __hydra_version_base__
 from .main import DictConfig, HyFI, _about, getLogger
+from .utils.copier import Copier
 
 logger = getLogger(__name__)
 
@@ -25,10 +26,11 @@ def about(**args):
     _about(cfg)
 
 
-def copy_config(**args):
+def run_copy(**args):
     """Copy all config files in the config directory to the current working directory"""
-    cfg = HyfiConfig(**args)
-    HyFI.copy_config(cfg)
+    print(args)
+    with Copier(**args) as worker:
+        worker.run_copy()
 
 
 def cli_main(cfg: DictConfig) -> None:

@@ -66,7 +66,7 @@ def _to_config(
 class AboutConfig(BaseModel):
     """About Configuration"""
 
-    _package_name_: str = "hyfi"
+    __package_name__: str = "hyfi"
     name: str = "HyFI"
     authors: str = "Young Joon Lee <entelecheia@hotmail.com>"
     description: str = (
@@ -82,7 +82,7 @@ class AboutConfig(BaseModel):
 
     @property
     def config_module(self) -> str:
-        return f"{self._package_name_}.conf"
+        return f"{self.__package_name__}.conf"
 
     @property
     def config_path(self) -> str:

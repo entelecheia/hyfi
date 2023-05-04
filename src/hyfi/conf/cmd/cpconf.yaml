@@ -1,0 +1,9 @@
+# @package _global_
+defaults:
+  - /project: __init__
+  - /copier: conf
+
+_target_: hyfi.__cli__.run_copy
+copier:
+  src_path: ${project.path.hyfi}/conf
+  dst_path: conf

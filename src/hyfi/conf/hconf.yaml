@@ -3,13 +3,12 @@ defaults:
   - _self_
   - about: __init__
   - mode: __init__
-  - task: null
+  - cmd: null
 
   - override hydra/help: help
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
 
-hyfi_config_module: ${oc.env:HYFI_CONFIG_MODULE,hyfi.conf}
 hyfi_user_config_path: ${oc.env:HYFI_USER_CONFIG_PATH,.}
 hydra:
   searchpath:

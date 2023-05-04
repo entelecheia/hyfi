@@ -1,0 +1,16 @@
+# Source path where to find the template.
+src_path: conf
+# Destination path where to render the template.
+dst_path: .
+# User-chosen additional file exclusion patterns.
+exclude:
+# User-chosen additional file skip patterns.
+skip_if_exists: false
+# Delete `dst_path` if there's an error?
+cleanup_on_error: false
+# When `True`, Overwrite files that already exist, without asking.
+overwrite: false
+# When `True`, produce no real rendering.
+dry_run: false
+# When `True`, show all output.
+verbose: true

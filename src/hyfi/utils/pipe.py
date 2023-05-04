@@ -1,8 +1,8 @@
 from tqdm.auto import tqdm
 
-from .hydra import SpecialKeys, _partial
-from .utils.batch import batcher, decorator_apply
-from .utils.logging import getLogger
+from ..hydra import SpecialKeys, _partial
+from .batch import batcher, decorator_apply
+from .logging import getLogger
 
 logger = getLogger(__name__)
 

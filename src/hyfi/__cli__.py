@@ -10,6 +10,10 @@ from .main import DictConfig, HyFI, _about, getLogger
 logger = getLogger(__name__)
 
 
+_config_path_ = "conf"
+_config_name_ = "config"
+
+
 def cmd(**args):
     """Run the command defined in the config file"""
     HyFI.run(args)
@@ -19,6 +23,12 @@ def about(**args):
     """Print the about information"""
     cfg = HyfiConfig(**args)
     _about(cfg)
+
+
+def copy_config(**args):
+    """Copy all config files in the config directory to the current working directory"""
+    cfg = HyfiConfig(**args)
+    HyFI.copy_config(cfg)
 
 
 def cli_main(cfg: DictConfig) -> None:
@@ -51,7 +61,8 @@ def cli_main(cfg: DictConfig) -> None:
 
 
 def hydra_main(
-    config_path: Optional[str] = "conf", config_name: Optional[str] = "config"
+    config_path: Optional[str] = _config_path_,
+    config_name: Optional[str] = _config_name_,
 ) -> None:
     """
     Main function for the command line interface of Hydra

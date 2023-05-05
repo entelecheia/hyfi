@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.3.3 (2023-05-05)
+### Fix
+* **copier:** Simplify file comparison logic and improve logging messages ([`80017fd`](https://github.com/entelecheia/hyfi/commit/80017fd0644adcc1a6c7bf5abd7dc3f2e5239ddf))
+
 ## v0.3.2 (2023-05-05)
 ### Fix
 * **dependencies:** Upgrade copier and install dependencies using poetry ([`7fae322`](https://github.com/entelecheia/hyfi/commit/7fae32276d9e644a9ec41d0e9fc2b6a8ec68470f))

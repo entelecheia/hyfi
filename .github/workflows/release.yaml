@@ -46,7 +46,7 @@ jobs:
 
       # install dependencies
       - name: Install dependencies
-        run: make install-dev
+        run: poetry install --with dev
 
       - name: Python Semantic Release to PyPI
         run: |

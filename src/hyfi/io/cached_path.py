@@ -1,10 +1,17 @@
 import os
 from pathlib import Path
 
-import cached_path as _cpath
-import gdown
-
 from ..utils.logging import getLogger
+
+_cpath = None
+gdown = None
+
+try:
+    import cached_path as _cpath
+    import gdown
+except ImportError:
+    pass
+
 
 logger = getLogger(__name__)
 
@@ -17,6 +24,24 @@ def cached_path(
     cache_dir=None,
     verbose: bool = False,
 ):
+    """
+    Attempts to cache a file or URL and return the path to the cached file.
+    If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
+
+    Args:
+        url_or_filename (str): The URL or filename to be cached.
+        extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
+        force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
+        return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
+        cache_dir (str, optional): Directory to store cached files. Defaults to None.
+        verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
+
+    Raises:
+        ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
+
+    Returns:
+        str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
+    """
     if url_or_filename is None:
         return None
     if verbose:
@@ -36,6 +61,12 @@ def cached_path(
                 cache_dir=cache_dir,
             )
         else:
+            if _cpath is None or gdown is None:
+                raise ImportError(
+                    "Error importing required libraries 'cached-path'. "
+                    "Please install them using 'pip install cached-path' and try again."
+                )
+
             if cache_dir is None:
                 cache_dir = Path.home() / ".hyfi" / ".cache" / "cached_path"
             else:
@@ -80,6 +111,11 @@ def cached_gdown(
     :type cache_dir: str
     :returns: str
     """
+    if gdown is None:
+        raise ImportError(
+            "Error importing required libraries 'gdown'. "
+            "Please install them using 'pip install gdown' and try again."
+        )
 
     if verbose:
         logger.info(f"Downloading {url}...")

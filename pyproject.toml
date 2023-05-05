@@ -40,7 +40,7 @@ optional = true
 [tool.poetry.group.ipython.dependencies]
 # A list of all of the optional dependencies, some of which are included in the
 # below `extras`. They can be opted into by apps.
-ipython = "<=8.12.0"
+ipython = "<=8.12.2"
 ipython-autotime = "^0.3.1"
 
 [tool.poetry.extras]

@@ -10,7 +10,7 @@ on:
     paths:
       - "src/**"
       - "tests/**"
-      
+
 jobs:
   build:
     # Name the Job
@@ -40,21 +40,25 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
 
+      # initialize
+      - name: Initialize
+        run: make initialize
+
       # install dependencies
       - name: Install dependencies for linters
-        run: make install-dev
+        run: poe install-dev
 
       # run linters
       - name: Run linters
         run: |
           set -o pipefail
-          make lint
+          poe lint
 
       # run unit tests
       - name: Run unit-tests
         run: |
           set -o pipefail
-          make tests-cov-fail
+          poe tests-cov-fail
 
       # add content to GitHub summary
       - name: Pytest coverage GitHub summary
@@ -65,7 +69,6 @@ jobs:
           cat pytest-coverage.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '\n\n\n'
-          echo '${{ steps.coverageComment.outputs.coverageHtml }}' >> $GITHUB_STEP_SUMMARY
 
       # add pytest coverage report to PR
       - name: Pytest coverage comment
@@ -74,5 +77,5 @@ jobs:
         uses: MishaKav/pytest-coverage-comment@main
         with:
           title: Coverage Report
-          pytest-coverage-path: pytest-coverage.txt
-          junitxml-path: pytest.xml
+          pytest-coverage-path: tests/pytest-coverage.txt
+          junitxml-path: tests/pytest.xml

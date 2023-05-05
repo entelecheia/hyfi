@@ -43,11 +43,11 @@ cmd = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report
 help = "run tests with pytest and generate a coverage report"
 
 [tool.poe.tasks.tests-cov-fail]
-cmd = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt"
+shell = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
 help = "run tests with pytest and generate a coverage report, fail if coverage is below 80%"
 
 [tool.poe.tasks.clean-cov]
-cmd = "rm -rf .coverage htmlcov pytest.xml pytest-coverage.txt"
+cmd = "rm -rf .coverage tests/htmlcov tests/pytest.xml tests/pytest-coverage.txt"
 help = "remove coverage reports"
 
 [tool.poe.tasks.clean-pycache]
@@ -130,3 +130,25 @@ help = "checkout main"
 [tool.poe.tasks.run]
 cmd = "hyfi"
 help = "run the main program"
+
+[tool.poe.tasks.build]
+cmd = "poetry build"
+help = "build the package"
+
+
+
+[tool.poe.tasks.install]
+cmd = "poetry install --without dev"
+help = "install dependencies"
+
+[tool.poe.tasks.install-dev]
+cmd = "poetry install --with dev"
+help = "install dev dependencies"
+
+[tool.poe.tasks.update]
+cmd = "poetry update"
+help = "update dependencies"
+
+[tool.poe.tasks.lock]
+cmd = "poetry lock"
+help = "lock dependencies"

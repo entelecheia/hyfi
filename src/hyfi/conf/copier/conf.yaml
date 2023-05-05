@@ -2,6 +2,11 @@
 src_path: conf
 # Destination path where to render the template.
 dst_path: .
+# Filetypes to copy.
+filetypes:
+  - yaml
+  - yml
+  - py
 # User-chosen additional file exclusion patterns.
 exclude:
 # User-chosen additional file skip patterns.

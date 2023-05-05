@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.3.1 (2023-05-05)
+### Fix
+* **cached-path:** Deps ([`20d7b89`](https://github.com/entelecheia/hyfi/commit/20d7b890d02f25a90ed9cc5ab20ec25207f173ff))
+* **dependencies:** Add error message when cached-path or gdown are not installed ([`c8732ff`](https://github.com/entelecheia/hyfi/commit/c8732ffa6d41bd0686e6ba995ff07f7225c48ea5))
+
+### Documentation
+* Add HyFI example ([`8aca327`](https://github.com/entelecheia/hyfi/commit/8aca327fc9d38ba7532153c59e398f6427ef7975))
+
 ## v0.3.0 (2023-05-05)
 ### Feature
 * **cli:** Implement run_copy command ([`0da557b`](https://github.com/entelecheia/hyfi/commit/0da557bbd990f40cb3c0fb2595a8c49bbd635fc4))

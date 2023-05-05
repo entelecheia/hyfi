@@ -2,3 +2,4 @@
 .tasks-extra.toml
 CHANGELOG.md
 pyproject.toml
+docs/usage.md

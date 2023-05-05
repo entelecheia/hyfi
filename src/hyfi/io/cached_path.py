@@ -1,17 +1,10 @@
 import os
 from pathlib import Path
 
+import gdown
+
+from ..utils.cached_path import _cached_path as _cpath
 from ..utils.logging import getLogger
-
-_cpath = None
-gdown = None
-
-try:
-    import cached_path as _cpath
-    import gdown
-except ImportError:
-    pass
-
 
 logger = getLogger(__name__)
 

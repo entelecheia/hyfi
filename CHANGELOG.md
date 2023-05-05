@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.3.5 (2023-05-05)
+### Fix
+* **types:** Sort import ([`40d7019`](https://github.com/entelecheia/hyfi/commit/40d70193dafb4c226a10e1b39e89dec6ed293521))
+
 ## v0.3.4 (2023-05-05)
 ### Fix
 * **copier:** Add filetypes parameter for copying specific filetypes ([`84f6163`](https://github.com/entelecheia/hyfi/commit/84f61631f1d8a79f6ea651f2d2f7c87653102da4))

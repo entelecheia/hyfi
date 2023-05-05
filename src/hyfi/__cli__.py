@@ -29,7 +29,8 @@ def about(**args):
 def run_copy(**args):
     """Copy all config files in the config directory to the current working directory"""
     cfg = HyfiConfig(**args)
-    with Copier(**cfg.copier) as worker:
+    cfg = HyFI.to_dict(cfg.copier)
+    with Copier(**cfg) as worker:
         worker.run_copy()
 
 

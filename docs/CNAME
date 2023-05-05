@@ -1,0 +1,1 @@
+{{ documentation_url|replace('https://', '')|replace('http://', '') }}

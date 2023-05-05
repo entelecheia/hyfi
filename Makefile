@@ -76,19 +76,7 @@ tests-cov: ## run tests with pytest and show coverage (terminal + html)
 tests-cov-fail: ## run unit tests with pytest and show coverage (terminal + html) & fail if coverage too low & create files for CI
 	@poetry run pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
 
-##@ Jupyter-Book
 
-book-build: ## build documentation locally
-	@poetry run jupyter-book build book
-
-book-build-all: ## build all documentation locally
-	@poetry run jupyter-book build book --all
-
-book-publish: ## publish documentation to "gh-pages" branch
-	@poetry run ghp-import -n -p -f book/_build/html
-
-book-deploy: ## build & publish documentation to "gh-pages" branch
-	book-build book-publish
 
 ##@ Clean-up
 
@@ -175,7 +163,10 @@ install-copier: install-pipx ## install copier (pre-requisite for init-project)
 install-poetry: install-pipx ## install poetry (pre-requisite for install)
 	@poetry --version &> /dev/null || pipx install poetry || true
 
-install-commitzen: install-poetry ## install commitzen (pre-requisite for commit)
+install-poe: install-poetry ## install poetry (pre-requisite for install)
+	@poetry poe --version &> /dev/null || pipx install poethepoet || true
+
+install-commitzen: install-poe ## install commitzen (pre-requisite for commit)
 	@cz version &> /dev/null || poetry add commitizen --group dev || true
 
 install-precommit: install-commitzen ## install pre-commit
@@ -187,22 +178,17 @@ install-precommit-hooks: install-precommit ## install pre-commit hooks
 install: ## install the package
 	@poetry install --without dev
 
+update: ## update the package
+	@poetry update
+	
 install-dev: ## install the package in development mode
 	@poetry install --with dev
 
 initialize: install-precommit ## install pre-commit hooks
 	@pre-commit install
 
-remove-template: ## remove the template files (Warning: make sure you don't need them anymore!)
-	@rm -rf .copier-template
-	@rm -rf .copier.yaml
-
 init-project: install-copier install-precommit-hooks remove-template ## initialize the project (Warning: do this only once!)
 	@copier --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .
 
-init-git: ## initialize git
-	@git init
-
 reinit-project: install-copier ## reinitialize the project (Warning: this may overwrite existing files!)
-	@copier --skip pyproject.toml --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .
-
+	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier "$${args[@]}" --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .'

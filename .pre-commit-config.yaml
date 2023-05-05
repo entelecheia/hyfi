@@ -14,7 +14,7 @@ repos:
     rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
-      # - id: python-check-blanket-type-ignore
+      - id: python-check-blanket-type-ignore
       - id: python-check-mock-methods
       - id: python-no-eval
       - id: python-no-log-warn
@@ -29,6 +29,9 @@ repos:
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
+      # Prevent committing inline conflict markers
+      - id: check-merge-conflict
+        args: [--assume-in-merge]
   - repo: local
     hooks:
       - id: commitizen
@@ -44,3 +47,9 @@ repos:
         require_serial: true
         language: system
         types: [python]
+      # Prevent committing .rej files
+      - id: forbidden-files
+        name: forbidden files
+        entry: found Copier update rejection files; review them and remove them
+        language: fail
+        files: "\\.rej$"

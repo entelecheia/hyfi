@@ -1,0 +1,89 @@
+site_name: "HyFI: Hydra Fast Interface"
+site_url: https://hyfi.entelecheia.ai
+site_author: Young Joon Lee <entelecheia@hotmail.com>
+site_description: >-
+  Hydra Fast Interface (Hydra and Pydantic based interface framework)
+# Repository
+repo_name: entelecheia/hyfi
+repo_url: https://github.com/entelecheia/hyfi
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2023 Young Joon Lee
+
+# Configuration
+theme:
+  name: material
+  palette:
+    scheme: slate
+  features:
+    - navigation.expand
+    - navigation.indexes
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.tabs.link
+    - content.tooltips
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+  favicon: https://assets.entelecheia.ai/favicon.png # favicon: Path to the favicon image
+  logo: https://assets.entelecheia.ai/logo.png # logo: Path to the book logo
+
+# Extensions
+markdown_extensions:
+  - markdown_include.include:
+      base_path: .
+  - pymdownx.arithmatex:
+      generic: true
+  - admonition
+  - pymdownx.caret
+  - pymdownx.details
+  # - pymdownx.emoji:
+  #     emoji_generator: "!!python/name:materialx.emoji.to_svg"
+  #     emoji_index: "!!python/name:materialx.emoji.twemoji"
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.snippets
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        # See: https://mkdocstrings.github.io/python/usage/
+        python:
+          options:
+            docstring_style: sphinx
+
+# Customization
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+extra:
+  analytics:
+    provider: google
+    property: G-RGCZCJ4ZZF
+# Page tree
+# nav:
+#  - Home: index.md
+#  - Usage: usage.md

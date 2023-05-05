@@ -71,7 +71,7 @@ logger = getLogger(__name__)
 
 
 def _about(cfg):
-    pkg_name = cfg.about._package_name_
+    pkg_name = cfg.about.__package_name__
     name = cfg.about.name
     print()
     for k, v in cfg.about.dict().items():

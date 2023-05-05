@@ -29,6 +29,7 @@ from shutil import copy2, rmtree
 from typing import List
 
 from pathspec import PathSpec
+from pydantic import validator
 from pydantic.dataclasses import dataclass
 
 from .tools import Style, printf
@@ -79,6 +80,20 @@ class Copier:
     overwrite: bool = False
     dry_run: bool = False
     verbose: bool = True
+
+    @validator("src_path", "dst_path", pre=True)
+    def validate_path(cls, value):
+        if not isinstance(value, Path):
+            value = Path(value)
+        return value
+
+    @validator("exclude", "skip_if_exists", pre=True)
+    def validate_list(cls, value):
+        if value is None:
+            value = []
+        elif not isinstance(value, list):
+            value = [value]
+        return value
 
     def __post_init__(self):
         """Initialize the path_spec attribute based on the exclude patterns."""

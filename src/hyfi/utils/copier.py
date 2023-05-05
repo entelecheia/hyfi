@@ -53,6 +53,9 @@ class Copier:
         dst_path:
             Destination path where to render the template.
 
+        filetypes:
+            Filetypes to copy.
+
         exclude:
             User-chosen additional file exclusion patterns.
 
@@ -74,8 +77,9 @@ class Copier:
 
     src_path: Path = field(default=Path("config"))
     dst_path: Path = field(default=Path("."))
-    exclude: List[str] = field(default_factory=list)
-    skip_if_exists: List[str] = field(default_factory=list)
+    filetypes: List = field(default_factory=list)
+    exclude: List = field(default_factory=list)
+    skip_if_exists: bool = False
     cleanup_on_error: bool = True
     overwrite: bool = False
     dry_run: bool = False
@@ -89,13 +93,16 @@ class Copier:
             if not isinstance(attr_value, Path):
                 setattr(self, attr_name, Path(attr_value))
 
-        # Validate and convert exclude and skip_if_exists
-        for attr_name in ["exclude", "skip_if_exists"]:
+        # Validate and convert exclude and filetypes
+        for attr_name in ["exclude", "filetypes"]:
             attr_value = getattr(self, attr_name)
             if attr_value is None:
                 setattr(self, attr_name, [])
             elif not isinstance(attr_value, list):
                 setattr(self, attr_name, [attr_value])
+
+        if self.filetypes is None or len(self.filetypes) == 0:
+            self.filetypes = ["yaml", "yml", "py"]
 
         if not self.dst_path.is_absolute():
             self.dst_path = getcwd() / self.dst_path
@@ -124,30 +131,44 @@ class Copier:
         """
         for root, _, files in os.walk(self.src_path):
             for filename in files:
+                if not any(filename.endswith(filetype) for filetype in self.filetypes):
+                    continue
+
                 src_file = Path(root, filename)
                 dst_file = self.dst_path / src_file.relative_to(self.src_path)
                 dst_file = dst_file.absolute()
 
                 if self.path_spec.match_file(src_file):
                     printf(
-                        "IGNORE", f"{src_file}", Style.IGNORE, verbose=self.verbose
+                        "EXCLUDED", f"{src_file}", Style.WARNING, verbose=self.verbose
                     )
                     continue
 
-                if dst_file.exists() and not self.overwrite:
-                    if filecmp.cmp(src_file, dst_file, shallow=False):
+                if dst_file.exists():
+                    if self.skip_if_exists:
                         printf(
-                            "UNCHANGED",
+                            "SKIPPED",
                             f"{src_file}",
-                            Style.OK,
+                            Style.WARNING,
                             verbose=self.verbose,
                         )
                         continue
 
-                    answer = input(f"Overwrite {dst_file}? [Y/n]: ") or "Y"
+                    if filecmp.cmp(src_file, dst_file, shallow=False):
+                        printf(
+                            "UNCHANGED",
+                            f"{src_file}",
+                            Style.IGNORE,
+                            verbose=self.verbose,
+                        )
+                        continue
+
+                    answer = "Y"
+                    if not self.overwrite:
+                        answer = input(f"Overwrite {dst_file}? [Y/n]: ") or "Y"
                     if answer.lower() != "y":
                         printf(
-                            "SKIPPED",
+                            "IGNORED",
                             f"{src_file}",
                             Style.WARNING,
                             verbose=self.verbose,

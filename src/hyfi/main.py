@@ -36,7 +36,6 @@ from .hydra import (
 )
 from .io.cached_path import cached_path
 from .io.file import exists, is_dir, is_file, join_path, mkdir
-from .utils.pipe import _apply, _pipe
 from .utils.env import get_osenv, load_dotenv, set_osenv
 from .utils.func import (
     dict_product,
@@ -66,6 +65,7 @@ from .utils.notebook import (
     is_colab,
     is_notebook,
 )
+from .utils.pipe import _apply, _pipe
 
 logger = getLogger(__name__)
 

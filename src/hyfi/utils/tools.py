@@ -10,14 +10,14 @@ import warnings
 from contextlib import suppress
 from pathlib import Path
 from types import TracebackType
-from typing import Any, Callable, Optional, Sequence, TextIO, Tuple, Union
+from typing import Any, Callable, Optional, TextIO, Tuple, Union
 
 import colorama
 from pydantic import StrictBool
 
-colorama.init()
+from .types import IntSeq
 
-IntSeq = Sequence[int]
+colorama.init()
 
 
 class Style:

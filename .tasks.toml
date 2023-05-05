@@ -135,8 +135,6 @@ help = "run the main program"
 cmd = "poetry build"
 help = "build the package"
 
-
-
 [tool.poe.tasks.install]
 cmd = "poetry install --without dev"
 help = "install dependencies"

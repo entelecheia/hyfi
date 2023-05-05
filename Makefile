@@ -54,6 +54,9 @@ disk-usage: ## show the disk usage of the repo
 git-sizer: ## run git-sizer
 	@git-sizer --verbose
 
+gc-prune: ## garbage collect and prune
+	@git gc --prune=now
+
 ##@ Setup
 
 install-pipx: ## install pipx (pre-requisite for external tools)

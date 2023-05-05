@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.3.2 (2023-05-05)
+### Fix
+* **dependencies:** Upgrade copier and install dependencies using poetry ([`7fae322`](https://github.com/entelecheia/hyfi/commit/7fae32276d9e644a9ec41d0e9fc2b6a8ec68470f))
+* **lint:** Rename cpath to cached_path in excluded files. ([`e351ca2`](https://github.com/entelecheia/hyfi/commit/e351ca2c9309eb2c2848203d7569cddf3f723b63))
+* Apply updated template ([`991a9d2`](https://github.com/entelecheia/hyfi/commit/991a9d2320cf5a6d28f2eec2c302ae508edfda3b))
+
 ## v0.3.1 (2023-05-05)
 ### Fix
 * **cached-path:** Deps ([`20d7b89`](https://github.com/entelecheia/hyfi/commit/20d7b890d02f25a90ed9cc5ab20ec25207f173ff))

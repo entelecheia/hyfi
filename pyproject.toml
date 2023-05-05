@@ -27,7 +27,7 @@ gdown = "^4.6.6"
 requests = "^2.27.1"
 tqdm = "^4.64.1"
 cached-path = "^1.3.3"
-plumbum = ">=1.6.9"
+colorama = "^0.4.3"
 
 # A list of all of the optional dependencies, some of which are included in the
 # below `extras`. They can be opted into by apps.

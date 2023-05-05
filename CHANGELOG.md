@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.3.4 (2023-05-05)
+### Fix
+* **copier:** Add filetypes parameter for copying specific filetypes ([`84f6163`](https://github.com/entelecheia/hyfi/commit/84f61631f1d8a79f6ea651f2d2f7c87653102da4))
+
 ## v0.3.3 (2023-05-05)
 ### Fix
 * **copier:** Simplify file comparison logic and improve logging messages ([`80017fd`](https://github.com/entelecheia/hyfi/commit/80017fd0644adcc1a6c7bf5abd7dc3f2e5239ddf))

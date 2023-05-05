@@ -31,6 +31,7 @@ from typing import List
 from pathspec import PathSpec
 from pydantic.dataclasses import dataclass
 
+from ..hydra import getcwd
 from .tools import Style, printf
 
 
@@ -96,6 +97,8 @@ class Copier:
             elif not isinstance(attr_value, list):
                 setattr(self, attr_name, [attr_value])
 
+        if not self.dst_path.is_absolute():
+            self.dst_path = getcwd() / self.dst_path
         self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)
         self.dst_path_existed = self.dst_path.exists()
 
@@ -119,7 +122,7 @@ class Copier:
         Walk through the source directory, compare YAML files with the destination
         directory, and copy files based on the specified settings.
         """
-        for root, dirs, files in os.walk(self.src_path):
+        for root, _, files in os.walk(self.src_path):
             for filename in files:
                 if filename.endswith(".yaml"):
                     src_file = Path(root, filename)

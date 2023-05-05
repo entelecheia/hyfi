@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.3.0 (2023-05-05)
+### Feature
+* **cli:** Implement run_copy command ([`0da557b`](https://github.com/entelecheia/hyfi/commit/0da557bbd990f40cb3c0fb2595a8c49bbd635fc4))
+* **copier:** Add a feature to copy initial configs to dest ([`62ba225`](https://github.com/entelecheia/hyfi/commit/62ba2251f0926fc092a14acd04936563a273c354))
+
+### Fix
+* Replace __config_module__ with __about__.config_module ([`c1eda21`](https://github.com/entelecheia/hyfi/commit/c1eda21cacc24f5c7feb599e8400c02e4f420427))
+
 ## v0.2.20 (2023-04-26)
 ### Fix
 * **dependencies:** Bump boto3 and botocore to latest versions ([`67d7e6b`](https://github.com/entelecheia/hyfi/commit/67d7e6bb2a3a1a439887ed1886e937e8b0e5c30c))

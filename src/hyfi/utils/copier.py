@@ -29,7 +29,6 @@ from shutil import copy2, rmtree
 from typing import List
 
 from pathspec import PathSpec
-from pydantic import validator
 from pydantic.dataclasses import dataclass
 
 from .tools import Style, printf
@@ -81,22 +80,22 @@ class Copier:
     dry_run: bool = False
     verbose: bool = True
 
-    @validator("src_path", "dst_path", pre=True)
-    def validate_path(cls, value):
-        if not isinstance(value, Path):
-            value = Path(value)
-        return value
-
-    @validator("exclude", "skip_if_exists", pre=True)
-    def validate_list(cls, value):
-        if value is None:
-            value = []
-        elif not isinstance(value, list):
-            value = [value]
-        return value
-
     def __post_init__(self):
         """Initialize the path_spec attribute based on the exclude patterns."""
+        # Validate and convert src_path and dst_path
+        for attr_name in ["src_path", "dst_path"]:
+            attr_value = getattr(self, attr_name)
+            if not isinstance(attr_value, Path):
+                setattr(self, attr_name, Path(attr_value))
+
+        # Validate and convert exclude and skip_if_exists
+        for attr_name in ["exclude", "skip_if_exists"]:
+            attr_value = getattr(self, attr_name)
+            if attr_value is None:
+                setattr(self, attr_name, [])
+            elif not isinstance(attr_value, list):
+                setattr(self, attr_name, [attr_value])
+
         self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)
         self.dst_path_existed = self.dst_path.exists()
 
@@ -125,6 +124,7 @@ class Copier:
                 if filename.endswith(".yaml"):
                     src_file = Path(root, filename)
                     dst_file = self.dst_path / src_file.relative_to(self.src_path)
+                    dst_file = dst_file.absolute()
 
                     if self.path_spec.match_file(src_file):
                         printf(

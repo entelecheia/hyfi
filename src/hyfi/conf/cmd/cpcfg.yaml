@@ -6,4 +6,4 @@ defaults:
 _target_: hyfi.__cli__.run_copy
 copier:
   src_path: ${project.path.hyfi}/conf
-  dst_path: conf
+  dst_path: ${project.path.runtime}/conf

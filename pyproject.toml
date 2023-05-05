@@ -31,8 +31,7 @@ colorama = "^0.4.3"
 optional = true
 
 [tool.poetry.group.files.dependencies]
-gdown = "^4.7.1"
-# gdown = "^4.6.6"
+gdown = "<=4.6.6"
 # cached-path = "^1.3.3"
 
 [tool.poetry.group.ipython]
@@ -49,6 +48,7 @@ pygments = "<=2.15.1"
 
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "rich", "pygments"]
+files = ["gdown"]
 
 [tool.poetry.group.dev]
 optional = true

@@ -124,43 +124,42 @@ class Copier:
         """
         for root, _, files in os.walk(self.src_path):
             for filename in files:
-                if filename.endswith(".yaml"):
-                    src_file = Path(root, filename)
-                    dst_file = self.dst_path / src_file.relative_to(self.src_path)
-                    dst_file = dst_file.absolute()
+                src_file = Path(root, filename)
+                dst_file = self.dst_path / src_file.relative_to(self.src_path)
+                dst_file = dst_file.absolute()
 
-                    if self.path_spec.match_file(src_file):
+                if self.path_spec.match_file(src_file):
+                    printf(
+                        "IGNORE", f"{src_file}", Style.IGNORE, verbose=self.verbose
+                    )
+                    continue
+
+                if dst_file.exists() and not self.overwrite:
+                    if filecmp.cmp(src_file, dst_file, shallow=False):
                         printf(
-                            "IGNORE", f"{src_file}", Style.IGNORE, verbose=self.verbose
+                            "UNCHANGED",
+                            f"{src_file}",
+                            Style.OK,
+                            verbose=self.verbose,
                         )
                         continue
 
-                    if dst_file.exists() and not self.overwrite:
-                        if filecmp.cmp(src_file, dst_file, shallow=False):
-                            printf(
-                                "UNCHANGED",
-                                f"{src_file}",
-                                Style.OK,
-                                verbose=self.verbose,
-                            )
-                            continue
+                    answer = input(f"Overwrite {dst_file}? [Y/n]: ") or "Y"
+                    if answer.lower() != "y":
+                        printf(
+                            "SKIPPED",
+                            f"{src_file}",
+                            Style.WARNING,
+                            verbose=self.verbose,
+                        )
+                        continue
 
-                        answer = input(f"Overwrite {dst_file}? [Y/n]: ") or "Y"
-                        if answer.lower() != "y":
-                            printf(
-                                "SKIPPED",
-                                f"{src_file}",
-                                Style.WARNING,
-                                verbose=self.verbose,
-                            )
-                            continue
-
-                    if not self.dry_run:
-                        dst_file.parent.mkdir(parents=True, exist_ok=True)
-                        copy2(src_file, dst_file)
-                    printf(
-                        "COPIED",
-                        f"{src_file} -> {dst_file}",
-                        Style.OK,
-                        verbose=self.verbose,
-                    )
+                if not self.dry_run:
+                    dst_file.parent.mkdir(parents=True, exist_ok=True)
+                    copy2(src_file, dst_file)
+                printf(
+                    "COPIED",
+                    f"{src_file} -> {dst_file}",
+                    Style.OK,
+                    verbose=self.verbose,
+                )

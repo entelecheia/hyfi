@@ -98,7 +98,7 @@ exclude = [
     "venv",
     ".copier-template",
     ".refs",
-    "cpath",
+    "cached_path",
 ]
 per-file-ignores = [
     '__init__.py:F401,F403',

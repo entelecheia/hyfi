@@ -11,8 +11,8 @@ from .utils.copier import Copier
 logger = getLogger(__name__)
 
 
-_config_path_ = "conf"
-_config_name_ = "config"
+__config_path__ = "conf"
+__config_name__ = "config"
 
 
 def cmd(**args):
@@ -63,8 +63,8 @@ def cli_main(cfg: DictConfig) -> None:
 
 
 def hydra_main(
-    config_path: Optional[str] = _config_path_,
-    config_name: Optional[str] = _config_name_,
+    config_path: Optional[str] = __config_path__,
+    config_name: Optional[str] = __config_name__,
 ) -> None:
     """
     Main function for the command line interface of Hydra

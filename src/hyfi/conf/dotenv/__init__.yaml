@@ -13,6 +13,7 @@ dotenv_path: ${oc.select:..path.dotenv_path,.env}
 # # Secrets
 # WANDB_API_KEY:
 # HUGGING_FACE_HUB_TOKEN:
+# OPENAI_API_KEY:
 # ECOS_API_KEY:
 # FRED_API_KEY:
 # NASDAQ_API_KEY:

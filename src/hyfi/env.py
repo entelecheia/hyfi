@@ -269,6 +269,7 @@ class DotEnvConfig(BaseSettings):
     # API Keys and Tokens
     WANDB_API_KEY: Optional[SecretStr]
     HUGGING_FACE_HUB_TOKEN: Optional[SecretStr]
+    OPENAI_API_KEY: Optional[SecretStr]
     ECOS_API_KEY: Optional[SecretStr]
     FRED_API_KEY: Optional[SecretStr]
     NASDAQ_API_KEY: Optional[SecretStr]

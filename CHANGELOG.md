@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.0 (2023-05-06)
+### Feature
+* **env:** Add OPENAI_API_KEY to dotenv ([`a4238db`](https://github.com/entelecheia/hyfi/commit/a4238db21d1330e92d6da968f12770776c51dd4c))
+
 ## v0.3.5 (2023-05-05)
 ### Fix
 * **types:** Sort import ([`40d7019`](https://github.com/entelecheia/hyfi/commit/40d70193dafb4c226a10e1b39e89dec6ed293521))

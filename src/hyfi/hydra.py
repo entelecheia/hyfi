@@ -302,10 +302,7 @@ def _function(cfg: Any, _name_, return_function=False, **parms):
         _parms = {**_parms, **parms}
     else:
         _parms = parms
-    if SpecialKeys.EXEC in _parms:
-        _exec_ = _parms.pop(SpecialKeys.EXEC)
-    else:
-        _exec_ = True
+    _exec_ = _parms.pop(SpecialKeys.EXEC) if SpecialKeys.EXEC in _parms else True
     if _exec_:
         if callable(fn):
             if return_function:
@@ -392,11 +389,7 @@ def _ensure_kwargs(_kwargs, _fn):
     from inspect import getfullargspec as getargspec
 
     if callable(_fn):
-        kwargs = {}
         args = getargspec(_fn).args
         logger.info(f"args of {_fn}: {args}")
-        for k, v in _kwargs.items():
-            if k in args:
-                kwargs[k] = v
-        return kwargs
+        return {k: v for k, v in _kwargs.items() if k in args}
     return _kwargs

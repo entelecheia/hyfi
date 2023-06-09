@@ -498,16 +498,15 @@ class HyFI:
                 verbose=verbose,
                 filetype=filetype,
             )
-        else:
-            if filename is None:
-                raise ValueError("filename must be specified")
-            return load_data(
-                filename,
-                base_dir=base_dir,
-                verbose=verbose,
-                filetype=filetype,
-                **kwargs,
-            )
+        if filename is None:
+            raise ValueError("filename must be specified")
+        return load_data(
+            filename,
+            base_dir=base_dir,
+            verbose=verbose,
+            filetype=filetype,
+            **kwargs,
+        )
 
     @staticmethod
     def get_filepaths(

@@ -10,7 +10,7 @@ try:
     from .beaker import BeakerClient
 
     __all__.append("BeakerClient")
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     BeakerClient = None
 
 

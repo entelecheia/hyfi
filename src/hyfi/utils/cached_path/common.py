@@ -18,7 +18,7 @@ def _split_cloud_path(url: str, provider: str) -> Tuple[str, str]:
     """Split a full s3 path into the bucket name and path."""
     parsed = urlparse(url)
     if not parsed.netloc or not parsed.path:
-        raise ValueError("bad {} path {}".format(provider, url))
+        raise ValueError(f"bad {provider} path {url}")
     bucket_name = parsed.netloc
     provider_path = parsed.path
     # Remove '/' at beginning of path.

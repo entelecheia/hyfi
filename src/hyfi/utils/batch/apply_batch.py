@@ -25,10 +25,7 @@ class ApplyBatch(object):
     # Function needs to be applicable to the array/list of values!
     # If not, modify/wrap the function to process a list, or use Apply
     def __init__(self, function, batcher=None, args=[], kwargs={}):
-        if batcher is None:
-            self.batcher = Batcher()
-        else:
-            self.batcher = batcher
+        self.batcher = Batcher() if batcher is None else batcher
         self.function = function
         self.args = [args]
         self.kwargs = [kwargs]

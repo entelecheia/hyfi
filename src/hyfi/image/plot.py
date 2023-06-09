@@ -32,10 +32,7 @@ def get_plot_font(
                 fontpath = os.path.join("/usr/share/fonts/truetype/", fontname)
         if fontpath and not Path(fontpath).is_file():
             paths = find_font_file(fontname)
-            if len(paths) > 0:
-                fontpath = paths[0]
-            else:
-                fontpath = None
+            fontpath = paths[0] if len(paths) > 0 else None
         if verbose:
             logger.info(f"Font path: {fontpath}")
 
@@ -57,8 +54,8 @@ def get_plot_font(
         if set_font_for_matplot and fontname:
             rc("font", family=fontname)
             plt.rcParams["axes.unicode_minus"] = False
-            font_family = plt.rcParams["font.family"]
             if verbose:
+                font_family = plt.rcParams["font.family"]
                 logger.info(f"font family: {font_family}")
         if verbose:
             logger.info(f"font name: {fontname}")
@@ -67,9 +64,9 @@ def get_plot_font(
 
 def find_font_file(query):
     """Find font file by query string"""
-    matches = list(
+    return list(
         filter(
-            lambda path: query in os.path.basename(path), font_manager.findSystemFonts()
+            lambda path: query in os.path.basename(path),
+            font_manager.findSystemFonts(),
         )
     )
-    return matches

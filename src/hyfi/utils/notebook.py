@@ -16,14 +16,7 @@ def is_notebook():
         return False
     shell_type = get_ipython().__class__.__name__
     # logger.info(f"shell type: {shell_type}")
-    if shell_type == "ZMQInteractiveShell":
-        return True  # Jupyter notebook or qtconsole
-    elif shell_type == "Shell":
-        return True  # Google colab
-    elif shell_type == "TerminalInteractiveShell":
-        return False  # Terminal running IPython
-    else:
-        return False  # Other type
+    return shell_type in ["ZMQInteractiveShell", "Shell"]
 
 
 def is_colab():
@@ -44,10 +37,7 @@ def get_display():
         logger.info("ipywidgets not installed.")
         return None
 
-    if is_notebook():
-        return Output()
-    else:
-        return None
+    return Output() if is_notebook() else None
 
 
 def clear_output(wait=False):
@@ -211,7 +201,7 @@ def create_dropdown(
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
     )
-    dropdown = widgets.Dropdown(
+    return widgets.Dropdown(
         options=options,
         value=value,
         description=description,
@@ -220,7 +210,6 @@ def create_dropdown(
         layout=layout,
         **kwargs,
     )
-    return dropdown
 
 
 def create_textarea(
@@ -238,7 +227,7 @@ def create_textarea(
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
     )
-    textarea = widgets.Textarea(
+    return widgets.Textarea(
         value=value,
         placeholder=placeholder,
         description=description,
@@ -247,7 +236,6 @@ def create_textarea(
         layout=layout,
         **kwargs,
     )
-    return textarea
 
 
 def create_button(description, button_style="", icon="check", layout=None, **kwargs):
@@ -257,14 +245,13 @@ def create_button(description, button_style="", icon="check", layout=None, **kwa
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
     )
-    button = widgets.Button(
+    return widgets.Button(
         description=description,
         button_style=button_style,
         icon=icon,
         layout=layout,
         **kwargs,
     )
-    return button
 
 
 def create_radiobutton(
@@ -282,7 +269,7 @@ def create_radiobutton(
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
     )
-    radiobutton = widgets.RadioButtons(
+    return widgets.RadioButtons(
         options=options,
         value=value,
         description=description,
@@ -291,7 +278,6 @@ def create_radiobutton(
         layout=layout,
         **kwargs,
     )
-    return radiobutton
 
 
 def create_image(
@@ -314,14 +300,13 @@ def create_image(
     else:
         img = read(filename)
         format = format or filename.split(".")[-1]
-    image = widgets.Image(
+    return widgets.Image(
         value=img,
         format=format,
         width=width,
         height=height,
         **kwargs,
     )
-    return image
 
 
 def create_floatslider(
@@ -345,7 +330,7 @@ def create_floatslider(
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
     )
-    slider = widgets.FloatSlider(
+    return widgets.FloatSlider(
         min=min,
         max=max,
         step=step,
@@ -360,26 +345,26 @@ def create_floatslider(
         layout=layout,
         **kwargs,
     )
-    return slider
 
 
 def load_extentions(exts=["autotime"]):
     """Load extentions."""
-    if is_notebook():
-        from IPython import get_ipython
+    if not is_notebook():
+        return
+    from IPython import get_ipython
 
-        ip = get_ipython()
-        try:
-            loaded = ip.extension_manager.loaded
-            for ext in exts:
-                if ext not in loaded:
-                    ip.extentension_manager.load_extension(ext)
-        except AttributeError:
-            for ext in exts:
-                try:
-                    ip.magic("load_ext {}".format(ext))
-                except ModuleNotFoundError:
-                    logger.info("Extension %s not found. Install it first.", ext)
+    ip = get_ipython()
+    try:
+        loaded = ip.extension_manager.loaded
+        for ext in exts:
+            if ext not in loaded:
+                ip.extentension_manager.load_extension(ext)
+    except AttributeError:
+        for ext in exts:
+            try:
+                ip.magic(f"load_ext {ext}")
+            except ModuleNotFoundError:
+                logger.info("Extension %s not found. Install it first.", ext)
 
 
 def set_matplotlib_formats(*formats, **kwargs):

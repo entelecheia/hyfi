@@ -43,7 +43,7 @@ def cli_main(cfg: DictConfig) -> None:
     print_resolved_config = hyfi.print_resolved_config
 
     if verbose:
-        print("## Command Line Interface for %s ##" % app_name)
+        print(f"## Command Line Interface for {app_name} ##")
     HyFI.initialize(cfg)
 
     if print_config:

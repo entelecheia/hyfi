@@ -122,7 +122,7 @@ class Batcher(object):
             minibatch_size = self.minibatch_size
         if backend is None:
             backend = self.backend
-        if isinstance(data, list) or isinstance(data, tuple) or isinstance(data, dict):
+        if isinstance(data, (list, tuple, dict)):
             len_data = len(data)
         else:
             len_data = data.shape[0]
@@ -174,7 +174,7 @@ class Batcher(object):
         """
         if isinstance(data[0], ssp.csr_matrix):
             return ssp.vstack(data)
-        if isinstance(data[0], pd.DataFrame) or isinstance(data[0], pd.Series):
+        if isinstance(data[0], (pd.DataFrame, pd.Series)):
             return pd.concat(data)
         return [item for sublist in data for item in sublist]
 
@@ -273,38 +273,12 @@ class Batcher(object):
             verbose = self.verbose
         if verbose > 1:
             logger.info(
-                "%s %s %s %s %s %s %s %s %s %s %s %s %s %s"
-                % (
-                    " backend:",
-                    backend,
-                    " minibatch_size:",
-                    self.minibatch_size,
-                    " procs:",
-                    procs,
-                    " input_split:",
-                    input_split,
-                    " merge_output:",
-                    merge_output,
-                    " len(data):",
-                    len(data),
-                    "len(args):",
-                    len(args),
-                )
+                f" backend: {backend}  minibatch_size: {self.minibatch_size}  procs: {procs}  input_split: {input_split}  merge_output: {merge_output}  len(data): {len(data)} len(args): {len(args)}"
             )
 
         if verbose > 10:
             logger.info(
-                "%s %s %s %s %s %s %s %s"
-                % (
-                    " len(data):",
-                    len(data),
-                    "len(args):",
-                    len(args),
-                    "[type(x) for x in data]:",
-                    [type(x) for x in data],
-                    "[type(x) for x in args]:",
-                    [type(x) for x in args],
-                )
+                f" len(data): {len(data)} len(args): {len(args)} [type(x) for x in data]: {[type(x) for x in data]} [type(x) for x in args]: {[type(x) for x in args]}"
             )
 
         if not (input_split):
@@ -412,16 +386,7 @@ class Batcher(object):
             return self.merge_batches(self.collect_batches(results, backend=backend))
         if verbose > 2:
             logger.info(
-                "%s %s %s %s %s %s %s"
-                % (
-                    " Task:",
-                    task,
-                    " backend:",
-                    backend,
-                    " backend_handle:",
-                    backend_handle,
-                    " completed",
-                )
+                f" Task: {task}  backend: {backend}  backend_handle: {backend_handle}  completed"
             )
         return results
 
@@ -459,7 +424,7 @@ class Batcher(object):
         return texts, labels
 
     def __getstate__(self):
-        return dict((k, v) for (k, v) in self.__dict__.items())
+        return dict(self.__dict__.items())
 
     def __setstate__(self, params):
         for key in params:

@@ -111,8 +111,4 @@ def load_images(
 def get_image_font(fontname=None, fontsize=12):
     """Get font for PIL image."""
     fontname, fontpath = get_plot_font(set_font_for_matplot=False, fontname=fontname)
-    if fontpath:
-        font = ImageFont.truetype(fontpath, fontsize)
-    else:
-        font = None
-    return font
+    return ImageFont.truetype(fontpath, fontsize) if fontpath else None

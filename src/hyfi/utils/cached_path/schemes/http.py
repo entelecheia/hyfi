@@ -52,9 +52,7 @@ class HttpClient(SchemeClient):
                 raise RecoverableServerError(e.reason)
             self.validate_response(response)
             self._head_response = response
-            return self._head_response
-        else:
-            return self._head_response
+        return self._head_response
 
     def get_etag(self) -> Optional[str]:
         return self.head_response.headers.get("ETag")

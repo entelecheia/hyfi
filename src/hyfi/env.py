@@ -141,25 +141,25 @@ class JobLibConfig(BaseModel):
         self,
     ):
         """Initialize the backend for joblib"""
-        backend = self.distributed_framework.backend
-
         if self.distributed_framework.initialize:
             backend_handle = None
-            if backend == "ray":
-                import ray
+            backend = self.distributed_framework.backend
 
-                ray_cfg = {"num_cpus": self.distributed_framework.num_workers}
-                logger.info(f"initializing ray with {ray_cfg}")
-                ray.init(**ray_cfg)
-                backend_handle = ray
-
-            elif backend == "dask":
+            if backend == "dask":
                 from dask.distributed import Client
 
                 dask_cfg = {"n_workers": self.distributed_framework.num_workers}
                 logger.info(f"initializing dask client with {dask_cfg}")
                 client = Client(**dask_cfg)
                 logger.debug(client)
+
+            elif backend == "ray":
+                import ray
+
+                ray_cfg = {"num_cpus": self.distributed_framework.num_workers}
+                logger.info(f"initializing ray with {ray_cfg}")
+                ray.init(**ray_cfg)
+                backend_handle = ray
 
             batcher.batcher_instance = batcher.Batcher(
                 backend_handle=backend_handle, **self.batcher.dict()
@@ -619,10 +619,7 @@ def _compose(
             throw_on_missing=False,
             throw_on_resolution_failure=False,
         )
-        if cfg is not None:
-            overide = config_group
-        else:
-            overide = f"+{config_group}"
+        overide = config_group if cfg is not None else f"+{config_group}"
         if overrides:
             overrides.append(overide)
         else:
@@ -648,6 +645,4 @@ def _compose(
             throw_on_resolution_failure=throw_on_resolution_failure,
         )
     logger.debug("Composed config: %s", OmegaConf.to_yaml(cfg))
-    if return_as_dict and isinstance(cfg, DictConfig):
-        return _to_dict(cfg)
-    return cfg
+    return _to_dict(cfg) if return_as_dict and isinstance(cfg, DictConfig) else cfg

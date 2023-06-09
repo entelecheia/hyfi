@@ -44,32 +44,27 @@ def load_dotenv(
             logger.info(
                 "No .env file found in %s, finding .env in parent dirs", dotenv_path
             )
-        dotenv_path = dotenv.find_dotenv()
-        if dotenv_path:
+        if dotenv_path := dotenv.find_dotenv():
             dotenv.load_dotenv(
                 dotenv_path=dotenv_path, verbose=verbose, override=override
             )
             if verbose:
                 logger.info("Loaded .env from %s", dotenv_path)
-        else:
-            if verbose:
-                logger.info("No .env file found in %s", dotenv_path)
+        elif verbose:
+            logger.info("No .env file found in %s", dotenv_path)
 
 
 def get_osenv(key: str = None, default: str = None) -> Any:
     """Get the value of an environment variable or return the default value"""
     load_dotenv()
-    if key:
-        return os.environ.get(key, default)
-    return os.environ
+    return os.environ.get(key, default) if key else os.environ
 
 
 def set_osenv(key: str, value: Any) -> None:
     """Set the value of an environment variable"""
     if value and is_dir(value):
         value = os.path.abspath(value)
-    pre_val = os.environ.get(key)
-    if pre_val:
+    if pre_val := os.environ.get(key):
         logger.info("Overwriting %s=%s with %s", key, pre_val, value)
     else:
         logger.info("Setting %s=%s", key, value)

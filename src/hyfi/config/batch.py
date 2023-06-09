@@ -99,10 +99,7 @@ class BaseBatchConfig(BaseModel):
     def init_batch_num(self):
         if self.batch_num is None:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
-            if self.resume_latest:
-                self.batch_num = num_files - 1
-            else:
-                self.batch_num = num_files
+            self.batch_num = num_files - 1 if self.resume_latest else num_files
         if self.verbose:
             logger.info(
                 f"Init batch - Batch name: {self.batch_name}, Batch num: {self.batch_num}"
@@ -120,10 +117,7 @@ class BaseBatchConfig(BaseModel):
 
     @validator("output_extention")
     def _validate_output_extention(cls, v):
-        if v:
-            return v.strip(".")
-        else:
-            return ""
+        return v.strip(".") if v else ""
 
     @property
     def batch_dir(self):
@@ -431,11 +425,9 @@ class BaseBatchModel(BaseConfigModel):
             exclude = self.__config__.exclude
 
         if include:
-            args = {}
             if isinstance(include, str):
                 include = [include]
-            for key in include:
-                args[key] = cfg[key]
+            args = {key: cfg[key] for key in include}
         else:
             args = cfg
             if exclude:
@@ -449,9 +441,7 @@ class BaseBatchModel(BaseConfigModel):
 
     def save_settings(self, exclude=None, exclude_none=True):
         def dumper(obj):
-            if isinstance(obj, DictConfig):
-                return _to_dict(obj)
-            return str(obj)
+            return _to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
 
         if exclude is None:
             exclude = self.__config__.exclude

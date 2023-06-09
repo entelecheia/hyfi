@@ -107,13 +107,12 @@ def apti(name: str, verbose: bool = False) -> None:
 def load_module_from_file(name: str, libpath: str, specname: str = None) -> None:
     """Load a module from a file"""
     module_path = os.path.join(libpath, name.replace(".", os.path.sep))
-    if is_file(module_path + ".py"):
-        module_path = module_path + ".py"
+    if is_file(f"{module_path}.py"):
+        module_path = f"{module_path}.py"
+    elif is_dir(module_path):
+        module_path = os.path.join(module_path, "__init__.py")
     else:
-        if is_dir(module_path):
-            module_path = os.path.join(module_path, "__init__.py")
-        else:
-            module_path = str(Path(module_path).parent / "__init__.py")
+        module_path = str(Path(module_path).parent / "__init__.py")
 
     spec = importlib.util.spec_from_file_location(name, module_path)
     module = importlib.util.module_from_spec(spec)
@@ -169,13 +168,9 @@ def dependencies(_key: str = None, _path: str = None) -> dict:
                     extra_deps[t].add(k.strip())
 
         # add tag `exhaustive` at the end
-        extra_deps["exhaustive"] = set(vv for v in extra_deps.values() for vv in v)
+        extra_deps["exhaustive"] = {vv for v in extra_deps.values() for vv in v}
 
     if _key is None or _key == "keys":
-        tags = []
-        for tag, deps in extra_deps.items():
-            if len(deps) > 1:
-                tags.append(tag)
-        return tags
+        return [tag for tag, deps in extra_deps.items() if len(deps) > 1]
     else:
         return extra_deps[_key]

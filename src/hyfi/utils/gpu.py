@@ -49,19 +49,17 @@ class GPUMon(Thread):
     @staticmethod
     def get_gpu_info():
         gpus = GPUtil.getGPUs()
-        gpu_info = []
-        for gpu in gpus:
-            gpu_info.append(
-                {
-                    "id": gpu.id,
-                    "name": gpu.name,
-                    "load": gpu.load,
-                    "memory_used": gpu.memoryUsed,
-                    "memory_total": gpu.memoryTotal,
-                    "temperature": gpu.temperature,
-                }
-            )
-        return gpu_info
+        return [
+            {
+                "id": gpu.id,
+                "name": gpu.name,
+                "load": gpu.load,
+                "memory_used": gpu.memoryUsed,
+                "memory_total": gpu.memoryTotal,
+                "temperature": gpu.temperature,
+            }
+            for gpu in gpus
+        ]
 
     @staticmethod
     def get_first_available(
@@ -102,10 +100,9 @@ def nvidia_smi():
     """Run nvidia-smi and return the output as a string"""
     import subprocess
 
-    nvidiasmi_output = subprocess.run(
+    return subprocess.run(
         ["nvidia-smi", "-L"], stdout=subprocess.PIPE
     ).stdout.decode("utf-8")
-    return nvidiasmi_output
 
 
 def is_cuda_available():

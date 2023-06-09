@@ -74,10 +74,7 @@ def get_filepaths(
             if os.path.dirname(file) != "":
                 _dir = os.path.dirname(file)
                 file = os.path.basename(file)
-                if base_dir:
-                    base_dir = os.path.join(base_dir, _dir)
-                else:
-                    base_dir = _dir
+                base_dir = os.path.join(base_dir, _dir) if base_dir else _dir
             filepaths += glob_re(file, base_dir, recursive=recursive)
     filepaths = [fp for fp in filepaths if Path(fp).is_file()]
     if verbose:
@@ -149,16 +146,10 @@ def concat_data(
             if add_key_as_name:
                 df_each[name_column] = df_name
             dfs.append(df_each)
-        if len(dfs) > 0:
-            return pd.concat(dfs, ignore_index=ignore_index)
-        else:
-            return None
+        return pd.concat(dfs, ignore_index=ignore_index) if dfs else None
     elif isinstance(data, list):
         logger.info(f"Concatenating {len(data)} dataframes")
-        if len(data) > 0:
-            return pd.concat(data, ignore_index=ignore_index)
-        else:
-            return None
+        return pd.concat(data, ignore_index=ignore_index) if len(data) > 0 else None
     else:
         logger.warning("Warning: data is not a dict")
         return data
@@ -228,11 +219,7 @@ def load_dataframe(
         filetype = fileinfo[1] if len(fileinfo) > 1 else filetype
         filetype = "." + filetype.replace(".", "")
         filename = f"{filename}{filetype}"
-        if base_dir is not None:
-            filepath = os.path.join(base_dir, filename)
-        else:
-            filepath = filename
-
+        filepath = filename if base_dir is None else os.path.join(base_dir, filename)
         if not os.path.exists(filepath):
             logger.warning(f"File {filepath} does not exist")
             return None
@@ -257,7 +244,7 @@ def load_dataframe(
             columns = [c for c in columns if c in data.columns]
             data = data[columns]
         if verbose:
-            logger.info(" >> elapsed time to load data: {}".format(elapsed()))
+            logger.info(f" >> elapsed time to load data: {elapsed()}")
     return data
 
 
@@ -281,10 +268,7 @@ def save_data(
         filename = f"{filename}-{suffix}{filetype}"
     else:
         filename = f"{filename}{filetype}"
-    if base_dir is not None:
-        filepath = os.path.join(base_dir, filename)
-    else:
-        filepath = filename
+    filepath = filename if base_dir is None else os.path.join(base_dir, filename)
     base_dir = os.path.dirname(filepath)
     filename = os.path.basename(filepath)
     os.makedirs(base_dir, exist_ok=True)
@@ -317,7 +301,7 @@ def save_data(
             else:
                 raise ValueError("filetype must be .csv or .parquet")
             if verbose:
-                logger.info(" >> elapsed time to save data: {}".format(elapsed()))
+                logger.info(f" >> elapsed time to save data: {elapsed()}")
     else:
         raise ValueError(f"Unsupported data type: {type(data)}")
 
@@ -361,10 +345,7 @@ def is_dir(a, *p) -> bool:
 
 def check_path(_path: str, alt_path: str = None) -> str:
     """Check if path exists, return alt_path if not"""
-    if os.path.exists(_path):
-        return _path
-    else:
-        return alt_path
+    return _path if os.path.exists(_path) else alt_path
 
 
 def mkdir(_path: str) -> str:
@@ -385,10 +366,7 @@ def exists(a, *p) -> bool:
 
 def join_path(a, *p) -> str:
     """Join path components intelligently."""
-    if p and p[0] is not None:
-        p = [str(_p) for _p in p]
-        if a is None:
-            return os.path.join(*p)
-        return os.path.join(a, *p)
-    else:
+    if not p or p[0] is None:
         return a
+    p = [str(_p) for _p in p]
+    return os.path.join(*p) if a is None else os.path.join(a, *p)

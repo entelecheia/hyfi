@@ -41,8 +41,7 @@ def make_gif(
         if not image_filepaths:
             logger.warning("no images found")
             return
-        frames = [Image.open(image) for image in image_filepaths]
-        if len(frames) > 0:
+        if frames := [Image.open(image) for image in image_filepaths]:
             frame_one = frames[0]
             frame_one.save(
                 output_filepath,

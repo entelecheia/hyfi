@@ -39,10 +39,7 @@ def _apply(
 ):
     batcher_instance = batcher.batcher_instance
     if use_batcher and batcher_instance is not None:
-        if batcher_instance is not None:
-            batcher_minibatch_size = batcher_instance.minibatch_size
-        else:
-            batcher_minibatch_size = 1000
+        batcher_minibatch_size = batcher_instance.minibatch_size
         if minibatch_size is None:
             minibatch_size = batcher_minibatch_size
         if num_workers is not None:

@@ -118,7 +118,7 @@ class HyFI:
     @staticmethod
     def compose(
         config_group: str = None,
-        overrides: List[str] = [],
+        overrides: List[str] = None,
         *,
         return_as_dict: bool = False,
         throw_on_resolution_failure: bool = True,
@@ -127,6 +127,8 @@ class HyFI:
         config_module: str = None,
         verbose: bool = False,
     ) -> Union[DictConfig, Dict]:
+        if overrides is None:
+            overrides = []
         return _compose(
             config_group=config_group,
             overrides=overrides,
@@ -811,14 +813,10 @@ class HyFI:
 
     @staticmethod
     def create_dropdown(
-        options,
-        value,
-        description,
-        disabled=False,
-        style={"description_width": "initial"},
-        layout=None,
-        **kwargs,
+        options, value, description, disabled=False, style=None, layout=None, **kwargs
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_dropdown(
             options,
             value,
@@ -835,10 +833,12 @@ class HyFI:
         description,
         placeholder="",
         disabled=False,
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_textarea(
             value,
             description,
@@ -861,10 +861,12 @@ class HyFI:
         description,
         value=None,
         disabled=False,
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_radiobutton(
             options,
             description,
@@ -897,10 +899,12 @@ class HyFI:
         orientation="horizontal",
         readout=True,
         readout_format=".1f",
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_floatslider(
             min,
             max,

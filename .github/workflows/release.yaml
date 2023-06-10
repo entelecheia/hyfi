@@ -4,13 +4,11 @@ name: semantic-release
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - 'pyproject.toml'
-      - '.copier-template/**'
+  workflow_run:
+    workflows: ["lint & test"]
+    branches: [main]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -21,6 +19,8 @@ jobs:
   build:
     # Name the Job
     name: semantic-release
+    # check if the workflow result is success
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     # Set the agent to run on
     runs-on: ${{ matrix.os }}
     strategy:

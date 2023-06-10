@@ -70,12 +70,8 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '\n\n\n'
 
-      # add pytest coverage report to PR
-      - name: Pytest coverage comment
-        if: ${{ success() && github.event_name == 'pull_request' }}
-        id: coverageComment
-        uses: MishaKav/pytest-coverage-comment@main
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
         with:
-          title: Coverage Report
-          pytest-coverage-path: tests/pytest-coverage.txt
-          junitxml-path: tests/pytest.xml
+          fail_ci_if_error: false # optional (default = false)
+          verbose: true # optional (default = false)

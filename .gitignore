@@ -1,6 +1,7 @@
 # Tests
 tmp/
 .hypothesis/
+.vscode/
 
 # Ignore node_modules directory
 node_modules/

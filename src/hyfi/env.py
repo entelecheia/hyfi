@@ -353,6 +353,10 @@ class ProjectConfig(BaseModel):
         return v
 
     @property
+    def environ(self):
+        return os.environ
+
+    @property
     def workspace_dir(self):
         return Path(self.path.workspace)
 

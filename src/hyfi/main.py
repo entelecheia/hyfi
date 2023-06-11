@@ -116,6 +116,11 @@ class HyFI:
         return DotEnvConfig()
 
     @staticmethod
+    def environ(key: str = None, default: str = None) -> Any:
+        """Get the value of an environment variable or return the default value"""
+        return get_osenv(key, default=default)
+
+    @staticmethod
     def compose(
         config_group: str = None,
         overrides: List[str] = None,

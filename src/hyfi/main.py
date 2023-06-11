@@ -36,7 +36,7 @@ from .hydra import (
 )
 from .io.cached_path import cached_path
 from .io.file import exists, is_dir, is_file, join_path, mkdir
-from .utils.env import get_osenv, load_dotenv, set_osenv
+from .utils.env import get_osenv, load_dotenv, set_osenv, expand_posix_vars
 from .utils.func import (
     dict_product,
     dict_to_dataframe,
@@ -101,7 +101,7 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
-    def initialize(config: Union[DictConfig, Dict] = None):
+    def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
         """Initialize the global config"""
         __global_config__.initialize(config)
 
@@ -113,7 +113,29 @@ class HyFI:
     @staticmethod
     def envs() -> DotEnvConfig:
         """Return the current environments"""
-        return DotEnvConfig()
+        return DotEnvConfig()  # type: ignore
+
+    @staticmethod
+    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+        """
+        Expand POSIX variables in a string.
+
+        Args:
+            posix_expr (str): The string containing POSIX variables to be expanded.
+            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
+                Defaults to None.
+
+        Returns:
+            str: The expanded string.
+
+        Examples:
+            >>> expand_posix_vars("$HOME")
+            '/home/user'
+            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
+            '/home/user/testuser'
+
+        """
+        return expand_posix_vars(posix_expr, context=context)
 
     @staticmethod
     def environ(key: str = None, default: str = None) -> Any:

@@ -26,7 +26,7 @@ The current working directory is /home/user and the user is user.
 You can also pass in a dictionary of additional variables to be used in the expansion, like this:
 
 ```python
-from env import expand_posix_vars
+from hypi.utils.env import expand_posix_vars
 
 # Define a POSIX expression with variables
 posix_expr = "The value of MY_VAR is $MY_VAR."

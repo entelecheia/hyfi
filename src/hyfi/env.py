@@ -261,6 +261,8 @@ class DotEnvConfig(BaseSettings):
     HYFI_VERBOSE: Optional[Union[bool, str, int]]
     NUM_WORKERS: Optional[int]
     CACHED_PATH_CACHE_ROOT: Optional[str]
+    DOTENV_PATH: Optional[str]
+    DOTENV_DIR: Optional[str]
     # For other packages
     CUDA_DEVICE_ORDER: Optional[str]
     CUDA_VISIBLE_DEVICES: Optional[str]
@@ -501,38 +503,22 @@ class HyfiConfig(BaseModel):
 
     def init_workspace(
         self,
-        workspace: str = None,
-        project: str = None,
-        task: str = None,
+        workspace_root: str = None,
+        project_name: str = None,
+        task_name: str = None,
         log_level: str = None,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union(int, bool) = None,
         **kwargs,
     ):
-        """
-        Initializes the project in a notebook workspace.
-
-        Args:
-            workspace (str, optional): The path to the workspace root directory. Defaults to None.
-            project (str, optional): The name of the project. Defaults to None.
-            task (str, optional): The name of the task. Defaults to None.
-            log_level (str, optional): The logging level. Defaults to None.
-            autotime (bool, optional): Whether to load the autotime extension. Defaults to True.
-            retina (bool, optional): Whether to set the matplotlib format to retina. Defaults to True.
-            verbose (Union[int, bool], optional): The verbosity level. Defaults to None.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            None
-        """
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)
-        if workspace:
-            envs.HYFI_WORKSPACE_ROOT = expand_posix_vars(workspace)
-        if project:
-            envs.HYFI_PROJECT_NAME = expand_posix_vars(project)
-        if task:
-            envs.HYFI_TASK_NAME = expand_posix_vars(task)
+        if workspace_root:
+            envs.HYFI_WORKSPACE_ROOT = expand_posix_vars(workspace_root)
+        if project_name:
+            envs.HYFI_PROJECT_NAME = expand_posix_vars(project_name)
+        if task_name:
+            envs.HYFI_TASK_NAME = expand_posix_vars(task_name)
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
             setLogger(log_level)

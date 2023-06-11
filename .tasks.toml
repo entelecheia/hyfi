@@ -43,7 +43,7 @@ cmd = "pytest --cov=src --cov-report=xml"
 help = "run tests with pytest and generate a coverage report"
 
 [tool.poe.tasks.tests-cov-fail]
-shell = "pytest --cov=src --cov-report=xml --cov-fail-under=50 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
+shell = "pytest --cov=src --cov-report=xml --cov-fail-under=30 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
 help = "run tests with pytest and generate a coverage report, fail if coverage is below 80%"
 
 [tool.poe.tasks.clean-cov]

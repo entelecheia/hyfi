@@ -6,3 +6,6 @@ help = "install ipython dependencies"
 cmd = "poetry install --with mkdocs"
 help = "install mkdocs dependencies"
 
+[tool.poe.tasks.build-docs]
+cmd = "mkdocs build"
+help = "build documentation"

@@ -14,7 +14,8 @@ def is_notebook():
         get_ipython
     except NameError:
         return False
-    shell_type = get_ipython().__class__.__name__
+    # pylint: disable=undefined-variable
+    shell_type = get_ipython().__class__.__name__ # noqa
     # logger.info(f"shell type: {shell_type}")
     return shell_type in ["ZMQInteractiveShell", "Shell"]
 

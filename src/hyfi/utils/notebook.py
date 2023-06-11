@@ -315,11 +315,13 @@ def create_floatslider(
     orientation="horizontal",
     readout=True,
     readout_format=".1f",
-    style={"description_width": "initial"},
+    style=None,
     layout=None,
     **kwargs,
 ):
     """Create a float slider widget."""
+    if style is None:
+        style = {"description_width": "initial"}
     import ipywidgets as widgets
 
     layout = (
@@ -342,8 +344,10 @@ def create_floatslider(
     )
 
 
-def load_extentions(exts=["autotime"]):
+def load_extentions(exts=None):
     """Load extentions."""
+    if exts is None:
+        exts = ["autotime"]
     if not is_notebook():
         return
     from IPython import get_ipython

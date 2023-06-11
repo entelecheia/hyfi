@@ -1,3 +1,3 @@
-# Enviroment management utilities
+# hyfi.utils.env
 
-::: hyfi.utils.envs
+::: src.hyfi.utils.env

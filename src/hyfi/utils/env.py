@@ -34,6 +34,12 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     Returns:
         str: The expanded string.
 
+    Examples:
+        >>> expand_posix_vars("$HOME")
+        '/home/user'
+        >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
+        '/home/user/testuser'
+
     """
     # Set the context to the default context.
     if context is None:
@@ -41,6 +47,7 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     env = defaultdict(lambda: "")
     env.update(context)
     return Template(posix_expr).substitute(env)
+
 
 
 def dotenv_values(dotenv_path=None, **kwargs):

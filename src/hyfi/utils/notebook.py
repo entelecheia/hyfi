@@ -15,7 +15,7 @@ def is_notebook():
     except NameError:
         return False
     # pylint: disable=undefined-variable
-    shell_type = get_ipython().__class__.__name__ # noqa
+    shell_type = get_ipython().__class__.__name__  # noqa
     # logger.info(f"shell type: {shell_type}")
     return shell_type in ["ZMQInteractiveShell", "Shell"]
 
@@ -188,15 +188,11 @@ def cprint(str_tuples):
 
 
 def create_dropdown(
-    options,
-    value,
-    description,
-    disabled=False,
-    style={"description_width": "initial"},
-    layout=None,
-    **kwargs,
+    options, value, description, disabled=False, style=None, layout=None, **kwargs
 ):
     """Create a dropdown widget."""
+    if style is None:
+        style = {"description_width": "initial"}
     import ipywidgets as widgets
 
     layout = (
@@ -218,11 +214,13 @@ def create_textarea(
     description,
     placeholder="",
     disabled=False,
-    style={"description_width": "initial"},
+    style=None,
     layout=None,
     **kwargs,
 ):
     """Create a textarea widget."""
+    if style is None:
+        style = {"description_width": "initial"}
     import ipywidgets as widgets
 
     layout = (
@@ -256,15 +254,11 @@ def create_button(description, button_style="", icon="check", layout=None, **kwa
 
 
 def create_radiobutton(
-    options,
-    description,
-    value=None,
-    disabled=False,
-    style={"description_width": "initial"},
-    layout=None,
-    **kwargs,
+    options, description, value=None, disabled=False, style=None, layout=None, **kwargs
 ):
     """Create a radiobutton widget."""
+    if style is None:
+        style = {"description_width": "initial"}
     import ipywidgets as widgets
 
     layout = (

@@ -93,8 +93,11 @@ def load_dotenv(
             os.environ["DOTENV_DIR"] = os.path.dirname(dotenv_path)
             if verbose:
                 logger.info("Loaded .env from %s", dotenv_path)
-        elif verbose:
-            logger.info("No .env file found in %s", dotenv_path)
+        else:
+            os.environ["DOTENV_PATH"] = ""
+            os.environ["DOTENV_DIR"] = ""
+            if verbose:
+                logger.info("No .env file found in %s", dotenv_path)
 
 
 def get_osenv(key: str = None, default: str = None) -> Any:

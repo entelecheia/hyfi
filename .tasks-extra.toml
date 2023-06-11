@@ -1,0 +1,4 @@
+[tool.poe.tasks.install-ipython]
+cmd = "poetry install --with ipython"
+help = "install ipython dependencies"
+

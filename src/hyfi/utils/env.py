@@ -76,6 +76,8 @@ def load_dotenv(
     dotenv_path = Path(dotenv_dir, dotenv_filename)
     if dotenv_path.is_file():
         dotenv.load_dotenv(dotenv_path=dotenv_path, verbose=verbose, override=override)
+        os.environ["DOTENV_PATH"] = str(dotenv_path)
+        os.environ["DOTENV_DIR"] = str(dotenv_path.parent)
         if verbose:
             logger.info("Loaded .env from %s", dotenv_path)
     else:
@@ -87,6 +89,8 @@ def load_dotenv(
             dotenv.load_dotenv(
                 dotenv_path=dotenv_path, verbose=verbose, override=override
             )
+            os.environ["DOTENV_PATH"] = str(dotenv_path)
+            os.environ["DOTENV_DIR"] = os.path.dirname(dotenv_path)
             if verbose:
                 logger.info("Loaded .env from %s", dotenv_path)
         elif verbose:

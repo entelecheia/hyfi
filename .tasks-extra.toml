@@ -2,3 +2,7 @@
 cmd = "poetry install --with ipython"
 help = "install ipython dependencies"
 
+[tool.poe.tasks.install-mkdocs]
+cmd = "poetry install --with mkdocs"
+help = "install mkdocs dependencies"
+

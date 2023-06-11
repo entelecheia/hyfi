@@ -54,7 +54,7 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     # Set the context to the default context.
     if context is None:
         context = {}
-    env = defaultdict(lambda: "")
+    env = defaultdict(str, os.environ.copy())
     env.update(context)
     return Template(posix_expr).substitute(env)
 

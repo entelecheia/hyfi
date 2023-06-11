@@ -47,6 +47,16 @@ ipywidgets = "^8.0.6"
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "ipywidgets"]
 
+[tool.poetry.group.mkdocs]
+optional = true
+
+[tool.poetry.group.mkdocs.dependencies]
+mkdocs-material = "^9.1.15"
+markdown-include = "^0.8.1"
+mkdocstrings = {extras = ["python"], version = "^0.22.0"}
+mkdocs-material-extensions = ">=1.1"
+pymdown-extensions = ">=9.9.1"
+
 [tool.poetry.group.dev]
 optional = true
 

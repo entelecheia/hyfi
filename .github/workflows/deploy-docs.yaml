@@ -13,6 +13,7 @@ on:
       - "docs/**.md"
       - "docs/images/**"
       - ".github/workflows/deploy-docs.yaml"
+      - "src/**"
 
 permissions:
   contents: write

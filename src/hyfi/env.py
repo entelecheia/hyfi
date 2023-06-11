@@ -567,7 +567,7 @@ class Dummy:
 
 def _compose(
     config_group: str = None,
-    overrides: List[str] = [],
+    overrides: List[str] = None,
     *,
     return_as_dict: bool = False,
     throw_on_resolution_failure: bool = True,
@@ -589,6 +589,8 @@ def _compose(
 
     :return: The composed config
     """
+    if overrides is None:
+        overrides = []
     config_module = config_module or __global_config__.hyfi_config_module
     # if verbose:
     logger.info("config_module: %s", config_module)

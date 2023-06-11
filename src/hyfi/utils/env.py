@@ -15,7 +15,17 @@ logger = getLogger(__name__)
 
 
 def getcwd():
-    """Get the original working directory before hydra changed it"""
+    """Get the original working directory before Hydra changed it.
+
+    This function tries to call the `get_original_cwd` function from the `hydra.utils` module,
+    which returns the original working directory if it exists. If the `get_original_cwd` function
+    raises a `ValueError` exception, it means that Hydra did not change the working directory,
+    so the function falls back to calling the `os.getcwd` function, which returns the current
+    working directory.
+
+    Returns:
+        str: The original working directory before Hydra changed it.
+    """
     try:
         return hydra.utils.get_original_cwd()
     except ValueError:
@@ -47,7 +57,6 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     env = defaultdict(lambda: "")
     env.update(context)
     return Template(posix_expr).substitute(env)
-
 
 
 def dotenv_values(dotenv_path=None, **kwargs):

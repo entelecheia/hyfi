@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 from typing import Any
+from string import Template
+from collections import defaultdict
 
 import dotenv
 import hydra
@@ -18,6 +20,27 @@ def getcwd():
         return hydra.utils.get_original_cwd()
     except ValueError:
         return os.getcwd()
+
+
+def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+    """
+    Expand POSIX variables in a string.
+
+    Args:
+        posix_expr (str): The string containing POSIX variables to be expanded.
+        context (dict, optional): A dictionary containing additional variables to be used in the expansion.
+            Defaults to None.
+
+    Returns:
+        str: The expanded string.
+
+    """
+    # Set the context to the default context.
+    if context is None:
+        context = {}
+    env = defaultdict(lambda: "")
+    env.update(context)
+    return Template(posix_expr).substitute(env)
 
 
 def dotenv_values(dotenv_path=None, **kwargs):

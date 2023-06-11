@@ -177,18 +177,24 @@ class JobLibConfig(BaseModel):
         logger.info("stopping distributed framework")
         if self.distributed_framework.initialize:
             if backend == "ray":
-                import ray
+                try:
+                    import ray
 
-                if ray.is_initialized():
-                    ray.shutdown()
-                    logger.info("shutting down ray")
+                    if ray.is_initialized():
+                        ray.shutdown()
+                        logger.info("shutting down ray")
+                except ImportError:
+                    logger.warning("ray is not installed")
 
-            # elif modin_engine == 'dask':
-            #     from dask.distributed import Client
+            elif backend == "dask":
+                try:
+                    from dask.distributed import Client
 
-            #     if Client.initialized():
-            #         client.close()
-            #         log.info(f'shutting down dask client')
+                    if Client.initialized():
+                        Client.close()
+                        logger.info("shutting down dask client")
+                except ImportError:
+                    logger.warning("dask is not installed")
 
 
 class PathConfig(BaseModel):

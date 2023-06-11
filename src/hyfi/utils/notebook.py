@@ -291,13 +291,13 @@ def create_image(
         url = "https://assets.entelecheia.cc/img/placeholder.png"
         # img = urlopen(url).read()
         img = read(url)
-        format = "png"
+        _format = "png"
     else:
         img = read(filename)
-        format = format or filename.split(".")[-1]
+        _format = format or filename.split(".")[-1]
     return widgets.Image(
         value=img,
-        format=format,
+        format=_format,
         width=width,
         height=height,
         **kwargs,

@@ -8,7 +8,7 @@ from pydantic import BaseModel, BaseSettings, SecretStr, root_validator, validat
 from pydantic.env_settings import SettingsSourceCallable
 
 from .utils.batch import batcher
-from .utils.env import load_dotenv
+from .utils.env import load_dotenv, expand_posix_vars
 from .utils.logging import getLogger, setLogger
 from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
 
@@ -501,24 +501,39 @@ class HyfiConfig(BaseModel):
 
     def init_workspace(
         self,
-        workspace=None,
-        project=None,
-        task=None,
-        log_level=None,
-        autotime=True,
-        retina=True,
-        verbose=None,
+        workspace: str = None,
+        project: str = None,
+        task: str = None,
+        log_level: str = None,
+        autotime: bool = True,
+        retina: bool = True,
+        verbose: Union(int, bool) = None,
         **kwargs,
     ):
-        """Initialize project in notebook"""
+        """
+        Initializes the project in a notebook workspace.
+
+        Args:
+            workspace (str, optional): The path to the workspace root directory. Defaults to None.
+            project (str, optional): The name of the project. Defaults to None.
+            task (str, optional): The name of the task. Defaults to None.
+            log_level (str, optional): The logging level. Defaults to None.
+            autotime (bool, optional): Whether to load the autotime extension. Defaults to True.
+            retina (bool, optional): Whether to set the matplotlib format to retina. Defaults to True.
+            verbose (Union[int, bool], optional): The verbosity level. Defaults to None.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            None
+        """
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)
-        if isinstance(workspace, str):
-            envs.HYFI_WORKSPACE_ROOT = workspace
-        if isinstance(project, str):
-            envs.HYFI_PROJECT_NAME = project
-        if isinstance(task, str):
-            envs.HYFI_TASK_NAME = task
-        if isinstance(log_level, str):
+        if workspace:
+            envs.HYFI_WORKSPACE_ROOT = expand_posix_vars(workspace)
+        if project:
+            envs.HYFI_PROJECT_NAME = expand_posix_vars(project)
+        if task:
+            envs.HYFI_TASK_NAME = expand_posix_vars(task)
+        if log_level:
             envs.HYFI_LOG_LEVEL = log_level
             setLogger(log_level)
             logger.setLevel(log_level)

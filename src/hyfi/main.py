@@ -36,7 +36,7 @@ from .hydra import (
 )
 from .io.cached_path import cached_path
 from .io.file import exists, is_dir, is_file, join_path, mkdir
-from .utils.env import get_osenv, load_dotenv, set_osenv, expand_posix_vars
+from .utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from .utils.func import (
     dict_product,
     dict_to_dataframe,

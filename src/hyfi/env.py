@@ -1,7 +1,7 @@
 import os
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-from enum import Enum
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
@@ -9,10 +9,9 @@ from pydantic import BaseModel, BaseSettings, SecretStr, root_validator, validat
 from pydantic.env_settings import SettingsSourceCallable
 
 from .utils.batch import batcher
-from .utils.env import load_dotenv, expand_posix_vars, _check_and_set_value
+from .utils.env import _check_and_set_value, expand_posix_vars, load_dotenv
 from .utils.logging import getLogger, setLogger
 from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
-
 
 logger = getLogger(__name__)
 

@@ -78,7 +78,7 @@ def _load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
 
 
 def _save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
-    os.makedirs(os.path.dirname(f), exist_ok=True)
+    os.makedirs(os.path.dirname(str(f)), exist_ok=True)
     OmegaConf.save(config, f, resolve=resolve)
 
 
@@ -90,6 +90,7 @@ def _save_json(
     default=None,
     **kwargs,
 ):
+    f = str(f)
     os.makedirs(os.path.dirname(f), exist_ok=True)
     with open(f, "w") as f:
         json.dump(
@@ -103,6 +104,7 @@ def _save_json(
 
 
 def _load_json(f: Union[str, Path, IO[Any]], **kwargs) -> dict:
+    f = str(f)
     with open(f, "r") as f:
         return json.load(f, **kwargs)
 
@@ -171,7 +173,7 @@ def _run(config: Any, **kwargs: Any) -> Any:
 
 
 def _partial(
-    config: Any = None, config_group: str = None, *args: Any, **kwargs: Any
+    config: Any = None, config_group: Union[str, None] = None, *args: Any, **kwargs: Any
 ) -> Any:
     if config is None and config_group is None:
         logger.warning("No config specified")

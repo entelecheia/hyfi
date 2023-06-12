@@ -1,11 +1,13 @@
-from hyfi.env import PathConfig
+import os
+from hyfi.env import PathConfig, DotEnvConfig
 from hyfi.utils.env import expand_posix_vars
 from pathlib import Path
+from pprint import pprint
 
 
 def test_path_config():
     config = PathConfig()
-    print(config.dict())
+    pprint(config.dict())
     # Test that the default values are set correctly
     assert config.config_name == "__init__"
     assert config.home == expand_posix_vars("$HOME")
@@ -21,5 +23,16 @@ def test_path_config():
     assert Path(config.cache_dir).is_dir()
 
 
+def test_dotenv_config():
+    os.environ["HYFI_PROJECT_NAME"] = "hyfi"
+    os.environ["HYFI_GLOBAL_WORKSPACE_ROOT"] = expand_posix_vars("$WORKSPACE_ROOT")
+    config = DotEnvConfig()
+    pprint(config.dict())
+    # Test that the default values are set correctly
+    assert config.config_name == "__init__"
+    assert config.HYFI_PROJECT_NAME == "hyfi"
+
+
 if __name__ == "__main__":
-    test_path_config()
+    # test_path_config()
+    test_dotenv_config()

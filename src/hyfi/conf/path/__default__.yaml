@@ -1,11 +1,10 @@
 task_name: ${oc.select:..project.task_name, default-task}
-root: ${join_path:${oc.select:..project.project_root,${oc.env:HYFI_PROJECT_ROOT,./}}, ${.task_name}}
-verbose: ${oc.select:..project.verbose, false}
+task_root: ${oc.select:..project.project_data_root,${oc.env:HYFI_PROJECT_DATA_ROOT,.}}/${.task_name}
 
-output_dir: ${join_path:${.root}, outputs}
-data_dir: ${join_path:${.root}, data}
-library_dir: ${join_path:${.root}, libs}
-model_dir: ${join_path:${.root}, models}
-cache_dir: ${oc.select:..project.path.cache,${join_path:${.root}, cache}}
-tmp_dir: ${oc.select:..project.path.tmp,${join_path:${.root}, tmp}}
-log_dir: ${oc.select:..project.path.logs,${join_path:${.root}, logs}}
+output_dir: ${.task_root}/outputs
+data_dir: ${.task_root}/data
+library_dir: ${.task_root}/libs
+model_dir: ${.task_root}/models
+cache_dir: ${oc.select:..project.path.project_cache,${.task_root}/cache}
+tmp_dir: ${oc.select:..project.path.project_tmp,${.task_root}/tmp}
+log_dir: ${oc.select:..project.path.project_logs,${.task_root}/logs}

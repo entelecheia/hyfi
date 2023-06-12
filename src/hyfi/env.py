@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
+from enum import Enum
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
@@ -8,13 +9,16 @@ from pydantic import BaseModel, BaseSettings, SecretStr, root_validator, validat
 from pydantic.env_settings import SettingsSourceCallable
 
 from .utils.batch import batcher
-from .utils.env import load_dotenv, expand_posix_vars
+from .utils.env import load_dotenv, expand_posix_vars, _check_and_set_value
 from .utils.logging import getLogger, setLogger
 from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
+
 
 logger = getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
+
+DictKeyType = Union[str, bytes, int, Enum, float, bool]
 
 
 def __version__():
@@ -44,7 +48,7 @@ def _select(
 
 def _to_dict(
     cfg: Any,
-):
+) -> Any:
     if isinstance(cfg, dict):
         cfg = _to_config(cfg)
     if isinstance(cfg, (DictConfig, ListConfig)):
@@ -59,7 +63,7 @@ def _to_dict(
 
 def _to_config(
     cfg: Any,
-):
+) -> Union[DictConfig, ListConfig]:
     return OmegaConf.create(cfg)
 
 
@@ -129,12 +133,12 @@ class JobLibConfig(BaseModel):
         **data: Any,
     ):
         if not data:
-            data = _compose(
-                f"joblib={config_name}", config_module=__about__.config_module
-            )
             logger.debug(
                 "There are no arguments to initilize a config, using default config."
             )
+            data = _compose(
+                f"joblib={config_name}", config_module=__about__.config_module
+            )  # type: ignore
         super().__init__(config_name=config_name, **data)
 
     def init_backend(
@@ -146,7 +150,7 @@ class JobLibConfig(BaseModel):
             backend = self.distributed_framework.backend
 
             if backend == "dask":
-                from dask.distributed import Client
+                from dask.distributed import Client  # type: ignore
 
                 dask_cfg = {"n_workers": self.distributed_framework.num_workers}
                 logger.info(f"initializing dask client with {dask_cfg}")
@@ -154,7 +158,7 @@ class JobLibConfig(BaseModel):
                 logger.debug(client)
 
             elif backend == "ray":
-                import ray
+                import ray  # type: ignore
 
                 ray_cfg = {"num_cpus": self.distributed_framework.num_workers}
                 logger.info(f"initializing ray with {ray_cfg}")
@@ -178,7 +182,7 @@ class JobLibConfig(BaseModel):
         if self.distributed_framework.initialize:
             if backend == "ray":
                 try:
-                    import ray
+                    import ray  # type: ignore
 
                     if ray.is_initialized():
                         ray.shutdown()
@@ -188,7 +192,7 @@ class JobLibConfig(BaseModel):
 
             elif backend == "dask":
                 try:
-                    from dask.distributed import Client
+                    from dask.distributed import Client  # type: ignore
 
                     if Client.initialized():
                         Client.close()
@@ -199,24 +203,33 @@ class JobLibConfig(BaseModel):
 
 class PathConfig(BaseModel):
     config_name: str = "__init__"
-    dotenv_path: str = None
-    workspace: str = None
-    project: str = "hyfi-default"
-    data: str = None
-    home: str = None
-    hyfi: str = None
-    resources: str = None
-    runtime: str = None
-    archive: str = None
-    corpus: str = None
-    datasets: str = None
-    logs: str = None
-    models: str = None
-    outputs: str = None
-    cache: str = None
-    tmp: str = None
-    library: str = None
-    verbose: bool = False
+    # internal paths for hyfi
+    home: str = ""
+    hyfi: str = ""
+    resources: str = ""
+    runtime: str = ""
+    # global paths
+    global_workspace_root: str = ""
+    global_data_root: str = ""
+    global_archive: str = ""
+    global_datasets: str = ""
+    global_models: str = ""
+    global_modules: str = ""
+    global_library: str = ""
+    global_cache: str = ""
+    global_tmp: str = ""
+    # project specific paths
+    project_root: str = ""
+    project_data_root: str = ""
+    project_archive: str = ""
+    project_datasets: str = ""
+    project_models: str = ""
+    project_modules: str = ""
+    project_outputs: str = ""
+    project_logs: str = ""
+    project_library: str = ""
+    project_cache: str = ""
+    project_tmp: str = ""
 
     class Config:
         extra = "allow"
@@ -227,62 +240,89 @@ class PathConfig(BaseModel):
         config_name: str = "__init__",
         **data: Any,
     ):
+        """
+        Initialize the config. This is the base implementation of __init__. You can override this in your own subclass if you want to customize the initilization of a config by passing a keyword argument ` data `.
+
+        Args:
+                config_name: The name of the config to initialize
+                data: The data to initialize
+        """
+        # Initialize the config module.
         if not data:
+            logger.debug(
+                "There are no arguments to initilize a config, using default config %s",
+                config_name,
+            )
             data = _compose(
                 f"path={config_name}", config_module=__about__.config_module
-            )
-            logger.debug(
-                "There are no arguments to initilize a config, using default config."
-            )
+            )  # type: ignore
         super().__init__(config_name=config_name, **data)
 
     @property
     def log_dir(self):
-        Path(self.logs).mkdir(parents=True, exist_ok=True)
-        return Path(self.logs).absolute()
+        """
+        Create and return the path to the log directory. This is a convenience method for use in unit tests that want to ensure that the log directory exists and is accessible to the user.
+
+
+        Returns:
+                absolute path to the log directory for the project ( including parent directories
+        """
+        Path(self.project_logs).mkdir(parents=True, exist_ok=True)
+        return Path(self.project_logs).absolute()
 
     @property
     def cache_dir(self):
-        Path(self.cache).mkdir(parents=True, exist_ok=True)
-        return Path(self.cache).absolute()
+        """
+        Create and return the directory where cache files are stored. This is useful for debugging and to ensure that we don't accidentally delete the cache files when there are too many files in the cache.
+
+
+        Returns:
+                absolute path to the cache directory for this test run
+        """
+        Path(self.global_cache).mkdir(parents=True, exist_ok=True)
+        return Path(self.global_cache).absolute()
 
 
 class DotEnvConfig(BaseSettings):
     """Environment variables for HyFI"""
 
+    config_name: str = "__init__"
+
+    DOTENV_FILENAME: Optional[str] = ".env"
+    DOTENV_DIR: Optional[str] = ""
+    DOTENV_PATH: Optional[str] = ""
     # Internal
-    HYFI_WORKSPACE_ROOT: Optional[str]
-    HYFI_PROJECT_NAME: Optional[str]
-    HYFI_TASK_NAME: Optional[str]
-    HYFI_PROJECT_ROOT: Optional[str]
-    HYFI_DATA_ROOT: Optional[str]
-    HYFI_RESOURCE_DIR: Optional[str]
-    HYFI_LOG_LEVEL: Optional[str]
-    HYFI_VERBOSE: Optional[Union[bool, str, int]]
-    NUM_WORKERS: Optional[int]
-    CACHED_PATH_CACHE_ROOT: Optional[str]
-    DOTENV_PATH: Optional[str]
-    DOTENV_DIR: Optional[str]
+    HYFI_RESOURCE_DIR: Optional[str] = ""
+    HYFI_GLOBAL_WORKSPACE_ROOT: Optional[str] = ""
+    HYFI_GLOBAL_DATA_ROOT: Optional[str] = ""
+    HYFI_PROJECT_NAME: Optional[str] = ""
+    HYFI_TASK_NAME: Optional[str] = ""
+    HYFI_PROJECT_ROOT: Optional[str] = ""
+    HYFI_PROJECT_DATA_ROOT: Optional[str] = ""
+    HYFI_LOG_LEVEL: Optional[str] = "WARNING"
+    HYFI_VERBOSE: Optional[Union[bool, str, int]] = False
+    NUM_WORKERS: Optional[int] = 1
+    CACHED_PATH_CACHE_ROOT: Optional[str] = ""
     # For other packages
-    CUDA_DEVICE_ORDER: Optional[str]
-    CUDA_VISIBLE_DEVICES: Optional[str]
-    WANDB_PROJECT: Optional[str]
-    WANDB_DISABLED: Optional[str]
-    WANDB_DIR: Optional[str]
-    WANDB_NOTEBOOK_NAME: Optional[str]
-    WANDB_SILENT: Optional[Union[bool, str]]
-    LABEL_STUDIO_SERVER: Optional[str]
+    CUDA_DEVICE_ORDER: Optional[str] = "PCI_BUS_ID"
+    CUDA_VISIBLE_DEVICES: Optional[str] = ""
+    WANDB_PROJECT: Optional[str] = ""
+    WANDB_DISABLED: Optional[str] = ""
+    WANDB_DIR: Optional[str] = ""
+    WANDB_NOTEBOOK_NAME: Optional[str] = ""
+    WANDB_SILENT: Optional[Union[bool, str]] = False
+    LABEL_STUDIO_SERVER: Optional[str] = ""
     KMP_DUPLICATE_LIB_OK: Optional[str] = "True"
-    TOKENIZERS_PARALLELISM: Optional[bool] = False
+    TOKENIZERS_PARALLELISM: Optional[Union[bool, str]] = False
     # API Keys and Tokens
-    WANDB_API_KEY: Optional[SecretStr]
-    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr]
-    OPENAI_API_KEY: Optional[SecretStr]
-    ECOS_API_KEY: Optional[SecretStr]
-    FRED_API_KEY: Optional[SecretStr]
-    NASDAQ_API_KEY: Optional[SecretStr]
-    HF_USER_ACCESS_TOKEN: Optional[SecretStr]
-    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr]
+    WANDB_API_KEY: Optional[SecretStr] = None
+    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr] = None
+    OPENAI_API_KEY: Optional[SecretStr] = None
+    ECOS_API_KEY: Optional[SecretStr] = None
+    FRED_API_KEY: Optional[SecretStr] = None
+    NASDAQ_API_KEY: Optional[SecretStr] = None
+    HF_USER_ACCESS_TOKEN: Optional[SecretStr] = None
+    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = None
 
     class Config:
         env_prefix = ""
@@ -305,11 +345,28 @@ class DotEnvConfig(BaseSettings):
 
     @root_validator()
     def _check_and_set_values(cls, values):
-        workspace = values.get("HYFI_WORKSPACE_ROOT")
-        project = values.get("HYFI_PROJECT_NAME")
-        if workspace is not None and project is not None:
-            project_dir = os.path.join(workspace, "projects", project)
-            values["HYFI_PROJECT_ROOT"] = project_dir
+        global_workspace_root = values.get("HYFI_GLOBAL_WORKSPACE_ROOT")
+        global_data_root = values.get("HYFI_GLOBAL_DATA_ROOT")
+        if global_workspace_root and not global_data_root:
+            global_data_root = os.path.join(global_workspace_root, "data")
+            values["HYFI_GLOBAL_DATA_ROOT"] = global_data_root
+        project_name = values.get("HYFI_PROJECT_NAME")
+        project_root = values.get("HYFI_PROJECT_ROOT")
+        dotenv_dir = values.get("DOTENV_DIR")
+        if not project_root:
+            if global_workspace_root and project_name:
+                project_root = os.path.join(
+                    global_workspace_root, "projects", project_name
+                )
+                values["HYFI_PROJECT_ROOT"] = project_root
+            elif dotenv_dir and Path(dotenv_dir).is_dir():
+                project_root = dotenv_dir
+                values["HYFI_PROJECT_ROOT"] = project_root
+        project_data_root = values.get("HYFI_PROJECT_DATA_ROOT")
+        if project_root and not project_data_root:
+            project_data_root = os.path.join(project_root, "workspace")
+            values["HYFI_PROJECT_DATA_ROOT"] = project_data_root
+
         for k, v in values.items():
             if v is not None:
                 old_value = os.getenv(k.upper())
@@ -324,17 +381,19 @@ class ProjectConfig(BaseModel):
 
     config_name: str = "__init__"
     project_name: str = "hyfi-project"
-    task_name: str = None
-    workspace_root: str = None
-    project_root: str = None
-    description: str = None
+    task_name: str = ""
+    project_description: str = ""
+    project_root: str = ""
+    project_data_root: str = ""
+    global_workspace_root: str = ""
+    global_data_root: str = ""
     use_huggingface_hub: bool = False
     use_wandb: bool = False
-    verbose: bool = False
+    verbose: Union[bool, int] = False
     # Config Classes
-    dotenv: DotEnvConfig = None
-    joblib: JobLibConfig = None
-    path: PathConfig = None
+    dotenv: DotEnvConfig = None  # type: ignore
+    joblib: JobLibConfig = None  # type: ignore
+    path: PathConfig = None  # type: ignore
 
     class Config:
         extra = "allow"
@@ -346,12 +405,12 @@ class ProjectConfig(BaseModel):
         **data: Any,
     ):
         if not data:
-            data = _compose(
-                f"project={config_name}", config_module=__about__.config_module
-            )
             logger.debug(
                 "There are no arguments to initilize a config, using default config."
             )
+            data = _compose(
+                f"project={config_name}", config_module=__about__.config_module
+            )  # type: ignore
         super().__init__(config_name=config_name, **data)
 
     @validator("project_name", allow_reuse=True)
@@ -365,16 +424,20 @@ class ProjectConfig(BaseModel):
         return os.environ
 
     @property
-    def workspace_dir(self):
-        return Path(self.path.workspace)
+    def project_data_dir(self):
+        if self.path is None:
+            raise ValueError("Path object not initialized")
+        _p = Path(self.path.project_data_root)
+        _p.mkdir(parents=True, exist_ok=True)
+        return _p.absolute()
 
     @property
     def project_dir(self):
-        return Path(self.path.project)
-
-    @property
-    def version(self):
-        return __about__.version
+        if self.path is None:
+            raise ValueError("Path object not initialized")
+        _p = Path(self.path.project_root)
+        _p.mkdir(parents=True, exist_ok=True)
+        return _p.absolute()
 
     def init_project(self):
         self.dotenv = DotEnvConfig()
@@ -384,11 +447,21 @@ class ProjectConfig(BaseModel):
             self.joblib = JobLibConfig()
 
         if self.dotenv.HYFI_VERBOSE is not None:
-            self.verbose = self.dotenv.HYFI_VERBOSE
-        self.dotenv.HYFI_DATA_ROOT = str(self.path.data)
+            self.verbose = int(self.dotenv.HYFI_VERBOSE)
+        self.dotenv.HYFI_GLOBAL_WORKSPACE_ROOT = str(self.path.global_workspace_root)
+        self.dotenv.HYFI_GLOBAL_DATA_ROOT = str(self.path.global_data_root)
         self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
-        wandb_dir = str(self.path.log_dir)
-        self.dotenv.WANDB_DIR = wandb_dir
+        self.init_wandb()
+        if self.use_huggingface_hub:
+            self.init_huggingface_hub()
+
+    def init_wandb(self):
+        if self.path is None:
+            raise ValueError("Path object not initialized")
+        if self.dotenv is None:
+            raise ValueError("DotEnv object not initialized")
+
+        self.dotenv.WANDB_DIR = str(self.path.log_dir)
         project_name = self.project_name.replace("/", "-").replace("\\", "-")
         self.dotenv.WANDB_PROJECT = project_name
         task_name = self.task_name.replace("/", "-").replace("\\", "-")
@@ -398,21 +471,19 @@ class ProjectConfig(BaseModel):
         self.dotenv.WANDB_SILENT = str(not self.verbose)
         if self.use_wandb:
             try:
-                import wandb
+                import wandb  # type: ignore
 
                 wandb.init(project=self.project_name)
             except ImportError:
                 logger.warning(
                     "wandb is not installed, please install it to use wandb."
                 )
-        if self.use_huggingface_hub:
-            self.init_huggingface_hub()
 
     def init_huggingface_hub(self):
         """Initialize huggingface_hub"""
         try:
-            from huggingface_hub import notebook_login
-            from huggingface_hub.hf_api import HfFolder
+            from huggingface_hub import notebook_login  # type: ignore
+            from huggingface_hub.hf_api import HfFolder  # type: ignore
         except ImportError:
             logger.warning(
                 "huggingface_hub is not installed, please install it to use huggingface_hub."
@@ -437,23 +508,12 @@ class ProjectConfig(BaseModel):
                 )
 
 
-def _check_and_set_value(key, value):
-    """Check and set value to environment variable"""
-    env_key = key.upper()
-    if value is not None:
-        old_value = os.getenv(env_key, "")
-        if str(old_value).lower() != str(value).lower():
-            os.environ[env_key] = str(value)
-            logger.debug("Set environment variable %s=%s", env_key, str(value))
-    return value
-
-
 class HyfiConfig(BaseModel):
     """HyFI config primary class"""
 
     hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
-    hyfi_user_config_path: str = None
+    hyfi_user_config_path: str = ""
 
     debug_mode: bool = False
     print_config: bool = False
@@ -461,10 +521,11 @@ class HyfiConfig(BaseModel):
     verbose: bool = False
     logging_level: str = "WARNING"
 
-    hydra: DictConfig = None
+    hydra: Optional[DictConfig] = None
 
     about: AboutConfig = AboutConfig()
-    project: ProjectConfig = None
+    project: Optional[ProjectConfig] = None
+    copier: Optional[DictConfig] = None
 
     __version__: str = __version__()
     __initilized__: bool = False
@@ -503,22 +564,31 @@ class HyfiConfig(BaseModel):
 
     def init_workspace(
         self,
-        workspace_root: str = None,
-        project_name: str = None,
-        task_name: str = None,
-        log_level: str = None,
+        project_name: str = "",
+        task_name: str = "",
+        project_root: str = "",
+        project_data_root: str = "",
+        global_workspace_root: str = "",
+        global_data_root: str = "",
+        log_level: str = "",
         autotime: bool = True,
         retina: bool = True,
-        verbose: Union(int, bool) = None,
+        verbose: Union[bool, int] = False,
         **kwargs,
     ):
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)
-        if workspace_root:
-            envs.HYFI_WORKSPACE_ROOT = expand_posix_vars(workspace_root)
         if project_name:
             envs.HYFI_PROJECT_NAME = expand_posix_vars(project_name)
         if task_name:
             envs.HYFI_TASK_NAME = expand_posix_vars(task_name)
+        if project_root:
+            envs.HYFI_PROJECT_ROOT = expand_posix_vars(project_root)
+        if project_data_root:
+            envs.HYFI_PROJECT_DATA_ROOT = expand_posix_vars(project_data_root)
+        if global_workspace_root:
+            envs.HYFI_GLOBAL_WORKSPACE_ROOT = expand_posix_vars(global_workspace_root)
+        if global_data_root:
+            envs.HYFI_GLOBAL_DATA_ROOT = expand_posix_vars(global_data_root)
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
             setLogger(log_level)
@@ -529,7 +599,7 @@ class HyfiConfig(BaseModel):
             set_matplotlib_formats("retina")
         self.initialize()
 
-    def initialize(self, config: Union[DictConfig, Dict] = None):
+    def initialize(self, config: Union[DictConfig, Dict, None] = None):
         """Initialize hyfi config"""
         if self.__initilized__:
             return
@@ -546,14 +616,15 @@ class HyfiConfig(BaseModel):
             return
         self.project = ProjectConfig(**config["project"])
         self.project.init_project()
-        self.project.joblib.init_backend()
+        if self.project.joblib:
+            self.project.joblib.init_backend()
         self.__initilized__ = True
 
     def terminate(self):
         """Terminate hyfi config"""
         if not self.__initilized__:
             return
-        if self.project is not None:
+        if self.project and self.project.joblib:
             self.project.joblib.stop_backend()
         self.__initilized__ = False
 
@@ -565,7 +636,7 @@ class HyfiConfig(BaseModel):
 
     @property
     def app_version(self):
-        return self.about.app_version
+        return self.about.version
 
 
 __global_config__ = HyfiConfig()
@@ -577,16 +648,16 @@ class Dummy:
 
 
 def _compose(
-    config_group: str = None,
-    overrides: List[str] = None,
+    config_group: Union[str, None] = None,
+    overrides: Union[List[str], None] = None,
     *,
     return_as_dict: bool = False,
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,
-    config_name: str = None,
-    config_module: str = None,
+    config_name: Union[str, None] = None,
+    config_module: Union[str, None] = None,
     verbose: bool = False,
-) -> Union[DictConfig, Dict]:
+) -> Union[DictConfig, Dict]:  # sourcery skip: low-code-quality
     """
     Compose your configuration from config groups and overrides (overrides=["override_name"])
 
@@ -605,7 +676,7 @@ def _compose(
     config_module = config_module or __global_config__.hyfi_config_module
     # if verbose:
     logger.info("config_module: %s", config_module)
-    is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()
+    is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()  # type: ignore
     if config_group:
         _task = config_group.split("=")
         if len(_task) == 2:
@@ -632,11 +703,12 @@ def _compose(
             throw_on_missing=False,
             throw_on_resolution_failure=False,
         )
-        overide = config_group if cfg is not None else f"+{config_group}"
-        if overrides:
-            overrides.append(overide)
-        else:
-            overrides = [overide]
+        override = config_group if cfg is not None else f"+{config_group}"
+        if isinstance(override, str):
+            if overrides:
+                overrides.append(override)
+            else:
+                overrides = [override]
     # if verbose:
     logger.info(f"compose config with overrides: {overrides}")
     if is_initialized:

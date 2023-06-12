@@ -16,18 +16,28 @@ __config_name__ = "config"
 
 
 def cmd(**args):
-    """Run the command defined in the config file"""
+    """
+    Run the command defined in the config file
+    Args
+        args : dict Arguments to pass to HyFI.
+    """
     HyFI.run(args)
 
 
 def about(**args):
-    """Print the about information"""
+    """
+    Print the about information for Hyfi.
+    This is a wrapper around _about which takes a HyfiConfig as an argument
+    """
     cfg = HyfiConfig(**args)
     _about(cfg)
 
 
 def run_copy(**args):
-    """Copy all config files in the config directory to the current working directory"""
+    """
+    Copy all config files to the current working directory.
+    This is a wrapper around HyfiConfig to allow us to pass arguments to it.
+    """
     cfg = HyfiConfig(**args)
     cfg = HyFI.to_dict(cfg.copier)
     with Copier(**cfg) as worker:
@@ -35,18 +45,31 @@ def run_copy(**args):
 
 
 def cli_main(cfg: DictConfig) -> None:
-    """Main function for the command line interface"""
-    hyfi = HyfiConfig(**cfg)
+    """
+    Main function for the command line interface.
+    Initializes Hydra and instantiates the class.
+    Prints the configuration to standard out if verbose is set to True
+
+    Args:
+        cfg: Configuration dictionary to be used for instantiation
+
+    Returns:
+        None if everything went fine otherwise an error is raised to indicate the reason for the failure ( s )
+    """
+    hyfi = HyfiConfig(**cfg)  # type: ignore
     verbose = hyfi.verbose
     app_name = hyfi.about.name
     print_config = hyfi.print_config
     print_resolved_config = hyfi.print_resolved_config
 
+    # Print out the command line interface for the application.
     if verbose:
         print(f"## Command Line Interface for {app_name} ##")
     HyFI.initialize(cfg)
 
+    # Print the configuration to the console.
     if print_config:
+        # Prints the configuration to the console.
         if print_resolved_config:
             logger.info("## hydra configuration resolved ##")
             HyFI.pprint(cfg)
@@ -54,6 +77,7 @@ def cli_main(cfg: DictConfig) -> None:
             logger.info("## hydra configuration ##")
             print(HyFI.to_yaml(cfg))
 
+    # Prints out the working directory and original working directory.
     if verbose:
         logger.info(f"Hydra working directory : {os.getcwd()}")
         logger.info(f"Orig working directory  : {hydra.utils.get_original_cwd()}")
@@ -69,14 +93,17 @@ def hydra_main(
 ) -> None:
     """
     Main function for the command line interface of Hydra
-    :param config_path: The config path, a directory where Hydra will search for
+
+    Args:
+        config_path: The config path, a directory where Hydra will search for
                         config files. This path is added to Hydra's searchpath.
                         Relative paths are interpreted relative to the declaring python
                         file. Alternatively, you can use the prefix `pkg://` to specify
                         a python package to add to the searchpath.
                         If config_path is None no directory is added to the Config search path.
-    :param config_name: The name of the config (usually the file name without the .yaml extension)
+        config_name: The name of the config (usually the file name without the .yaml extension)
     """
+    # Returns the path to the config file.
     if config_path is None:
         config_path = __about__.config_path
     hydra.main(
@@ -86,6 +113,7 @@ def hydra_main(
     )(cli_main)()
 
 
+# Run the command line interface
 if __name__ == "__main__":
     """Run the command line interface"""
     hydra_main()

@@ -32,7 +32,7 @@ def getcwd():
         return os.getcwd()
 
 
-def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+def expand_posix_vars(posix_expr: str, context: dict = None) -> str:    # type: ignore
     """
     Expand POSIX variables in a string.
 
@@ -54,8 +54,7 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     # Set the context to the default context.
     if context is None:
         context = {}
-    env = defaultdict(str, os.environ.copy())
-    env.update(context)
+    env = defaultdict(str, os.environ.copy()) | context
     return Template(posix_expr).substitute(env)
 
 

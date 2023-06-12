@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 
 def gitclone(
     url: str,
-    targetdir: str = None,
+    targetdir: str = "",
     verbose: bool = False,
 ) -> None:
     if targetdir:
@@ -36,8 +36,8 @@ def pip(
     prelease: bool = False,
     editable: bool = False,
     quiet: bool = True,
-    find_links: str = None,
-    requirement: bool = None,
+    find_links: str = "",
+    requirement: bool = False,
     force_reinstall: bool = False,
     verbose: bool = False,
     **kwargs,
@@ -104,7 +104,7 @@ def apti(name: str, verbose: bool = False) -> None:
         logger.info(res)
 
 
-def load_module_from_file(name: str, libpath: str, specname: str = None) -> None:
+def load_module_from_file(name: str, libpath: str, specname: str = "") -> None:
     """Load a module from a file"""
     module_path = os.path.join(libpath, name.replace(".", os.path.sep))
     if is_file(f"{module_path}.py"):
@@ -114,8 +114,8 @@ def load_module_from_file(name: str, libpath: str, specname: str = None) -> None
     else:
         module_path = str(Path(module_path).parent / "__init__.py")
 
-    spec = importlib.util.spec_from_file_location(name, module_path)
-    module = importlib.util.module_from_spec(spec)
+    spec = importlib.util.spec_from_file_location(name, module_path)  # type: ignore
+    module = importlib.util.module_from_spec(spec)  # type: ignore
     if not specname:
         specname = spec.name
     sys.modules[specname] = module
@@ -123,7 +123,7 @@ def load_module_from_file(name: str, libpath: str, specname: str = None) -> None
 
 
 def ensure_import_module(
-    name: str, libpath: str, liburi: str, specname: str = None, syspath: str = None
+    name: str, libpath: str, liburi: str, specname: str = "", syspath: str = ""
 ) -> None:
     """Ensure a module is imported, if not, clone it from a git repo and load it"""
     try:
@@ -143,34 +143,3 @@ def ensure_import_module(
         load_module_from_file(name, syspath, specname)
         specname = specname or name
         logger.info(f"{name} not imported, loading from {syspath} as {specname}")
-
-
-def dependencies(_key: str = None, _path: str = None) -> dict:
-    """Load dependencies from a yaml file."""
-    import re
-    from collections import defaultdict
-
-    if _path is None:
-        _path = os.path.join(
-            os.path.dirname(__file__), "resources", "requirements-extra.yaml"
-        )
-
-    with open(_path) as fp:
-        extra_deps = defaultdict(set)
-        for k in fp:
-            if k.strip() and not k.startswith("#"):
-                tags = set()
-                if ":" in k:
-                    k, v = k.split(":")
-                    tags.update(vv.strip() for vv in v.split(","))
-                tags.add(re.split("[<=>]", k.strip())[0])
-                for t in tags:
-                    extra_deps[t].add(k.strip())
-
-        # add tag `exhaustive` at the end
-        extra_deps["exhaustive"] = {vv for v in extra_deps.values() for vv in v}
-
-    if _key is None or _key == "keys":
-        return [tag for tag, deps in extra_deps.items() if len(deps) > 1]
-    else:
-        return extra_deps[_key]

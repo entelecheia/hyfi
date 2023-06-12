@@ -1,7 +1,7 @@
 """Environment variable utilities"""
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 from string import Template
 from collections import defaultdict
 
@@ -59,8 +59,16 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     return Template(posix_expr).substitute(env)
 
 
-def dotenv_values(dotenv_path=None, **kwargs):
-    """Load dotenv file and return a dict of key/value pairs"""
+def dotenv_values(dotenv_path: str = None, **kwargs):
+    """
+    Load dotenv file and return a dict of key / value pairs. This is a wrapper around : py : func : ` dotenv. dotenv_values `
+
+    Args:
+        dotenv_path: path to. env file
+
+    Returns:
+        dict of key / value pairs ( key = value )
+    """
     config = dotenv.dotenv_values(dotenv_path=dotenv_path, **kwargs)
     return dict(config)
 
@@ -71,36 +79,63 @@ def load_dotenv(
     dotenv_filename: str = ".env",
     verbose: bool = False,
 ) -> None:
-    """Load dotenv file from the given directory or from the current directory"""
+    """
+    Load. env file from given directory or from current directory. This is a convenience function for use in tests that want to run dotenv in a non - interactive environment
+
+    Args:
+        override: If True override existing. env file
+        dotenv_dir: Directory to look for. env file ( default cwd )
+        dotenv_filename: Name of. env file to look for
+        verbose: Print debug information to console
+
+    Returns:
+        None or a Path object for the. env file
+    """
     dotenv_dir = dotenv_dir or getcwd()
     dotenv_path = Path(dotenv_dir, dotenv_filename)
+    # Load. env files and directories.
     if dotenv_path.is_file():
         dotenv.load_dotenv(dotenv_path=dotenv_path, verbose=verbose, override=override)
         os.environ["DOTENV_PATH"] = str(dotenv_path)
         os.environ["DOTENV_DIR"] = str(dotenv_path.parent)
+        # Load. env from dotenv_path.
         if verbose:
             logger.info("Loaded .env from %s", dotenv_path)
+        else:
+            logger.debug("Loaded .env from %s", dotenv_path)
     else:
+        # If verbose is true print out the. env file.
         if verbose:
             logger.info(
                 "No .env file found in %s, finding .env in parent dirs", dotenv_path
             )
+        else:
+            logger.debug(
+                "No .env file found in %s, finding .env in parent dirs", dotenv_path
+            )
+        # Load dotenv. env from dotenv.
         if dotenv_path := dotenv.find_dotenv():
             dotenv.load_dotenv(
                 dotenv_path=dotenv_path, verbose=verbose, override=override
             )
             os.environ["DOTENV_PATH"] = str(dotenv_path)
             os.environ["DOTENV_DIR"] = os.path.dirname(dotenv_path)
+            # Load. env from dotenv_path.
             if verbose:
                 logger.info("Loaded .env from %s", dotenv_path)
+            else:
+                logger.debug("Loaded .env from %s", dotenv_path)
         else:
             os.environ["DOTENV_PATH"] = ""
             os.environ["DOTENV_DIR"] = ""
+            # Print out the. env file if verbose is true.
             if verbose:
                 logger.info("No .env file found in %s", dotenv_path)
+            else:
+                logger.debug("No .env file found in %s", dotenv_path)
 
 
-def get_osenv(key: str = None, default: str = None) -> Any:
+def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
     """Get the value of an environment variable or return the default value"""
     load_dotenv()
     return os.environ.get(key, default) if key else os.environ

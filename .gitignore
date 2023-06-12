@@ -1,6 +1,13 @@
+# VSCode
+.vscode/
+
 # Tests
-tmp/
 .hypothesis/
+tmp/
+workspace/
+
+#MKDOCS
+site/
 
 # Ignore node_modules directory
 node_modules/

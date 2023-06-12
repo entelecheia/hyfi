@@ -54,7 +54,7 @@ def collage(
     images_or_uris = [
         uri if isinstance(uri, Image.Image) else str(uri) for uri in images_or_uris
     ]
-    if len(images_or_uris) < 1:
+    if not images_or_uris:
         log.info("No images provided")
         return None
 
@@ -147,12 +147,12 @@ def label_collage(
     if title is not None:
         title = "\n".join(
             sum(
-                [
+                (
                     textwrap.wrap(
                         t, width=int(collage.width / 15 * 12 / title_fontsize)
                     )
                     for t in title.split("\n")
-                ],
+                ),
                 [],
             )
         )
@@ -279,11 +279,8 @@ def gallery(array, ncols=7):
     nindex, height, width, intensity = array.shape
     nrows = nindex // ncols
     assert nindex == nrows * ncols
-    # want result.shape = (height*nrows, width*ncols, intensity)
-    result = (
+    return (
         array.reshape(nrows, ncols, height, width, intensity)
         .swapaxes(1, 2)
         .reshape(height * nrows, width * ncols, intensity)
     )
-
-    return result

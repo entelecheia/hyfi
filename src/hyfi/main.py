@@ -36,7 +36,7 @@ from .hydra import (
 )
 from .io.cached_path import cached_path
 from .io.file import exists, is_dir, is_file, join_path, mkdir
-from .utils.env import get_osenv, load_dotenv, set_osenv
+from .utils.env import get_osenv, load_dotenv, set_osenv, expand_posix_vars
 from .utils.func import (
     dict_product,
     dict_to_dataframe,
@@ -47,7 +47,6 @@ from .utils.func import (
 )
 from .utils.google import mount_google_drive
 from .utils.gpu import nvidia_smi, set_cuda
-from .utils.lib import dependencies
 from .utils.logging import getLogger, setLogger
 from .utils.notebook import (
     clear_output,
@@ -101,7 +100,7 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
-    def initialize(config: Union[DictConfig, Dict] = None):
+    def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
         """Initialize the global config"""
         __global_config__.initialize(config)
 
@@ -113,20 +112,49 @@ class HyFI:
     @staticmethod
     def envs() -> DotEnvConfig:
         """Return the current environments"""
-        return DotEnvConfig()
+        return DotEnvConfig()  # type: ignore
+
+    @staticmethod
+    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+        """
+        Expand POSIX variables in a string.
+
+        Args:
+            posix_expr (str): The string containing POSIX variables to be expanded.
+            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
+                Defaults to None.
+
+        Returns:
+            str: The expanded string.
+
+        Examples:
+            >>> expand_posix_vars("$HOME")
+            '/home/user'
+            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
+            '/home/user/testuser'
+
+        """
+        return expand_posix_vars(posix_expr, context=context)
+
+    @staticmethod
+    def environ(key: str = "", default: Union[str, None] = None) -> Any:
+        """Get the value of an environment variable or return the default value"""
+        return get_osenv(key, default=default)
 
     @staticmethod
     def compose(
-        config_group: str = None,
-        overrides: List[str] = [],
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
         *,
         return_as_dict: bool = False,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        config_name: str = None,
-        config_module: str = None,
+        config_name: Union[str, None] = None,
+        config_module: Union[str, None] = None,
         verbose: bool = False,
     ) -> Union[DictConfig, Dict]:
+        if overrides is None:
+            overrides = []
         return _compose(
             config_group=config_group,
             overrides=overrides,
@@ -192,7 +220,10 @@ class HyFI:
 
     @staticmethod
     def partial(
-        config: Any = None, config_group: str = None, *args: Any, **kwargs: Any
+        config: Any = None,
+        config_group: Union[str, None] = None,
+        *args: Any,
+        **kwargs: Any,
     ) -> Any:
         return _partial(config=config, config_group=config_group, *args, **kwargs)
 
@@ -284,7 +315,7 @@ class HyFI:
     @staticmethod
     def load_dotenv(
         override: bool = False,
-        dotenv_dir: str = None,
+        dotenv_dir: str = "",
         dotenv_filename: str = ".env",
         verbose: bool = False,
     ) -> None:
@@ -399,10 +430,6 @@ class HyFI:
         return _pipe(data, cfg)
 
     @staticmethod
-    def dependencies(_key=None, path=None):
-        return dependencies(_key, path)
-
-    @staticmethod
     def ensure_list(value):
         return _ensure_list(value)
 
@@ -498,16 +525,15 @@ class HyFI:
                 verbose=verbose,
                 filetype=filetype,
             )
-        else:
-            if filename is None:
-                raise ValueError("filename must be specified")
-            return load_data(
-                filename,
-                base_dir=base_dir,
-                verbose=verbose,
-                filetype=filetype,
-                **kwargs,
-            )
+        if filename is None:
+            raise ValueError("filename must be specified")
+        return load_data(
+            filename,
+            base_dir=base_dir,
+            verbose=verbose,
+            filetype=filetype,
+            **kwargs,
+        )
 
     @staticmethod
     def get_filepaths(
@@ -673,14 +699,14 @@ class HyFI:
 
     @staticmethod
     def mount_google_drive(
-        workspace=None,
-        project=None,
-        mountpoint="/content/drive",
-        force_remount=False,
-        timeout_ms=120000,
+        project_root: str = "",
+        project_name: str = "",
+        mountpoint: str = "/content/drive",
+        force_remount: bool = False,
+        timeout_ms: int = 120000,
     ):
         return mount_google_drive(
-            workspace, project, mountpoint, force_remount, timeout_ms
+            project_root, project_name, mountpoint, force_remount, timeout_ms
         )
 
     @staticmethod
@@ -812,14 +838,10 @@ class HyFI:
 
     @staticmethod
     def create_dropdown(
-        options,
-        value,
-        description,
-        disabled=False,
-        style={"description_width": "initial"},
-        layout=None,
-        **kwargs,
+        options, value, description, disabled=False, style=None, layout=None, **kwargs
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_dropdown(
             options,
             value,
@@ -836,10 +858,12 @@ class HyFI:
         description,
         placeholder="",
         disabled=False,
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_textarea(
             value,
             description,
@@ -862,10 +886,12 @@ class HyFI:
         description,
         value=None,
         disabled=False,
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_radiobutton(
             options,
             description,
@@ -898,10 +924,12 @@ class HyFI:
         orientation="horizontal",
         readout=True,
         readout_format=".1f",
-        style={"description_width": "initial"},
+        style=None,
         layout=None,
         **kwargs,
     ):
+        if style is None:
+            style = {"description_width": "initial"}
         return create_floatslider(
             min,
             max,
@@ -958,26 +986,35 @@ class HyFI:
 
     @staticmethod
     def init_workspace(
-        workspace=None,
-        project=None,
-        task=None,
-        log_level=None,
-        autotime=True,
-        retina=True,
-        verbose=None,
+        project_name: str = "",
+        task_name: str = "",
+        project_root: str = "",
+        project_data_root: str = "",
+        global_workspace_root: str = "",
+        global_data_root: str = "",
+        log_level: str = "",
+        autotime: bool = True,
+        retina: bool = True,
+        verbose: Union[bool, int] = False,
         **kwargs,
     ) -> ProjectConfig:
         __global_config__.init_workspace(
-            workspace=workspace,
-            project=project,
-            task=task,
+            project_name=project_name,
+            task_name=task_name,
+            project_root=project_root,
+            project_data_root=project_data_root,
+            global_workspace_root=global_workspace_root,
+            global_data_root=global_data_root,
             log_level=log_level,
             autotime=autotime,
             retina=retina,
             verbose=verbose,
             **kwargs,
         )
-        return __global_config__.project
+        if __global_config__.project:
+            return __global_config__.project
+        else:
+            raise ValueError("Project not initialized.")
 
     @staticmethod
     def scale_image(
@@ -1029,7 +1066,7 @@ class HyFI:
     @staticmethod
     def gpu_usage(all=False, attrList=None, useOldCode=False):
         try:
-            from GPUtil import showUtilization
+            from GPUtil import showUtilization  # type: ignore
         except ImportError:
             logger.error("GPUtil is not installed. To install, run: pip install GPUtil")
             return

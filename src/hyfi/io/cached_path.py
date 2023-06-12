@@ -39,9 +39,7 @@ def cached_path(
         return None
     if verbose:
         logger.info(
-            "caching path: {}, extract_archive: {}, force_extract: {}, cache_dir: {}".format(
-                url_or_filename, extract_archive, force_extract, cache_dir
-            )
+            f"caching path: {url_or_filename}, extract_archive: {extract_archive}, force_extract: {force_extract}, cache_dir: {cache_dir}"
         )
 
     try:
@@ -82,11 +80,7 @@ def cached_path(
             logger.warning(f"Unknown path: {_path}")
             return None
 
-        if return_parent_dir:
-            return _parent_dir.as_posix()
-        else:
-            return _path
-
+        return _parent_dir.as_posix() if return_parent_dir else _path
     except Exception as e:
         logger.error(e)
         return None
@@ -148,12 +142,11 @@ def cached_gdown(
         if extract_archive:
             extraction_path, files = extractall(cache_path, force_extract=force_extract)
 
-            if fname and files:
-                for f in files:
-                    if f.endswith(fname):
-                        return f
-            else:
+            if not fname or not files:
                 return extraction_path
+            for f in files:
+                if f.endswith(fname):
+                    return f
         return cache_path
 
     else:
@@ -188,14 +181,12 @@ def extractall(path, to=None, force_extract=False):
         opener, mode = tarfile.open, "r:bz2"
     else:
         logger.warning(
-            "Could not extract '%s' as no appropriate " "extractor is found" % path
+            f"Could not extract '{path}' as no appropriate extractor is found"
         )
         return path, None
 
     def namelist(f):
-        if isinstance(f, ZipFile):
-            return f.namelist()
-        return [m.path for m in f.members]
+        return f.namelist() if isinstance(f, ZipFile) else [m.path for m in f.members]
 
     def filelist(f):
         files = []

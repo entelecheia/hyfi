@@ -62,10 +62,7 @@ def get_offset_ranges(count, num_workers):
     offset_ranges = [0]
     pv_cnt = 1
     for i in range(num_workers):
-        if i == num_workers - 1:
-            pv_cnt = count
-        else:
-            pv_cnt = pv_cnt + step_sz
+        pv_cnt = count if i == num_workers - 1 else pv_cnt + step_sz
         offset_ranges.append(pv_cnt)
     return offset_ranges
 
@@ -81,11 +78,11 @@ def change_directory(directory):
         yield
 
     except Exception as e:
-        fancy_print(" Exception: {}".format(e))
+        fancy_print(f" Exception: {e}")
         raise e
 
     finally:
-        fancy_print(" Change directory back to {}".format(original))
+        fancy_print(f" Change directory back to {original}")
         os.chdir(original)
 
 
@@ -174,9 +171,7 @@ def len_bytes(x):
 
 def len_words(x):
     """Return the number of words in a string"""
-    if isinstance(x, str):
-        return len(x.split())
-    return 0
+    return len(x.split()) if isinstance(x, str) else 0
 
 
 def len_sents(x, sep):
@@ -215,11 +210,7 @@ def get_modified_time(path):
     if not os.path.exists(path):
         return None
     modTimesinceEpoc = os.path.getmtime(path)
-    # Convert seconds since epoch to readable timestamp
-    modificationTime = time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.localtime(modTimesinceEpoc)
-    )
-    return modificationTime
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(modTimesinceEpoc))
 
 
 def today(_format="%Y-%m-%d"):
@@ -236,10 +227,7 @@ def now(_format="%Y-%m-%d %H:%M:%S"):
     """Return current date and time"""
     from datetime import datetime
 
-    if _format is None:
-        return datetime.now()
-    else:
-        return datetime.now().strftime(_format)
+    return datetime.now() if _format is None else datetime.now().strftime(_format)
 
 
 def strptime(
@@ -292,18 +280,14 @@ def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
 
     if isinstance(data, str):
         return float(data)
-    elif isinstance(data, int):
+    elif isinstance(data, (int, float)) or not isinstance(data, pd.DataFrame):
         return data
-    elif isinstance(data, float):
-        return data
-    elif isinstance(data, pd.DataFrame):
+    else:
         if _columns:
             if isinstance(_columns, str):
                 _columns = [_columns]
             for _col in _columns:
                 data[_col] = pd.to_numeric(data[_col], errors=errors, downcast=downcast)
-        return data
-    else:
         return data
 
 
@@ -320,7 +304,7 @@ def human_readable_type_name(t: Type) -> str:
         module = "hyfi"
 
     try:
-        return module + "." + t.__qualname__
+        return f"{module}.{t.__qualname__}"
     except AttributeError:
         return str(t)
 

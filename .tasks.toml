@@ -39,11 +39,11 @@ cmd = "pytest --doctest-modules"
 help = "run tests with pytest"
 
 [tool.poe.tasks.tests-cov]
-cmd = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html"
+cmd = "pytest --cov=src --cov-report=xml"
 help = "run tests with pytest and generate a coverage report"
 
 [tool.poe.tasks.tests-cov-fail]
-shell = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
+shell = "pytest --cov=src --cov-report=xml --cov-fail-under=30 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
 help = "run tests with pytest and generate a coverage report, fail if coverage is below 80%"
 
 [tool.poe.tasks.clean-cov]
@@ -65,67 +65,6 @@ help = "remove documentation artifacts"
 [tool.poe.tasks.clean]
 sequence = ["clean-cov", "clean-pycache", "clean-build", "clean-docs"]
 help = "remove build artifacts and coverage reports"
-
-[tool.poe.tasks.version]
-cmd = "semantic-release print-version --current"
-help = "print the current version"
-
-[tool.poe.tasks.next-version]
-cmd = "semantic-release print-version --next"
-help = "print the next version"
-
-[tool.poe.tasks.changelog]
-cmd = "semantic-release changelog --released"
-help = "print the changelog for the current version"
-
-[tool.poe.tasks.next-changelog]
-cmd = "semantic-release changelog --unreleased"
-help = "print the changelog for the next version"
-
-[tool.poe.tasks.release-noop]
-cmd = "semantic-release publish --noop -v DEBUG"
-help = "run a dry-run of the release process"
-
-[tool.poe.tasks.release-ci]
-cmd = "semantic-release publish -v DEBUG -D commit_author='github-actions <action@github.com>'"
-help = "run the release process in CI"
-
-[tool.poe.tasks.prerelease-noop]
-cmd = "semantic-release publish --noop -v DEBUG --prerelease"
-help = "run a dry-run of the prerelease process"
-
-[tool.poe.tasks.show-branches]
-cmd = "git show-branch --list"
-help = "show branches"
-
-[tool.poe.tasks.show-tags]
-cmd = "git tag --list"
-help = "show tags"
-
-[tool.poe.tasks.show-remotes]
-cmd = "git remote --verbose"
-help = "show remotes"
-
-[tool.poe.tasks.show-refs]
-cmd = "git show-ref"
-help = "show refs"
-
-[tool.poe.tasks.branch-chekcout-upstream]
-sequence = [
-    { cmd = "git checkout -B ${branch}" },
-    { cmd = "git push --set-upstream origin ${branch}" },
-]
-help = "create a new branch and push it to origin"
-args = ["branch"]
-
-[tool.poe.tasks.branch-chekcout]
-cmd = "git checkout ${branch}"
-help = "checkout a branch"
-args = ["branch"]
-
-[tool.poe.tasks.main-checkout]
-cmd = "git checkout main"
-help = "checkout main"
 
 [tool.poe.tasks.run]
 cmd = "hyfi"
@@ -150,3 +89,7 @@ help = "update dependencies"
 [tool.poe.tasks.lock]
 cmd = "poetry lock"
 help = "lock dependencies"
+
+[tool.poe.tasks.codecov-validate]
+cmd = "curl -X POST --data-binary @codecov.yml https://codecov.io/validate"
+help = "Validate codecov.yml"

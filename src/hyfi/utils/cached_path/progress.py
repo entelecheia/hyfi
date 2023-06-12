@@ -103,9 +103,7 @@ class BufferedWriterWithProgress(io.BufferedWriter):
         return self.handle.writelines(lines)
 
     def seek(self, offset: int, whence: int = 0) -> int:
-        pos = self.handle.seek(offset, whence)
-        #  self.progress.update(self.task_id, completed=pos)
-        return pos
+        return self.handle.seek(offset, whence)
 
     def tell(self) -> int:
         return self.handle.tell()

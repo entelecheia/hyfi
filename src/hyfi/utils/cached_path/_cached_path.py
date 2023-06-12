@@ -178,7 +178,7 @@ def cached_path(
         if extract_archive and (is_zipfile(file_path) or tarfile.is_tarfile(file_path)):
             # This is the path the file should be extracted to.
             # For example ~/.cached_path/cache/234234.21341 -> ~/.cached_path/cache/234234.21341-extracted
-            extraction_path = file_path.parent / (file_path.name + "-extracted")
+            extraction_path = file_path.parent / f"{file_path.name}-extracted"
 
     else:
         orig_url_or_filename = url_or_filename
@@ -307,8 +307,7 @@ def get_from_cache(
             "Will attempt to use latest cached version of resource",
             url,
         )
-        latest_cached = find_latest_cached(url, cache_dir)
-        if latest_cached:
+        if latest_cached := find_latest_cached(url, cache_dir):
             logger.info(
                 "ETag request failed with recoverable error, using latest cached "
                 "version of %s: %s",

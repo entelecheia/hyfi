@@ -108,9 +108,7 @@ def force_str_end(original_str: str, end: str = "\n") -> str:
         original_str: String that you want to ensure ending.
         end: String that must exist at the end of `original_str`
     """
-    if not original_str.endswith(end):
-        return original_str + end
-    return original_str
+    return original_str + end if not original_str.endswith(end) else original_str
 
 
 def handle_remove_readonly(

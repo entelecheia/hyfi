@@ -69,7 +69,7 @@ class Meta:
         )
 
     def to_file(self) -> None:
-        with open(self.cached_path + ".json", "w") as meta_file:
+        with open(f"{self.cached_path}.json", "w") as meta_file:
             json.dump(asdict(self), meta_file)
 
     @classmethod

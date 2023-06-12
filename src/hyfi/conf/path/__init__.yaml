@@ -1,16 +1,30 @@
-dotenv_path: ${.runtime}/.env
-workspace: ${oc.select:..workspace_root,${.home}/.hyfi}
-project: ${.workspace}/projects/${oc.select:..project_name,${oc.env:HYFI_PROJECT_NAME,hyfi-default}}
-data: ${alt:${oc.env:HYFI_DATA_ROOT,null},${.workspace}/data}
+---
+# This file defines the path variables used in the project.
+# internal paths for hyfi
 home: ${__home_path__:}
 hyfi: ${__hyfi_path__:}
 resources: ${alt:${oc.env:HYFI_RESOURCE_DIR,null},${.hyfi}/resources}
 runtime: ${get_original_cwd:}
-archive: ${.data}/archive
-datasets: ${.data}/datasets
-logs: ${.project}/logs
-models: ${.data}/models
-outputs: ${.project}/outputs
-cache: ${.workspace}/.cache
-tmp: ${.workspace}/.tmp
-library: ${join_path:${.data}, libs}
+# global paths
+global_workspace_root: ${oc.select:..global_workspace_root,${alt:${oc.env:HYFI_GLOBAL_WORKSPACE_ROOT,null},${__home_path__:}/.hyfi}}
+global_data_root: ${oc.select:..global_data_root,${alt:${oc.env:HYFI_GLOBAL_DATA_ROOT,null},${.global_workspace_root}/data}}
+global_archive: ${.global_data_root}/archive
+global_datasets: ${.global_data_root}/datasets
+global_models: ${.global_data_root}/models
+global_modules: ${.global_data_root}/modules
+global_library: ${.global_data_root}/libs
+global_logs: ${.global_data_root}/logs
+global_cache: ${.global_workspace_root}/.cache
+global_tmp: ${.global_workspace_root}/.tmp
+# project specific paths
+project_root: ${oc.select:..project_root,${alt:${oc.env:HYFI_PROJECT_ROOT,null},${get_original_cwd:}}}
+project_data_root: ${oc.select:..project_data_root,${alt:${oc.env:HYFI_PROJECT_DATA_ROOT,null},${.project_root}/workspace}}
+project_archive: ${.project_data_root}/archive
+project_datasets: ${.project_data_root}/datasets
+project_models: ${.project_data_root}/models
+project_modules: ${.project_data_root}/modules
+project_outputs: ${.project_data_root}/outputs
+project_logs: ${.project_data_root}/logs
+project_library: ${.project_data_root}/libs
+project_cache: ${.project_data_root}/.cache
+project_tmp: ${.project_data_root}/.tmp

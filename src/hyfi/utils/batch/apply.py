@@ -57,10 +57,7 @@ class Apply(object):
         vectorize=None,
         description="batch_apply",
     ):
-        if batcher is None:
-            self.batcher = Batcher()
-        else:
-            self.batcher = batcher
+        self.batcher = Batcher() if batcher is None else batcher
         self.function = function
         self.args = [args]
         self.kwargs = [kwargs]

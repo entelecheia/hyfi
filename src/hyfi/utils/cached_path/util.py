@@ -24,7 +24,7 @@ def resource_to_filename(resource: PathOrStr, etag: Optional[str] = None) -> str
     if etag:
         etag_bytes = etag.encode("utf-8")
         etag_hash = sha256(etag_bytes)
-        filename += "." + etag_hash.hexdigest()
+        filename += f".{etag_hash.hexdigest()}"
 
     return filename
 
@@ -41,11 +41,11 @@ def filename_to_url(
     cache_dir = cache_dir if cache_dir else get_cache_dir()
     cache_path = os.path.join(cache_dir, filename)
     if not os.path.exists(cache_path):
-        raise FileNotFoundError("file {} not found".format(cache_path))
+        raise FileNotFoundError(f"file {cache_path} not found")
 
-    meta_path = cache_path + ".json"
+    meta_path = f"{cache_path}.json"
     if not os.path.exists(meta_path):
-        raise FileNotFoundError("file {} not found".format(meta_path))
+        raise FileNotFoundError(f"file {meta_path} not found")
 
     metadata = Meta.from_path(meta_path)
     return metadata.resource, metadata.etag
@@ -68,9 +68,7 @@ def find_latest_cached(
         candidates.append((path, mtime))
     # Sort candidates by modification time, newest first.
     candidates.sort(key=lambda x: x[1], reverse=True)
-    if candidates:
-        return candidates[0][0]
-    return None
+    return candidates[0][0] if candidates else None
 
 
 def check_tarfile(tar_file: tarfile.TarFile):
@@ -131,8 +129,8 @@ def is_url_or_existing_file(url_or_filename: PathOrStr) -> bool:
 
 
 def _lock_file_path(cache_path: Path) -> Path:
-    return cache_path.parent / (cache_path.name + ".lock")
+    return cache_path.parent / f"{cache_path.name}.lock"
 
 
 def _meta_file_path(cache_path: Path) -> Path:
-    return cache_path.parent / (cache_path.name + ".json")
+    return cache_path.parent / f"{cache_path.name}.json"

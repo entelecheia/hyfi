@@ -78,7 +78,7 @@ def _load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
 
 
 def _save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
-    os.makedirs(os.path.dirname(f), exist_ok=True)
+    os.makedirs(os.path.dirname(str(f)), exist_ok=True)
     OmegaConf.save(config, f, resolve=resolve)
 
 
@@ -90,6 +90,7 @@ def _save_json(
     default=None,
     **kwargs,
 ):
+    f = str(f)
     os.makedirs(os.path.dirname(f), exist_ok=True)
     with open(f, "w") as f:
         json.dump(
@@ -103,6 +104,7 @@ def _save_json(
 
 
 def _load_json(f: Union[str, Path, IO[Any]], **kwargs) -> dict:
+    f = str(f)
     with open(f, "r") as f:
         return json.load(f, **kwargs)
 
@@ -171,7 +173,7 @@ def _run(config: Any, **kwargs: Any) -> Any:
 
 
 def _partial(
-    config: Any = None, config_group: str = None, *args: Any, **kwargs: Any
+    config: Any = None, config_group: Union[str, None] = None, *args: Any, **kwargs: Any
 ) -> Any:
     if config is None and config_group is None:
         logger.warning("No config specified")
@@ -302,10 +304,7 @@ def _function(cfg: Any, _name_, return_function=False, **parms):
         _parms = {**_parms, **parms}
     else:
         _parms = parms
-    if SpecialKeys.EXEC in _parms:
-        _exec_ = _parms.pop(SpecialKeys.EXEC)
-    else:
-        _exec_ = True
+    _exec_ = _parms.pop(SpecialKeys.EXEC) if SpecialKeys.EXEC in _parms else True
     if _exec_:
         if callable(fn):
             if return_function:
@@ -339,7 +338,7 @@ OmegaConf.register_new_resolver("__home_path__", __home_path__)
 OmegaConf.register_new_resolver("today", today)
 OmegaConf.register_new_resolver("to_datetime", strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
-OmegaConf.register_new_resolver("alt", lambda val, alt: val if val else alt)
+OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
 OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
 OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
 OmegaConf.register_new_resolver("get_original_cwd", getcwd)
@@ -392,11 +391,7 @@ def _ensure_kwargs(_kwargs, _fn):
     from inspect import getfullargspec as getargspec
 
     if callable(_fn):
-        kwargs = {}
         args = getargspec(_fn).args
         logger.info(f"args of {_fn}: {args}")
-        for k, v in _kwargs.items():
-            if k in args:
-                kwargs[k] = v
-        return kwargs
+        return {k: v for k, v in _kwargs.items() if k in args}
     return _kwargs

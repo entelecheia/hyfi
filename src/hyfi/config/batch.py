@@ -14,9 +14,8 @@ logger = getLogger(__name__)
 
 class PathConfig(BaseModel):
     task_name: str = "default-task"
-    root: str = None
-    batch_name: str = None
-    verbose: bool = False
+    task_root: str = ""
+    batch_name: str = ""
 
     class Config:
         extra = "ignore"
@@ -32,7 +31,7 @@ class PathConfig(BaseModel):
     @property
     def root_dir(self):
         # return as an absolute path
-        return Path(self.root).absolute()
+        return Path(self.task_root).absolute()
 
     @property
     def output_dir(self):
@@ -99,10 +98,7 @@ class BaseBatchConfig(BaseModel):
     def init_batch_num(self):
         if self.batch_num is None:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
-            if self.resume_latest:
-                self.batch_num = num_files - 1
-            else:
-                self.batch_num = num_files
+            self.batch_num = num_files - 1 if self.resume_latest else num_files
         if self.verbose:
             logger.info(
                 f"Init batch - Batch name: {self.batch_name}, Batch num: {self.batch_num}"
@@ -120,10 +116,7 @@ class BaseBatchConfig(BaseModel):
 
     @validator("output_extention")
     def _validate_output_extention(cls, v):
-        if v:
-            return v.strip(".")
-        else:
-            return ""
+        return v.strip(".") if v else ""
 
     @property
     def batch_dir(self):
@@ -281,7 +274,7 @@ class BaseConfigModel(BaseModel):
 
     @property
     def cache_dir(self):
-        cache_dir = Path(self.project.path.cache)
+        cache_dir = Path(self.project.path.global_cache)
         if cache_dir is None:
             cache_dir = self.output_dir / ".cache"
             cache_dir.mkdir(parents=True, exist_ok=True)
@@ -431,11 +424,9 @@ class BaseBatchModel(BaseConfigModel):
             exclude = self.__config__.exclude
 
         if include:
-            args = {}
             if isinstance(include, str):
                 include = [include]
-            for key in include:
-                args[key] = cfg[key]
+            args = {key: cfg[key] for key in include}
         else:
             args = cfg
             if exclude:
@@ -449,9 +440,7 @@ class BaseBatchModel(BaseConfigModel):
 
     def save_settings(self, exclude=None, exclude_none=True):
         def dumper(obj):
-            if isinstance(obj, DictConfig):
-                return _to_dict(obj)
-            return str(obj)
+            return _to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
 
         if exclude is None:
             exclude = self.__config__.exclude

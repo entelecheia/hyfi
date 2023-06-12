@@ -8,25 +8,25 @@ logger = getLogger(__name__)
 
 
 def mount_google_drive(
-    workspace: str = None,
-    project: str = None,
+    project_root: str = "",
+    project_name: str = "",
     mountpoint: str = "/content/drive",
     force_remount: bool = False,
     timeout_ms: int = 120000,
 ) -> None:
     """Mount Google Drive to Colab."""
     try:
-        from google.colab import drive
+        from google.colab import drive  # type: ignore
 
         drive.mount(mountpoint, force_remount=force_remount, timeout_ms=timeout_ms)
 
-        if isinstance(workspace, str):
-            if not workspace.startswith(os.path.sep) and not workspace.startswith(".."):
-                workspace = os.path.join(mountpoint, workspace)
-            set_osenv("HYFI_WORKSPACE_ROOT", workspace)
-            logger.info(f"Setting HYFI_WORKSPACE_ROOT to {workspace}")
-        if isinstance(project, str):
-            set_osenv("HYFI_PROJECT_NAME", project)
-            logger.info(f"Setting HYFI_PROJECT_NAME to {project}")
+        if project_root:
+            if not project_root.startswith(os.path.sep) and not project_root.startswith(".."):
+                project_root = os.path.join(mountpoint, project_root)
+            set_osenv("HYFI_PROJECT_ROOT", project_root)
+            logger.info(f"Setting HYFI_PROJECT_ROOT to {project_root}")
+        if project_name:
+            set_osenv("HYFI_PROJECT_NAME", project_name)
+            logger.info(f"Setting HYFI_PROJECT_NAME to {project_name}")
     except ImportError:
         logger.warning("Google Colab not detected.")

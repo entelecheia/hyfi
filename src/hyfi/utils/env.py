@@ -1,9 +1,9 @@
 """Environment variable utilities"""
 import os
-from pathlib import Path
-from typing import Any, Union
-from string import Template
 from collections import defaultdict
+from pathlib import Path
+from string import Template
+from typing import Any, Union
 
 import dotenv
 import hydra

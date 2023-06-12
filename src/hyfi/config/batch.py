@@ -14,9 +14,8 @@ logger = getLogger(__name__)
 
 class PathConfig(BaseModel):
     task_name: str = "default-task"
-    root: str = None
-    batch_name: str = None
-    verbose: bool = False
+    task_root: str = ""
+    batch_name: str = ""
 
     class Config:
         extra = "ignore"
@@ -32,7 +31,7 @@ class PathConfig(BaseModel):
     @property
     def root_dir(self):
         # return as an absolute path
-        return Path(self.root).absolute()
+        return Path(self.task_root).absolute()
 
     @property
     def output_dir(self):
@@ -275,7 +274,7 @@ class BaseConfigModel(BaseModel):
 
     @property
     def cache_dir(self):
-        cache_dir = Path(self.project.path.cache)
+        cache_dir = Path(self.project.path.global_cache)
         if cache_dir is None:
             cache_dir = self.output_dir / ".cache"
             cache_dir.mkdir(parents=True, exist_ok=True)

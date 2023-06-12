@@ -1,7 +1,10 @@
-# Tests
-tmp/
-.hypothesis/
+# VSCode
 .vscode/
+
+# Tests
+.hypothesis/
+tmp/
+workspace/
 
 #MKDOCS
 site/

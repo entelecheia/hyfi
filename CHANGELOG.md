@@ -1,5 +1,21 @@
 <!--next-version-placeholder-->
 
+## v0.5.0 (2023-06-12)
+
+### Feature
+
+* **tests:** Add test for PathConfig class in hyfi.env module ([`ca87ba4`](https://github.com/entelecheia/hyfi/commit/ca87ba43d9b82e8094e30f5a9379cd0d141cc183))
+* **reference:** Add hyfi.main documentation ([`4dee766`](https://github.com/entelecheia/hyfi/commit/4dee766e9bd79d98ddd204a60d7c85e4abe92637))
+* **utils:** Add method to expand POSIX variables ([`36c80c2`](https://github.com/entelecheia/hyfi/commit/36c80c2643b373311619fe60695384886df6b4e0))
+* **docs:** Add usage documentation ([`968430e`](https://github.com/entelecheia/hyfi/commit/968430e1c302c08f75de7deec725da1ada841a88))
+* **utils:** Add unittest for expand_posix_vars function ([`d960a8f`](https://github.com/entelecheia/hyfi/commit/d960a8f84c650ca0a701dc7464306031c8d70309))
+* **env:** Add ability to retrieve the value of an environment variable ([`a9b78f7`](https://github.com/entelecheia/hyfi/commit/a9b78f7c6a0dc35d8dfd299c16de2d87f34e78e4))
+
+### Fix
+
+* **dependencies:** Add ipywidgets to ipython extra ([`7d1f955`](https://github.com/entelecheia/hyfi/commit/7d1f955ab942b22491ad49e9d530313051aca6ae))
+* Apply the latest template ([`51b6824`](https://github.com/entelecheia/hyfi/commit/51b68243b23f612c9fb4a49c4298358793763d82))
+
 ## v0.4.0 (2023-05-06)
 ### Feature
 * **env:** Add OPENAI_API_KEY to dotenv ([`a4238db`](https://github.com/entelecheia/hyfi/commit/a4238db21d1330e92d6da968f12770776c51dd4c))

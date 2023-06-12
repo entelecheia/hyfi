@@ -59,7 +59,7 @@ def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ig
     return Template(posix_expr).substitute(env)
 
 
-def dotenv_values(dotenv_path: str = None, **kwargs):
+def dotenv_values(dotenv_path: str = "", **kwargs):
     """
     Load dotenv file and return a dict of key / value pairs. This is a wrapper around : py : func : ` dotenv. dotenv_values `
 
@@ -75,7 +75,7 @@ def dotenv_values(dotenv_path: str = None, **kwargs):
 
 def load_dotenv(
     override: bool = False,
-    dotenv_dir: str = None,
+    dotenv_dir: str = "",
     dotenv_filename: str = ".env",
     verbose: bool = False,
 ) -> None:
@@ -150,3 +150,14 @@ def set_osenv(key: str, value: Any) -> None:
     else:
         logger.info("Setting %s=%s", key, value)
     os.environ[key] = value
+
+
+def _check_and_set_value(key: str, value: Any) -> Any:
+    """Check and set value to environment variable"""
+    env_key = key.upper()
+    if value is not None:
+        old_value = os.getenv(env_key, "")
+        if str(old_value).lower() != str(value).lower():
+            os.environ[env_key] = str(value)
+            logger.debug("Set environment variable %s=%s", env_key, str(value))
+    return value

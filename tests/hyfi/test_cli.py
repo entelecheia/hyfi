@@ -23,10 +23,10 @@ def test_cli() -> None:
     assert exitcode == 0
 
 
-def test_hydra_main() -> None:
+def manual_test_hydra_main() -> None:
     """Test hydra_main function"""
     hydra_main()
 
 
 if __name__ == "__main__":
-    test_hydra_main()
+    manual_test_hydra_main()

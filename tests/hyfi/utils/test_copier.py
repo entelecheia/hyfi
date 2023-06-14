@@ -7,6 +7,17 @@ import pytest
 from hyfi.utils.copier import Copier
 
 
+def process_yaml_files(src_path, dst_path) -> bool:
+    for root, _, files in os.walk(src_path):
+        for filename in files:
+            if filename.endswith(".yaml"):
+                src_file = Path(root, filename)
+                dst_file = dst_path / src_file.relative_to(src_path)
+                if not dst_file.exists():
+                    return False
+    return True
+
+
 def test_files_are_copied(tmp_path):
     # source path is under src/hyfi/conf
     src_path = Path("src/hyfi/conf")
@@ -16,12 +27,7 @@ def test_files_are_copied(tmp_path):
     with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
         worker.run_copy()
 
-    for root, _, files in os.walk(src_path):
-        for filename in files:
-            if filename.endswith(".yaml"):
-                src_file = Path(root, filename)
-                dst_file = dst_path / src_file.relative_to(src_path)
-                assert dst_file.exists()
+    assert process_yaml_files(src_path, dst_path)
 
 
 def test_cleanup_on_error(tmp_path):
@@ -32,7 +38,7 @@ def test_cleanup_on_error(tmp_path):
     with pytest.raises(Exception):
         with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
             worker.run_copy()
-            raise Exception("Simulated error")
+            raise RuntimeError("Simulated error")
 
     assert not dst_path.exists()
 
@@ -46,7 +52,7 @@ def test_no_cleanup_on_error_if_dst_existed(tmp_path):
     with pytest.raises(Exception):
         with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
             worker.run_copy()
-            raise Exception("Simulated error")
+            raise RuntimeError("Simulated error")
 
     assert dst_path.exists()
     shutil.rmtree(dst_path)

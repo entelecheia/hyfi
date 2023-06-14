@@ -117,10 +117,10 @@ def cached_gdown(
         url = url[len(gd_prefix) :]
         _url = url.split(":")
         if len(_url) == 2:
-            id, path = _url
+            id_, path = _url
         else:
-            id = _url[0]
-            path = id
+            id_ = _url[0]
+            path = id_
 
         # If we're using the path!c/d/file.txt syntax, handle it here.
         fname = None
@@ -130,11 +130,11 @@ def cached_gdown(
             extraction_path = path[:exclamation_index]
             fname = path[exclamation_index + 1 :]
 
-        cache_path = cache_dir / f".{id}" / extraction_path
+        cache_path = cache_dir / f".{id_}" / extraction_path
         cache_path.parent.mkdir(parents=True, exist_ok=True)
 
         cache_path = gdown.cached_download(
-            id=id,
+            id=id_,
             path=cache_path.as_posix(),
             quiet=not verbose,
         )
@@ -197,21 +197,18 @@ def extractall(path, to=None, force_extract=False):
 
     extraction_name = Path(path).stem
     extraction_path = f"{to}/{extraction_name}"
-    if extraction_path is not None:
-        # If the extracted directory already exists (and is non-empty), then no
-        # need to extract again unless `force_extract=True`.
-        if (
-            os.path.isdir(extraction_path)
-            and os.listdir(extraction_path)
-            and not force_extract
-        ):
-            files = [
-                os.path.join(dirpath, filename)
-                for dirpath, _, filenames in os.walk(extraction_path)
-                for filename in filenames
-            ]
+    if extraction_path and (
+        os.path.isdir(extraction_path)
+        and os.listdir(extraction_path)
+        and not force_extract
+    ):
+        files = [
+            os.path.join(dirpath, filename)
+            for dirpath, _, filenames in os.walk(extraction_path)
+            for filename in filenames
+        ]
 
-            return to, files
+        return to, files
 
     with opener(path, mode) as f:
         f.extractall(path=to)

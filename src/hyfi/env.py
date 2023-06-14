@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -8,21 +7,19 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 from pydantic import BaseModel, BaseSettings, SecretStr, root_validator, validator
 from pydantic.env_settings import SettingsSourceCallable
 
-from .utils.batch import batcher
-from .utils.env import _check_and_set_value, expand_posix_vars, load_dotenv
-from .utils.logging import getLogger, setLogger
-from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
+from hyfi.utils.batch import batcher
+from hyfi.utils.env import _check_and_set_value, expand_posix_vars, load_dotenv
+from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
 
 logger = getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
 
-DictKeyType = Union[str, bytes, int, Enum, float, bool]
-
 
 def __version__():
     """Returns the version of HyFI"""
-    from ._version import __version__
+    from hyfi._version import __version__
 
     return __version__
 

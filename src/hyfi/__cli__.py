@@ -4,9 +4,9 @@ from typing import Optional
 
 import hydra
 
-from .env import HyfiConfig, __about__, __hydra_version_base__
-from .main import DictConfig, HyFI, _about, getLogger
-from .utils.copier import Copier
+from hyfi.env import HyfiConfig, __about__, __hydra_version_base__
+from hyfi.main import DictConfig, HyFI, _about, getLogger
+from hyfi.utils.copier import Copier
 
 logger = getLogger(__name__)
 

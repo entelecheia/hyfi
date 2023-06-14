@@ -1,71 +1,17 @@
+import contextlib
 import random
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Optional, Union
 
 from omegaconf import DictConfig
 from pydantic import BaseModel, validator
 
-from ..env import ProjectConfig, _to_config, _to_dict, getLogger
-from ..hydra import _compose, _load, _merge, _methods, _print, _save, _save_json
-from ..utils.lib import ensure_import_module
+from hyfi.config.path import PathConfig
+from hyfi.env import ProjectConfig, _to_config, _to_dict, getLogger
+from hyfi.hydra import _compose, _load, _merge, _methods, _print, _save, _save_json
+from hyfi.utils.lib import ensure_import_module
 
 logger = getLogger(__name__)
-
-
-class PathConfig(BaseModel):
-    task_name: str = "default-task"
-    task_root: str = ""
-    batch_name: str = ""
-
-    class Config:
-        extra = "ignore"
-
-    def __init__(self, **data: Any):
-        if not data:
-            data = _compose("path=__batch__")
-            logger.info(
-                "There are no arguments to initilize a config, using default config."
-            )
-        super().__init__(**data)
-
-    @property
-    def root_dir(self):
-        # return as an absolute path
-        return Path(self.task_root).absolute()
-
-    @property
-    def output_dir(self):
-        return self.root_dir / "outputs"
-
-    @property
-    def batch_dir(self):
-        return self.output_dir / self.batch_name
-
-    @property
-    def library_dir(self):
-        return self.root_dir / "libs"
-
-    @property
-    def data_dir(self):
-        return self.root_dir / "data"
-
-    @property
-    def model_dir(self):
-        return self.root_dir / "models"
-
-    @property
-    def cache_dir(self):
-        return self.root_dir / "cache"
-
-    @property
-    def tmp_dir(self):
-        return self.root_dir / "tmp"
-
-    @property
-    def log_dir(self):
-        log_dir = self.root_dir / "logs"
-        log_dir.mkdir(parents=True, exist_ok=True)
-        return log_dir
 
 
 class BaseBatchConfig(BaseModel):
@@ -316,12 +262,10 @@ class BaseConfigModel(BaseModel):
         if isinstance(objects, list):
             for obj in objects:
                 del obj
-        try:
-            from ..utils.gpu import GPUMon
+        with contextlib.suppress(ImportError):
+            from hyfi.utils.gpu import GPUMon
 
             GPUMon.release_gpu_memory()
-        except ImportError:
-            pass
 
 
 class BaseBatchModel(BaseConfigModel):
@@ -394,8 +338,8 @@ class BaseBatchModel(BaseConfigModel):
         return self.batch.batch_dir
 
     @property
-    def data_dir(self):
-        return self.path.data_dir
+    def dataset_dir(self):
+        return self.path.dataset_dir
 
     @property
     def verbose(self):

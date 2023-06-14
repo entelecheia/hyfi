@@ -24,7 +24,11 @@ class ApplyBatch(object):
     # Applies a function to the entire minibatch. Use this for example on Pandas dataframes, to avoid per-row overhead.
     # Function needs to be applicable to the array/list of values!
     # If not, modify/wrap the function to process a list, or use Apply
-    def __init__(self, function, batcher=None, args=[], kwargs={}):
+    def __init__(self, function, batcher=None, args=None, kwargs=None):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         self.batcher = Batcher() if batcher is None else batcher
         self.function = function
         self.args = [args]

@@ -4,5 +4,6 @@
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": false,
   "docify.commentService.sidePanelReviewMode": false,
-  "docify.commentService.docstringFormat": "Google"
+  "docify.commentService.docstringFormat": "Google",
+  "docify.commentService.moreExpressiveComments": false
 }

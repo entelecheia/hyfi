@@ -1,10 +1,11 @@
+project_data_root: ${oc.select:..project.project_data_root,${oc.env:HYFI_PROJECT_DATA_ROOT,.}}
 task_name: ${oc.select:..project.task_name, default-task}
-task_root: ${oc.select:..project.project_data_root,${oc.env:HYFI_PROJECT_DATA_ROOT,.}}/${.task_name}
+task_root: ${.project_data_root}/${.task_name}
 
-output_dir: ${.task_root}/outputs
-data_dir: ${.task_root}/data
-library_dir: ${.task_root}/libs
-model_dir: ${.task_root}/models
-cache_dir: ${oc.select:..project.path.project_cache,${.task_root}/cache}
-tmp_dir: ${oc.select:..project.path.project_tmp,${.task_root}/tmp}
-log_dir: ${oc.select:..project.path.project_logs,${.task_root}/logs}
+task_outputs: ${.task_root}/outputs
+task_datasets: ${.task_root}/datasets
+task_library: ${.task_root}/libs
+task_models: ${.task_root}/models
+task_cache: ${oc.select:..project.path.project_cache,${.task_root}/cache}
+task_tmp: ${oc.select:..project.path.project_tmp,${.task_root}/tmp}
+task_log: ${oc.select:..project.path.project_logs,${.task_root}/logs}

@@ -23,10 +23,26 @@ def test_cli() -> None:
     assert exitcode == 0
 
 
+def test_cli_copy_conf() -> None:
+    """Test cli command copy_conf"""
+    command = [
+        "poetry",
+        "run",
+        "hyfi",
+        "cmd=copy_conf",
+        "copier.dst_path=tmp/hyfi_test/conf",
+        "copier.exclude='**/*/about/__init__.yaml'",
+        "copier.overwrite=True",
+    ]
+    out, err, exitcode = capture(command)
+    assert exitcode == 0
+
+
 def manual_test_hydra_main() -> None:
     """Test hydra_main function"""
     hydra_main()
 
 
 if __name__ == "__main__":
+    test_cli_copy_conf()
     manual_test_hydra_main()

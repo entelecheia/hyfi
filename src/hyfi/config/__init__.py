@@ -1,1 +1,1 @@
-from .batch import *
+from .batch import *  # noqa

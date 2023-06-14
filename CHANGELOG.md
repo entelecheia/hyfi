@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v0.5.1 (2023-06-14)
+
+### Fix
+
+* **env:** Fix import statement in __version__ function ([`2c3bf84`](https://github.com/entelecheia/hyfi/commit/2c3bf84423d93024838aa3ea09948431ad35a684))
+* **main:** Fix imports in main.py file ([`cba94f2`](https://github.com/entelecheia/hyfi/commit/cba94f2a91d76fb3d6e65117f5137c8e05308aa0))
+
+### Documentation
+
+* **config:** Add hyfi.config.path documentation ([`f7ea8ce`](https://github.com/entelecheia/hyfi/commit/f7ea8ce42c1e0566b1e295842bb53cd2fa3b0df6))
+
 ## v0.5.0 (2023-06-12)
 
 ### Feature

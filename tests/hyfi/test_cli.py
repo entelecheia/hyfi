@@ -32,6 +32,7 @@ def test_cli_copy_conf() -> None:
         "cmd=copy_conf",
         "copier.dst_path=tmp/hyfi_test/conf",
         "copier.exclude='**/*/about/__init__.yaml'",
+        "copier.overwrite=True",
     ]
     out, err, exitcode = capture(command)
     assert exitcode == 0

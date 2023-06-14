@@ -19,7 +19,7 @@ __hydra_version_base__ = "1.2"
 
 def __version__():
     """Returns the version of HyFI"""
-    from ._version import __version__
+    from hyfi._version import __version__
 
     return __version__
 

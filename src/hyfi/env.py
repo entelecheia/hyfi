@@ -8,10 +8,10 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 from pydantic import BaseModel, BaseSettings, SecretStr, root_validator, validator
 from pydantic.env_settings import SettingsSourceCallable
 
-from .utils.batch import batcher
-from .utils.env import _check_and_set_value, expand_posix_vars, load_dotenv
-from .utils.logging import getLogger, setLogger
-from .utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
+from hyfi.utils.batch import batcher
+from hyfi.utils.env import _check_and_set_value, expand_posix_vars, load_dotenv
+from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.notebook import is_notebook, load_extentions, set_matplotlib_formats
 
 logger = getLogger(__name__)
 

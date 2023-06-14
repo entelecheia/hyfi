@@ -3,8 +3,8 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, SCMode
 
-from .env import DotEnvConfig, ProjectConfig, __global_config__, _to_config
-from .hydra import (
+from hyfi.env import DotEnvConfig, ProjectConfig, __global_config__, _to_config
+from hyfi.hydra import (
     DictKeyType,
     SpecialKeys,
     __home_path__,
@@ -34,10 +34,10 @@ from .hydra import (
     _update,
     _viewsource,
 )
-from .io.cached_path import cached_path
-from .io.file import exists, is_dir, is_file, join_path, mkdir
-from .utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
-from .utils.func import (
+from hyfi.io.cached_path import cached_path
+from hyfi.io.file import exists, is_dir, is_file, join_path, mkdir
+from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
+from hyfi.utils.func import (
     dict_product,
     dict_to_dataframe,
     records_to_dataframe,
@@ -45,10 +45,10 @@ from .utils.func import (
     to_datetime,
     to_numeric,
 )
-from .utils.google import mount_google_drive
-from .utils.gpu import nvidia_smi, set_cuda
-from .utils.logging import getLogger, setLogger
-from .utils.notebook import (
+from hyfi.utils.google import mount_google_drive
+from hyfi.utils.gpu import nvidia_smi, set_cuda
+from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.notebook import (
     clear_output,
     cprint,
     create_button,
@@ -64,7 +64,7 @@ from .utils.notebook import (
     is_colab,
     is_notebook,
 )
-from .utils.pipe import _apply, _pipe
+from hyfi.utils.pipe import _apply, _pipe
 
 logger = getLogger(__name__)
 
@@ -344,35 +344,8 @@ class HyFI:
         For URLs, the following schemes are all supported out-of-the-box:
 
         * ``http`` and ``https``,
-        * ``s3`` for objects on `AWS S3`_,
-        * ``gs`` for objects on `Google Cloud Storage (GCS)`_, and
         * ``gd`` for objects on `Google Drive`_, and
         * ``hf`` for objects or repositories on `HuggingFace Hub`_.
-
-        Examples
-        --------
-
-        To download a file over ``https``::
-
-            cached_path("https://github.com/allenai/cached_path/blob/main/README.md")
-
-        To download an object on GCS::
-
-            cached_path("gs://allennlp-public-models/lerc-2020-11-18.tar.gz")
-
-        To download the PyTorch weights for the model `epwalsh/bert-xsmall-dummy`_
-        on HuggingFace, you could do::
-
-            cached_path("hf://epwalsh/bert-xsmall-dummy/pytorch_model.bin")
-
-        For paths or URLs that point to a tarfile or zipfile, you can append the path
-        to a specific file within the archive to the ``url_or_filename``, preceeded by a "!".
-        The archive will be automatically extracted (provided you set ``extract_archive`` to ``True``),
-        returning the local path to the specific file. For example::
-
-            cached_path("model.tar.gz!weights.th", extract_archive=True)
-
-        .. _epwalsh/bert-xsmall-dummy: https://huggingface.co/epwalsh/bert-xsmall-dummy
 
         Parameters
         ----------
@@ -495,7 +468,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from .io.file import save_data
+        from hyfi.io.file import save_data
 
         if filename is None:
             raise ValueError("filename must be specified")
@@ -513,7 +486,7 @@ class HyFI:
 
     @staticmethod
     def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        from .io.file import load_data
+        from hyfi.io.file import load_data
 
         if filename is not None:
             filename = str(filename)
@@ -539,7 +512,7 @@ class HyFI:
     def get_filepaths(
         filename_patterns=None, base_dir=None, recursive=True, verbose=True, **kwargs
     ):
-        from .io.file import get_filepaths
+        from hyfi.io.file import get_filepaths
 
         if filename_patterns is None:
             raise ValueError("filename must be specified")
@@ -561,7 +534,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from .io.file import concat_data
+        from hyfi.io.file import concat_data
 
         return concat_data(
             data,
@@ -575,7 +548,7 @@ class HyFI:
 
     @staticmethod
     def is_dataframe(data):
-        from .io.file import is_dataframe
+        from hyfi.io.file import is_dataframe
 
         return is_dataframe(data)
 
@@ -601,7 +574,7 @@ class HyFI:
 
     @staticmethod
     def ensure_import_module(name, libpath, liburi, specname=None, syspath=None):
-        from .utils.lib import ensure_import_module
+        from hyfi.utils.lib import ensure_import_module
 
         return ensure_import_module(name, libpath, liburi, specname, syspath)
 
@@ -622,7 +595,7 @@ class HyFI:
         fontcolor="#000",
         **kwargs,
     ):
-        from .image.collage import collage as _collage
+        from hyfi.image.collage import collage as _collage
 
         return _collage(
             images_or_uris,
@@ -656,7 +629,7 @@ class HyFI:
         force=False,
         **kwargs,
     ):
-        from .image.motion import make_gif as _make_gif
+        from hyfi.image.motion import make_gif as _make_gif
 
         return _make_gif(
             image_filepaths=image_filepaths,
@@ -782,7 +755,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from .utils.lib import pip as _pip
+        from hyfi.utils.lib import pip as _pip
 
         return _pip(
             name,
@@ -799,7 +772,7 @@ class HyFI:
 
     @staticmethod
     def upgrade(prelease=False, quiet=False, force_reinstall=False, **kwargs):
-        from .utils.lib import pip
+        from hyfi.utils.lib import pip
 
         return pip(
             name="hyfi",
@@ -948,13 +921,13 @@ class HyFI:
 
     @staticmethod
     def get_image_font(fontname=None, fontsize=12):
-        from .image.collage import get_image_font
+        from hyfi.image.collage import get_image_font
 
         return get_image_font(fontname, fontsize)
 
     @staticmethod
     def read(uri, mode="rb", encoding=None, head=None, **kwargs):
-        from .io.file import read as _read
+        from hyfi.io.file import read as _read
 
         return _read(uri, mode, encoding, head, **kwargs)
 
@@ -970,7 +943,7 @@ class HyFI:
         mode="RGB",
         **kwargs,
     ):
-        from .image.utils import load_image as _load_image
+        from hyfi.image.utils import load_image as _load_image
 
         return _load_image(
             image_or_uri,
@@ -1032,7 +1005,7 @@ class HyFI:
         resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
                     Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
         """
-        from .image.utils import scale_image as _scale_image
+        from hyfi.image.utils import scale_image as _scale_image
 
         return _scale_image(
             image,

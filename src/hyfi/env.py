@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -16,8 +15,6 @@ from hyfi.utils.notebook import is_notebook, load_extentions, set_matplotlib_for
 logger = getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
-
-DictKeyType = Union[str, bytes, int, Enum, float, bool]
 
 
 def __version__():

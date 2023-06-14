@@ -1019,6 +1019,15 @@ class HyFI:
 
     @staticmethod
     def copy(src, dst, *, follow_symlinks=True):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copy.
+        If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
+
+        Args:
+                src: Path to the file or directory to be copied.
+                dst: Path to the destination directory. If the destination directory does not exist it will be created.
+                follow_symlinks: Whether or not symlinks should be followed
+        """
         import shutil
 
         src = str(src)
@@ -1029,6 +1038,15 @@ class HyFI:
 
     @staticmethod
     def copyfile(src, dst, *, follow_symlinks=True):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copyfile.
+        If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
+
+        Args:
+                src: Path to the file or directory to copy.
+                dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
+                follow_symlinks: Whether to follow symbolic links or not
+        """
         import shutil
 
         src = str(src)
@@ -1038,6 +1056,17 @@ class HyFI:
 
     @staticmethod
     def gpu_usage(all=False, attrList=None, useOldCode=False):
+        """
+        Show GPU utilization in human readable format. This is a wrapper around the GPUtil library.
+
+        Args:
+                all: If True show all available GPUs ( default : False )
+                attrList: List of attributes to show ( default : None )
+                useOldCode: If True use old code instead of new code ( default : False )
+
+        Returns:
+                A string with the
+        """
         try:
             from GPUtil import showUtilization  # type: ignore
         except ImportError:

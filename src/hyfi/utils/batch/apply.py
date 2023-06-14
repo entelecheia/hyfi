@@ -51,12 +51,16 @@ class Apply(object):
         self,
         function,
         batcher=None,
-        args=[],
-        kwargs={},
+        args=None,
+        kwargs=None,
         cache=None,
         vectorize=None,
         description="batch_apply",
     ):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         self.batcher = Batcher() if batcher is None else batcher
         self.function = function
         self.args = [args]

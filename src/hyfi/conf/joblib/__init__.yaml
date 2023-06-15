@@ -1,4 +1,3 @@
-# @package _group_
 distributed_framework:
   backend: joblib
   initialize: true

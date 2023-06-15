@@ -1,4 +1,3 @@
-# @package _group_
 # Source path where to find the template.
 src_path: conf
 # Destination path where to render the template.

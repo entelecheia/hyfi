@@ -1,4 +1,3 @@
-# @package _group_
 batch_name: ${oc.select:..name,demo-batch}
 batch_num:
 output_dir: ${oc.select:..path.output_dir,null}

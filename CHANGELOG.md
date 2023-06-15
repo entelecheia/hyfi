@@ -1,5 +1,24 @@
 <!--next-version-placeholder-->
 
+## v0.6.0 (2023-06-15)
+
+### Feature
+
+* **docs:** Add mkdocs-click extension ([`d1220ab`](https://github.com/entelecheia/hyfi/commit/d1220ab5b17ee035b89cdf9f3bdb5dde5e5f8eb7))
+* **hyfi:** Refactor copy command to use Copier class ([`484835c`](https://github.com/entelecheia/hyfi/commit/484835ceec4b7b4a9d12c98230fb2fe1b2affe43))
+* **cli:** Add command line interface (CLI) with 3 commands: cc, about, and sc ([`303cc7b`](https://github.com/entelecheia/hyfi/commit/303cc7b02dc9b790923b9ec235ac274b1af347dc))
+
+### Fix
+
+* **utils:** Fix import statements and update path for source directory in Copier class ([`946976a`](https://github.com/entelecheia/hyfi/commit/946976acdd570394eeec63b65fda190b73e0eeab))
+* **env:** Fix compose, init functions for configs ([`f1e2d5a`](https://github.com/entelecheia/hyfi/commit/f1e2d5a1e9fb0b98db1155e3d48f5e03980d00d7))
+* **config:** Add support for setting project description in init_workspace method ([`c32b171`](https://github.com/entelecheia/hyfi/commit/c32b1717a3b85897c6783e292c3537bdd805284e))
+
+### Documentation
+
+* **cli:** Add click.md for CLI documentation ([`2f205ca`](https://github.com/entelecheia/hyfi/commit/2f205ca41b1431ba8d3d8c35071c36920c4773b5))
+* **cli:** Update documentation to clarify use of hydra package. ([`8b22ce4`](https://github.com/entelecheia/hyfi/commit/8b22ce447909b3c7b5bb721f711c280a114253eb))
+
 ## v0.5.1 (2023-06-14)
 
 ### Fix

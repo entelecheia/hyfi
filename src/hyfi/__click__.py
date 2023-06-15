@@ -4,7 +4,10 @@ import click
 
 from hyfi._version import __version__
 from hyfi.env import HyfiConfig
-from hyfi.main import _about, getLogger
+from hyfi.hydra import __hyfi_path__
+from hyfi.main import _about
+from hyfi.utils.copier import Copier
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -16,19 +19,25 @@ def cli():
 
 
 @cli.command()
-@click.option("--src_path", default="conf", help="Source path to copy from")
-@click.option("--dst_path", default=".", help="Destination path to copy to")
+@click.option(
+    "--src_path", default=f"{__hyfi_path__()}/conf", help="Source path to copy from"
+)
+@click.option(
+    "--dst_path", show_default=True, default="conf", help="Destination path to copy to"
+)
 @click.option("--exclude", default=None, help="Exclude files matching this pattern")
 @click.option("--skip_if_exists", default=False, help="Skip if destination exists")
 @click.option("--overwrite", default=False, help="Overwrite destination")
 @click.option("--dry_run", default=False, help="Dry run")
-@click.option("--verbose", default=False, help="Verbose output")
+@click.option("--verbose", is_flag=True, default=False, help="Verbose output")
 def cc(**args):
     """
     Copy all config files to the destination directory.
     """
     click.echo("Copying configuration files")
-    click.echo(f"args : {args}")
+    # click.echo(f"args : {args}")
+    with Copier(**args) as worker:
+        worker.run_copy()
 
 
 @cli.command()

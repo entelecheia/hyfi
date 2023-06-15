@@ -1,11 +1,10 @@
 """Command line interface for HyFI"""
-import os
 
 import click
 
 from hyfi._version import __version__
-from hyfi.env import HyfiConfig, __about__, __hydra_version_base__
-from hyfi.main import HyFI, _about, getLogger
+from hyfi.env import HyfiConfig
+from hyfi.main import _about, getLogger
 
 logger = getLogger(__name__)
 

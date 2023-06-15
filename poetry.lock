@@ -3074,4 +3074,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1, <3.12"
-content-hash = "d022b40e550e2634c8bf8edeaae0fa1b700b39b09b036d25bc85034ca12e2399"
+content-hash = "3a11989d39216887ec722596b7110c933dfa3bdff781fb113203d1fef4419f94"

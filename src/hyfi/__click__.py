@@ -1,5 +1,6 @@
 """Command line interface for HyFI"""
 import os
+
 import click
 
 from hyfi._version import __version__

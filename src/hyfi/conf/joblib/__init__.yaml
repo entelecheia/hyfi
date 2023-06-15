@@ -1,9 +1,10 @@
+num_workers: ${oc.select:..num_workers,1}
 distributed_framework:
   backend: joblib
   initialize: true
-  num_workers: ${oc.select:num_workers,1}
+  num_workers: ${..num_workers}
 batcher:
-  procs: ${oc.select:..distributed_framework.num_workers,1}
+  procs: ${..num_workers}
   minibatch_size: 1_000
   backend: ${..distributed_framework.backend}
   task_num_cpus: 1

@@ -31,8 +31,8 @@ from typing import List
 from pathspec import PathSpec
 from pydantic.dataclasses import dataclass
 
-from ..hydra import getcwd
-from .tools import Style, printf
+from hyfi.utils.env import getcwd
+from hyfi.utils.tools import Style, printf
 
 
 @dataclass()
@@ -75,7 +75,7 @@ class Copier:
             When `True`, show all output.
     """
 
-    src_path: Path = field(default=Path("config"))
+    src_path: Path = field(default=Path("conf"))
     dst_path: Path = field(default=Path("."))
     filetypes: List = field(default_factory=list)
     exclude: List = field(default_factory=list)
@@ -129,6 +129,13 @@ class Copier:
         Walk through the source directory, compare YAML files with the destination
         directory, and copy files based on the specified settings.
         """
+        if not Path(self.src_path).is_dir():
+            printf(
+                "ERROR",
+                f"Source path {self.src_path} does not exist.",
+                style=Style.DANGER,
+            )
+            return
         for root, _, files in os.walk(self.src_path):
             for filename in files:
                 if not any(filename.endswith(filetype) for filetype in self.filetypes):

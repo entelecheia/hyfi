@@ -6,10 +6,11 @@ defaults:
 project_name: ${alt:${oc.env:HYFI_PROJECT_NAME,null},hyfi-project}
 task_name: ${alt:${oc.env:HYFI_TASK_NAME,null},default-task}
 project_description: ${oc.env:HYFI_PROJECT_DESC,""}
-project_root: ${alt:${oc.env:HYFI_PROJECT_ROOT,null},${get_original_cwd:}}
-project_data_root: ${alt:${oc.env:HYFI_PROJECT_DATA_ROOT,null},${.project_root}/workspace}
-global_workspace_root: ${alt:${oc.env:HYFI_GLOBAL_WORKSPACE_ROOT,null},${__home_path__:}/.hyfi}
-global_data_root: ${alt:${oc.env:HYFI_GLOBAL_DATA_ROOT,null},${.global_workspace_root}/data}
+project_root: ${alt:${oc.env:HYFI_PROJECT_ROOT,null},${.global_hyfi_root}/${.global_workspace_name}/projects/${.project_name}}
+project_workspace_name: ${alt:${oc.env:HYFI_PROJECT_WORKSPACE_NAME,null},${.global_workspace_name}}
+global_hyfi_root: ${alt:${oc.env:HYFI_GLOBAL_ROOT,null},${__home_path__:}/.hyfi}
+global_workspace_name: ${alt:${oc.env:HYFI_GLOBAL_WORKSPACE_NAME,null},workspace}
+num_workers: ${oc.env:HYFI_NUM_WORKERS,1}
 use_huggingface_hub: false
 use_wandb: false
-verbose: false
+verbose: ${alt:${oc.env:HYFI_VERBOSE,null},false}

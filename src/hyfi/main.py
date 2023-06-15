@@ -145,24 +145,44 @@ class HyFI:
     def compose(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
         *,
-        return_as_dict: bool = False,
+        return_as_dict: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
+        global_package: bool = False,
         verbose: bool = False,
     ) -> Union[DictConfig, Dict]:
-        if overrides is None:
-            overrides = []
+        """
+        Compose a configuration by applying overrides
+
+        Args:
+            config_group: Name of the config group to compose (`config_group=name`)
+            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
+            return_as_dict: Return the result as a dict
+            throw_on_resolution_failure: If True throw an exception if resolution fails
+            throw_on_missing: If True throw an exception if config_group doesn't exist
+            config_name: Name of the root config to be used (e.g. `hconf`)
+            config_module: Module of the config to be used (e.g. `hyfi.conf`)
+            global_package: If True, the config assumed to be a global package
+            verbose: If True print configuration to stdout
+
+        Returns:
+            A config object or a dictionary with the composed config
+        """
         return _compose(
             config_group=config_group,
             overrides=overrides,
+            config_data=config_data,
             return_as_dict=return_as_dict,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             config_name=config_name,
             config_module=config_module,
+            global_package=global_package,
             verbose=verbose,
         )
 
@@ -961,10 +981,12 @@ class HyFI:
     def init_workspace(
         project_name: str = "",
         task_name: str = "",
+        project_description: str = "",
         project_root: str = "",
-        project_data_root: str = "",
-        global_workspace_root: str = "",
-        global_data_root: str = "",
+        project_workspace_name: str = "",
+        global_hyfi_root: str = "",
+        global_workspace_name: str = "",
+        num_workers: int = -1,
         log_level: str = "",
         autotime: bool = True,
         retina: bool = True,
@@ -974,10 +996,12 @@ class HyFI:
         __global_config__.init_workspace(
             project_name=project_name,
             task_name=task_name,
+            project_description=project_description,
             project_root=project_root,
-            project_data_root=project_data_root,
-            global_workspace_root=global_workspace_root,
-            global_data_root=global_data_root,
+            project_workspace_name=project_workspace_name,
+            global_hyfi_root=global_hyfi_root,
+            global_workspace_name=global_workspace_name,
+            num_workers=num_workers,
             log_level=log_level,
             autotime=autotime,
             retina=retina,

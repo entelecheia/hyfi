@@ -1,6 +1,6 @@
-project_data_root: ${oc.select:..project.project_data_root,${oc.env:HYFI_PROJECT_DATA_ROOT,.}}
+project_workspace_root: ${oc.select:..project.project_workspace_root,${oc.env:HYFI_PROJECT_ROOT,.}/${oc.env:HYFI_PROJECT_WORKSPACE_NAME,.}}
 task_name: ${oc.select:..project.task_name, default-task}
-task_root: ${.project_data_root}/${.task_name}
+task_root: ${.project_workspace_root}/${.task_name}
 
 task_outputs: ${.task_root}/outputs
 task_datasets: ${.task_root}/datasets

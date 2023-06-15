@@ -12,7 +12,7 @@ logger = getLogger(__name__)
 class PathConfig(BaseModel):
     config_name: str = "__batch__"
 
-    project_data_root = ""
+    project_workspace_root = ""
     batch_name: str = "demo"
     batch_output: str = ""
     task_name: str = "default-task"
@@ -46,16 +46,16 @@ class PathConfig(BaseModel):
         super().__init__(**data)
 
     @property
-    def project_data_dir(self) -> Path:
+    def project_workspace_dir(self) -> Path:
         """
-        Get the path to the project data directory. It is assumed that the user has checked the existence of the project data directory before calling this method.
+        Get the path to the project workspace directory.
 
 
         Returns:
-                absolute path to the project data directory or None if not set by the user ( in which case a default is used )
+                absolute path to the project workspace directory or None if not set by the user ( in which case a default is used )
         """
-        self.project_data_root = self.project_data_root or "./workspace"
-        return Path(self.project_data_root).absolute()
+        self.project_workspace_root = self.project_workspace_root or "./workspace"
+        return Path(self.project_workspace_root).absolute()
 
     @property
     def root_dir(self) -> Path:
@@ -67,7 +67,7 @@ class PathConfig(BaseModel):
                 an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
         self.task_root = (
-            self.task_root or (self.project_data_dir / self.task_name).as_posix()
+            self.task_root or (self.project_workspace_dir / self.task_name).as_posix()
         )
         # return as an absolute path
         return Path(self.task_root).absolute()

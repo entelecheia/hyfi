@@ -115,6 +115,7 @@ class JobLibConfig(BaseModel):
     """JobLib Configuration"""
 
     config_name: str = "__init__"
+    num_workers: int = 1
     distributed_framework: DistFramwork = DistFramwork()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
@@ -128,13 +129,11 @@ class JobLibConfig(BaseModel):
         config_name: str = "__init__",
         **data: Any,
     ):
-        if not data:
-            logger.debug(
-                "There are no arguments to initilize a config, using default config."
-            )
-            data = _compose(
-                f"joblib={config_name}", config_module=__about__.config_module
-            )  # type: ignore
+        data = _compose(
+            f"joblib={config_name}",
+            config_data=data,
+            config_module=__about__.config_module,
+        )  # type: ignore
         super().__init__(config_name=config_name, **data)
 
     def init_backend(
@@ -205,8 +204,9 @@ class PathConfig(BaseModel):
     resources: str = ""
     runtime: str = ""
     # global paths
+    global_hyfi_root: str = ""
+    global_workspace_name: str = "workspace"
     global_workspace_root: str = ""
-    global_data_root: str = ""
     global_archive: str = ""
     global_datasets: str = ""
     global_models: str = ""
@@ -216,7 +216,8 @@ class PathConfig(BaseModel):
     global_tmp: str = ""
     # project specific paths
     project_root: str = ""
-    project_data_root: str = ""
+    project_workspace_name: str = "workspace"
+    project_workspace_root: str = ""
     project_archive: str = ""
     project_datasets: str = ""
     project_models: str = ""
@@ -244,14 +245,11 @@ class PathConfig(BaseModel):
                 data: The data to initialize
         """
         # Initialize the config module.
-        if not data:
-            logger.debug(
-                "There are no arguments to initilize a config, using default config %s",
-                config_name,
-            )
-            data = _compose(
-                f"path={config_name}", config_module=__about__.config_module
-            )  # type: ignore
+        data = _compose(
+            f"path={config_name}",
+            config_data=data,
+            config_module=__about__.config_module,
+        )  # type: ignore
         super().__init__(config_name=config_name, **data)
 
     @property
@@ -289,15 +287,16 @@ class DotEnvConfig(BaseSettings):
     DOTENV_PATH: Optional[str] = ""
     # Internal
     HYFI_RESOURCE_DIR: Optional[str] = ""
-    HYFI_GLOBAL_WORKSPACE_ROOT: Optional[str] = ""
-    HYFI_GLOBAL_DATA_ROOT: Optional[str] = ""
+    HYFI_GLOBAL_ROOT: Optional[str] = ""
+    HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = "workspace"
     HYFI_PROJECT_NAME: Optional[str] = ""
     HYFI_TASK_NAME: Optional[str] = ""
+    HYFI_PROJECT_DESC: Optional[str] = ""
     HYFI_PROJECT_ROOT: Optional[str] = ""
-    HYFI_PROJECT_DATA_ROOT: Optional[str] = ""
+    HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"
     HYFI_LOG_LEVEL: Optional[str] = "WARNING"
     HYFI_VERBOSE: Optional[Union[bool, str, int]] = False
-    NUM_WORKERS: Optional[int] = 1
+    HYFI_NUM_WORKERS: Optional[int] = 1
     CACHED_PATH_CACHE_ROOT: Optional[str] = ""
     # For other packages
     CUDA_DEVICE_ORDER: Optional[str] = "PCI_BUS_ID"
@@ -341,28 +340,6 @@ class DotEnvConfig(BaseSettings):
 
     @root_validator()
     def _check_and_set_values(cls, values):
-        global_workspace_root = values.get("HYFI_GLOBAL_WORKSPACE_ROOT")
-        global_data_root = values.get("HYFI_GLOBAL_DATA_ROOT")
-        if global_workspace_root and not global_data_root:
-            global_data_root = os.path.join(global_workspace_root, "data")
-            values["HYFI_GLOBAL_DATA_ROOT"] = global_data_root
-        project_name = values.get("HYFI_PROJECT_NAME")
-        project_root = values.get("HYFI_PROJECT_ROOT")
-        dotenv_dir = values.get("DOTENV_DIR")
-        if not project_root:
-            if global_workspace_root and project_name:
-                project_root = os.path.join(
-                    global_workspace_root, "projects", project_name
-                )
-                values["HYFI_PROJECT_ROOT"] = project_root
-            elif dotenv_dir and Path(dotenv_dir).is_dir():
-                project_root = dotenv_dir
-                values["HYFI_PROJECT_ROOT"] = project_root
-        project_data_root = values.get("HYFI_PROJECT_DATA_ROOT")
-        if project_root and not project_data_root:
-            project_data_root = os.path.join(project_root, "workspace")
-            values["HYFI_PROJECT_DATA_ROOT"] = project_data_root
-
         for k, v in values.items():
             if v is not None:
                 old_value = os.getenv(k.upper())
@@ -380,9 +357,10 @@ class ProjectConfig(BaseModel):
     task_name: str = ""
     project_description: str = ""
     project_root: str = ""
-    project_data_root: str = ""
-    global_workspace_root: str = ""
-    global_data_root: str = ""
+    project_workspace_name: str = "workspace"
+    global_hyfi_root: str = ""
+    global_workspace_name: str = "workspace"
+    num_workers: int = 1
     use_huggingface_hub: bool = False
     use_wandb: bool = False
     verbose: Union[bool, int] = False
@@ -395,45 +373,34 @@ class ProjectConfig(BaseModel):
         extra = "allow"
         arbitrary_types_allowed = True
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        **data: Any,
-    ):
-        if not data:
-            logger.debug(
-                "There are no arguments to initilize a config, using default config."
-            )
-            data = _compose(
-                f"project={config_name}", config_module=__about__.config_module
-            )  # type: ignore
-        super().__init__(config_name=config_name, **data)
-
     @validator("project_name", allow_reuse=True)
     def _validate_project_name(cls, v):
         if v is None:
             raise ValueError("Project name must be specified.")
         return v
 
-    @property
-    def environ(self):
-        return os.environ
+    @validator("verbose", allow_reuse=True)
+    def _validate_verbose(cls, v):
+        if isinstance(v, str):
+            if v.lower() in {"true", "1"}:
+                v = True
+            elif v.lower() in {"false", "0"}:
+                v = False
+            else:
+                raise ValueError("verbose must be a boolean or a string of 0 or 1")
+        return v
 
-    @property
-    def project_data_dir(self):
-        if self.path is None:
-            raise ValueError("Path object not initialized")
-        _p = Path(self.path.project_data_root)
-        _p.mkdir(parents=True, exist_ok=True)
-        return _p.absolute()
-
-    @property
-    def project_dir(self):
-        if self.path is None:
-            raise ValueError("Path object not initialized")
-        _p = Path(self.path.project_root)
-        _p.mkdir(parents=True, exist_ok=True)
-        return _p.absolute()
+    def __init__(
+        self,
+        config_name: str = "__init__",
+        **data: Any,
+    ):
+        data = _compose(
+            f"project={config_name}",
+            config_data=data,
+            config_module=__about__.config_module,
+        )  # type: ignore
+        super().__init__(config_name=config_name, **data)
 
     def init_project(self):
         self.dotenv = DotEnvConfig()
@@ -442,10 +409,15 @@ class ProjectConfig(BaseModel):
         if self.joblib is None:
             self.joblib = JobLibConfig()
 
-        if self.dotenv.HYFI_VERBOSE is not None:
-            self.verbose = int(self.dotenv.HYFI_VERBOSE)
-        self.dotenv.HYFI_GLOBAL_WORKSPACE_ROOT = str(self.path.global_workspace_root)
-        self.dotenv.HYFI_GLOBAL_DATA_ROOT = str(self.path.global_data_root)
+        self.dotenv.HYFI_PROJECT_NAME = self.project_name
+        self.dotenv.HYFI_TASK_NAME = self.task_name
+        self.dotenv.HYFI_PROJECT_DESC = self.project_description
+        self.dotenv.HYFI_PROJECT_ROOT = self.project_root
+        self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
+        self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
+        self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
+        self.dotenv.HYFI_NUM_WORKERS = self.num_workers
+        self.dotenv.HYFI_VERBOSE = self.verbose
         self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
         self.init_wandb()
         if self.use_huggingface_hub:
@@ -502,6 +474,26 @@ class ProjectConfig(BaseModel):
                     "huggingface_hub.notebook_login() is only available in notebook,"
                     "set HUGGING_FACE_HUB_TOKEN manually"
                 )
+
+    @property
+    def environ(self):
+        return os.environ
+
+    @property
+    def project_workspace_dir(self):
+        if self.path is None:
+            raise ValueError("Path object not initialized")
+        _p = Path(self.path.project_workspace_root)
+        _p.mkdir(parents=True, exist_ok=True)
+        return _p.absolute()
+
+    @property
+    def project_dir(self):
+        if self.path is None:
+            raise ValueError("Path object not initialized")
+        _p = Path(self.path.project_root)
+        _p.mkdir(parents=True, exist_ok=True)
+        return _p.absolute()
 
 
 class HyfiConfig(BaseModel):
@@ -562,10 +554,12 @@ class HyfiConfig(BaseModel):
         self,
         project_name: str = "",
         task_name: str = "",
+        project_description: str = "",
         project_root: str = "",
-        project_data_root: str = "",
-        global_workspace_root: str = "",
-        global_data_root: str = "",
+        project_workspace_name: str = "",
+        global_hyfi_root: str = "",
+        global_workspace_name: str = "",
+        num_workers: int = -1,
         log_level: str = "",
         autotime: bool = True,
         retina: bool = True,
@@ -577,14 +571,18 @@ class HyfiConfig(BaseModel):
             envs.HYFI_PROJECT_NAME = expand_posix_vars(project_name)
         if task_name:
             envs.HYFI_TASK_NAME = expand_posix_vars(task_name)
+        if project_description:
+            envs.HYFI_PROJECT_DESC = expand_posix_vars(project_description)
         if project_root:
             envs.HYFI_PROJECT_ROOT = expand_posix_vars(project_root)
-        if project_data_root:
-            envs.HYFI_PROJECT_DATA_ROOT = expand_posix_vars(project_data_root)
-        if global_workspace_root:
-            envs.HYFI_GLOBAL_WORKSPACE_ROOT = expand_posix_vars(global_workspace_root)
-        if global_data_root:
-            envs.HYFI_GLOBAL_DATA_ROOT = expand_posix_vars(global_data_root)
+        if project_workspace_name:
+            envs.HYFI_PROJECT_WORKSPACE_NAME = expand_posix_vars(project_workspace_name)
+        if global_hyfi_root:
+            envs.HYFI_GLOBAL_ROOT = expand_posix_vars(global_hyfi_root)
+        if global_workspace_name:
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = expand_posix_vars(global_workspace_name)
+        if num_workers:
+            envs.HYFI_NUM_WORKERS = num_workers
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
             setLogger(log_level)
@@ -646,45 +644,64 @@ class Dummy:
 def _compose(
     config_group: Union[str, None] = None,
     overrides: Union[List[str], None] = None,
+    config_data: Union[Dict[str, Any], DictConfig, None] = None,
     *,
-    return_as_dict: bool = False,
+    return_as_dict: bool = True,
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,
     config_name: Union[str, None] = None,
     config_module: Union[str, None] = None,
+    global_package: bool = False,
     verbose: bool = False,
 ) -> Union[DictConfig, Dict]:  # sourcery skip: low-code-quality
     """
-    Compose your configuration from config groups and overrides (overrides=["override_name"])
+    Compose a configuration by applying overrides
 
-    :param overrides: List of overrides to apply
-    :param config_group: Config group name to select ('config_group=name')
-    :param return_as_dict: Return the composed config as a dict
-    :param throw_on_resolution_failure: Throw if resolution fails
-    :param throw_on_missing: Throw if a config is missing
-    :param config_name: Name of the config to compose
-    :param verbose: Print the composed config
+    Args:
+        config_group: Name of the config group to compose (`config_group=name`)
+        overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+        config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
+        return_as_dict: Return the result as a dict
+        throw_on_resolution_failure: If True throw an exception if resolution fails
+        throw_on_missing: If True throw an exception if config_group doesn't exist
+        config_name: Name of the root config to be used (e.g. `hconf`)
+        config_module: Module of the config to be used (e.g. `hyfi.conf`)
+        global_package: If True, the config assumed to be a global package
+        verbose: If True print configuration to stdout
 
-    :return: The composed config
+    Returns:
+        A config object or a dictionary with the composed config
     """
+    if isinstance(config_data, DictConfig):
+        logger.debug("returning config_group_kwargs without composing")
+        return (
+            _to_dict(config_data)
+            if return_as_dict and isinstance(config_data, DictConfig)
+            else config_data
+        )
+    # Set overrides to the empty list if None
     if overrides is None:
         overrides = []
     config_module = config_module or __global_config__.hyfi_config_module
     # if verbose:
-    logger.info("config_module: %s", config_module)
+    logger.debug("config_module: %s", config_module)
     is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()  # type: ignore
+    # Set the group key and value of the config group.
     if config_group:
-        _task = config_group.split("=")
-        if len(_task) == 2:
-            key, value = _task
+        group_ = config_group.split("=")
+        # group_key group_value group_key group_value group_key group_value default
+        if len(group_) == 2:
+            group_key, group_value = group_
         else:
-            key = _task[0]
-            value = "default"
-        config_group = f"{key}={value}"
+            group_key = group_[0]
+            group_value = "default"
+        config_group = f"{group_key}={group_value}"
     else:
-        key = None
-        value = None
-    if key and value:
+        group_key = None
+        group_value = None
+    # If group_key and group_value are specified in the configuration file.
+    if group_key and group_value:
+        # Initialize hydra configuration module.
         if is_initialized:
             cfg = hydra.compose(config_name=config_name, overrides=overrides)
         else:
@@ -694,22 +711,30 @@ def _compose(
                 cfg = hydra.compose(config_name=config_name, overrides=overrides)
         cfg = _select(
             cfg,
-            key=key,
+            key=group_key,
             default=None,
             throw_on_missing=False,
             throw_on_resolution_failure=False,
         )
         override = config_group if cfg is not None else f"+{config_group}"
+        # Add override to overrides list.
         if isinstance(override, str):
             if overrides:
                 overrides.append(override)
             else:
                 overrides = [override]
+    # Add config group overrides to overrides list.
+    if config_data:
+        for k, v in config_data.items():
+            if isinstance(v, (str, int)):
+                overrides.append(f"{group_key}.{k}={v}")
     # if verbose:
-    logger.info(f"compose config with overrides: {overrides}")
+    logger.debug(f"compose config with overrides: {overrides}")
+    # Initialize hydra and return the configuration.
     if is_initialized:
+        # Hydra is already initialized.
         if verbose:
-            logger.info("Hydra is already initialized")
+            logger.debug("Hydra is already initialized")
         cfg = hydra.compose(config_name=config_name, overrides=overrides)
     else:
         with hydra.initialize_config_module(
@@ -717,13 +742,14 @@ def _compose(
         ):
             cfg = hydra.compose(config_name=config_name, overrides=overrides)
 
-    if key and key != "task":
+    # Select the group_key from the configuration.
+    if group_key and not global_package:
         cfg = _select(
             cfg,
-            key=key,
+            key=group_key,
             default=None,
             throw_on_missing=throw_on_missing,
             throw_on_resolution_failure=throw_on_resolution_failure,
         )
-    logger.debug("Composed config: %s", OmegaConf.to_yaml(cfg))
+    logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
     return _to_dict(cfg) if return_as_dict and isinstance(cfg, DictConfig) else cfg

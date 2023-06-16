@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.6.1 (2023-06-16)
+
+### Fix
+
+* **tests:** Update global_hyfi_root path in test_init_workspace function ([`ecb2e73`](https://github.com/entelecheia/hyfi/commit/ecb2e737267c03c14eaa498bab0f46c94f6ad304))
+
 ## v0.6.0 (2023-06-15)
 
 ### Feature

@@ -3,9 +3,9 @@ import os
 import subprocess
 from pathlib import Path
 
-from ..io.file import get_filepaths
-from ..utils.logging import getLogger
-from ..utils.notebook import display_image
+from hyfi.io.file import get_filepaths
+from hyfi.utils.logging import getLogger
+from hyfi.utils.notebook import display_image
 
 logger = getLogger(__name__)
 

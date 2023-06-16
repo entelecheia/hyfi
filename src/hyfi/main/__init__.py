@@ -1,16 +1,19 @@
+"""
+    This module contains the primary class for the hyfi config package, HyFI,
+    as well as various utility functions and imports.
+"""
 from pathlib import Path
 from typing import IO, Any, Dict, List, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, SCMode
 
+from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import _compose, _select, _to_config, _to_dict
 from hyfi.hydra.main import (
     DictKeyType,
     SpecialKeys,
-    __home_path__,
-    __hyfi_path__,
     _ensure_kwargs,
     _ensure_list,
     _function,
@@ -82,7 +85,7 @@ def _about(cfg):
 
 
 class HyFI:
-    """hyfi config primary class"""
+    """Primary class for the hyfi config package"""
 
     config = __global_config__
     SpeicialKeys = SpecialKeys
@@ -993,6 +996,23 @@ class HyFI:
         verbose: Union[bool, int] = False,
         **kwargs,
     ) -> ProjectConfig:
+        """
+        Initialize and start hyfi.
+
+        Args:
+                project_name: Name of the project to use.
+                task_name: Name of the task to use.
+                project_description: Description of the project that will be used.
+                project_root: Root directory of the project.
+                project_workspace_name: Name of the project's workspace directory.
+                global_hyfi_root: Root directory of the global hyfi.
+                global_workspace_name: Name of the global hierachical workspace directory.
+                num_workers: Number of workers to run.
+                log_level: Log level for the log.
+                autotime: Whether to automatically set time and / or keep track of run times.
+                retina: Whether to use retina or not.
+                verbose: Enables or disables logging
+        """
         __global_config__.init_workspace(
             project_name=project_name,
             task_name=task_name,

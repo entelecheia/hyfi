@@ -23,6 +23,20 @@ def test_cli() -> None:
     assert exitcode == 0
 
 
+def test_click() -> None:
+    """Test cli module"""
+    command = ["poetry", "run", "hyfi-run"]
+    out, err, exitcode = capture(command)
+    assert exitcode == 0
+
+
+def test_click_cc() -> None:
+    """Test cli module"""
+    command = ["poetry", "run", "hyfi-run", "cc", "--dst_path", "tmp/hyfi_test/conf"]
+    out, err, exitcode = capture(command)
+    assert exitcode == 0
+
+
 def test_cli_copy_conf() -> None:
     """Test cli command copy_conf"""
     command = [

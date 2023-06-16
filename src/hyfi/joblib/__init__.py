@@ -66,7 +66,7 @@ class JobLibConfig(BaseModel):
                 from dask.distributed import Client  # type: ignore
 
                 dask_cfg = {"n_workers": self.distributed_framework.num_workers}
-                logger.info(f"initializing dask client with {dask_cfg}")
+                logger.debug(f"initializing dask client with {dask_cfg}")
                 client = Client(**dask_cfg)
                 logger.debug(client)
 
@@ -74,24 +74,24 @@ class JobLibConfig(BaseModel):
                 import ray  # type: ignore
 
                 ray_cfg = {"num_cpus": self.distributed_framework.num_workers}
-                logger.info(f"initializing ray with {ray_cfg}")
+                logger.debug(f"initializing ray with {ray_cfg}")
                 ray.init(**ray_cfg)
                 backend_handle = ray
 
             batcher.batcher_instance = batcher.Batcher(
                 backend_handle=backend_handle, **self.batcher.dict()
             )
-            logger.info(f"initialized batcher with {batcher.batcher_instance}")
+            logger.debug(f"initialized batcher with {batcher.batcher_instance}")
         self.__initilized__ = True
 
     def stop_backend(self):
         """Stop the backend for joblib"""
         backend = self.distributed_framework.backend
         if batcher.batcher_instance:
-            logger.info("stopping batcher")
+            logger.debug("stopping batcher")
             del batcher.batcher_instance
 
-        logger.info("stopping distributed framework")
+        logger.debug("stopping distributed framework")
         if self.distributed_framework.initialize:
             if backend == "ray":
                 try:
@@ -99,7 +99,7 @@ class JobLibConfig(BaseModel):
 
                     if ray.is_initialized():
                         ray.shutdown()
-                        logger.info("shutting down ray")
+                        logger.debug("shutting down ray")
                 except ImportError:
                     logger.warning("ray is not installed")
 
@@ -109,6 +109,6 @@ class JobLibConfig(BaseModel):
 
                     if Client.initialized():
                         Client.close()
-                        logger.info("shutting down dask client")
+                        logger.debug("shutting down dask client")
                 except ImportError:
                     logger.warning("dask is not installed")

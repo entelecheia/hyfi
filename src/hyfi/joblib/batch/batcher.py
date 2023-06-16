@@ -9,7 +9,7 @@ import pandas as pd
 import scipy.sparse as ssp
 from tqdm.auto import tqdm
 
-from ..logging import getLogger
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 

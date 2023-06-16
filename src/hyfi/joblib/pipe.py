@@ -1,8 +1,8 @@
 from tqdm.auto import tqdm
 
 from hyfi.hydra.main import SpecialKeys, _partial
-from hyfi.utils.batch import batcher
-from hyfi.utils.batch.apply import decorator_apply
+from hyfi.joblib.batch import batcher
+from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

@@ -40,6 +40,7 @@ class SpecialKeys(str, Enum):
     PARTIAL = "_partial_"
     rcPARAMS = "rcParams"
     RECURSIVE = "_recursive_"
+    SUFFIX = "suffix"
     TARGET = "_target_"
     VERBOSE = "verbose"
 

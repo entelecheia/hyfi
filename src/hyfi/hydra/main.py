@@ -11,6 +11,7 @@ from typing import IO, Any, Dict, List, Tuple, Union
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
+from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.hydra import _compose, _select, _to_dict
 from hyfi.io.cached_path import cached_path
@@ -319,14 +320,6 @@ def _function(cfg: Any, _name_, return_function=False, **parms):
     else:
         logger.info(f"Skipping execute of {fn}")
         return None
-
-
-def __hyfi_path__():
-    return Path(__file__).parent.as_posix()
-
-
-def __home_path__():
-    return Path.home().as_posix()
 
 
 def __search_package_path__():

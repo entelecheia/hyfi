@@ -38,6 +38,7 @@ from hyfi.hydra.main import (
 )
 from hyfi.io.cached_path import cached_path
 from hyfi.io.file import exists, is_dir, is_file, join_path, mkdir
+from hyfi.joblib.pipe import _apply, _pipe
 from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.func import (
@@ -67,7 +68,6 @@ from hyfi.utils.notebook import (
     is_colab,
     is_notebook,
 )
-from hyfi.utils.pipe import _apply, _pipe
 
 logger = getLogger(__name__)
 

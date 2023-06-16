@@ -7,8 +7,8 @@ from typing import List, Union
 
 import pandas as pd
 
-from ..utils.func import elapsed_timer
-from ..utils.logging import getLogger
+from hyfi.utils.func import elapsed_timer
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -33,7 +33,7 @@ def glob_re(pattern: str, base_dir: str, recursive: bool = False) -> list:
         pattern = re.compile(pattern)
         files = []
         if recursive:
-            for (dirpath, dirnames, filenames) in os.walk(base_dir):
+            for dirpath, dirnames, filenames in os.walk(base_dir):
                 files += [
                     os.path.join(dirpath, file)
                     for file in filenames

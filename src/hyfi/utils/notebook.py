@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 
-from ..io.file import read
+from hyfi.io.file import read
 
 logger = logging.getLogger(__name__)
 

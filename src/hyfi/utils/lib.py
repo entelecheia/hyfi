@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hyfi.io.file import is_dir, is_file
+from hyfi.utils.file import is_dir, is_file
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

@@ -20,11 +20,18 @@ HyFI.about()
 
 We'll initialize the workspace using the `HyFI.init_workspace` function. The function takes the following parameters:
 
-- `workspace`: The root workspace directory.
-- `project`: The project subdirectory.
-- `task`: The specific task within the project.
-- `log_level`: Logging level for the workspace.
-- `verbose`: Whether to print verbose messages.
+- `project_name`: Name of the project to use.
+- `task_name`: Name of the task to use.
+- `project_description`: Description of the project that will be used.
+- `project_root`: Root directory of the project.
+- `project_workspace_name`: Name of the project's workspace directory.
+- `global_hyfi_root`: Root directory of the global hyfi.
+- `global_workspace_name`: Name of the global hierachical workspace directory.
+- `num_workers`: Number of workers to run.
+- `log_level`: Log level for the log.
+- `autotime`: Whether to automatically set time and / or keep track of run times.
+- `retina`: Whether to use retina or not.
+- `verbose`: Enables or disables logging
 
 We'll check if we're running in Google Colab, and if so, we'll mount Google Drive.
 
@@ -33,15 +40,14 @@ if HyFI.is_colab():
     HyFI.mount_google_drive()
 
 ws = HyFI.init_workspace(
-    workspace="/workspace",
-    project="hyfi/examples",
-    task="test",
-    log_level="INFO",
+    project_name="hyfi",
+    task_name="test",
+    log_level="DEBUG",
     verbose=True,
 )
 
-print("version:", ws.version)
 print("project_dir:", ws.project_dir)
+print("project_workspace_dir:", ws.project_workspace_dir)
 ```
 
 ## Compose Configuration

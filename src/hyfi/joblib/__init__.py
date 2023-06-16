@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
 from hyfi.hydra import _compose
-from hyfi.utils.batch import batcher
+from hyfi.joblib.batch import batcher
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

@@ -1,4 +1,4 @@
-from hyfi.io.cached_path import cached_path
+from hyfi.cached_path import cached_path
 
 
 def test_cached_path_hf() -> None:

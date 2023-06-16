@@ -8,7 +8,7 @@ from typing import Any, Union
 import dotenv
 import hydra
 
-from hyfi.io.file import is_dir
+from hyfi.utils.file import is_dir
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import gdown
 
-from hyfi.utils.cached_path import _cached_path as _cpath
+from hyfi.cached_path._cached_path import _cached_path as _cpath
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

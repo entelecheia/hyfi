@@ -20,7 +20,10 @@ def cli():
 
 @cli.command()
 @click.option(
-    "--src_path", default=f"{__hyfi_path__()}/conf", help="Source path to copy from"
+    "--src_path",
+    show_default=True,
+    default=f"{__hyfi_path__()}/conf",
+    help="Source path to copy from",
 )
 @click.option(
     "--dst_path",
@@ -28,11 +31,32 @@ def cli():
     default="./tmp/conf",
     help="Destination path to copy to",
 )
-@click.option("--exclude", default=None, help="Exclude files matching this pattern")
-@click.option("--skip_if_exists", default=False, help="Skip if destination exists")
-@click.option("--overwrite", default=False, help="Overwrite destination")
-@click.option("--dry_run", default=False, help="Dry run")
-@click.option("--verbose", is_flag=True, default=False, help="Verbose output")
+@click.option(
+    "--exclude",
+    show_default=True,
+    default=None,
+    help="Exclude files matching this pattern",
+)
+@click.option(
+    "--skip_if_exists",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Skip if destination exists",
+)
+@click.option(
+    "--overwrite",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Overwrite destination",
+)
+@click.option(
+    "--dry_run", is_flag=True, show_default=True, default=False, help="Dry run"
+)
+@click.option(
+    "--verbose", is_flag=True, show_default=True, default=False, help="Verbose output"
+)
 def cc(**args):
     """
     Copy all config files to the destination directory.
@@ -55,9 +79,20 @@ def about():
 
 @cli.command()
 @click.option(
-    "--uninstall", "-u", is_flag=True, default=False, help="Uninstall shell completion"
+    "--uninstall",
+    "-u",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Uninstall shell completion",
 )
-@click.option("--shell", "-s", default="zsh", help="Shell to install completion for")
+@click.option(
+    "--shell",
+    "-s",
+    show_default=True,
+    default="zsh",
+    help="Shell to install completion for",
+)
 def sc(uninstall, shell):
     """
     Install or Uninstall shell completion for Hyfi.

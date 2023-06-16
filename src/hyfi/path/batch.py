@@ -3,13 +3,13 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from hyfi.hydra import _compose
 from hyfi.utils.logging import getLogger
-from hyfi.env import _compose
 
 logger = getLogger(__name__)
 
 
-class PathConfig(BaseModel):
+class BatchPathConfig(BaseModel):
     config_name: str = "__batch__"
 
     project_workspace_root = ""

@@ -31,7 +31,7 @@ def test_init_workspace():
 
 def test_compose():
     os.environ["HYFI_PROJECT_ROOT"] = "."
-    cfg = HyFI.compose("path=__default__", config_data={"task_name": "test"})
+    cfg = HyFI.compose("path=__task__", config_data={"task_name": "test"})
     pprint(cfg)
     assert cfg["task_root"] == "./workspace/test"
 

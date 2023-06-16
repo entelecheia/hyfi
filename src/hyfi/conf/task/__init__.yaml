@@ -1,0 +1,8 @@
+defaults:
+  - /module: __init__
+  - /path: __task__
+  - /project: __init__
+
+task_name: demo-task
+autoload: false
+version: "0.0.0"

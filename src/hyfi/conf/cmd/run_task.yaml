@@ -1,0 +1,5 @@
+# @package _global_
+defaults:
+  - /task: __init__
+
+_target_: hyfi.__cli__.run_task

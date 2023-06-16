@@ -32,7 +32,7 @@ def __version__():
 
 
 class HyfiConfig(BaseModel):
-    """HyFI config primary class"""
+    """HyFI root config class.  This class is used to store the configuration"""
 
     hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
@@ -222,7 +222,7 @@ class HyfiConfig(BaseModel):
 
         # Skip project config initialization.
         if "project" not in config:
-            logger.warning(
+            logger.info(
                 "No project config found, skip project config initialization."
             )
             return

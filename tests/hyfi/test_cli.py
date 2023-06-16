@@ -32,7 +32,7 @@ def test_click() -> None:
 
 def test_click_cc() -> None:
     """Test cli module"""
-    command = ["poetry", "run", "hyfi-run", "cc", "--dst_path", "tmp/hyfi_test/conf"]
+    command = ["poetry", "run", "hyfi-run", "cc", "--dst_path", "tmp/hyfi_test/conf", "--overwrite"]
     out, err, exitcode = capture(command)
     assert exitcode == 0
 

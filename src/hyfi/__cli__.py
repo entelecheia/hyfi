@@ -47,6 +47,10 @@ def run_copy(**args):
         worker.run_copy()
 
 
+def run_task(**args):
+    print(args["task"].keys())
+
+
 def cli_main(cfg: DictConfig) -> None:
     """
     Main function for the command line interface.

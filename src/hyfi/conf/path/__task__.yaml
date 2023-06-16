@@ -1,4 +1,4 @@
-project_workspace_root: ${oc.select:..project.project_workspace_root,${oc.env:HYFI_PROJECT_ROOT,.}/${oc.env:HYFI_PROJECT_WORKSPACE_NAME,.}}
+project_workspace_root: ${oc.select:..project.path.project_workspace_root,${oc.env:HYFI_PROJECT_ROOT,.}/${oc.env:HYFI_PROJECT_WORKSPACE_NAME,.}}
 task_name: ${oc.select:..project.task_name, default-task}
 task_root: ${.project_workspace_root}/${.task_name}
 

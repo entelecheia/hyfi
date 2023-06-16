@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic import BaseModel
 
 from hyfi.about import AboutConfig
@@ -19,3 +21,11 @@ class HydraConfig(BaseModel):
 
 
 __hydra_config__ = HydraConfig()
+
+
+def __hyfi_path__():
+    return Path(__file__).parent.parent.as_posix()
+
+
+def __home_path__():
+    return Path.home().as_posix()

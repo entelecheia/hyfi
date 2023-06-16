@@ -1,4 +1,5 @@
 defaults:
+  - /module: __init__
   - /path: __task__
   - /project: __init__
 

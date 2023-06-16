@@ -2,10 +2,10 @@
 
 import click
 
+from hyfi.__global__ import __hyfi_path__
 from hyfi.__global__.config import HyfiConfig
 from hyfi._version import __version__
 from hyfi.copier import Copier
-from hyfi.hydra.main import __hyfi_path__
 from hyfi.main import _about
 from hyfi.utils.logging import getLogger
 
@@ -23,7 +23,10 @@ def cli():
     "--src_path", default=f"{__hyfi_path__()}/conf", help="Source path to copy from"
 )
 @click.option(
-    "--dst_path", show_default=True, default="conf", help="Destination path to copy to"
+    "--dst_path",
+    show_default=True,
+    default="./tmp/conf",
+    help="Destination path to copy to",
 )
 @click.option("--exclude", default=None, help="Exclude files matching this pattern")
 @click.option("--skip_if_exists", default=False, help="Skip if destination exists")

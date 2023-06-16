@@ -3,8 +3,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from hyfi.env import getLogger
-from hyfi.hydra import _compose
+from hyfi.utils.logging import getLogger
+from hyfi.env import _compose
 
 logger = getLogger(__name__)
 

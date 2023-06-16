@@ -5,6 +5,7 @@
 .hypothesis/
 tmp/
 workspace/
+testspace/
 
 #MKDOCS
 site/

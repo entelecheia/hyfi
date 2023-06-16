@@ -1,9 +1,15 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
+from pydantic import BaseModel
 
-from hyfi.__global__ import __about__, __hydra_config__, __hydra_version_base__
+from hyfi.__global__ import (
+    __about__,
+    __hydra_config__,
+    __hydra_default_config_group_value__,
+    __hydra_version_base__,
+)
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
@@ -48,11 +54,203 @@ def _to_config(
     return OmegaConf.create(cfg)
 
 
+def _hydra_compose(
+    config_name: Union[str, None] = None,
+    config_module: Union[str, None] = None,
+    overrides: Union[List[str], None] = None,
+):
+    is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()  # type: ignore
+    config_module = config_module or __hydra_config__.hyfi_config_module
+    logger.debug("config_module: %s", config_module)
+    if is_initialized:
+        # Hydra is already initialized.
+        logger.debug("Hydra is already initialized")
+        cfg = hydra.compose(config_name=config_name, overrides=overrides)
+    else:
+        with hydra.initialize_config_module(
+            config_module=config_module, version_base=__hydra_version_base__
+        ):
+            cfg = hydra.compose(config_name=config_name, overrides=overrides)
+    if is_initialized:
+        cfg = hydra.compose(config_name=config_name, overrides=overrides)
+    else:
+        with hydra.initialize_config_module(
+            config_module=config_module, version_base=__hydra_version_base__
+        ):
+            cfg = hydra.compose(config_name=config_name, overrides=overrides)
+    return cfg
+
+
+def _split_config_group(
+    config_group: Union[str, None] = None,
+) -> Tuple[str, str, str]:
+    if config_group:
+        group_ = config_group.split("=")
+        # group_key group_value group_key group_value group_key group_value default
+        if len(group_) == 2:
+            group_key, group_value = group_
+        else:
+            group_key = group_[0]
+            group_value = __hydra_default_config_group_value__
+        config_group = f"{group_key}={group_value}"
+    else:
+        group_key = ""
+        group_value = ""
+        config_group = ""
+    return config_group, group_key, group_value
+
+
+def _compose_internal(
+    config_group: Union[str, None] = None,
+    overrides: Union[List[str], None] = None,
+    config_data: Union[Dict[str, Any], DictConfig, None] = None,
+    throw_on_resolution_failure: bool = True,
+    throw_on_missing: bool = False,
+    config_name: Union[str, None] = None,
+    config_module: Union[str, None] = None,
+    global_package: bool = False,
+    **kwargs,
+) -> DictConfig:
+    if isinstance(config_data, DictConfig):
+        logger.debug("returning config_group_kwargs without composing")
+        return config_data
+    # Set overrides to the empty list if None
+    if overrides is None:
+        overrides = []
+    # Set the group key and value of the config group.
+    config_group, group_key, group_value = _split_config_group(config_group)
+    # If group_key and group_value are specified in the configuration file.
+    if group_key and group_value:
+        # Initialize hydra configuration module.
+        cfg = _hydra_compose(
+            config_name=config_name, config_module=config_module, overrides=overrides
+        )
+        cfg = _select(
+            cfg,
+            key=group_key,
+            default=None,
+            throw_on_missing=False,
+            throw_on_resolution_failure=False,
+        )
+        override = config_group if cfg is not None else f"+{config_group}"
+        # Add override to overrides list.
+        if isinstance(override, str):
+            if overrides:
+                overrides.append(override)
+            else:
+                overrides = [override]
+    # Add config group overrides to overrides list.
+    if group_key and config_data:
+        for k, v in config_data.items():
+            if isinstance(v, (str, int)):
+                overrides.append(f"{group_key}.{k}={v}")
+    # if verbose:
+    logger.debug(f"compose config with overrides: {overrides}")
+    # Initialize hydra and return the configuration.
+    cfg = _hydra_compose(
+        config_name=config_name, config_module=config_module, overrides=overrides
+    )
+    # Select the group_key from the configuration.
+    if group_key and not global_package:
+        cfg = _select(
+            cfg,
+            key=group_key,
+            default=None,
+            throw_on_missing=throw_on_missing,
+            throw_on_resolution_failure=throw_on_resolution_failure,
+        )
+    logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
+    return cfg
+
+
+class Composer(BaseModel):
+    """
+    Compose a configuration by applying overrides
+    """
+
+    config_group: Union[str, None] = None
+    overrides: Union[List[str], None] = None
+    config_data: Union[Dict[str, Any], DictConfig, None] = None
+    throw_on_resolution_failure: bool = True
+    throw_on_missing: bool = False
+    config_name: Union[str, None] = None
+    config_module: Union[str, None] = None
+    global_package: bool = False
+    verbose: bool = False
+
+    __cfg__: DictConfig = None  # type: ignore
+
+    class Config:
+        arbitrary_types_allowed = True
+        validate_assignment = True
+        underscore_attrs_are_private = True
+
+    def __init__(self, **args):
+        super().__init__(**args)
+        self.__cfg__ = _compose_internal(
+            config_group=self.config_group,
+            overrides=self.overrides,
+            config_data=self.config_data,
+            throw_on_resolution_failure=self.throw_on_resolution_failure,
+            throw_on_missing=self.throw_on_missing,
+            config_name=self.config_name,
+            config_module=self.config_module,
+            global_package=self.global_package,
+            verbose=self.verbose,
+        )
+
+    @property
+    def config(self) -> DictConfig:
+        return self.__cfg__
+
+    @property
+    def config_as_dict(self) -> Dict:
+        return _to_dict(self.__cfg__)
+
+    def __call__(self, **args):
+        return self.__cfg__
+
+    def __getitem__(self, key):
+        return self.__cfg__[key]
+
+    def __getattr__(self, key):
+        return getattr(self.__cfg__, key)
+
+    def __repr__(self):
+        return repr(self.__cfg__)
+
+    def __str__(self):
+        return str(self.__cfg__)
+
+    def __iter__(self):
+        return iter(self.__cfg__)
+
+    def __len__(self):
+        return len(self.__cfg__)
+
+    def __contains__(self, key):
+        return key in self.__cfg__
+
+    def __eq__(self, other):
+        return self.__cfg__ == other
+
+    def __ne__(self, other):
+        return self.__cfg__ != other
+
+    def __bool__(self):
+        return bool(self.__cfg__)
+
+    def __hash__(self):
+        return hash(self.__cfg__)
+
+    def __getstate__(self):
+        return self.__cfg__
+
+
 def _compose(
     config_group: Union[str, None] = None,
     overrides: Union[List[str], None] = None,
     config_data: Union[Dict[str, Any], DictConfig, None] = None,
-    *,
     return_as_dict: bool = True,
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,
@@ -79,84 +277,15 @@ def _compose(
     Returns:
         A config object or a dictionary with the composed config
     """
-    if isinstance(config_data, DictConfig):
-        logger.debug("returning config_group_kwargs without composing")
-        return (
-            _to_dict(config_data)
-            if return_as_dict and isinstance(config_data, DictConfig)
-            else config_data
-        )
-    # Set overrides to the empty list if None
-    if overrides is None:
-        overrides = []
-    config_module = config_module or __hydra_config__.hyfi_config_module
-    # if verbose:
-    logger.debug("config_module: %s", config_module)
-    is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()  # type: ignore
-    # Set the group key and value of the config group.
-    if config_group:
-        group_ = config_group.split("=")
-        # group_key group_value group_key group_value group_key group_value default
-        if len(group_) == 2:
-            group_key, group_value = group_
-        else:
-            group_key = group_[0]
-            group_value = "default"
-        config_group = f"{group_key}={group_value}"
-    else:
-        group_key = None
-        group_value = None
-    # If group_key and group_value are specified in the configuration file.
-    if group_key and group_value:
-        # Initialize hydra configuration module.
-        if is_initialized:
-            cfg = hydra.compose(config_name=config_name, overrides=overrides)
-        else:
-            with hydra.initialize_config_module(
-                config_module=config_module, version_base=__hydra_version_base__
-            ):
-                cfg = hydra.compose(config_name=config_name, overrides=overrides)
-        cfg = _select(
-            cfg,
-            key=group_key,
-            default=None,
-            throw_on_missing=False,
-            throw_on_resolution_failure=False,
-        )
-        override = config_group if cfg is not None else f"+{config_group}"
-        # Add override to overrides list.
-        if isinstance(override, str):
-            if overrides:
-                overrides.append(override)
-            else:
-                overrides = [override]
-    # Add config group overrides to overrides list.
-    if config_data:
-        for k, v in config_data.items():
-            if isinstance(v, (str, int)):
-                overrides.append(f"{group_key}.{k}={v}")
-    # if verbose:
-    logger.debug(f"compose config with overrides: {overrides}")
-    # Initialize hydra and return the configuration.
-    if is_initialized:
-        # Hydra is already initialized.
-        if verbose:
-            logger.debug("Hydra is already initialized")
-        cfg = hydra.compose(config_name=config_name, overrides=overrides)
-    else:
-        with hydra.initialize_config_module(
-            config_module=config_module, version_base=__hydra_version_base__
-        ):
-            cfg = hydra.compose(config_name=config_name, overrides=overrides)
-
-    # Select the group_key from the configuration.
-    if group_key and not global_package:
-        cfg = _select(
-            cfg,
-            key=group_key,
-            default=None,
-            throw_on_missing=throw_on_missing,
-            throw_on_resolution_failure=throw_on_resolution_failure,
-        )
-    logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
-    return _to_dict(cfg) if return_as_dict and isinstance(cfg, DictConfig) else cfg
+    cfg = Composer(
+        config_group=config_group,
+        overrides=overrides,
+        config_data=config_data,
+        throw_on_resolution_failure=throw_on_resolution_failure,
+        throw_on_missing=throw_on_missing,
+        config_name=config_name,
+        config_module=config_module,
+        global_package=global_package,
+        verbose=verbose,
+    )
+    return cfg.config_as_dict if return_as_dict else cfg.config

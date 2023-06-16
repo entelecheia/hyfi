@@ -54,7 +54,8 @@ def cli_main(cfg: DictConfig) -> None:
         cfg: Configuration dictionary to be used for instantiation
 
     Returns:
-        None if everything went fine otherwise an error is raised to indicate the reason for the failure
+        None if everything went fine otherwise an error is raised
+        to indicate the reason for the failure
     """
     hyfi = HyfiConfig(**cfg)  # type: ignore
     verbose = hyfi.verbose

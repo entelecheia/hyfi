@@ -3,10 +3,13 @@ import os
 from typing import Optional
 
 import hydra
+from omegaconf import DictConfig
 
-from hyfi.env import HyfiConfig, __about__, __hydra_version_base__
-from hyfi.main import DictConfig, HyFI, _about, getLogger
-from hyfi.utils.copier import Copier
+from hyfi.__global__ import __about__, __hydra_version_base__
+from hyfi.__global__.config import HyfiConfig
+from hyfi.copier import Copier
+from hyfi.main import HyFI, _about
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 

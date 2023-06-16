@@ -6,11 +6,12 @@ from typing import Optional, Union
 from omegaconf import DictConfig
 from pydantic import BaseModel, validator
 
-from hyfi.path.batch import PathConfig
-from hyfi.env import ProjectConfig, _to_config, _to_dict, _compose
-from hyfi.utils.logging import getLogger
-from hyfi.hydra import _load, _merge, _methods, _print, _save, _save_json
+from hyfi.hydra import _compose, _to_config, _to_dict
+from hyfi.hydra.main import _load, _merge, _methods, _print, _save, _save_json
+from hyfi.path.batch import BatchPathConfig
+from hyfi.project import ProjectConfig
 from hyfi.utils.lib import ensure_import_module
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -110,7 +111,7 @@ class BaseConfigModel(BaseModel):
     config_name: str = None
     config_group: str = None
     name: str
-    path: PathConfig = None
+    path: BatchPathConfig = None
     project: ProjectConfig = None
     module: DictConfig = None
     auto: Union[DictConfig, str] = None
@@ -206,7 +207,7 @@ class BaseConfigModel(BaseModel):
 
     @property
     def workspace_dir(self):
-        return Path(self.project.workspace_dir)
+        return Path(self.project.project_workspace_dir)
 
     @property
     def model_dir(self):

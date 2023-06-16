@@ -1,0 +1,8 @@
+defaults:
+  - __init__
+  - override /path: __batch__
+
+name: task
+batch_name: demo-batch
+autoload: false
+version: "0.0.0"

@@ -6,9 +6,10 @@ from typing import Optional, Union
 from omegaconf import DictConfig
 from pydantic import BaseModel, validator
 
-from hyfi.config.path import PathConfig
-from hyfi.env import ProjectConfig, _to_config, _to_dict, getLogger
-from hyfi.hydra import _compose, _load, _merge, _methods, _print, _save, _save_json
+from hyfi.path.batch import PathConfig
+from hyfi.env import ProjectConfig, _to_config, _to_dict, _compose
+from hyfi.utils.logging import getLogger
+from hyfi.hydra import _load, _merge, _methods, _print, _save, _save_json
 from hyfi.utils.lib import ensure_import_module
 
 logger = getLogger(__name__)
@@ -35,9 +36,6 @@ class BaseBatchConfig(BaseModel):
     def __init__(self, **data):
         if not data:
             data = _compose("batch")
-            logger.info(
-                f"There is no batch in the config, using default batch: {data.batch_name}"
-            )
         super().__init__(**data)
         self.init_batch_num()
 

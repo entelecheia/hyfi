@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from hyfi.hydra import _compose, _to_config
 from hyfi.hydra.main import _merge, _methods, _print
+from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.lib import ensure_import_module
@@ -18,10 +19,10 @@ logger = getLogger(__name__)
 class BaseTask(BaseModel):
     config_name: str = "__init__"
     config_group: str = "task"
-    name: str
+    task_name: str
     path: BatchPathConfig = None  # type: ignore
     project: ProjectConfig = None  # type: ignore
-    module: DictConfig = None  # type: ignore
+    module: ModuleConfig = None  # type: ignore
     autoload: bool = False
     version: str = "0.0.0"
     _config_: DictConfig = None  # type: ignore
@@ -37,8 +38,6 @@ class BaseTask(BaseModel):
             "__data__",
             "path",
             "module",
-            "secret",
-            "auto",
             "project",
         }
         include = {}
@@ -85,8 +84,8 @@ class BaseTask(BaseModel):
 
     def set_name(self, val):
         self._config_.name = val
-        if self.name is None or self.name != val:
-            self.name = val
+        if self.task_name is None or self.task_name != val:
+            self.task_name = val
 
     def initialize_configs(self, root_dir=None, **kwargs):
         self.root_dir = root_dir

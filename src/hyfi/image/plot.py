@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib import font_manager, rc
 
-from ..utils.logging import getLogger
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 

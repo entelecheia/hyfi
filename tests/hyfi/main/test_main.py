@@ -19,14 +19,14 @@ def test_init_workspace():
     os.environ["HYFI_PROJECT_ROOT"] = ""
     ws = HyFI.init_workspace(
         project_name="hyfi2",
-        global_hyfi_root=".",
+        global_hyfi_root="tmp",
         global_workspace_name="testspace",
         task_name="test",
         log_level="WARNING",
         verbose=True,
     )
     pprint(ws.dict())
-    assert ws.path.project_root == "./testspace/projects/hyfi2"
+    assert ws.path.project_root == "tmp/testspace/projects/hyfi2"
 
 
 def test_compose():

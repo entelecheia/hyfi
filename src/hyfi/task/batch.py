@@ -3,7 +3,7 @@ from omegaconf import DictConfig
 from hyfi.batch import BatchConfig
 from hyfi.hydra import _to_dict
 from hyfi.hydra.main import _load, _merge, _print, _save, _save_json
-from hyfi.tasks.base import BaseTask
+from hyfi.task.base import BaseTask
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)

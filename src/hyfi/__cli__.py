@@ -54,7 +54,7 @@ def cli_main(cfg: DictConfig) -> None:
         cfg: Configuration dictionary to be used for instantiation
 
     Returns:
-        None if everything went fine otherwise an error is raised to indicate the reason for the failure ( s )
+        None if everything went fine otherwise an error is raised to indicate the reason for the failure
     """
     hyfi = HyfiConfig(**cfg)  # type: ignore
     verbose = hyfi.verbose
@@ -79,8 +79,8 @@ def cli_main(cfg: DictConfig) -> None:
 
     # Prints out the working directory and original working directory.
     if verbose:
-        logger.info(f"Hydra working directory : {os.getcwd()}")
-        logger.info(f"Orig working directory  : {hydra.utils.get_original_cwd()}")
+        logger.info("Hydra working directory : %s", {os.getcwd()})
+        logger.info("Orig working directory  : %s", {hydra.utils.get_original_cwd()})
 
     HyFI.instantiate(cfg)
 
@@ -115,5 +115,4 @@ def hydra_main(
 
 # Run the command line interface
 if __name__ == "__main__":
-    """Run the command line interface"""
     hydra_main()

@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
 
-from hyfi.image.utils import get_image_font, load_image, load_images, scale_image
+from hyfi.graphic.utils import get_image_font, load_image, load_images, scale_image
 
 log = logging.getLogger(__name__)
 

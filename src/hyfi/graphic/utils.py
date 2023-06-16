@@ -4,7 +4,7 @@ import io
 import numpy as np
 from PIL import Image, ImageFont
 
-from hyfi.image.plot import get_plot_font
+from hyfi.graphic.plot import get_plot_font
 from hyfi.utils.file import read
 
 

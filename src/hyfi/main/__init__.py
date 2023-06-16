@@ -582,7 +582,7 @@ class HyFI:
         fontcolor="#000",
         **kwargs,
     ):
-        from hyfi.image.collage import collage as _collage
+        from hyfi.graphic.collage import collage as _collage
 
         return _collage(
             images_or_uris,
@@ -616,7 +616,7 @@ class HyFI:
         force=False,
         **kwargs,
     ):
-        from hyfi.image.motion import make_gif as _make_gif
+        from hyfi.graphic.motion import make_gif as _make_gif
 
         return _make_gif(
             image_filepaths=image_filepaths,
@@ -908,7 +908,7 @@ class HyFI:
 
     @staticmethod
     def get_image_font(fontname=None, fontsize=12):
-        from hyfi.image.collage import get_image_font
+        from hyfi.graphic.collage import get_image_font
 
         return get_image_font(fontname, fontsize)
 
@@ -930,7 +930,7 @@ class HyFI:
         mode="RGB",
         **kwargs,
     ):
-        from hyfi.image.utils import load_image as _load_image
+        from hyfi.graphic.utils import load_image as _load_image
 
         return _load_image(
             image_or_uri,
@@ -1013,7 +1013,7 @@ class HyFI:
         resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
                     Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
         """
-        from hyfi.image.utils import scale_image as _scale_image
+        from hyfi.graphic.utils import scale_image as _scale_image
 
         return _scale_image(
             image,

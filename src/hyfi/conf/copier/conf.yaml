@@ -1,7 +1,7 @@
 # Source path where to find the template.
 src_path: conf
 # Destination path where to render the template.
-dst_path: .
+dst_path: tmp/conf
 # Filetypes to copy.
 filetypes:
   - yaml

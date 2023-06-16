@@ -175,7 +175,7 @@ class BaseConfigModel(BaseModel):
             self._config_.path = path
         if root_dir is not None:
             path.root = str(root_dir)
-        self.path = PathConfig(**path)
+        self.path = BatchPathConfig(**path)
 
     def set_name(self, val):
         self._config_.name = val

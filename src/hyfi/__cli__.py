@@ -41,8 +41,10 @@ def run_copy(**args):
     Copy all config files to the current working directory.
     This is a wrapper around HyfiConfig to allow us to pass arguments to it.
     """
-    cfg = HyfiConfig(**args)
-    cfg = HyFI.to_dict(cfg.copier)
+    if "copier" not in args:
+        raise ValueError("No copier configuration found")
+    cfg = HyFI.to_dict(args["copier"])
+    print(type(cfg), cfg)
     with Copier(**cfg) as worker:
         worker.run_copy()
 

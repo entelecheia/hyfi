@@ -1,8 +1,8 @@
 """Google Colab utilities."""
 import os
 
-from .env import set_osenv
-from .logging import getLogger
+from hyfi.utils.env import set_osenv
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -21,7 +21,9 @@ def mount_google_drive(
         drive.mount(mountpoint, force_remount=force_remount, timeout_ms=timeout_ms)
 
         if project_root:
-            if not project_root.startswith(os.path.sep) and not project_root.startswith(".."):
+            if not project_root.startswith(os.path.sep) and not project_root.startswith(
+                ".."
+            ):
                 project_root = os.path.join(mountpoint, project_root)
             set_osenv("HYFI_PROJECT_ROOT", project_root)
             logger.info(f"Setting HYFI_PROJECT_ROOT to {project_root}")

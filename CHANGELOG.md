@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v0.7.0 (2023-06-16)
+
+### Feature
+
+* **hyfi:** Add run_task command configuration file ([`1a489f9`](https://github.com/entelecheia/hyfi/commit/1a489f94d630afa131765f706006a055b71dbd13))
+* **cli:** Add run_task command ([`45da824`](https://github.com/entelecheia/hyfi/commit/45da824fba4a3741e684057e120d41f5a1029469))
+* **batch:** Implement BatchTask with save/load config functionality ([`ad197a1`](https://github.com/entelecheia/hyfi/commit/ad197a1ebb68f0197467562931779b0c4d4a8fb6))
+* **task:** Add BaseTask class for task configuration and management ([`7ff563d`](https://github.com/entelecheia/hyfi/commit/7ff563d96de2af2d770cfa6239770177ad23371b))
+
+### Fix
+
+* **cli:** Handle case when no copier configuration is found. ([`beebfdc`](https://github.com/entelecheia/hyfi/commit/beebfdcaaa81502ce2c0be7b1cdc3591d4721147))
+* **docs:** Update example to use correct configuration path ([`6e53aa6`](https://github.com/entelecheia/hyfi/commit/6e53aa6082c8b30b935a2b93a11a2bbb0e292575))
+
+### Documentation
+
+* **reference:** Add about page ([`0e9ca1f`](https://github.com/entelecheia/hyfi/commit/0e9ca1f59c2c65738fc3c33955c2967c4468b06c))
+
 ## v0.6.2 (2023-06-16)
 
 ### Fix

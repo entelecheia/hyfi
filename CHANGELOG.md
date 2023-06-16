@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.6.2 (2023-06-16)
+
+### Fix
+
+* **cli:** Add options for exclude, skip_if_exists, overwrite, dry_run, and verbose in 'cc' command ([`228fab4`](https://github.com/entelecheia/hyfi/commit/228fab43b7796b974a213e58ae4b90e7fd320a9f))
+
 ## v0.6.1 (2023-06-16)
 
 ### Fix

@@ -1,0 +1,7 @@
+defaults:
+  - /path: __task__
+  - /project: __init__
+
+name: task
+autoload: false
+version: "0.0.0"

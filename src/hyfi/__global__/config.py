@@ -222,7 +222,7 @@ class HyfiConfig(BaseModel):
 
         # Skip project config initialization.
         if "project" not in config:
-            logger.warning(
+            logger.info(
                 "No project config found, skip project config initialization."
             )
             return

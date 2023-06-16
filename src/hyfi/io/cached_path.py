@@ -3,8 +3,8 @@ from pathlib import Path
 
 import gdown
 
-from ..utils.cached_path import _cached_path as _cpath
-from ..utils.logging import getLogger
+from hyfi.utils.cached_path import _cached_path as _cpath
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 

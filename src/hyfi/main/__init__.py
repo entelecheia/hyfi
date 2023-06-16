@@ -9,6 +9,7 @@ from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
+from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import _compose, _select, _to_config, _to_dict
 from hyfi.hydra.main import (
@@ -36,11 +37,10 @@ from hyfi.hydra.main import (
     _update,
     _viewsource,
 )
-from hyfi.io.cached_path import cached_path
-from hyfi.io.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.joblib.pipe import _apply, _pipe
 from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
+from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import (
     dict_product,
     dict_to_dataframe,
@@ -350,7 +350,7 @@ class HyFI:
         )
 
     @staticmethod
-    def path(
+    def cached_path(
         url_or_filename,
         extract_archive: bool = False,
         force_extract: bool = False,
@@ -359,58 +359,22 @@ class HyFI:
         verbose: bool = False,
     ):
         """
-        Given something that might be a URL or local path, determine which.
-        If it's a remote resource, download the file and cache it, and
-        then return the path to the cached file. If it's already a local path,
-        make sure the file exists and return the path.
+        Attempts to cache a file or URL and return the path to the cached file.
+        If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
 
-        For URLs, the following schemes are all supported out-of-the-box:
+        Args:
+            url_or_filename (str): The URL or filename to be cached.
+            extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
+            force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
+            return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
+            cache_dir (str, optional): Directory to store cached files. Defaults to None.
+            verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
 
-        * ``http`` and ``https``,
-        * ``gd`` for objects on `Google Drive`_, and
-        * ``hf`` for objects or repositories on `HuggingFace Hub`_.
+        Raises:
+            ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
 
-        Parameters
-        ----------
-
-        url_or_filename :
-            A URL or path to parse and possibly download.
-
-        extract_archive :
-            If ``True``, then zip or tar.gz archives will be automatically extracted.
-            In which case the directory is returned.
-
-        force_extract :
-            If ``True`` and the file is an archive file, it will be extracted regardless
-            of whether or not the extracted directory already exists.
-
-            .. caution::
-                Use this flag with caution! This can lead to race conditions if used
-                from multiple processes on the same file.
-
-        cache_dir :
-            The directory to cache downloads. If not specified, the global default cache directory
-            will be used (``~/.cache/cached_path``). This can be set to something else with
-            :func:`set_cache_dir()`.
-
-        Returns
-        -------
-        :class:`pathlib.Path`
-            The local path to the (potentially cached) resource.
-
-        Raises
-        ------
-        ``FileNotFoundError``
-
-            If the resource cannot be found locally or remotely.
-
-        ``ValueError``
-            When the URL is invalid.
-
-        ``Other errors``
-            Other error types are possible as well depending on the client used to fetch
-            the resource.
-
+        Returns:
+            str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
         """
         return cached_path(
             url_or_filename,
@@ -491,7 +455,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from hyfi.io.file import save_data
+        from hyfi.utils.file import save_data
 
         if filename is None:
             raise ValueError("filename must be specified")
@@ -509,7 +473,7 @@ class HyFI:
 
     @staticmethod
     def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        from hyfi.io.file import load_data
+        from hyfi.utils.file import load_data
 
         if filename is not None:
             filename = str(filename)
@@ -535,7 +499,7 @@ class HyFI:
     def get_filepaths(
         filename_patterns=None, base_dir=None, recursive=True, verbose=True, **kwargs
     ):
-        from hyfi.io.file import get_filepaths
+        from hyfi.utils.file import get_filepaths
 
         if filename_patterns is None:
             raise ValueError("filename must be specified")
@@ -557,7 +521,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from hyfi.io.file import concat_data
+        from hyfi.utils.file import concat_data
 
         return concat_data(
             data,
@@ -571,7 +535,7 @@ class HyFI:
 
     @staticmethod
     def is_dataframe(data):
-        from hyfi.io.file import is_dataframe
+        from hyfi.utils.file import is_dataframe
 
         return is_dataframe(data)
 
@@ -950,7 +914,7 @@ class HyFI:
 
     @staticmethod
     def read(uri, mode="rb", encoding=None, head=None, **kwargs):
-        from hyfi.io.file import read as _read
+        from hyfi.utils.file import read as _read
 
         return _read(uri, mode, encoding, head, **kwargs)
 

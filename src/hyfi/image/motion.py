@@ -3,7 +3,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from hyfi.io.file import get_filepaths
+from hyfi.utils.file import get_filepaths
 from hyfi.utils.logging import getLogger
 from hyfi.utils.notebook import display_image
 

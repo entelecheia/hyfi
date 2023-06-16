@@ -13,10 +13,10 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
+from hyfi.cached_path import cached_path
 from hyfi.hydra import _compose, _select, _to_dict
-from hyfi.io.cached_path import cached_path
-from hyfi.io.file import check_path, exists, join_path, mkdir
 from hyfi.utils.env import dotenv_values, getcwd
+from hyfi.utils.file import check_path, exists, join_path, mkdir
 from hyfi.utils.func import lower_case_with_underscores, strptime, today
 from hyfi.utils.logging import getLogger
 

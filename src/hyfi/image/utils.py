@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageFont
 
 from hyfi.image.plot import get_plot_font
-from hyfi.io.file import read
+from hyfi.utils.file import read
 
 
 def scale_image(

@@ -1,4 +1,4 @@
-from hyfi.config.path import PathConfig
+from hyfi.path.batch import PathConfig
 from pathlib import Path
 from pprint import pprint
 

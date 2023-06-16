@@ -22,8 +22,6 @@ class BaseTask(BaseModel):
     path: BatchPathConfig = None  # type: ignore
     project: ProjectConfig = None  # type: ignore
     module: DictConfig = None  # type: ignore
-    auto: Union[DictConfig, str] = None  # type: ignore
-    force: Union[DictConfig, str] = None  # type: ignore
     autoload: bool = False
     version: str = "0.0.0"
     _config_: DictConfig = None  # type: ignore

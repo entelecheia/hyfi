@@ -1,10 +1,10 @@
-from hyfi.config.path import PathConfig
+from hyfi.path.batch import BatchPathConfig
 from pathlib import Path
 from pprint import pprint
 
 
 def test_path_config():
-    config = PathConfig(batch_name="test", task_name="test_task")
+    config = BatchPathConfig(batch_name="test", task_name="test_task")
     pprint(config.dict())
     # Test that the default values are set correctly
     assert config.config_name == "__batch__"

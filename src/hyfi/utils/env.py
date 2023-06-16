@@ -8,8 +8,8 @@ from typing import Any, Union
 import dotenv
 import hydra
 
-from ..io.file import is_dir
-from .logging import getLogger
+from hyfi.io.file import is_dir
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -33,6 +33,7 @@ def getcwd():
 
 
 def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+    # sourcery skip: dict-assign-update-to-union
     """
     Expand POSIX variables in a string.
 

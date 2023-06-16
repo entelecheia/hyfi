@@ -3,13 +3,14 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, SCMode
 
-from hyfi.env import DotEnvConfig, ProjectConfig, __global_config__, _to_config
-from hyfi.hydra import (
+from hyfi.__global__.config import __global_config__
+from hyfi.dotenv import DotEnvConfig
+from hyfi.hydra import _compose, _select, _to_config, _to_dict
+from hyfi.hydra.main import (
     DictKeyType,
     SpecialKeys,
     __home_path__,
     __hyfi_path__,
-    _compose,
     _ensure_kwargs,
     _ensure_list,
     _function,
@@ -27,15 +28,14 @@ from hyfi.hydra import (
     _run,
     _save,
     _save_json,
-    _select,
     _to_container,
-    _to_dict,
     _to_yaml,
     _update,
     _viewsource,
 )
 from hyfi.io.cached_path import cached_path
 from hyfi.io.file import exists, is_dir, is_file, join_path, mkdir
+from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.func import (
     dict_product,

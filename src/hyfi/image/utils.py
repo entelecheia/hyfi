@@ -4,8 +4,8 @@ import io
 import numpy as np
 from PIL import Image, ImageFont
 
-from ..io.file import read
-from .plot import get_plot_font
+from hyfi.image.plot import get_plot_font
+from hyfi.io.file import read
 
 
 def scale_image(

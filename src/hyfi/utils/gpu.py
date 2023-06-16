@@ -1,16 +1,18 @@
 """GPU utilities"""
+
+import contextlib
 import gc
 import os
 import time
 from threading import Thread
 
-from .logging import getLogger
-from .notebook import clear_output
+from hyfi.utils.logging import getLogger
+from hyfi.utils.notebook import clear_output
 
 logger = getLogger(__name__)
 
 try:
-    import GPUtil
+    import GPUtil  # type: ignore
 except ImportError:
     logger.info("GPUtil not found. Please install it to use GPU utilities.")
 
@@ -88,27 +90,25 @@ class GPUMon(Thread):
     @staticmethod
     def release_gpu_memory():
         gc.collect()
-        try:
-            import torch
+        with contextlib.suppress(ImportError):
+            import torch  # type: ignore
 
             torch.cuda.empty_cache()
-        except ImportError:
-            pass
 
 
 def nvidia_smi():
     """Run nvidia-smi and return the output as a string"""
     import subprocess
 
-    return subprocess.run(
-        ["nvidia-smi", "-L"], stdout=subprocess.PIPE
-    ).stdout.decode("utf-8")
+    return subprocess.run(["nvidia-smi", "-L"], stdout=subprocess.PIPE).stdout.decode(
+        "utf-8"
+    )
 
 
 def is_cuda_available():
     """Check if cuda is available"""
     try:
-        import torch
+        import torch  # type: ignore
 
         return torch.cuda.is_available()
     except ImportError:
@@ -118,7 +118,7 @@ def is_cuda_available():
 def set_cuda(device=0):
     """Set cuda device to use"""
     try:
-        import torch
+        import torch  # type: ignore
 
         _names = []
         if isinstance(device, str):
@@ -133,6 +133,6 @@ def set_cuda(device=0):
         device = ", ".join(ids)
         os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
         os.environ["CUDA_VISIBLE_DEVICES"] = device
-    except ImportError:
+    except ImportError as e:
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        raise Exception("Cuda device not found")
+        raise Exception("Cuda device not found") from e

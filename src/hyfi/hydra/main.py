@@ -11,12 +11,14 @@ from typing import IO, Any, Dict, List, Tuple, Union
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
-from .env import __global_config__, _compose, _select, _to_dict
-from .io.cached_path import cached_path
-from .io.file import check_path, exists, join_path, mkdir
-from .utils.env import dotenv_values, getcwd
-from .utils.func import lower_case_with_underscores, strptime, today
-from .utils.logging import getLogger
+from hyfi.__global__ import __home_path__, __hyfi_path__
+from hyfi.__global__.config import __global_config__
+from hyfi.hydra import _compose, _select, _to_dict
+from hyfi.io.cached_path import cached_path
+from hyfi.io.file import check_path, exists, join_path, mkdir
+from hyfi.utils.env import dotenv_values, getcwd
+from hyfi.utils.func import lower_case_with_underscores, strptime, today
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -318,14 +320,6 @@ def _function(cfg: Any, _name_, return_function=False, **parms):
     else:
         logger.info(f"Skipping execute of {fn}")
         return None
-
-
-def __hyfi_path__():
-    return Path(__file__).parent.as_posix()
-
-
-def __home_path__():
-    return Path.home().as_posix()
 
 
 def __search_package_path__():

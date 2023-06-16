@@ -6,10 +6,12 @@ from typing import Optional, Union
 from omegaconf import DictConfig
 from pydantic import BaseModel, validator
 
-from hyfi.config.path import PathConfig
-from hyfi.env import ProjectConfig, _to_config, _to_dict, getLogger
-from hyfi.hydra import _compose, _load, _merge, _methods, _print, _save, _save_json
+from hyfi.hydra import _compose, _to_config, _to_dict
+from hyfi.hydra.main import _load, _merge, _methods, _print, _save, _save_json
+from hyfi.path.batch import BatchPathConfig
+from hyfi.project import ProjectConfig
 from hyfi.utils.lib import ensure_import_module
+from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -35,9 +37,6 @@ class BaseBatchConfig(BaseModel):
     def __init__(self, **data):
         if not data:
             data = _compose("batch")
-            logger.info(
-                f"There is no batch in the config, using default batch: {data.batch_name}"
-            )
         super().__init__(**data)
         self.init_batch_num()
 
@@ -112,7 +111,7 @@ class BaseConfigModel(BaseModel):
     config_name: str = None
     config_group: str = None
     name: str
-    path: PathConfig = None
+    path: BatchPathConfig = None
     project: ProjectConfig = None
     module: DictConfig = None
     auto: Union[DictConfig, str] = None
@@ -176,7 +175,7 @@ class BaseConfigModel(BaseModel):
             self._config_.path = path
         if root_dir is not None:
             path.root = str(root_dir)
-        self.path = PathConfig(**path)
+        self.path = BatchPathConfig(**path)
 
     def set_name(self, val):
         self._config_.name = val
@@ -208,7 +207,7 @@ class BaseConfigModel(BaseModel):
 
     @property
     def workspace_dir(self):
-        return Path(self.project.workspace_dir)
+        return Path(self.project.project_workspace_dir)
 
     @property
     def model_dir(self):

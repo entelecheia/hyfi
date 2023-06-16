@@ -15,7 +15,7 @@ from typing import Any, Callable, Optional, TextIO, Tuple, Union
 import colorama
 from pydantic import StrictBool
 
-from .types import IntSeq
+from hyfi.utils.types import IntSeq
 
 colorama.init()
 

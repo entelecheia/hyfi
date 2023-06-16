@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from hyfi.utils.copier import Copier
+from hyfi.copier import Copier
 
 
 def process_yaml_files(src_path, dst_path) -> bool:

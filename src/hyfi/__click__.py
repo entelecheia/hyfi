@@ -2,11 +2,11 @@
 
 import click
 
+from hyfi.__global__.config import HyfiConfig
 from hyfi._version import __version__
-from hyfi.env import HyfiConfig
-from hyfi.hydra import __hyfi_path__
+from hyfi.copier import Copier
+from hyfi.hydra.main import __hyfi_path__
 from hyfi.main import _about
-from hyfi.utils.copier import Copier
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
@@ -46,14 +46,15 @@ def about():
     Print the about information for Hyfi.
     """
     cfg = HyfiConfig()
+    cfg.about.version = __version__
     _about(cfg)
 
 
 @cli.command()
 @click.option(
-    "--uninstall", is_flag=True, default=False, help="Uninstall shell completion"
+    "--uninstall", "-u", is_flag=True, default=False, help="Uninstall shell completion"
 )
-@click.option("--shell", default="zsh", help="Shell to install completion for")
+@click.option("--shell", "-s", default="zsh", help="Shell to install completion for")
 def sc(uninstall, shell):
     """
     Install or Uninstall shell completion for Hyfi.

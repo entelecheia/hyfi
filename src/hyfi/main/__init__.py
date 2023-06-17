@@ -536,7 +536,13 @@ class HyFI:
         return nvidia_smi()
 
     @staticmethod
-    def ensure_import_module(name, libpath, liburi, specname=None, syspath=None):
+    def ensure_import_module(
+        name: str,
+        libpath: str,
+        liburi: str,
+        specname: str = "",
+        syspath: str = "",
+    ):
         from hyfi.utils.lib import ensure_import_module
 
         return ensure_import_module(name, libpath, liburi, specname, syspath)

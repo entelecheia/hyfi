@@ -1,11 +1,18 @@
 """Image utils."""
 import io
+import os
+import platform
+from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import font_manager, rc
 from PIL import Image, ImageFont
 
-from hyfi.graphics.plot import get_plot_font
 from hyfi.utils.file import read
+from hyfi.utils.logging import getLogger
+
+logger = getLogger(__name__)
 
 
 def scale_image(
@@ -50,7 +57,7 @@ def load_image(
     resize_to_multiple_of: int = None,
     crop_box=None,
     mode="RGB",
-    **kwargs
+    **kwargs,
 ) -> Image.Image:
     """Load image from file or URI."""
     from PIL import Image
@@ -81,7 +88,7 @@ def load_images(
     resize_to_multiple_of: int = None,
     crop_to_min_size=False,
     mode="RGB",
-    **kwargs
+    **kwargs,
 ):
     """Load images from files or URIs."""
     imgs = [
@@ -93,7 +100,7 @@ def load_images(
             scale=scale,
             resize_to_multiple_of=resize_to_multiple_of,
             mode=mode,
-            **kwargs
+            **kwargs,
         )
         for image_or_uri in images_or_uris
     ]
@@ -112,3 +119,72 @@ def get_image_font(fontname=None, fontsize=12):
     """Get font for PIL image."""
     fontname, fontpath = get_plot_font(set_font_for_matplot=False, fontname=fontname)
     return ImageFont.truetype(fontpath, fontsize) if fontpath else None
+
+
+def get_default_system_font(fontname: str = "", verbose: bool = False):
+    if platform.system() == "Darwin":
+        fontname = fontname or "AppleGothic.ttf"
+        fontpath = os.path.join("/System/Library/Fonts/Supplemental/", fontname)
+    elif platform.system() == "Windows":
+        fontname = fontname or "malgun.ttf"
+        fontpath = os.path.join("c:/Windows/Fonts/", fontname)
+    elif platform.system() == "Linux":
+        fontname = fontname or "NanumGothic.ttf"
+        if fontname.lower().startswith("nanum"):
+            fontpath = os.path.join("/usr/share/fonts/truetype/nanum/", fontname)
+        else:
+            fontpath = os.path.join("/usr/share/fonts/truetype/", fontname)
+    if fontpath and not Path(fontpath).is_file():
+        paths = find_font_file(fontname)
+        fontpath = paths[0] if len(paths) > 0 else ""
+    if verbose:
+        logger.info(f"Font path: {fontpath}")
+    return fontname, fontpath
+
+
+def get_plot_font(
+    set_font_for_matplot: bool = True,
+    fontpath: str = "",
+    fontname: str = "",
+    verbose: bool = False,
+):
+    """Get font for plot"""
+    if fontname and not fontname.endswith(".ttf"):
+        fontname += ".ttf"
+    if not fontpath:
+        fontname, fontpath = get_default_system_font(fontname, verbose)
+
+    if not fontpath or not Path(fontpath).is_file():
+        logger.warning(f"Font file does not exist at {fontpath}")
+        fontname = ""
+        fontpath = ""
+        if platform.system() == "Linux":
+            font_install_help = """
+            apt install fontconfig
+            apt install fonts-nanum
+            fc-list | grep -i nanum
+            """
+            print(font_install_help)
+    else:
+        font_manager.fontManager.addfont(fontpath)
+        fontname = font_manager.FontProperties(fname=fontpath).get_name()
+
+        if set_font_for_matplot and fontname:
+            rc("font", family=fontname)
+            plt.rcParams["axes.unicode_minus"] = False
+            if verbose:
+                font_family = plt.rcParams["font.family"]
+                logger.info(f"font family: {font_family}")
+        if verbose:
+            logger.info(f"font name: {fontname}")
+    return fontname, fontpath
+
+
+def find_font_file(query):
+    """Find font file by query string"""
+    return list(
+        filter(
+            lambda path: query in os.path.basename(path),
+            font_manager.findSystemFonts(),
+        )
+    )

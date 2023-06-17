@@ -26,6 +26,9 @@ def scale_image(
     resample: int = Image.LANCZOS,
 ) -> Image.Image:
     """Scale image to have at most `max_pixels` pixels."""
+    if resize_to_multiple_of is None:
+        resize_to_multiple_of = 0
+
     w, h = image.size
 
     if max_width <= 0 and max_height > 0:
@@ -33,9 +36,9 @@ def scale_image(
     elif max_height <= 0 and max_width > 0:
         max_height = int(h * max_width / w)
 
-    if max_width <= 0 and max_height >= 0:
+    if max_width > 0 and max_height > 0:
         max_pixels = max_width * max_height
-    if max_pixels >= 0:
+    if max_pixels > 0:
         scale = np.sqrt(max_pixels / (w * h))
 
     max_width = int(w * scale)
@@ -63,8 +66,16 @@ def load_image(
     """Load image from file or URI."""
     from PIL import Image
 
+    if max_width is None:
+        max_width = 0
+    if max_height is None:
+        max_height = 0
+    if max_pixels is None:
+        max_pixels = 0
     if isinstance(image_or_uri, Image.Image):
         img = image_or_uri.convert(mode)
+    elif Path(image_or_uri).is_file():
+        img = Image.open(image_or_uri).convert(mode)
     else:
         img = Image.open(io.BytesIO(read(image_or_uri, **kwargs))).convert(mode)
     img = scale_image(
@@ -90,7 +101,7 @@ def load_images(
     crop_to_min_size: bool = False,
     mode: str = "RGB",
     **kwargs,
-):
+) -> List[Image.Image]:
     """Load images from files or URIs."""
     imgs = [
         load_image(
@@ -116,23 +127,29 @@ def load_images(
     return imgs
 
 
-def get_image_font(fontname: str = "", fontsize: int = 12):
+def get_image_font(fontname: str = "", fontsize: int = 12, lang: str = "en"):
     """Get font for PIL image."""
     fontname, fontpath = get_plot_font(set_font_for_matplot=False, fontname=fontname)
     return ImageFont.truetype(fontpath, fontsize) if fontpath else None
 
 
 def get_default_system_font(
-    fontname: str = "", fontpath: str = "", verbose: bool = False
+    fontname: str = "",
+    fontpath: str = "",
+    lang: str = "ko",
+    verbose: bool = False,
 ):
     if platform.system() == "Darwin":
-        fontname = fontname or "AppleGothic.ttf"
+        default_fontname = "AppleGothic.ttf" if lang == "ko" else "Arial.ttf"
+        fontname = fontname or default_fontname
         fontpath = os.path.join("/System/Library/Fonts/Supplemental/", fontname)
     elif platform.system() == "Windows":
-        fontname = fontname or "malgun.ttf"
+        default_fontname = "malgun.ttf" if lang == "ko" else "arial.ttf"
+        fontname = fontname or default_fontname
         fontpath = os.path.join("c:/Windows/Fonts/", fontname)
     elif platform.system() == "Linux":
-        fontname = fontname or "NanumGothic.ttf"
+        default_fontname = "NanumGothic.ttf" if lang == "ko" else "DejaVuSans.ttf"
+        fontname = fontname or default_fontname
         if fontname.lower().startswith("nanum"):
             fontpath = os.path.join("/usr/share/fonts/truetype/nanum/", fontname)
         else:
@@ -149,13 +166,14 @@ def get_plot_font(
     set_font_for_matplot: bool = True,
     fontpath: str = "",
     fontname: str = "",
+    lang: str = "en",
     verbose: bool = False,
 ):
     """Get font for plot"""
     if fontname and not fontname.endswith(".ttf"):
         fontname += ".ttf"
     if not fontpath:
-        fontname, fontpath = get_default_system_font(fontname, fontpath, verbose)
+        fontname, fontpath = get_default_system_font(fontname, fontpath, lang, verbose)
 
     if fontpath and Path(fontpath).is_file():
         font_manager.fontManager.addfont(fontpath)

@@ -6,32 +6,31 @@ from pathlib import Path
 from hyfi.utils.file import get_filepaths
 from hyfi.utils.logging import getLogger
 from hyfi.utils.notebook import display_image
+from hyfi.graphics.utils import load_images
 
 logger = getLogger(__name__)
 
 
 def make_gif(
     image_filepaths=None,
-    filename_patterns=None,
-    base_dir=None,
-    output_filepath=None,
-    duration=100,
-    loop=0,
-    width=None,
-    optimize=True,
-    quality=50,
-    show=False,
-    force=False,
+    filename_patterns: str = "",
+    base_dir: str = "",
+    output_filepath: str = "",
+    duration: int = 100,
+    loop: int = 0,
+    width: int = 0,
+    optimize: bool = True,
+    quality: int = 50,
+    show: bool = False,
+    force: bool = False,
     **kwargs,
 ):
     """
     Create a GIF from a list of images or a list of filenames.
     """
-    from PIL import Image
-
-    logger.info(f"Making GIF from {filename_patterns}")
+    logger.info("Making GIF from %s", filename_patterns)
     if os.path.exists(output_filepath) and not force:
-        logger.info(f"Skipping GIF creation, already exists: {output_filepath}")
+        logger.info("Skipping GIF creation, already exists: %s", output_filepath)
         logger.info("If you want to re-create the GIF, set force=True")
     else:
         if image_filepaths is None:
@@ -41,7 +40,7 @@ def make_gif(
         if not image_filepaths:
             logger.warning("no images found")
             return
-        if frames := [Image.open(image) for image in image_filepaths]:
+        if frames := load_images(image_filepaths):
             frame_one = frames[0]
             frame_one.save(
                 output_filepath,
@@ -53,9 +52,9 @@ def make_gif(
                 optimize=optimize,
                 quality=quality,
             )
-            print(f"Saved GIF to {output_filepath}")
+            logger.info("Saved GIF to %s", output_filepath)
         else:
-            logger.warning(f"No frames found for {filename_patterns}")
+            logger.warning("No frames found for %s", filename_patterns)
 
     if show and os.path.exists(output_filepath):
         display_image(data=open(output_filepath, "rb").read(), width=width)
@@ -64,18 +63,21 @@ def make_gif(
 
 
 def extract_frames(
-    video_path, extract_nth_frame, extracted_frame_dir, frame_filename="%04d.jpg"
+    video_path: str,
+    extract_nth_frame: int,
+    extracted_frame_dir: str,
+    frame_filename: str = "%04d.jpg",
 ):
     """
     Extract frames from a video.
     """
-    logger.info(f"Exporting Video Frames (1 every {extract_nth_frame})...")
+    logger.info("Exporting Video Frames (1 every %s)...", extract_nth_frame)
     try:
         for f in Path(f"{extracted_frame_dir}").glob("*.jpg"):
             f.unlink()
     except FileNotFoundError:
-        logger.info(f"No video frames found in {extracted_frame_dir}")
-    vf = f"select=not(mod(n\,{extract_nth_frame}))"
+        logger.info("No video frames found in %s", extracted_frame_dir)
+    vf = f"select=not(mod(n\\,{extract_nth_frame}))"
 
     ffmpeg_path = "/usr/bin/ffmpeg"
     if not os.path.exists(ffmpeg_path):
@@ -101,20 +103,27 @@ def extract_frames(
         ).stdout.decode("utf-8")
     else:
         logger.warning(
-            f"WARNING!\n\nVideo not found: {video_path}.\nPlease check your video path."
+            "WARNING!\n\nVideo not found: %s.\nPlease check your video path.",
+            video_path,
         )
 
 
 def create_video(
-    base_dir, video_path, input_url, fps, start_number, vframes, force=False
+    base_dir: str,
+    video_path: str,
+    input_url: str,
+    fps: int,
+    start_number: int,
+    vframes: int,
+    force: bool = False,
 ):
     """
     Create a video from a list of images.
     """
 
-    logger.info(f"Creating video from {input_url}")
+    logger.info("Creating video from %s", input_url)
     if os.path.exists(video_path) and not force:
-        logger.info(f"Skipping video creation, already exists: {video_path}")
+        logger.info("Skipping video creation, already exists: %s", video_path)
         logger.info("If you want to re-create the video, set force=True")
         return video_path
 
@@ -150,11 +159,11 @@ def create_video(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    stdout, stderr = process.communicate()
+    _, stderr = process.communicate()
     if process.returncode != 0:
-        print(stderr)
+        logger.error(stderr)
         raise RuntimeError(stderr)
     else:
-        print(f"The video is ready and saved to {video_path}")
+        logger.info("Video created successfully and saved to %s", video_path)
 
     return video_path

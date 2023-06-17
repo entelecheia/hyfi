@@ -74,7 +74,7 @@ class Composer(BaseModel):
             config_data=self.config_data,
             throw_on_resolution_failure=self.throw_on_resolution_failure,
             throw_on_missing=self.throw_on_missing,
-            config_name=self.config_name,
+            root_config_name=self.config_name,
             config_module=self.config_module,
             global_package=self.global_package,
             verbose=self.verbose,
@@ -87,7 +87,7 @@ class Composer(BaseModel):
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        config_name: Union[str, None] = None,
+        root_config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
         global_package: bool = False,
         verbose: bool = False,
@@ -102,7 +102,7 @@ class Composer(BaseModel):
             return_as_dict: Return the result as a dict
             throw_on_resolution_failure: If True throw an exception if resolution fails
             throw_on_missing: If True throw an exception if config_group doesn't exist
-            config_name: Name of the root config to be used (e.g. `hconf`)
+            root_config_name: Name of the root config to be used (e.g. `hconf`)
             config_module: Module of the config to be used (e.g. `hyfi.conf`)
             global_package: If True, the config assumed to be a global package
             verbose: If True print configuration to stdout
@@ -116,7 +116,7 @@ class Composer(BaseModel):
             config_data=config_data,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
-            config_name=config_name,
+            root_config_name=root_config_name,
             config_module=config_module,
             global_package=global_package,
             verbose=verbose,
@@ -138,7 +138,7 @@ class Composer(BaseModel):
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        config_name: Union[str, None] = None,
+        root_config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
         global_package: bool = False,
         verbose: bool = False,
@@ -149,7 +149,7 @@ class Composer(BaseModel):
             config_data=config_data,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
-            config_name=config_name,
+            root_config_name=root_config_name,
             config_module=config_module,
             global_package=global_package,
             verbose=verbose,
@@ -262,7 +262,7 @@ class Composer(BaseModel):
 
     @staticmethod
     def hydra_compose(
-        config_name: Union[str, None] = None,
+        root_config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
     ):
@@ -272,19 +272,19 @@ class Composer(BaseModel):
         if is_initialized:
             # Hydra is already initialized.
             logger.debug("Hydra is already initialized")
-            cfg = hydra.compose(config_name=config_name, overrides=overrides)
+            cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         else:
             with hydra.initialize_config_module(
                 config_module=config_module, version_base=__hydra_version_base__
             ):
-                cfg = hydra.compose(config_name=config_name, overrides=overrides)
+                cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         if is_initialized:
-            cfg = hydra.compose(config_name=config_name, overrides=overrides)
+            cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         else:
             with hydra.initialize_config_module(
                 config_module=config_module, version_base=__hydra_version_base__
             ):
-                cfg = hydra.compose(config_name=config_name, overrides=overrides)
+                cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         return cfg
 
     @staticmethod
@@ -313,7 +313,7 @@ class Composer(BaseModel):
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        config_name: Union[str, None] = None,
+        root_config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
         global_package: bool = False,
         **kwargs,
@@ -330,7 +330,7 @@ class Composer(BaseModel):
         if group_key and group_value:
             # Initialize hydra configuration module.
             cfg = Composer.hydra_compose(
-                config_name=config_name,
+                root_config_name=root_config_name,
                 config_module=config_module,
                 overrides=overrides,
             )
@@ -357,7 +357,9 @@ class Composer(BaseModel):
         logger.debug(f"compose config with overrides: {overrides}")
         # Initialize hydra and return the configuration.
         cfg = Composer.hydra_compose(
-            config_name=config_name, config_module=config_module, overrides=overrides
+            root_config_name=root_config_name,
+            config_module=config_module,
+            overrides=overrides,
         )
         # Select the group_key from the configuration.
         if group_key and not global_package:
@@ -572,7 +574,7 @@ def _compose(
     return_as_dict: bool = True,
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,
-    config_name: Union[str, None] = None,
+    root_config_name: Union[str, None] = None,
     config_module: Union[str, None] = None,
     global_package: bool = False,
     verbose: bool = False,
@@ -587,7 +589,7 @@ def _compose(
         return_as_dict: Return the result as a dict
         throw_on_resolution_failure: If True throw an exception if resolution fails
         throw_on_missing: If True throw an exception if config_group doesn't exist
-        config_name: Name of the root config to be used (e.g. `hconf`)
+        root_config_name: Name of the root config to be used (e.g. `hconf`)
         config_module: Module of the config to be used (e.g. `hyfi.conf`)
         global_package: If True, the config assumed to be a global package
         verbose: If True print configuration to stdout
@@ -601,7 +603,7 @@ def _compose(
         config_data=config_data,
         throw_on_resolution_failure=throw_on_resolution_failure,
         throw_on_missing=throw_on_missing,
-        config_name=config_name,
+        config_name=root_config_name,
         config_module=config_module,
         global_package=global_package,
         verbose=verbose,

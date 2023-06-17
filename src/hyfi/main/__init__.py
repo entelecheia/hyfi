@@ -68,6 +68,8 @@ class HyFI:
     __version__ = __global_config__.__version__
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()
+    dotenv = __global_config__.dotenv
+    osenv = __global_config__.osenv
 
     def __init__(self) -> None:
         raise NotImplementedError("Use one of the static construction functions")
@@ -87,11 +89,6 @@ class HyFI:
     def terminate():
         """Terminate the global config"""
         __global_config__.terminate()
-
-    @staticmethod
-    def envs() -> DotEnvConfig:
-        """Return the current environments"""
-        return DotEnvConfig()  # type: ignore
 
     @staticmethod
     def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
@@ -116,9 +113,13 @@ class HyFI:
         return expand_posix_vars(posix_expr, context=context)
 
     @staticmethod
-    def environ(key: str = "", default: Union[str, None] = None) -> Any:
+    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
         return get_osenv(key, default=default)
+
+    @staticmethod
+    def set_osenv(key, value):
+        return set_osenv(key, value)
 
     @staticmethod
     def compose(
@@ -519,14 +520,6 @@ class HyFI:
     @staticmethod
     def is_notebook():
         return is_notebook()
-
-    @staticmethod
-    def osenv(key, default=None):
-        return get_osenv(key, default)
-
-    @staticmethod
-    def env_set(key, value):
-        return set_osenv(key, value)
 
     @staticmethod
     def nvidia_smi():

@@ -3,7 +3,8 @@ A class to apply a pipe to a dataframe or a dictionary of dataframes.
 """
 from tqdm.auto import tqdm
 
-from hyfi.hydra.main import SpecialKeys, _partial
+from hyfi.hydra import SpecialKeys
+from hyfi.hydra.main import XC
 from hyfi.joblib.batch import batcher
 from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.utils.logging import getLogger
@@ -19,7 +20,7 @@ class PIPE:
     @staticmethod
     def pipe(data, pipe):
         _func_ = pipe.get(SpecialKeys.FUNC)
-        _fn = _partial(_func_)
+        _fn = XC.partial(_func_)
         logger.info("Applying pipe: %s", _fn)
         if isinstance(data, dict):
             if "concat_dataframes" in str(_fn):

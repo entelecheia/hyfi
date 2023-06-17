@@ -5,8 +5,7 @@ from typing import Union
 from omegaconf import DictConfig
 from pydantic import BaseModel
 
-from hyfi.hydra import _compose, _to_config
-from hyfi.hydra.main import _merge, _methods, _print
+from hyfi.hydra import Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
@@ -55,9 +54,9 @@ class TaskConfig(BaseModel):
         **args,
     ):
         if config_group:
-            args = _merge(_compose(config_group), args)
+            args = Composer.merge(Composer._compose(config_group), args)
         else:
-            args = _to_config(args)
+            args = Composer.to_config(args)
         super().__init__(config_name=config_name, config_group=config_group, **args)
 
         object.__setattr__(self, "_config_", args)
@@ -73,7 +72,7 @@ class TaskConfig(BaseModel):
     def set_root_dir(self, root_dir: Union[str, Path]):
         path = self.config.path
         if path is None:
-            path = _compose("path=_batch_")
+            path = Composer._compose("path=_batch_")
             logger.info(
                 f"There is no path in the config, using default path: {path.root}"
             )
@@ -139,10 +138,10 @@ class TaskConfig(BaseModel):
         return self.project.verbose
 
     def autorun(self):
-        return _methods(self.auto, self)
+        return Composer.methods(self.auto, self)
 
     def show_config(self):
-        _print(self.dict())
+        Composer.print(self.dict())
 
     def load_modules(self):
         """Load the modules"""

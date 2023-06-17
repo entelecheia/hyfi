@@ -123,7 +123,11 @@ def load_module_from_file(name: str, libpath: str, specname: str = "") -> None:
 
 
 def ensure_import_module(
-    name: str, libpath: str, liburi: str, specname: str = "", syspath: str = ""
+    name: str,
+    libpath: str,
+    liburi: str,
+    specname: str = "",
+    syspath: str = "",
 ) -> None:
     """Ensure a module is imported, if not, clone it from a git repo and load it"""
     try:

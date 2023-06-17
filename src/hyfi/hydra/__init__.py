@@ -159,7 +159,7 @@ def _compose_internal(
             throw_on_missing=throw_on_missing,
             throw_on_resolution_failure=throw_on_resolution_failure,
         )
-    logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
+    # logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
     return cfg
 
 

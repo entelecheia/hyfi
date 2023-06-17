@@ -10,7 +10,7 @@ def test_version():
 
 def test_envs():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi"
-    envs = HyFI.envs()
+    envs = HyFI.dotenv()
     pprint(envs.dict())
     assert envs.HYFI_PROJECT_NAME == "hyfi"
 

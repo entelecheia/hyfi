@@ -2,42 +2,20 @@
     This module contains the primary class for the hyfi config package, HyFI,
     as well as various utility functions and imports.
 """
-from pathlib import Path
+import os
+from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Tuple, Union
 
+import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import _compose, _select, _to_config, _to_dict
-from hyfi.hydra.main import (
-    DictKeyType,
-    SpecialKeys,
-    _ensure_kwargs,
-    _ensure_list,
-    _function,
-    _getsource,
-    _instantiate,
-    _is_config,
-    _is_instantiatable,
-    _is_list,
-    _load,
-    _load_json,
-    _merge,
-    _methods,
-    _partial,
-    _print,
-    _run,
-    _save,
-    _save_json,
-    _to_container,
-    _to_yaml,
-    _update,
-    _viewsource,
-)
-from hyfi.joblib.pipe import _apply, _pipe
+from hyfi.hydra import Composer, DictKeyType, SpecialKeys
+from hyfi.hydra.main import XC
+from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
@@ -113,11 +91,6 @@ class HyFI:
         __global_config__.terminate()
 
     @staticmethod
-    def envs() -> DotEnvConfig:
-        """Return the current environments"""
-        return DotEnvConfig()  # type: ignore
-
-    @staticmethod
     def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
         """
         Expand POSIX variables in a string.
@@ -140,9 +113,23 @@ class HyFI:
         return expand_posix_vars(posix_expr, context=context)
 
     @staticmethod
-    def environ(key: str = "", default: Union[str, None] = None) -> Any:
+    def dotenv() -> DotEnvConfig:
+        """Return the DotEnvConfig"""
+        return DotEnvConfig()
+
+    @staticmethod
+    def osenv():
+        """Return the DotEnvConfig"""
+        return os.environ
+
+    @staticmethod
+    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
         return get_osenv(key, default=default)
+
+    @staticmethod
+    def set_osenv(key, value):
+        return set_osenv(key, value)
 
     @staticmethod
     def compose(
@@ -175,7 +162,7 @@ class HyFI:
         Returns:
             A config object or a dictionary with the composed config
         """
-        return _compose(
+        return Composer._compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
@@ -197,7 +184,7 @@ class HyFI:
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
     ):
-        return _select(
+        return Composer.select(
             cfg,
             key,
             default=default,
@@ -209,19 +196,17 @@ class HyFI:
     def to_dict(
         cfg: Any,
     ):
-        return _to_dict(cfg)
+        return Composer.to_dict(cfg)
 
     @staticmethod
     def to_config(
         cfg: Any,
     ):
-        return _to_config(cfg)
+        return Composer.to_config(cfg)
 
     @staticmethod
-    def to_yaml(cfg: Any, *, resolve: bool = False, sort_keys: bool = False) -> str:
-        if resolve:
-            cfg = _to_dict(cfg)
-        return _to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
+    def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        return Composer.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
     def to_container(
@@ -232,7 +217,7 @@ class HyFI:
         enum_to_str: bool = False,
         structured_config_mode: SCMode = SCMode.DICT,
     ):
-        return _to_container(
+        return Composer.to_container(
             cfg=cfg,
             resolve=resolve,
             throw_on_missing=throw_on_missing,
@@ -247,35 +232,35 @@ class HyFI:
         *args: Any,
         **kwargs: Any,
     ) -> Any:
-        return _partial(config=config, config_group=config_group, *args, **kwargs)
+        return XC.partial(config=config, config_group=config_group, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-        return _instantiate(config, *args, **kwargs)
+        return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod
     def is_config(
         cfg: Any,
     ):
-        return _is_config(cfg)
+        return Composer.is_config(cfg)
 
     @staticmethod
     def is_list(
         cfg: Any,
     ):
-        return _is_list(cfg)
+        return Composer.is_list(cfg)
 
     @staticmethod
     def is_instantiatable(cfg: Any):
-        return _is_instantiatable(cfg)
+        return Composer.is_instantiatable(cfg)
 
     @staticmethod
     def load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
-        return _load(file_)
+        return Composer.load(file_)
 
     @staticmethod
     def update(_dict, _overrides):
-        return _update(_dict, _overrides)
+        return Composer.update(_dict, _overrides)
 
     @staticmethod
     def merge(
@@ -293,11 +278,11 @@ class HyFI:
         :param configs: Input configs
         :return: the merged config object.
         """
-        return _merge(*configs)
+        return Composer.merge(*configs)
 
     @staticmethod
     def save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
-        _save(config, f, resolve)
+        Composer.save(config, f, resolve)
 
     @staticmethod
     def save_json(
@@ -308,31 +293,31 @@ class HyFI:
         default=None,
         **kwargs,
     ):
-        _save_json(json_dict, f, indent, ensure_ascii, default, **kwargs)
+        Composer.save_json(json_dict, f, indent, ensure_ascii, default, **kwargs)
 
     @staticmethod
     def load_json(f: Union[str, Path, IO[Any]], **kwargs) -> dict:
-        return _load_json(f, **kwargs)
+        return Composer.load_json(f, **kwargs)
 
     @staticmethod
     def pprint(cfg: Any, resolve: bool = True, **kwargs):
-        _print(cfg, resolve=resolve, **kwargs)
+        Composer.print(cfg, resolve=resolve, **kwargs)
 
     @staticmethod
     def print(cfg: Any, resolve: bool = True, **kwargs):
-        _print(cfg, resolve=resolve, **kwargs)
+        Composer.print(cfg, resolve=resolve, **kwargs)
 
     @staticmethod
     def methods(cfg: Any, obj: object, return_function=False):
-        return _methods(cfg, obj, return_function)
+        return Composer.methods(cfg, obj, return_function)
 
     @staticmethod
     def function(cfg: Any, _name_, return_function=False, **parms):
-        return _function(cfg, _name_, return_function, **parms)
+        return XC.function(cfg, _name_, return_function, **parms)
 
     @staticmethod
     def run(config: Any, **kwargs: Any) -> Any:
-        _run(config, **kwargs)
+        XC.run(config, **kwargs)
 
     @staticmethod
     def load_dotenv(
@@ -386,11 +371,11 @@ class HyFI:
 
     @staticmethod
     def pipe(data=None, cfg=None):
-        return _pipe(data, cfg)
+        return PIPE.pipe(data, cfg)
 
     @staticmethod
     def ensure_list(value):
-        return _ensure_list(value)
+        return Composer.ensure_list(value)
 
     @staticmethod
     def to_dateparm(_date, _format="%Y-%m-%d"):
@@ -427,7 +412,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        return _apply(
+        return PIPE.apply(
             func,
             series,
             description=description,
@@ -440,24 +425,22 @@ class HyFI:
 
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
-        return _ensure_kwargs(_kwargs, _fn)
+        return Composer.ensure_kwargs(_kwargs, _fn)
 
     @staticmethod
     def save_data(
-        data,
-        filename=None,
-        base_dir=None,
+        data: Union[pd.DataFrame, dict],
+        filename: str,
+        base_dir: str = "",
         columns=None,
-        index=False,
+        index: bool = False,
         filetype="parquet",
-        suffix=None,
-        verbose=False,
+        suffix: str = "",
+        verbose: bool = False,
         **kwargs,
     ):
         from hyfi.utils.file import save_data
 
-        if filename is None:
-            raise ValueError("filename must be specified")
         save_data(
             data,
             filename,
@@ -477,7 +460,7 @@ class HyFI:
         if filename is not None:
             filename = str(filename)
         if SpecialKeys.TARGET in kwargs:
-            return _instantiate(
+            return XC.instantiate(
                 kwargs,
                 filename=filename,
                 base_dir=base_dir,
@@ -496,12 +479,14 @@ class HyFI:
 
     @staticmethod
     def get_filepaths(
-        filename_patterns=None, base_dir=None, recursive=True, verbose=True, **kwargs
+        filename_patterns: Union[str, PosixPath, WindowsPath],
+        base_dir: Union[str, PosixPath, WindowsPath] = "",
+        recursive: bool = True,
+        verbose: bool = False,
+        **kwargs,
     ):
         from hyfi.utils.file import get_filepaths
 
-        if filename_patterns is None:
-            raise ValueError("filename must be specified")
         return get_filepaths(
             filename_patterns,
             base_dir=base_dir,
@@ -547,19 +532,17 @@ class HyFI:
         return is_notebook()
 
     @staticmethod
-    def osenv(key, default=None):
-        return get_osenv(key, default)
-
-    @staticmethod
-    def env_set(key, value):
-        return set_osenv(key, value)
-
-    @staticmethod
     def nvidia_smi():
         return nvidia_smi()
 
     @staticmethod
-    def ensure_import_module(name, libpath, liburi, specname=None, syspath=None):
+    def ensure_import_module(
+        name: str,
+        libpath: str,
+        liburi: str,
+        specname: str = "",
+        syspath: str = "",
+    ):
         from hyfi.utils.lib import ensure_import_module
 
         return ensure_import_module(name, libpath, liburi, specname, syspath)
@@ -644,9 +627,8 @@ class HyFI:
     def getLogger(
         name=None,
         log_level=None,
-        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     ):
-        return getLogger(name, log_level, fmt)
+        return getLogger(name, log_level)
 
     @staticmethod
     def setLogger(level=None, force=True, **kwargs):
@@ -670,11 +652,11 @@ class HyFI:
 
     @staticmethod
     def getsource(obj):
-        return _getsource(obj)
+        return XC.getsource(obj)
 
     @staticmethod
     def viewsource(obj):
-        return _viewsource(obj)
+        return XC.viewsource(obj)
 
     @staticmethod
     def clear_output(wait=False):
@@ -730,15 +712,15 @@ class HyFI:
 
     @staticmethod
     def pip(
-        name,
-        upgrade=False,
-        prelease=False,
-        editable=False,
-        quiet=False,
-        find_links=None,
-        requirement=None,
-        force_reinstall=False,
-        verbose=False,
+        name: str,
+        upgrade: bool = False,
+        prelease: bool = False,
+        editable: bool = False,
+        quiet: bool = True,
+        find_links: str = "",
+        requirement: bool = False,
+        force_reinstall: bool = False,
+        verbose: bool = False,
         **kwargs,
     ):
         from hyfi.utils.lib import pip as _pip
@@ -757,7 +739,12 @@ class HyFI:
         )
 
     @staticmethod
-    def upgrade(prelease=False, quiet=False, force_reinstall=False, **kwargs):
+    def upgrade(
+        prelease=False,
+        quiet=False,
+        force_reinstall=False,
+        **kwargs,
+    ):
         from hyfi.utils.lib import pip
 
         return pip(
@@ -786,18 +773,34 @@ class HyFI:
         return cprint(str_color_tuples)
 
     @staticmethod
-    def dict_to_dataframe(data, orient="columns", dtype=None, columns=None):
+    def dict_to_dataframe(
+        data,
+        orient="columns",
+        dtype=None,
+        columns=None,
+    ):
         return dict_to_dataframe(data, orient, dtype, columns)
 
     @staticmethod
     def records_to_dataframe(
-        data, index=None, exclude=None, columns=None, coerce_float=False, nrows=None
+        data,
+        index=None,
+        exclude=None,
+        columns=None,
+        coerce_float=False,
+        nrows=None,
     ):
         return records_to_dataframe(data, index, exclude, columns, coerce_float, nrows)
 
     @staticmethod
     def create_dropdown(
-        options, value, description, disabled=False, style=None, layout=None, **kwargs
+        options,
+        value,
+        description,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
     ):
         if style is None:
             style = {"description_width": "initial"}
@@ -835,7 +838,11 @@ class HyFI:
 
     @staticmethod
     def create_button(
-        description, button_style="", icon="check", layout=None, **kwargs
+        description,
+        button_style="",
+        icon="check",
+        layout=None,
+        **kwargs,
     ):
         return create_button(description, button_style, icon, layout, **kwargs)
 
@@ -906,8 +913,8 @@ class HyFI:
         )
 
     @staticmethod
-    def get_image_font(fontname=None, fontsize=12):
-        from hyfi.graphics.collage import get_image_font
+    def get_image_font(fontname: str = "", fontsize: int = 12):
+        from hyfi.graphics.utils import get_image_font
 
         return get_image_font(fontname, fontsize)
 
@@ -920,18 +927,18 @@ class HyFI:
     @staticmethod
     def load_image(
         image_or_uri,
-        max_width: int = None,
-        max_height: int = None,
-        max_pixels: int = None,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
         scale: float = 1.0,
-        resize_to_multiple_of: int = None,
+        resize_to_multiple_of: int = 0,
         crop_box=None,
         mode="RGB",
         **kwargs,
     ):
-        from hyfi.graphics.utils import load_image as _load_image
+        from hyfi.graphics.utils import load_image
 
-        return _load_image(
+        return load_image(
             image_or_uri,
             max_width,
             max_height,
@@ -999,9 +1006,9 @@ class HyFI:
     @staticmethod
     def scale_image(
         image,
-        max_width: int = None,
-        max_height: int = None,
-        max_pixels: int = None,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
         scale: float = 1.0,
         resize_to_multiple_of: int = 8,
         resample: int = 1,
@@ -1012,9 +1019,9 @@ class HyFI:
         resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
                     Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
         """
-        from hyfi.graphics.utils import scale_image as _scale_image
+        from hyfi.graphics.utils import scale_image
 
-        return _scale_image(
+        return scale_image(
             image,
             max_width,
             max_height,

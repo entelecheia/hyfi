@@ -142,7 +142,7 @@ class ProjectConfig(BaseModel):
                 )
 
     @property
-    def environ(self):
+    def osenv(self):
         return os.environ
 
     @property

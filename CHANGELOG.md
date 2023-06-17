@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.7.1 (2023-06-17)
+
+### Fix
+
+* **fileutils:** Handle empty filename_patterns and filename when saving data ([`3e1d450`](https://github.com/entelecheia/hyfi/commit/3e1d450c7e726302f2c9169248472f18960b3218))
+* **config:** Fix import of __search_package_path__ in hydra/main.py ([`e07d932`](https://github.com/entelecheia/hyfi/commit/e07d932ac69c68b48e8cee5c8554087462efec7c))
+
 ## v0.7.0 (2023-06-16)
 
 ### Feature

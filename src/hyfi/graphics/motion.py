@@ -3,10 +3,10 @@ import os
 import subprocess
 from pathlib import Path
 
+from hyfi.graphics.utils import load_images
 from hyfi.utils.file import get_filepaths
 from hyfi.utils.logging import getLogger
 from hyfi.utils.notebook import display_image
-from hyfi.graphics.utils import load_images
 
 logger = getLogger(__name__)
 

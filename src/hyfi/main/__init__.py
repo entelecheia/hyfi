@@ -627,9 +627,8 @@ class HyFI:
     def getLogger(
         name=None,
         log_level=None,
-        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     ):
-        return getLogger(name, log_level, fmt)
+        return getLogger(name, log_level)
 
     @staticmethod
     def setLogger(level=None, force=True, **kwargs):

@@ -284,3 +284,7 @@ class HyfiConfig(BaseModel):
 
 
 __global_config__ = HyfiConfig()
+
+
+def __search_package_path__():
+    return __global_config__.hyfi_config_path

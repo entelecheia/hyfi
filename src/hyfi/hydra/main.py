@@ -12,7 +12,7 @@ import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
-from hyfi.__global__.config import __global_config__
+from hyfi.__global__.config import __global_config__, __search_package_path__
 from hyfi.cached_path import cached_path
 from hyfi.hydra import SpecialKeys, _compose, _select, _to_dict
 from hyfi.utils.env import dotenv_values, getcwd
@@ -24,8 +24,6 @@ logger = getLogger(__name__)
 
 
 DictKeyType = Union[str, int, Enum, float, bool]
-
-
 
 
 _config_ = _compose().copy()
@@ -304,10 +302,6 @@ def _function(cfg: Any, _name_, return_function=False, **parms):
     else:
         logger.info(f"Skipping execute of {fn}")
         return None
-
-
-def __search_package_path__():
-    return __global_config__.hyfi_config_path
 
 
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)

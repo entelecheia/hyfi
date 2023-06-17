@@ -23,11 +23,11 @@ colorama.init()
 class Style:
     """Common color styles."""
 
-    OK: IntSeq = [colorama.Fore.GREEN, colorama.Style.BRIGHT]
-    WARNING: IntSeq = [colorama.Fore.YELLOW, colorama.Style.BRIGHT]
-    IGNORE: IntSeq = [colorama.Fore.CYAN]
-    DANGER: IntSeq = [colorama.Fore.RED, colorama.Style.BRIGHT]
-    RESET: IntSeq = [colorama.Fore.RESET, colorama.Style.RESET_ALL]
+    OK: IntSeq = [colorama.Fore.GREEN, colorama.Style.BRIGHT]  # type: ignore
+    WARNING: IntSeq = [colorama.Fore.YELLOW, colorama.Style.BRIGHT]  # type: ignore
+    IGNORE: IntSeq = [colorama.Fore.CYAN]  # type: ignore
+    DANGER: IntSeq = [colorama.Fore.RED, colorama.Style.BRIGHT]  # type: ignore
+    RESET: IntSeq = [colorama.Fore.RESET, colorama.Style.RESET_ALL]  # type: ignore
 
 
 INDENT = " " * 2
@@ -52,7 +52,7 @@ def printf(
     if not style:
         return action + _msg
 
-    out = style + [action] + Style.RESET + [INDENT, _msg]
+    out = style + [action] + Style.RESET + [INDENT, _msg]  # type: ignore
     print(*out, sep="", file=file_)
     return None  # HACK: Satisfy MyPy
 
@@ -108,7 +108,7 @@ def force_str_end(original_str: str, end: str = "\n") -> str:
         original_str: String that you want to ensure ending.
         end: String that must exist at the end of `original_str`
     """
-    return original_str + end if not original_str.endswith(end) else original_str
+    return original_str if original_str.endswith(end) else original_str + end
 
 
 def handle_remove_readonly(
@@ -149,7 +149,7 @@ class TemporaryDirectory(tempfile.TemporaryDirectory):
 
     def cleanup(self):
         """Remove directory safely."""
-        if self._finalizer.detach():
+        if self._finalizer.detach():  # type: ignore
             self._robust_cleanup(self.name)
 
     @staticmethod

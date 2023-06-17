@@ -439,7 +439,7 @@ class HyFI:
         verbose: bool = False,
         **kwargs,
     ):
-        from hyfi.utils.file import save_data
+        from hyfi.utils.dataframe import save_data
 
         save_data(
             data,
@@ -455,7 +455,7 @@ class HyFI:
 
     @staticmethod
     def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        from hyfi.utils.file import load_data
+        from hyfi.utils.dataframe import load_data
 
         if filename is not None:
             filename = str(filename)
@@ -505,7 +505,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from hyfi.utils.file import concat_data
+        from hyfi.utils.dataframe import concat_data
 
         return concat_data(
             data,
@@ -519,7 +519,7 @@ class HyFI:
 
     @staticmethod
     def is_dataframe(data):
-        from hyfi.utils.file import is_dataframe
+        from hyfi.utils.dataframe import is_dataframe
 
         return is_dataframe(data)
 

@@ -66,7 +66,9 @@ class PIPE:
                     f"Using batcher with minibatch size: {batcher_instance.minibatch_size}"
                 )
                 results = decorator_apply(
-                    func, batcher_instance, description=description
+                    func,
+                    batcher_instance,
+                    description=description,  # type: ignore
                 )(series)
                 if batcher_instance is not None:
                     batcher_instance.minibatch_size = batcher_minibatch_size

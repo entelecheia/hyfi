@@ -1,4 +1,5 @@
 """Utilities for working with notebooks.""" ""
+import contextlib
 import logging
 import os
 import sys
@@ -11,11 +12,11 @@ logger = logging.getLogger(__name__)
 def is_notebook():
     """Check if the code is running in a notebook."""
     try:
-        get_ipython
+        get_ipython  # type: ignore
     except NameError:
         return False
     # pylint: disable=undefined-variable
-    shell_type = get_ipython().__class__.__name__  # noqa
+    shell_type = get_ipython().__class__.__name__  # type: ignore # noqa
     # logger.info(f"shell type: {shell_type}")
     return shell_type in ["ZMQInteractiveShell", "Shell"]
 
@@ -181,7 +182,7 @@ def colored_str(s, color="black"):
 
 
 def cprint(str_tuples):
-    from IPython.display import HTML as html_print
+    from IPython.core.display import HTML as html_print
     from IPython.display import display
 
     display(html_print(" ".join([colored_str(ti, color=ci) for ti, ci in str_tuples])))
@@ -191,9 +192,10 @@ def create_dropdown(
     options, value, description, disabled=False, style=None, layout=None, **kwargs
 ):
     """Create a dropdown widget."""
+    import ipywidgets as widgets
+
     if style is None:
         style = {"description_width": "initial"}
-    import ipywidgets as widgets
 
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
@@ -219,9 +221,10 @@ def create_textarea(
     **kwargs,
 ):
     """Create a textarea widget."""
+    import ipywidgets as widgets
+
     if style is None:
         style = {"description_width": "initial"}
-    import ipywidgets as widgets
 
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
@@ -257,9 +260,10 @@ def create_radiobutton(
     options, description, value=None, disabled=False, style=None, layout=None, **kwargs
 ):
     """Create a radiobutton widget."""
+    import ipywidgets as widgets
+
     if style is None:
         style = {"description_width": "initial"}
-    import ipywidgets as widgets
 
     layout = (
         widgets.Layout(width="auto") if layout is None else widgets.Layout(**layout)
@@ -350,25 +354,28 @@ def load_extentions(exts=None):
         exts = ["autotime"]
     if not is_notebook():
         return
-    from IPython import get_ipython
+    with contextlib.suppress(ImportError):
+        from IPython.core.getipython import get_ipython
 
-    ip = get_ipython()
-    try:
-        loaded = ip.extension_manager.loaded
-        for ext in exts:
-            if ext not in loaded:
-                ip.extentension_manager.load_extension(ext)
-    except AttributeError:
-        for ext in exts:
-            try:
-                ip.magic(f"load_ext {ext}")
-            except ModuleNotFoundError:
-                logger.info("Extension %s not found. Install it first.", ext)
+        ip = get_ipython()
+        if ip is None:
+            return
+        try:
+            loaded = ip.extension_manager.loaded
+            for ext in exts:
+                if ext not in loaded:
+                    ip.extentension_manager.load_extension(ext)
+        except AttributeError:
+            for ext in exts:
+                try:
+                    ip.magic(f"load_ext {ext}")
+                except ModuleNotFoundError:
+                    logger.info("Extension %s not found. Install it first.", ext)
 
 
 def set_matplotlib_formats(*formats, **kwargs):
     """Set matplotlib formats."""
     if is_notebook():
-        from IPython.display import set_matplotlib_formats
+        from IPython.core.display import set_matplotlib_formats
 
         set_matplotlib_formats(*formats, **kwargs)

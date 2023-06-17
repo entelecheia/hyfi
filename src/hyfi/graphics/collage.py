@@ -166,18 +166,14 @@ def label_collage(
     if xticklabels is not None:
         # get ncols number of xticks from xlim
         xlim = ax.get_xlim()
-        xticks = np.linspace(xlim[0], xlim[1], ncols + 1)
-        xticks = xticks - (xticks[1] - xticks[0]) / 2
-        xticks[0] = xlim[0]
+        xticks = _get_ticks(xlim, ncols)
         ax.set_xticks(xticks, color=fg_fontcolor)
         xticklabels = [""] + xticklabels
         ax.set_xticklabels(xticklabels, fontsize=xlabel_fontsize, color=fg_fontcolor)
     if yticklabels is not None:
         # get nrows number of yticks from ylim
         ylim = ax.get_ylim()
-        yticks = np.linspace(ylim[0], ylim[1], nrows + 1)
-        yticks = yticks - (yticks[1] - yticks[0]) / 2
-        yticks[0] = ylim[0]
+        yticks = _get_ticks(ylim, nrows)
         ax.set_yticks(yticks, color=fg_fontcolor)
         yticklabels = [""] + yticklabels
         ax.set_yticklabels(yticklabels, fontsize=ylabel_fontsize, color=fg_fontcolor)
@@ -205,6 +201,13 @@ def label_collage(
         ncols=ncols,
         nrows=nrows,
     )
+
+
+def _get_ticks(lim, n):
+    result = np.linspace(lim[0], lim[1], n + 1)
+    result = result - (result[1] - result[0]) / 2
+    result[0] = lim[0]
+    return result
 
 
 def grid_of_images(

@@ -8,7 +8,6 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
-from PIL import Image
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
@@ -1006,13 +1005,13 @@ class HyFI:
 
     @staticmethod
     def scale_image(
-        image: Image.Image,
+        image,
         max_width: int = 0,
         max_height: int = 0,
         max_pixels: int = 0,
         scale: float = 1.0,
         resize_to_multiple_of: int = 8,
-        resample: int = Image.LANCZOS,
+        resample: int = 1,
     ):
         """
         Scale an image to a maximum width, height, or number of pixels.

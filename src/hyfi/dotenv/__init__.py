@@ -80,3 +80,7 @@ class DotEnvConfig(BaseSettings):
                     os.environ[k.upper()] = str(v)
                     logger.debug(f"Set environment variable {k.upper()}={v}")
         return values
+
+    @property
+    def os(self):
+        return os.environ

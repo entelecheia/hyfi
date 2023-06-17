@@ -53,18 +53,20 @@ def glob_re(pattern: str, base_dir: str, recursive: bool = False) -> list:
 
 def get_filepaths(
     filename_patterns: Union[str, PosixPath, WindowsPath],
-    base_dir: Union[str, PosixPath, WindowsPath] = None,
+    base_dir: Union[str, PosixPath, WindowsPath] = "",
     recursive: bool = True,
     verbose: bool = False,
     **kwargs,
 ) -> List[str]:
     """Get a list of filepaths from a list of filename patterns"""
+    if filename_patterns is None:
+        raise ValueError("filename_patterns must be specified")
     if isinstance(filename_patterns, (PosixPath, WindowsPath)):
         filename_patterns = str(filename_patterns)
     if isinstance(filename_patterns, str):
         filename_patterns = [filename_patterns]
     filepaths = []
-    base_dir = str(base_dir) if base_dir else None
+    base_dir = str(base_dir) if base_dir else ""
     for file in filename_patterns:
         filepath = os.path.join(base_dir, file) if base_dir else file
         if os.path.exists(filepath):
@@ -251,24 +253,26 @@ def load_dataframe(
 def save_data(
     data: Union[pd.DataFrame, dict],
     filename: str,
-    base_dir: str = None,
+    base_dir: str = "",
     columns=None,
-    index=False,
+    index: bool = False,
     filetype="parquet",
-    suffix: str = None,
+    suffix: str = "",
     verbose: bool = False,
     **kwargs,
 ):
     """Save data to a file"""
+    if filename is None:
+        raise ValueError("filename must be specified")
     fileinfo = os.path.splitext(filename)
     filename = fileinfo[0]
     filetype = fileinfo[1] if len(fileinfo) > 1 else filetype
     filetype = "." + filetype.replace(".", "")
-    if suffix is not None:
+    if suffix:
         filename = f"{filename}-{suffix}{filetype}"
     else:
         filename = f"{filename}{filetype}"
-    filepath = filename if base_dir is None else os.path.join(base_dir, filename)
+    filepath = os.path.join(base_dir, filename) if base_dir else filename
     base_dir = os.path.dirname(filepath)
     filename = os.path.basename(filepath)
     os.makedirs(base_dir, exist_ok=True)

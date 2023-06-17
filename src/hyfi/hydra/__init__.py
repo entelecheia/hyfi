@@ -187,7 +187,7 @@ class Composer(BaseModel):
 
     def __init__(self, **args):
         super().__init__(**args)
-        self.__cfg__ = _compose_internal(
+        self.__cfg__ = self.compose(
             config_group=self.config_group,
             overrides=self.overrides,
             config_data=self.config_data,
@@ -199,6 +199,49 @@ class Composer(BaseModel):
             verbose=self.verbose,
         )
 
+    def compose(
+        self,
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+        config_name: Union[str, None] = None,
+        config_module: Union[str, None] = None,
+        global_package: bool = False,
+        verbose: bool = False,
+    ) -> DictConfig:
+        """
+        Compose a configuration by applying overrides
+
+        Args:
+            config_group: Name of the config group to compose (`config_group=name`)
+            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
+            return_as_dict: Return the result as a dict
+            throw_on_resolution_failure: If True throw an exception if resolution fails
+            throw_on_missing: If True throw an exception if config_group doesn't exist
+            config_name: Name of the root config to be used (e.g. `hconf`)
+            config_module: Module of the config to be used (e.g. `hyfi.conf`)
+            global_package: If True, the config assumed to be a global package
+            verbose: If True print configuration to stdout
+
+        Returns:
+            A config object or a dictionary with the composed config
+        """
+        self.__cfg__ = _compose_internal(
+            config_group=config_group,
+            overrides=overrides,
+            config_data=config_data,
+            throw_on_resolution_failure=throw_on_resolution_failure,
+            throw_on_missing=throw_on_missing,
+            config_name=config_name,
+            config_module=config_module,
+            global_package=global_package,
+            verbose=verbose,
+        )
+        return self.__cfg__
+
     @property
     def config(self) -> DictConfig:
         return self.__cfg__
@@ -207,8 +250,47 @@ class Composer(BaseModel):
     def config_as_dict(self) -> Dict:
         return _to_dict(self.__cfg__)
 
-    def __call__(self, **args):
-        return self.__cfg__
+    def __call__(
+        self,
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+        config_name: Union[str, None] = None,
+        config_module: Union[str, None] = None,
+        global_package: bool = False,
+        verbose: bool = False,
+    ) -> DictConfig:
+        """
+        Compose a configuration by applying overrides
+
+        Args:
+            config_group: Name of the config group to compose (`config_group=name`)
+            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
+            return_as_dict: Return the result as a dict
+            throw_on_resolution_failure: If True throw an exception if resolution fails
+            throw_on_missing: If True throw an exception if config_group doesn't exist
+            config_name: Name of the root config to be used (e.g. `hconf`)
+            config_module: Module of the config to be used (e.g. `hyfi.conf`)
+            global_package: If True, the config assumed to be a global package
+            verbose: If True print configuration to stdout
+
+        Returns:
+            A config object or a dictionary with the composed config
+        """
+        return self.compose(
+            config_group=config_group,
+            overrides=overrides,
+            config_data=config_data,
+            throw_on_resolution_failure=throw_on_resolution_failure,
+            throw_on_missing=throw_on_missing,
+            config_name=config_name,
+            config_module=config_module,
+            global_package=global_package,
+            verbose=verbose,
+        )
 
     def __getitem__(self, key):
         return self.__cfg__[key]
@@ -277,7 +359,7 @@ def _compose(
     Returns:
         A config object or a dictionary with the composed config
     """
-    cfg = Composer(
+    cmpsr = Composer(
         config_group=config_group,
         overrides=overrides,
         config_data=config_data,
@@ -288,4 +370,4 @@ def _compose(
         global_package=global_package,
         verbose=verbose,
     )
-    return cfg.config_as_dict if return_as_dict else cfg.config
+    return cmpsr.config_as_dict if return_as_dict else cmpsr.config

@@ -1,20 +1,16 @@
-import functools
 import importlib
 import inspect
-import json
 import os
 import random
-from enum import Enum
-from pathlib import Path
-from typing import IO, Any, Dict, List, Tuple, Union
+from typing import Any, Union
 
 import hydra
-from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
+from omegaconf import OmegaConf
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__, __search_package_path__
 from hyfi.cached_path import cached_path
-from hyfi.hydra import SpecialKeys, _compose, _select, _to_dict
+from hyfi.hydra import SpecialKeys, Composer
 from hyfi.utils.env import dotenv_values, getcwd
 from hyfi.utils.file import check_path, exists, join_path, mkdir
 from hyfi.utils.func import lower_case_with_underscores, strptime, today
@@ -22,138 +18,9 @@ from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
+cmpsr = Composer()
 
-DictKeyType = Union[str, int, Enum, float, bool]
-
-
-_config_ = _compose().copy()
-
-
-def _print(cfg: Any, resolve: bool = True, **kwargs):
-    import pprint
-
-    if _is_config(cfg):
-        if resolve:
-            pprint.pprint(_to_dict(cfg), **kwargs)
-        else:
-            pprint.pprint(cfg, **kwargs)
-    else:
-        print(cfg)
-
-
-def _is_config(
-    cfg: Any,
-):
-    return isinstance(cfg, (DictConfig, dict))
-
-
-def _is_list(
-    cfg: Any,
-):
-    return isinstance(cfg, (ListConfig, list))
-
-
-def _is_instantiatable(cfg: Any):
-    return _is_config(cfg) and SpecialKeys.TARGET in cfg
-
-
-def _load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
-    return OmegaConf.load(file_)
-
-
-def _save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
-    os.makedirs(os.path.dirname(str(f)), exist_ok=True)
-    OmegaConf.save(config, f, resolve=resolve)
-
-
-def _save_json(
-    json_dict: dict,
-    f: Union[str, Path, IO[Any]],
-    indent=4,
-    ensure_ascii=False,
-    default=None,
-    **kwargs,
-):
-    f = str(f)
-    os.makedirs(os.path.dirname(f), exist_ok=True)
-    with open(f, "w") as f:
-        json.dump(
-            json_dict,
-            f,
-            indent=indent,
-            ensure_ascii=ensure_ascii,
-            default=default,
-            **kwargs,
-        )
-
-
-def _load_json(f: Union[str, Path, IO[Any]], **kwargs) -> dict:
-    f = str(f)
-    with open(f, "r") as f:
-        return json.load(f, **kwargs)
-
-
-def _update(_dict, _overrides):
-    import collections.abc
-
-    for k, v in _overrides.items():
-        if isinstance(v, collections.abc.Mapping):
-            _dict[k] = _update((_dict.get(k) or {}), v)
-        else:
-            _dict[k] = v
-    return _dict
-
-
-def _merge(
-    *configs: Union[
-        DictConfig,
-        ListConfig,
-        Dict[DictKeyType, Any],
-        List[Any],
-        Tuple[Any, ...],
-        Any,
-    ],
-) -> Union[ListConfig, DictConfig]:
-    """
-    Merge a list of previously created configs into a single one
-    :param configs: Input configs
-    :return: the merged config object.
-    """
-    return OmegaConf.merge(*configs)
-
-
-def _to_yaml(cfg: Any, *, resolve: bool = False, sort_keys: bool = False) -> str:
-    return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
-
-
-def _to_container(
-    cfg: Any,
-    *,
-    resolve: bool = False,
-    throw_on_missing: bool = False,
-    enum_to_str: bool = False,
-    structured_config_mode: SCMode = SCMode.DICT,
-):
-    return OmegaConf.to_container(
-        cfg,
-        resolve=resolve,
-        throw_on_missing=throw_on_missing,
-        enum_to_str=enum_to_str,
-        structured_config_mode=structured_config_mode,
-    )
-
-
-def _run(config: Any, **kwargs: Any) -> Any:
-    config = _merge(config, kwargs)
-    _config_ = config.get(SpecialKeys.CONFIG)
-    if _config_ is None:
-        logger.warning("No _config_ specified in config")
-        return None
-    if isinstance(_config_, str):
-        _config_ = [_config_]
-    for _cfg_ in _config_:
-        cfg = _select(config, _cfg_)
-        _instantiate(cfg)
+# _config_ = cmpsr.config.copy()
 
 
 def _partial(
@@ -163,7 +30,7 @@ def _partial(
         logger.warning("No config specified")
         return None
     elif config_group is not None:
-        config = _compose(config_group=config_group)
+        config = cmpsr.compose(config_group=config_group)
     kwargs[SpecialKeys.PARTIAL] = True
     return _instantiate(config, *args, **kwargs)
 
@@ -200,7 +67,7 @@ def _instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     verbose = config.get(SpecialKeys.VERBOSE, False)
     if not __global_config__.__initilized__:
         __global_config__.initialize()
-    if not _is_instantiatable(config):
+    if not cmpsr.is_instantiatable(config):
         if verbose:
             logger.info("Config is not instantiatable, returning config")
         return config
@@ -212,67 +79,21 @@ def _instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     return hydra.utils.instantiate(config, *args, **kwargs)
 
 
-def _methods(cfg: Any, obj: object, return_function=False):
-    cfg = _to_dict(cfg)
-    if not cfg:
-        logger.info("No method defined to call")
-        return
-
-    if isinstance(cfg, dict) and SpecialKeys.METHOD in cfg:
-        _method_ = cfg[SpecialKeys.METHOD]
-    elif isinstance(cfg, dict):
-        _method_ = cfg
-    elif isinstance(cfg, str):
-        _method_ = cfg
-        cfg = {}
-    else:
-        raise ValueError(f"Invalid method: {cfg}")
-
-    if isinstance(_method_, str):
-        _fn = getattr(obj, _method_)
-        if return_function:
-            logger.info(f"Returning function {_fn}")
-            return _fn
-        logger.info(f"Calling {_method_}")
-        return _fn(**cfg)
-    elif isinstance(_method_, dict):
-        if SpecialKeys.CALL in _method_:
-            _call_ = _method_.pop(SpecialKeys.CALL)
-        else:
-            _call_ = True
-        if _call_:
-            _fn = getattr(obj, _method_[SpecialKeys.METHOD_NAME])
-            _parms = _method_.pop(SpecialKeys.rcPARAMS, {})
-            if return_function:
-                if not _parms:
-                    logger.info(f"Returning function {_fn}")
-                    return _fn
-                logger.info(f"Returning function {_fn} with params {_parms}")
-                return functools.partial(_fn, **_parms)
-            logger.info(f"Calling {_method_}")
-            return _fn(**_parms)
-        else:
-            logger.info(f"Skipping call to {_method_}")
-    elif isinstance(_method_, list):
-        for _each_method in _method_:
-            logger.info(f"Calling {_each_method}")
-            if isinstance(_each_method, str):
-                getattr(obj, _each_method)()
-            elif isinstance(_each_method, dict):
-                if SpecialKeys.CALL in _each_method:
-                    _call_ = _each_method.pop(SpecialKeys.CALL)
-                else:
-                    _call_ = True
-                if _call_:
-                    getattr(obj, _each_method[SpecialKeys.METHOD_NAME])(
-                        **_each_method[SpecialKeys.rcPARAMS]
-                    )
-                else:
-                    logger.info(f"Skipping call to {_each_method}")
+def _run(config: Any, **kwargs: Any) -> Any:
+    config = cmpsr.merge(config, kwargs)
+    _config_ = config.get(SpecialKeys.CONFIG)
+    if _config_ is None:
+        logger.warning("No _config_ specified in config")
+        return None
+    if isinstance(_config_, str):
+        _config_ = [_config_]
+    for _cfg_ in _config_:
+        cfg = cmpsr.select(config, _cfg_)
+        _instantiate(cfg)
 
 
 def _function(cfg: Any, _name_, return_function=False, **parms):
-    cfg = _to_dict(cfg)
+    cfg = cmpsr.to_dict(cfg)
     if not isinstance(cfg, dict):
         logger.info("No function defined to execute")
         return None
@@ -330,7 +151,7 @@ OmegaConf.register_new_resolver("dotenv_values", dotenv_values)
 def _getsource(obj):
     """Return the source code of the object."""
     try:
-        if _is_config(obj):
+        if cmpsr.is_config(obj):
             if SpecialKeys.TARGET in obj:
                 target_string = obj[SpecialKeys.TARGET]
                 mod_name, object_name = target_string.rsplit(".", 1)
@@ -349,21 +170,3 @@ def _getsource(obj):
 def _viewsource(obj):
     """Print the source code of the object."""
     print(_getsource(obj))
-
-
-def _ensure_list(value):
-    if not value:
-        return []
-    elif isinstance(value, str):
-        return [value]
-    return _to_dict(value)
-
-
-def _ensure_kwargs(_kwargs, _fn):
-    from inspect import getfullargspec as getargspec
-
-    if callable(_fn):
-        args = getargspec(_fn).args
-        logger.info(f"args of {_fn}: {args}")
-        return {k: v for k, v in _kwargs.items() if k in args}
-    return _kwargs

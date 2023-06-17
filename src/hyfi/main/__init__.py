@@ -11,30 +11,17 @@ from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import _compose, _select, _to_config, _to_dict
-from hyfi.hydra.main import (
+from hyfi.hydra import (
+    Composer,
     DictKeyType,
     SpecialKeys,
-    _ensure_kwargs,
-    _ensure_list,
+)
+from hyfi.hydra.main import (
     _function,
     _getsource,
     _instantiate,
-    _is_config,
-    _is_instantiatable,
-    _is_list,
-    _load,
-    _load_json,
-    _merge,
-    _methods,
     _partial,
-    _print,
     _run,
-    _save,
-    _save_json,
-    _to_container,
-    _to_yaml,
-    _update,
     _viewsource,
 )
 from hyfi.joblib.pipe import _apply, _pipe
@@ -175,7 +162,7 @@ class HyFI:
         Returns:
             A config object or a dictionary with the composed config
         """
-        return _compose(
+        return Composer._compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
@@ -197,7 +184,7 @@ class HyFI:
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
     ):
-        return _select(
+        return Composer.select(
             cfg,
             key,
             default=default,
@@ -209,19 +196,17 @@ class HyFI:
     def to_dict(
         cfg: Any,
     ):
-        return _to_dict(cfg)
+        return Composer.to_dict(cfg)
 
     @staticmethod
     def to_config(
         cfg: Any,
     ):
-        return _to_config(cfg)
+        return Composer.to_config(cfg)
 
     @staticmethod
-    def to_yaml(cfg: Any, *, resolve: bool = False, sort_keys: bool = False) -> str:
-        if resolve:
-            cfg = _to_dict(cfg)
-        return _to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
+    def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        return Composer.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
     def to_container(
@@ -232,7 +217,7 @@ class HyFI:
         enum_to_str: bool = False,
         structured_config_mode: SCMode = SCMode.DICT,
     ):
-        return _to_container(
+        return Composer.to_container(
             cfg=cfg,
             resolve=resolve,
             throw_on_missing=throw_on_missing,
@@ -257,25 +242,25 @@ class HyFI:
     def is_config(
         cfg: Any,
     ):
-        return _is_config(cfg)
+        return Composer.is_config(cfg)
 
     @staticmethod
     def is_list(
         cfg: Any,
     ):
-        return _is_list(cfg)
+        return Composer.is_list(cfg)
 
     @staticmethod
     def is_instantiatable(cfg: Any):
-        return _is_instantiatable(cfg)
+        return Composer.is_instantiatable(cfg)
 
     @staticmethod
     def load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
-        return _load(file_)
+        return Composer.load(file_)
 
     @staticmethod
     def update(_dict, _overrides):
-        return _update(_dict, _overrides)
+        return Composer.update(_dict, _overrides)
 
     @staticmethod
     def merge(
@@ -293,11 +278,11 @@ class HyFI:
         :param configs: Input configs
         :return: the merged config object.
         """
-        return _merge(*configs)
+        return Composer.merge(*configs)
 
     @staticmethod
     def save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
-        _save(config, f, resolve)
+        Composer.save(config, f, resolve)
 
     @staticmethod
     def save_json(
@@ -308,23 +293,23 @@ class HyFI:
         default=None,
         **kwargs,
     ):
-        _save_json(json_dict, f, indent, ensure_ascii, default, **kwargs)
+        Composer.save_json(json_dict, f, indent, ensure_ascii, default, **kwargs)
 
     @staticmethod
     def load_json(f: Union[str, Path, IO[Any]], **kwargs) -> dict:
-        return _load_json(f, **kwargs)
+        return Composer.load_json(f, **kwargs)
 
     @staticmethod
     def pprint(cfg: Any, resolve: bool = True, **kwargs):
-        _print(cfg, resolve=resolve, **kwargs)
+        Composer.print(cfg, resolve=resolve, **kwargs)
 
     @staticmethod
     def print(cfg: Any, resolve: bool = True, **kwargs):
-        _print(cfg, resolve=resolve, **kwargs)
+        Composer.print(cfg, resolve=resolve, **kwargs)
 
     @staticmethod
     def methods(cfg: Any, obj: object, return_function=False):
-        return _methods(cfg, obj, return_function)
+        return Composer.methods(cfg, obj, return_function)
 
     @staticmethod
     def function(cfg: Any, _name_, return_function=False, **parms):
@@ -390,7 +375,7 @@ class HyFI:
 
     @staticmethod
     def ensure_list(value):
-        return _ensure_list(value)
+        return Composer.ensure_list(value)
 
     @staticmethod
     def to_dateparm(_date, _format="%Y-%m-%d"):
@@ -440,7 +425,7 @@ class HyFI:
 
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
-        return _ensure_kwargs(_kwargs, _fn)
+        return Composer.ensure_kwargs(_kwargs, _fn)
 
     @staticmethod
     def save_data(

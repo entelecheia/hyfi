@@ -9,6 +9,8 @@ from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
+PathLikeType = Union[str, PosixPath, WindowsPath]
+
 
 def is_valid_regex(expr: str) -> bool:
     """Check if a string is a valid regular expression"""
@@ -23,24 +25,28 @@ def is_valid_regex(expr: str) -> bool:
         return False
 
 
-def glob_re(pattern: str, base_dir: str, recursive: bool = False) -> list:
+def glob_re(
+    pattern: str,
+    base_dir: str,
+    recursive: bool = False,
+) -> list:
     """Glob files matching a regular expression"""
     if is_valid_regex(pattern):
         pattern = pattern[2:]
-        pattern = re.compile(pattern)
+        rpattern = re.compile(pattern)  # type: ignore
         files = []
         if recursive:
             for dirpath, dirnames, filenames in os.walk(base_dir):
                 files += [
                     os.path.join(dirpath, file)
                     for file in filenames
-                    if pattern.search(file)
+                    if rpattern.search(file)
                 ]
         else:
             files = [
                 os.path.join(base_dir, file)
                 for file in os.listdir(base_dir)
-                if pattern.search(file)
+                if rpattern.search(file)
             ]
     else:
         file = os.path.join(base_dir, pattern) if base_dir else pattern
@@ -49,7 +55,7 @@ def glob_re(pattern: str, base_dir: str, recursive: bool = False) -> list:
 
 
 def get_filepaths(
-    filename_patterns: Union[str, PosixPath, WindowsPath],
+    filename_patterns: Union[List[PathLikeType], PathLikeType],
     base_dir: Union[str, PosixPath, WindowsPath] = "",
     recursive: bool = True,
     verbose: bool = False,
@@ -65,6 +71,7 @@ def get_filepaths(
     filepaths = []
     base_dir = str(base_dir) if base_dir else ""
     for file in filename_patterns:
+        file = str(file)
         filepath = os.path.join(base_dir, file) if base_dir else file
         if os.path.exists(filepath):
             if Path(filepath).is_file():
@@ -82,7 +89,7 @@ def get_filepaths(
     return filepaths
 
 
-def get_files_from_archive(archive_path, filetype=None):
+def get_files_from_archive(archive_path: str, filetype: str = ""):
     """Get a list of files from an archive"""
     import tarfile
     from zipfile import ZipFile
@@ -157,7 +164,7 @@ def is_dir(a, *p) -> bool:
     return Path(_path).is_dir()
 
 
-def check_path(_path: str, alt_path: str = None) -> str:
+def check_path(_path: str, alt_path: str = "") -> str:
     """Check if path exists, return alt_path if not"""
     return _path if os.path.exists(_path) else alt_path
 
@@ -165,7 +172,7 @@ def check_path(_path: str, alt_path: str = None) -> str:
 def mkdir(_path: str) -> str:
     """Create directory if it does not exist"""
     if _path is None:
-        return None
+        return ""
     Path(_path).mkdir(parents=True, exist_ok=True)
     return _path
 

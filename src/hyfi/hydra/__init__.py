@@ -544,6 +544,24 @@ class Composer(BaseModel):
                     else:
                         logger.info(f"Skipping call to {_each_method}")
 
+    @staticmethod
+    def ensure_list(value):
+        if not value:
+            return []
+        elif isinstance(value, str):
+            return [value]
+        return Composer.to_dict(value)
+
+    @staticmethod
+    def ensure_kwargs(_kwargs, _fn):
+        from inspect import getfullargspec as getargspec
+
+        if callable(_fn):
+            args = getargspec(_fn).args
+            logger.info(f"args of {_fn}: {args}")
+            return {k: v for k, v in _kwargs.items() if k in args}
+        return _kwargs
+
 
 def _compose(
     config_group: Union[str, None] = None,

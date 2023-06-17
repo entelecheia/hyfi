@@ -11,6 +11,7 @@ from hyfi.about import AboutConfig
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import _compose
 from hyfi.project import ProjectConfig
+from hyfi.task import TaskConfig
 from hyfi.utils.env import _check_and_set_value, expand_posix_vars
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebook import load_extentions, set_matplotlib_formats
@@ -47,8 +48,9 @@ class HyfiConfig(BaseModel):
     hydra: Optional[DictConfig] = None
 
     about: AboutConfig = AboutConfig()
-    project: Optional[ProjectConfig] = None
     copier: Optional[DictConfig] = None
+    project: Optional[ProjectConfig] = None
+    task: Optional[TaskConfig] = None
 
     __version__: str = __version__()
     __initilized__: bool = False
@@ -222,9 +224,7 @@ class HyfiConfig(BaseModel):
 
         # Skip project config initialization.
         if "project" not in config:
-            logger.info(
-                "No project config found, skip project config initialization."
-            )
+            logger.info("No project config found, skip project config initialization.")
             return
         self.project = ProjectConfig(**config["project"])
         self.project.init_project()

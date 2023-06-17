@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.7.2 (2023-06-17)
+
+### Fix
+
+* **graphics:** Load_image function now supports filepath input ([`e13aebd`](https://github.com/entelecheia/hyfi/commit/e13aebd66158e2b5d3b43e1c6a9c2bf22c6aae91))
+
 ## v0.7.1 (2023-06-17)
 
 ### Fix

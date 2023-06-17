@@ -1,6 +1,7 @@
 """
 Hyfi configuration file.
 """
+import os
 from typing import Any, Dict, Optional, Union
 
 from omegaconf import DictConfig
@@ -281,6 +282,14 @@ class HyfiConfig(BaseModel):
                 The version of the application
         """
         return self.about.version
+
+    @property
+    def dotenv(self):
+        return DotEnvConfig()
+
+    @property
+    def osenv(self):
+        return os.environ
 
 
 __global_config__ = HyfiConfig()

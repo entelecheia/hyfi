@@ -6,6 +6,7 @@ from pathlib import Path
 from hyfi.utils.file import get_filepaths
 from hyfi.utils.logging import getLogger
 from hyfi.utils.notebook import display_image
+from hyfi.graphics.utils import load_images
 
 logger = getLogger(__name__)
 
@@ -41,7 +42,7 @@ def make_gif(
         if not image_filepaths:
             logger.warning("no images found")
             return
-        if frames := [Image.open(image) for image in image_filepaths]:
+        if frames := load_images(image_filepaths):
             frame_one = frames[0]
             frame_one.save(
                 output_filepath,

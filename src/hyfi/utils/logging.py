@@ -22,7 +22,7 @@ def setLogger(level=None, force=True, filterwarnings_action="ignore", **kwargs) 
     os.environ["HYFI_LOG_LEVEL"] = level
     # Filter warnings by applying filterwarnings_action to the warnings.
     if filterwarnings_action is not None:
-        warnings.filterwarnings(filterwarnings_action)
+        warnings.filterwarnings(filterwarnings_action)  # type: ignore
     # Return the logging level.
     if isinstance(level, str):
         level = getattr(logging, level.upper(), logging.INFO)

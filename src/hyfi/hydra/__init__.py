@@ -81,7 +81,7 @@ class Composer(BaseModel):
         Returns:
             A config object or a dictionary with the composed config
         """
-        self.__cfg__ = Composer.compose_internal(
+        self.__cfg__ = Composer._compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
@@ -278,7 +278,7 @@ class Composer(BaseModel):
         return config_group, group_key, group_value
 
     @staticmethod
-    def compose_internal(
+    def _compose(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,

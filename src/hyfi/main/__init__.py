@@ -8,6 +8,7 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
+from PIL import Image
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
@@ -712,15 +713,15 @@ class HyFI:
 
     @staticmethod
     def pip(
-        name,
-        upgrade=False,
-        prelease=False,
-        editable=False,
-        quiet=False,
-        find_links=None,
-        requirement=None,
-        force_reinstall=False,
-        verbose=False,
+        name: str,
+        upgrade: bool = False,
+        prelease: bool = False,
+        editable: bool = False,
+        quiet: bool = True,
+        find_links: str = "",
+        requirement: bool = False,
+        force_reinstall: bool = False,
+        verbose: bool = False,
         **kwargs,
     ):
         from hyfi.utils.lib import pip as _pip
@@ -739,7 +740,12 @@ class HyFI:
         )
 
     @staticmethod
-    def upgrade(prelease=False, quiet=False, force_reinstall=False, **kwargs):
+    def upgrade(
+        prelease=False,
+        quiet=False,
+        force_reinstall=False,
+        **kwargs,
+    ):
         from hyfi.utils.lib import pip
 
         return pip(
@@ -768,18 +774,34 @@ class HyFI:
         return cprint(str_color_tuples)
 
     @staticmethod
-    def dict_to_dataframe(data, orient="columns", dtype=None, columns=None):
+    def dict_to_dataframe(
+        data,
+        orient="columns",
+        dtype=None,
+        columns=None,
+    ):
         return dict_to_dataframe(data, orient, dtype, columns)
 
     @staticmethod
     def records_to_dataframe(
-        data, index=None, exclude=None, columns=None, coerce_float=False, nrows=None
+        data,
+        index=None,
+        exclude=None,
+        columns=None,
+        coerce_float=False,
+        nrows=None,
     ):
         return records_to_dataframe(data, index, exclude, columns, coerce_float, nrows)
 
     @staticmethod
     def create_dropdown(
-        options, value, description, disabled=False, style=None, layout=None, **kwargs
+        options,
+        value,
+        description,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
     ):
         if style is None:
             style = {"description_width": "initial"}
@@ -817,7 +839,11 @@ class HyFI:
 
     @staticmethod
     def create_button(
-        description, button_style="", icon="check", layout=None, **kwargs
+        description,
+        button_style="",
+        icon="check",
+        layout=None,
+        **kwargs,
     ):
         return create_button(description, button_style, icon, layout, **kwargs)
 
@@ -888,8 +914,8 @@ class HyFI:
         )
 
     @staticmethod
-    def get_image_font(fontname=None, fontsize=12):
-        from hyfi.graphics.collage import get_image_font
+    def get_image_font(fontname: str = "", fontsize: int = 12):
+        from hyfi.graphics.utils import get_image_font
 
         return get_image_font(fontname, fontsize)
 
@@ -902,18 +928,18 @@ class HyFI:
     @staticmethod
     def load_image(
         image_or_uri,
-        max_width: int = None,
-        max_height: int = None,
-        max_pixels: int = None,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
         scale: float = 1.0,
-        resize_to_multiple_of: int = None,
+        resize_to_multiple_of: int = 0,
         crop_box=None,
         mode="RGB",
         **kwargs,
     ):
-        from hyfi.graphics.utils import load_image as _load_image
+        from hyfi.graphics.utils import load_image
 
-        return _load_image(
+        return load_image(
             image_or_uri,
             max_width,
             max_height,
@@ -980,13 +1006,13 @@ class HyFI:
 
     @staticmethod
     def scale_image(
-        image,
-        max_width: int = None,
-        max_height: int = None,
-        max_pixels: int = None,
+        image: Image.Image,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
         scale: float = 1.0,
         resize_to_multiple_of: int = 8,
-        resample: int = 1,
+        resample: int = Image.LANCZOS,
     ):
         """
         Scale an image to a maximum width, height, or number of pixels.
@@ -994,9 +1020,9 @@ class HyFI:
         resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
                     Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
         """
-        from hyfi.graphics.utils import scale_image as _scale_image
+        from hyfi.graphics.utils import scale_image
 
-        return _scale_image(
+        return scale_image(
             image,
             max_width,
             max_height,

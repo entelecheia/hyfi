@@ -1,3 +1,6 @@
+"""
+    Hydra configuration management
+"""
 from typing import Any, Dict, List, Tuple, Union
 
 import hydra

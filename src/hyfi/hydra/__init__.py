@@ -1,6 +1,7 @@
 """
     Hydra configuration management
 """
+from enum import Enum
 from typing import Any, Dict, List, Tuple, Union
 
 import hydra
@@ -16,6 +17,25 @@ from hyfi.__global__ import (
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
+
+
+class SpecialKeys(str, Enum):
+    """Special keys in configs used by hyfi."""
+
+    CALL = "_call_"
+    CONFIG = "_config_"
+    CONFIG_GROUP = "_config_group_"
+    EXEC = "_exec_"
+    FUNC = "_func_"
+    METHOD = "_method_"
+    METHOD_NAME = "_name_"
+    NAME = "name"
+    PARTIAL = "_partial_"
+    rcPARAMS = "rcParams"
+    RECURSIVE = "_recursive_"
+    SUFFIX = "suffix"
+    TARGET = "_target_"
+    VERBOSE = "verbose"
 
 
 class Composer(BaseModel):

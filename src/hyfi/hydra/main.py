@@ -14,7 +14,7 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.cached_path import cached_path
-from hyfi.hydra import _compose, _select, _to_dict
+from hyfi.hydra import SpecialKeys, _compose, _select, _to_dict
 from hyfi.utils.env import dotenv_values, getcwd
 from hyfi.utils.file import check_path, exists, join_path, mkdir
 from hyfi.utils.func import lower_case_with_underscores, strptime, today
@@ -26,23 +26,6 @@ logger = getLogger(__name__)
 DictKeyType = Union[str, int, Enum, float, bool]
 
 
-class SpecialKeys(str, Enum):
-    """Special keys in configs used by hyfi."""
-
-    CALL = "_call_"
-    CONFIG = "_config_"
-    CONFIG_GROUP = "_config_group_"
-    EXEC = "_exec_"
-    FUNC = "_func_"
-    METHOD = "_method_"
-    METHOD_NAME = "_name_"
-    NAME = "name"
-    PARTIAL = "_partial_"
-    rcPARAMS = "rcParams"
-    RECURSIVE = "_recursive_"
-    SUFFIX = "suffix"
-    TARGET = "_target_"
-    VERBOSE = "verbose"
 
 
 _config_ = _compose().copy()

@@ -3,6 +3,7 @@ import io
 import os
 import platform
 from pathlib import Path
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,9 +18,9 @@ logger = getLogger(__name__)
 
 def scale_image(
     image: Image.Image,
-    max_width: int = None,
-    max_height: int = None,
-    max_pixels: int = None,
+    max_width: int = 0,
+    max_height: int = 0,
+    max_pixels: int = 0,
     scale: float = 1.0,
     resize_to_multiple_of: int = 8,
     resample: int = Image.LANCZOS,
@@ -27,34 +28,34 @@ def scale_image(
     """Scale image to have at most `max_pixels` pixels."""
     w, h = image.size
 
-    if max_width is None and max_height is not None:
+    if max_width <= 0 and max_height > 0:
         max_width = int(w * max_height / h)
-    elif max_height is None and max_width is not None:
+    elif max_height <= 0 and max_width > 0:
         max_height = int(h * max_width / w)
 
-    if max_width is not None and max_height is not None:
+    if max_width <= 0 and max_height >= 0:
         max_pixels = max_width * max_height
-    if max_pixels is not None:
+    if max_pixels >= 0:
         scale = np.sqrt(max_pixels / (w * h))
 
     max_width = int(w * scale)
     max_height = int(h * scale)
-    if resize_to_multiple_of is not None:
+    if resize_to_multiple_of > 0:
         max_width = (max_width // resize_to_multiple_of) * resize_to_multiple_of
         max_height = (max_height // resize_to_multiple_of) * resize_to_multiple_of
 
     if scale < 1.0 or w > max_width or h > max_height:
-        image = image.resize((max_width, max_height), resample=resample)
+        image = image.resize((max_width, max_height), resample=resample)  # type: ignore
     return image
 
 
 def load_image(
     image_or_uri,
-    max_width: int = None,
-    max_height: int = None,
-    max_pixels: int = None,
+    max_width: int = 0,
+    max_height: int = 0,
+    max_pixels: int = 0,
     scale: float = 1.0,
-    resize_to_multiple_of: int = None,
+    resize_to_multiple_of: int = 0,
     crop_box=None,
     mode="RGB",
     **kwargs,
@@ -80,14 +81,14 @@ def load_image(
 
 
 def load_images(
-    images_or_uris,
-    max_width=None,
-    max_height=None,
-    max_pixels=None,
-    scale=1.0,
-    resize_to_multiple_of: int = None,
-    crop_to_min_size=False,
-    mode="RGB",
+    images_or_uris: List[str],
+    max_width: int = 0,
+    max_height: int = 0,
+    max_pixels: int = 0,
+    scale: float = 1.0,
+    resize_to_multiple_of: int = 0,
+    crop_to_min_size: bool = False,
+    mode: str = "RGB",
     **kwargs,
 ):
     """Load images from files or URIs."""
@@ -115,13 +116,15 @@ def load_images(
     return imgs
 
 
-def get_image_font(fontname=None, fontsize=12):
+def get_image_font(fontname: str = "", fontsize: int = 12):
     """Get font for PIL image."""
     fontname, fontpath = get_plot_font(set_font_for_matplot=False, fontname=fontname)
     return ImageFont.truetype(fontpath, fontsize) if fontpath else None
 
 
-def get_default_system_font(fontname: str = "", verbose: bool = False):
+def get_default_system_font(
+    fontname: str = "", fontpath: str = "", verbose: bool = False
+):
     if platform.system() == "Darwin":
         fontname = fontname or "AppleGothic.ttf"
         fontpath = os.path.join("/System/Library/Fonts/Supplemental/", fontname)
@@ -152,9 +155,21 @@ def get_plot_font(
     if fontname and not fontname.endswith(".ttf"):
         fontname += ".ttf"
     if not fontpath:
-        fontname, fontpath = get_default_system_font(fontname, verbose)
+        fontname, fontpath = get_default_system_font(fontname, fontpath, verbose)
 
-    if not fontpath or not Path(fontpath).is_file():
+    if fontpath and Path(fontpath).is_file():
+        font_manager.fontManager.addfont(fontpath)
+        fontname = font_manager.FontProperties(fname=fontpath).get_name()  # type: ignore
+
+        if set_font_for_matplot and fontname:
+            rc("font", family=fontname)
+            plt.rcParams["axes.unicode_minus"] = False
+            if verbose:
+                font_family = plt.rcParams["font.family"]
+                logger.info(f"font family: {font_family}")
+        if verbose:
+            logger.info(f"font name: {fontname}")
+    else:
         logger.warning(f"Font file does not exist at {fontpath}")
         fontname = ""
         fontpath = ""
@@ -165,18 +180,6 @@ def get_plot_font(
             fc-list | grep -i nanum
             """
             print(font_install_help)
-    else:
-        font_manager.fontManager.addfont(fontpath)
-        fontname = font_manager.FontProperties(fname=fontpath).get_name()
-
-        if set_font_for_matplot and fontname:
-            rc("font", family=fontname)
-            plt.rcParams["axes.unicode_minus"] = False
-            if verbose:
-                font_family = plt.rcParams["font.family"]
-                logger.info(f"font family: {font_family}")
-        if verbose:
-            logger.info(f"font name: {fontname}")
     return fontname, fontpath
 
 

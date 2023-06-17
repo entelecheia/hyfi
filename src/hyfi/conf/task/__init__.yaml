@@ -4,5 +4,6 @@ defaults:
   - /project: __init__
 
 task_name: demo-task
+task_root:
 autoload: false
 version: "0.0.0"

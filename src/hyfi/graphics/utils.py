@@ -101,7 +101,7 @@ def load_images(
     crop_to_min_size: bool = False,
     mode: str = "RGB",
     **kwargs,
-):
+) -> List[Image.Image]:
     """Load images from files or URIs."""
     imgs = [
         load_image(

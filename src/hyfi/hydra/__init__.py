@@ -466,7 +466,9 @@ class Composer(BaseModel):
         return OmegaConf.merge(*configs)
 
     @staticmethod
-    def to_yaml(cfg: Any, *, resolve: bool = False, sort_keys: bool = False) -> str:
+    def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        if resolve:
+            cfg = _to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod

@@ -274,7 +274,13 @@ def to_datetime(data, _format=None, _columns=None, **kwargs):
         return data
 
 
-def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
+def to_numeric(
+    data,
+    _columns=None,
+    errors="coerce",
+    downcast=None,
+    **kwargs,
+):
     """Convert a string, int, or float object to a float object"""
     import pandas as pd
 
@@ -287,7 +293,7 @@ def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
             if isinstance(_columns, str):
                 _columns = [_columns]
             for _col in _columns:
-                data[_col] = pd.to_numeric(data[_col], errors=errors, downcast=downcast)
+                data[_col] = pd.to_numeric(data[_col], errors=errors, downcast=downcast)  # type: ignore
         return data
 
 
@@ -325,15 +331,25 @@ def dict_product(dicts):
     return (dict(zip(dicts, x)) for x in itertools.product(*dicts.values()))
 
 
-def dict_to_dataframe(data, orient="columns", dtype=None, columns=None):
+def dict_to_dataframe(
+    data,
+    orient="columns",
+    dtype=None,
+    columns=None,
+):
     """Convert a dictionary to a pandas dataframe"""
     import pandas as pd
 
-    return pd.DataFrame.from_dict(data, orient=orient, dtype=dtype, columns=columns)
+    return pd.DataFrame.from_dict(data, orient=orient, dtype=dtype, columns=columns)  # type: ignore
 
 
 def records_to_dataframe(
-    data, index=None, exclude=None, columns=None, coerce_float=False, nrows=None
+    data,
+    index=None,
+    exclude=None,
+    columns=None,
+    coerce_float=False,
+    nrows=None,
 ):
     """Convert a list of records to a pandas dataframe"""
     import pandas as pd

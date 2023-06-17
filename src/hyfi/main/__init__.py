@@ -3,9 +3,10 @@
     as well as various utility functions and imports.
 """
 import os
-from pathlib import Path
+from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Tuple, Union
 
+import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
@@ -428,20 +429,18 @@ class HyFI:
 
     @staticmethod
     def save_data(
-        data,
-        filename=None,
-        base_dir=None,
+        data: Union[pd.DataFrame, dict],
+        filename: str,
+        base_dir: str = "",
         columns=None,
-        index=False,
+        index: bool = False,
         filetype="parquet",
-        suffix=None,
-        verbose=False,
+        suffix: str = "",
+        verbose: bool = False,
         **kwargs,
     ):
         from hyfi.utils.file import save_data
 
-        if filename is None:
-            raise ValueError("filename must be specified")
         save_data(
             data,
             filename,
@@ -480,12 +479,14 @@ class HyFI:
 
     @staticmethod
     def get_filepaths(
-        filename_patterns=None, base_dir=None, recursive=True, verbose=True, **kwargs
+        filename_patterns: Union[str, PosixPath, WindowsPath],
+        base_dir: Union[str, PosixPath, WindowsPath] = "",
+        recursive: bool = True,
+        verbose: bool = False,
+        **kwargs,
     ):
         from hyfi.utils.file import get_filepaths
 
-        if filename_patterns is None:
-            raise ValueError("filename must be specified")
         return get_filepaths(
             filename_patterns,
             base_dir=base_dir,

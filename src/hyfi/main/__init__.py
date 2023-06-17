@@ -586,16 +586,16 @@ class HyFI:
     @staticmethod
     def make_gif(
         image_filepaths=None,
-        filename_patterns=None,
-        base_dir=None,
-        output_filepath=None,
-        duration=100,
-        loop=0,
-        width=None,
-        optimize=True,
-        quality=50,
-        show=False,
-        force=False,
+        filename_patterns: str = "",
+        base_dir: str = "",
+        output_filepath: str = "",
+        duration: int = 100,
+        loop: int = 0,
+        width: int = 0,
+        optimize: bool = True,
+        quality: int = 50,
+        show: bool = False,
+        force: bool = False,
         **kwargs,
     ):
         from hyfi.graphics.motion import make_gif as _make_gif

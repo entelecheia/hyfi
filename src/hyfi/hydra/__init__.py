@@ -22,6 +22,21 @@ def _select(
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,
 ):
+    """
+    Wrapper for OmegaConf. select value from a config object using a key.
+
+    Args:
+        cfg: Config node to select from
+        key: Key to select
+        default: Default value to return if key is not found
+        throw_on_resolution_failure: Raise an exception if an interpolation
+            resolution error occurs, otherwise return None
+        throw_on_missing: Raise an exception if an attempt to select a missing key (with the value '???')
+            is made, otherwise return None
+
+    Returns:
+        selected value or None if not found.
+    """
     key = key.replace("/", ".")
     return OmegaConf.select(
         cfg,
@@ -35,8 +50,19 @@ def _select(
 def _to_dict(
     cfg: Any,
 ) -> Any:
+    """
+    Convert a config to a dict
+
+    Args:
+        cfg: The config to convert.
+
+    Returns:
+        The dict representation of the config.
+    """
+    # Convert a config object to a config object.
     if isinstance(cfg, dict):
         cfg = _to_config(cfg)
+    # Returns a container for the given config.
     if isinstance(cfg, (DictConfig, ListConfig)):
         return OmegaConf.to_container(
             cfg,
@@ -50,6 +76,15 @@ def _to_dict(
 def _to_config(
     cfg: Any,
 ) -> Union[DictConfig, ListConfig]:
+    """
+    Convert a config object to OmegaConf
+
+    Args:
+        cfg: The config to convert.
+
+    Returns:
+        A Config object that corresponds to the given config.
+    """
     return OmegaConf.create(cfg)
 
 
@@ -308,6 +343,73 @@ class Composer(BaseModel):
 
     def __getstate__(self):
         return self.__cfg__
+
+    def select(
+        self,
+        cfg: Any,
+        key: str,
+        default: Any = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+    ):
+        """
+        Wrapper for OmegaConf. select value from a config object using a key.
+
+        Args:
+            cfg: Config node to select from
+            key: Key to select
+            default: Default value to return if key is not found
+            throw_on_resolution_failure: Raise an exception if an interpolation
+                resolution error occurs, otherwise return None
+            throw_on_missing: Raise an exception if an attempt to select a missing key (with the value '???')
+                is made, otherwise return None
+
+        Returns:
+            selected value or None if not found.
+        """
+        key = key.replace("/", ".")
+        return OmegaConf.select(
+            cfg,
+            key=key,
+            default=default,
+            throw_on_resolution_failure=throw_on_resolution_failure,
+            throw_on_missing=throw_on_missing,
+        )
+
+    def to_dict(self, cfg: Any) -> Any:
+        """
+        Convert a config to a dict
+
+        Args:
+            cfg: The config to convert.
+
+        Returns:
+            The dict representation of the config.
+        """
+        # Convert a config object to a config object.
+        if isinstance(cfg, dict):
+            cfg = _to_config(cfg)
+        # Returns a container for the given config.
+        if isinstance(cfg, (DictConfig, ListConfig)):
+            return OmegaConf.to_container(
+                cfg,
+                resolve=True,
+                throw_on_missing=False,
+                structured_config_mode=SCMode.DICT,
+            )
+        return cfg
+
+    def to_config(self, cfg: Any) -> Union[DictConfig, ListConfig]:
+        """
+        Convert a config object to OmegaConf
+
+        Args:
+            cfg: The config to convert.
+
+        Returns:
+            A Config object that corresponds to the given config.
+        """
+        return OmegaConf.create(cfg)
 
 
 def _compose(

@@ -12,9 +12,7 @@ logger = getLogger(__name__)
 class TaskPathConfig(BaseModel):
     config_name: str = "__task__"
 
-    project_workspace_root = ""
-    task_name: str = "default-task"
-    task_root: str = ""
+    task_root: str = "tmp/task"
     task_outputs: str = ""
     task_datasets: str = ""
     task_library: str = ""
@@ -41,29 +39,13 @@ class TaskPathConfig(BaseModel):
         super().__init__(**data)
 
     @property
-    def project_workspace_dir(self) -> Path:
-        """
-        Get the path to the project workspace directory.
-
-
-        Returns:
-                absolute path to the project workspace directory or None if not set by the user ( in which case a default is used )
-        """
-        self.project_workspace_root = self.project_workspace_root or "./workspace"
-        return Path(self.project_workspace_root).absolute()
-
-    @property
     def root_dir(self) -> Path:
         """
-        Returns the absolute path to the task root directory. If the task_root attribute is set it is used as the path to the task's data directory. Otherwise the task name is used as the path to the project's data directory.
-
+        Returns the absolute path to the task root directory.
 
         Returns:
                 an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
-        self.task_root = (
-            self.task_root or (self.project_workspace_dir / self.task_name).as_posix()
-        )
         # return as an absolute path
         return Path(self.task_root).absolute()
 

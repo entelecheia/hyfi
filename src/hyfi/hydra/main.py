@@ -152,7 +152,7 @@ class XC(Composer):
             return ""
 
     @staticmethod
-    def _viewsource(obj):
+    def viewsource(obj):
         """Print the source code of the object."""
         print(XC.getsource(obj))
 

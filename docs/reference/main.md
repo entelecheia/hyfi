@@ -1,3 +1,3 @@
 # `hyfi.main`
 
-::: src.hyfi.main
+::: hyfi.main

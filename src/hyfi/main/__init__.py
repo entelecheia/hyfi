@@ -13,7 +13,7 @@ from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import Composer, DictKeyType, SpecialKeys
 from hyfi.hydra.main import XC
-from hyfi.joblib.pipe import _apply, _pipe
+from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
@@ -360,7 +360,7 @@ class HyFI:
 
     @staticmethod
     def pipe(data=None, cfg=None):
-        return _pipe(data, cfg)
+        return PIPE.pipe(data, cfg)
 
     @staticmethod
     def ensure_list(value):
@@ -401,7 +401,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        return _apply(
+        return PIPE.apply(
             func,
             series,
             description=description,

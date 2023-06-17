@@ -344,8 +344,8 @@ class Composer(BaseModel):
     def __getstate__(self):
         return self.__cfg__
 
+    @staticmethod
     def select(
-        self,
         cfg: Any,
         key: str,
         default: Any = None,
@@ -376,7 +376,8 @@ class Composer(BaseModel):
             throw_on_missing=throw_on_missing,
         )
 
-    def to_dict(self, cfg: Any) -> Any:
+    @staticmethod
+    def to_dict(cfg: Any) -> Any:
         """
         Convert a config to a dict
 
@@ -399,7 +400,8 @@ class Composer(BaseModel):
             )
         return cfg
 
-    def to_config(self, cfg: Any) -> Union[DictConfig, ListConfig]:
+    @staticmethod
+    def to_config(cfg: Any) -> Union[DictConfig, ListConfig]:
         """
         Convert a config object to OmegaConf
 

@@ -80,16 +80,6 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
-    def dotenv() -> DotEnvConfig:
-        """Return the DotEnvConfig"""
-        return DotEnvConfig()
-
-    @staticmethod
-    def osenv():
-        """Return the DotEnvConfig"""
-        return os.environ
-
-    @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
         """Initialize the global config"""
         __global_config__.initialize(config)
@@ -120,6 +110,16 @@ class HyFI:
 
         """
         return expand_posix_vars(posix_expr, context=context)
+
+    @staticmethod
+    def dotenv() -> DotEnvConfig:
+        """Return the DotEnvConfig"""
+        return DotEnvConfig()
+
+    @staticmethod
+    def osenv():
+        """Return the DotEnvConfig"""
+        return os.environ
 
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:

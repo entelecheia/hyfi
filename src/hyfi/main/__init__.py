@@ -11,19 +11,8 @@ from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
 from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import (
-    Composer,
-    DictKeyType,
-    SpecialKeys,
-)
-from hyfi.hydra.main import (
-    _function,
-    _getsource,
-    _instantiate,
-    _partial,
-    _run,
-    _viewsource,
-)
+from hyfi.hydra import Composer, DictKeyType, SpecialKeys
+from hyfi.hydra.main import XC
 from hyfi.joblib.pipe import _apply, _pipe
 from hyfi.project import ProjectConfig
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
@@ -232,11 +221,11 @@ class HyFI:
         *args: Any,
         **kwargs: Any,
     ) -> Any:
-        return _partial(config=config, config_group=config_group, *args, **kwargs)
+        return XC.partial(config=config, config_group=config_group, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-        return _instantiate(config, *args, **kwargs)
+        return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod
     def is_config(
@@ -313,11 +302,11 @@ class HyFI:
 
     @staticmethod
     def function(cfg: Any, _name_, return_function=False, **parms):
-        return _function(cfg, _name_, return_function, **parms)
+        return XC.function(cfg, _name_, return_function, **parms)
 
     @staticmethod
     def run(config: Any, **kwargs: Any) -> Any:
-        _run(config, **kwargs)
+        XC.run(config, **kwargs)
 
     @staticmethod
     def load_dotenv(
@@ -462,7 +451,7 @@ class HyFI:
         if filename is not None:
             filename = str(filename)
         if SpecialKeys.TARGET in kwargs:
-            return _instantiate(
+            return XC.instantiate(
                 kwargs,
                 filename=filename,
                 base_dir=base_dir,
@@ -655,11 +644,11 @@ class HyFI:
 
     @staticmethod
     def getsource(obj):
-        return _getsource(obj)
+        return XC.getsource(obj)
 
     @staticmethod
     def viewsource(obj):
-        return _viewsource(obj)
+        return XC.viewsource(obj)
 
     @staticmethod
     def clear_output(wait=False):

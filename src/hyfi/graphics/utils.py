@@ -74,6 +74,8 @@ def load_image(
         max_pixels = 0
     if isinstance(image_or_uri, Image.Image):
         img = image_or_uri.convert(mode)
+    elif Path(image_or_uri).is_file():
+        img = Image.open(image_or_uri).convert(mode)
     else:
         img = Image.open(io.BytesIO(read(image_or_uri, **kwargs))).convert(mode)
     img = scale_image(

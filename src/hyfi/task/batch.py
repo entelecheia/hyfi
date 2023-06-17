@@ -1,8 +1,7 @@
 from omegaconf import DictConfig
 
 from hyfi.batch import BatchConfig
-from hyfi.hydra import _to_dict
-from hyfi.hydra.main import _load, _merge, _print, _save, _save_json
+from hyfi.hydra.main import XC
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import getLogger
 
@@ -104,7 +103,7 @@ class BatchTaskConfig(TaskConfig):
         if config is not None:
             self._config_ = config
         logger.info(f"Saving config to {self.batch.config_filepath}")
-        cfg = _to_dict(self.config)
+        cfg = XC.to_dict(self.config)
         if exclude is None:
             exclude = self.__config__.exclude
 
@@ -119,20 +118,20 @@ class BatchTaskConfig(TaskConfig):
                     exclude = [exclude]
                 for key in exclude:
                     args.pop(key, None)
-        _save(args, self.batch.config_filepath)
+        XC.save(args, self.batch.config_filepath)
         self.save_settings(exclude=exclude)
         return self.batch.config_filename
 
     def save_settings(self, exclude=None, exclude_none=True):
         def dumper(obj):
-            return _to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
+            return XC.to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
 
         if exclude is None:
             exclude = self.__config__.exclude
         config = self.dict(exclude=exclude, exclude_none=exclude_none)
         if self.verbose:
             logger.info(f"Saving config to {self.batch.config_jsonpath}")
-        _save_json(config, self.batch.config_jsonpath, default=dumper)
+        XC.save_json(config, self.batch.config_jsonpath, default=dumper)
 
     def load_config(
         self,
@@ -156,10 +155,10 @@ class BatchTaskConfig(TaskConfig):
             _path = self.batch.config_filepath
             if _path.is_file():
                 logger.info(f"Loading config from {_path}")
-                batch_cfg = _load(_path)
+                batch_cfg = XC.load(_path)
                 if self.verbose:
                     logger.info("Merging config with the loaded config")
-                cfg = _merge(cfg, batch_cfg)
+                cfg = XC.merge(cfg, batch_cfg)
             else:
                 logger.info(f"No config file found at {_path}")
                 batch_num = None
@@ -168,7 +167,7 @@ class BatchTaskConfig(TaskConfig):
 
         if self.verbose:
             logger.info(f"Merging config with args: {args}")
-        self._config_ = _merge(cfg, args)
+        self._config_ = XC.merge(cfg, args)
 
         self.batch_num = batch_num
         self.batch_name = batch_name
@@ -177,4 +176,4 @@ class BatchTaskConfig(TaskConfig):
 
     def show_config(self, batch_name=None, batch_num=None):
         self.load_config(batch_name, batch_num)
-        _print(self.dict())
+        XC.print(self.dict())

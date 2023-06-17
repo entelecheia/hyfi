@@ -18,7 +18,6 @@ logger = getLogger(__name__)
 def _select(
     cfg: Any,
     key: str,
-    *,
     default: Any = None,
     throw_on_resolution_failure: bool = True,
     throw_on_missing: bool = False,

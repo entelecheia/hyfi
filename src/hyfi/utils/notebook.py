@@ -1,8 +1,8 @@
 """Utilities for working with notebooks.""" ""
+import contextlib
 import logging
 import os
 import sys
-import contextlib
 
 from hyfi.utils.file import read
 

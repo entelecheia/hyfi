@@ -63,7 +63,7 @@ class HyfiConfig(BaseModel):
         extra = "allow"
 
     @root_validator()
-    def check_and_set_osenvs(cls, values):
+    def _check_and_set_osenvs(cls, values):
         """
         Validate and set values for the config file.
 

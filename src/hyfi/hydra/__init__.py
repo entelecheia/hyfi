@@ -262,24 +262,6 @@ class Composer(BaseModel):
         global_package: bool = False,
         verbose: bool = False,
     ) -> DictConfig:
-        """
-        Compose a configuration by applying overrides
-
-        Args:
-            config_group: Name of the config group to compose (`config_group=name`)
-            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
-            return_as_dict: Return the result as a dict
-            throw_on_resolution_failure: If True throw an exception if resolution fails
-            throw_on_missing: If True throw an exception if config_group doesn't exist
-            config_name: Name of the root config to be used (e.g. `hconf`)
-            config_module: Module of the config to be used (e.g. `hyfi.conf`)
-            global_package: If True, the config assumed to be a global package
-            verbose: If True print configuration to stdout
-
-        Returns:
-            A config object or a dictionary with the composed config
-        """
         return self.compose(
             config_group=config_group,
             overrides=overrides,

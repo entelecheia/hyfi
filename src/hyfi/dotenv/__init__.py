@@ -72,7 +72,7 @@ class DotEnvConfig(BaseSettings):
             return env_settings, file_secret_settings, init_settings
 
     @root_validator()
-    def _check_and_set_values(cls, values):
+    def check_and_set_osenvs(cls, values):
         for k, v in values.items():
             if v is not None:
                 old_value = os.getenv(k.upper())

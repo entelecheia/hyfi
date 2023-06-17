@@ -153,7 +153,7 @@ def set_osenv(key: str, value: Any) -> None:
     os.environ[key] = value
 
 
-def _check_and_set_value(key: str, value: Any) -> Any:
+def check_and_set_osenv(key: str, value: Any) -> Any:
     """Check and set value to environment variable"""
     env_key = key.upper()
     if value is not None:

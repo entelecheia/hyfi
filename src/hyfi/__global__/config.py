@@ -13,7 +13,7 @@ from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import _compose
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.env import _check_and_set_value, expand_posix_vars
+from hyfi.utils.env import check_and_set_osenv, expand_posix_vars
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebook import load_extentions, set_matplotlib_formats
 
@@ -63,7 +63,7 @@ class HyfiConfig(BaseModel):
         extra = "allow"
 
     @root_validator()
-    def _check_and_set_values(cls, values):
+    def check_and_set_osenvs(cls, values):
         """
         Validate and set values for the config file.
 
@@ -75,12 +75,12 @@ class HyfiConfig(BaseModel):
                 Same dictionary with hyfi_config
         """
         key = "hyfi_config_path"
-        val = _check_and_set_value(key, values.get(key))
+        val = check_and_set_osenv(key, values.get(key))
         values[key] = val
         # Set the hyfi_config_module value in the configuration file.
         if val is not None:
             key = "hyfi_config_module"
-            values[key] = _check_and_set_value(key, val.replace("pkg://", ""))
+            values[key] = check_and_set_osenv(key, val.replace("pkg://", ""))
         return values
 
     @validator("hyfi_user_config_path")
@@ -95,7 +95,7 @@ class HyfiConfig(BaseModel):
         Returns:
                 True if valid False otherwise
         """
-        return _check_and_set_value("hyfi_user_config_path", v)
+        return check_and_set_osenv("hyfi_user_config_path", v)
 
     @validator("logging_level")
     def _validate_logging_level(cls, v, values):

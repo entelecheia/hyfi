@@ -11,8 +11,7 @@ logger = getLogger(__name__)
 class BatchPathConfig(TaskPathConfig):
     config_name: str = "__batch__"
 
-    batch_name: str = "demo"
-    batch_output: str = ""
+    batch_outputs: str = ""
 
     class Config:
         extra = "ignore"
@@ -40,7 +39,7 @@ class BatchPathConfig(TaskPathConfig):
         Returns:
                 The directory where the batch output is stored for a batch of data to be processed ( relative to the task output directory )
         """
-        self.batch_output = (
-            self.batch_output or (self.output_dir / self.batch_name).as_posix()
+        self.batch_outputs = (
+            self.batch_outputs or (self.output_dir / "batch-outputs").as_posix()
         )
-        return Path(self.batch_output).absolute()
+        return Path(self.batch_outputs).absolute()

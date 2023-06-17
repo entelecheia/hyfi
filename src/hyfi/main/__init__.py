@@ -2,6 +2,7 @@
     This module contains the primary class for the hyfi config package, HyFI,
     as well as various utility functions and imports.
 """
+import os
 from pathlib import Path
 from typing import IO, Any, Dict, List, Tuple, Union
 
@@ -68,8 +69,6 @@ class HyFI:
     __version__ = __global_config__.__version__
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()
-    dotenv = __global_config__.dotenv
-    osenv = __global_config__.osenv
 
     def __init__(self) -> None:
         raise NotImplementedError("Use one of the static construction functions")
@@ -79,6 +78,16 @@ class HyFI:
         """Print the about information"""
         cfg = __global_config__
         _about(cfg)
+
+    @staticmethod
+    def dotenv() -> DotEnvConfig:
+        """Return the DotEnvConfig"""
+        return DotEnvConfig()
+
+    @staticmethod
+    def osenv():
+        """Return the DotEnvConfig"""
+        return os.environ
 
     @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore

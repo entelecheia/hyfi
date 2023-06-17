@@ -6,6 +6,7 @@
 tmp/
 workspace/
 testspace/
+tests/**/*.gif
 
 #MKDOCS
 site/
@@ -36,4 +37,3 @@ coverage.xml
 *.cover
 htmlcov/
 pytest-coverage.*
-

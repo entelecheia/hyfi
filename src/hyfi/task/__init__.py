@@ -1,8 +1,6 @@
-import contextlib
 from pathlib import Path
 from typing import Union
 
-from omegaconf import DictConfig
 from pydantic import BaseModel
 
 from hyfi.hydra import Composer
@@ -18,22 +16,19 @@ logger = getLogger(__name__)
 class TaskConfig(BaseModel):
     config_name: str = "__init__"
     config_group: str = "task"
-    task_name: str
-    path: BatchPathConfig = None  # type: ignore
-    project: ProjectConfig = None  # type: ignore
-    module: ModuleConfig = None  # type: ignore
+    task_name: str = "demo-task"
+    task_root: str = "tmp/task"
     autoload: bool = False
     version: str = "0.0.0"
-    _config_: DictConfig = None  # type: ignore
-    _initial_config_: DictConfig = None  # type: ignore
+    module: ModuleConfig = None  # type: ignore
+    path: BatchPathConfig = None  # type: ignore
+    project: ProjectConfig = None  # type: ignore
 
     class Config:
         arbitrary_types_allowed = True
         extra = "allow"
         validate_assignment = False
         exclude = {
-            "_config_",
-            "_initial_config_",
             "__data__",
             "path",
             "module",
@@ -42,63 +37,65 @@ class TaskConfig(BaseModel):
         include = {}
         underscore_attrs_are_private = True
         property_set_methods = {
-            "name": "set_name",
-            "root_dir": "set_root_dir",
+            "task_name": "set_task_name",
+            "task_root": "set_task_root",
         }
 
     def __init__(
         self,
-        config_name: str = "",
-        config_group: str = "",
-        root_dir: str = "",
-        **args,
+        config_name: str = "__init__",
+        config_group: str = "task",
+        **data,
     ):
-        if config_group:
-            args = Composer.merge(Composer._compose(config_group), args)
-        else:
-            args = Composer.to_config(args)
-        super().__init__(config_name=config_name, config_group=config_group, **args)
-
-        object.__setattr__(self, "_config_", args)
-        object.__setattr__(self, "_initial_config_", args.copy())
-        self.initialize_configs(root_dir=root_dir)
+        super().__init__(**data)
+        self.initialize_configs(
+            config_name=config_name,
+            config_group=config_group,
+            **data,
+        )
 
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
-        method = self.__config__.property_set_methods.get(key)
-        if method is not None:
+        if method := self.__config__.property_set_methods.get(key):  # type: ignore
             getattr(self, method)(val)
 
-    def set_root_dir(self, root_dir: Union[str, Path]):
-        path = self.config.path
-        if path is None:
-            path = Composer._compose("path=_batch_")
-            logger.info(
-                f"There is no path in the config, using default path: {path.root}"
-            )
-            self._config_.path = path
-        if root_dir is not None:
-            path.root = str(root_dir)
-        self.path = BatchPathConfig(**path)
+    def set_task_root(self, val: Union[str, Path]):
+        if not self.task_root or self.task_root != val:
+            self.initialize_configs(task_root=val)
 
-    def set_name(self, val):
-        self._config_.name = val
-        if self.task_name is None or self.task_name != val:
-            self.task_name = val
+    def set_task_name(self, val):
+        if not self.task_name or self.task_name != val:
+            self.initialize_configs(task_name=val)
 
-    def initialize_configs(self, root_dir=None, **kwargs):
-        self.root_dir = root_dir
+    def initialize_configs(
+        self,
+        config_name: str = "__init__",
+        config_group: str = "task",
+        **data,
+    ):
+        # Initialize the config with the given config_name.
+        data = Composer(
+            config_group=f"{config_group}={config_name}",
+            config_data=data,
+        ).config_as_dict
+        self.__dict__.update(data)
+        if "module" in data:
+            self.module = ModuleConfig(**data["module"])
+        if "path" in data:
+            self.path = BatchPathConfig(**data["path"])
+        if "project" in data:
+            self.project = ProjectConfig(**data["project"])
 
     @property
     def config(self):
-        return self._config_
+        return self.dict()
 
     @property
     def root_dir(self) -> Path:
-        return Path(self.path.root)
+        return self.path.root_dir
 
     @property
-    def output_dir(self):
+    def output_dir(self) -> Path:
         return self.path.output_dir
 
     @property
@@ -106,46 +103,39 @@ class TaskConfig(BaseModel):
         return self.project.project_name
 
     @property
-    def project_dir(self):
-        return Path(self.project.project_dir)
+    def project_dir(self) -> Path:
+        return Path(self.project.project_root)
 
     @property
-    def workspace_dir(self):
+    def workspace_dir(self) -> Path:
         return Path(self.project.project_workspace_dir)
 
     @property
-    def model_dir(self):
+    def model_dir(self) -> Path:
         return self.path.model_dir
 
     @property
-    def log_dir(self):
+    def log_dir(self) -> Path:
         return self.project.path.log_dir
 
     @property
-    def cache_dir(self):
-        cache_dir = Path(self.project.path.global_cache)
-        if cache_dir is None:
-            cache_dir = self.output_dir / ".cache"
-            cache_dir.mkdir(parents=True, exist_ok=True)
-        return Path(cache_dir)
+    def cache_dir(self) -> Path:
+        return self.project.path.cache_dir
 
     @property
-    def library_dir(self):
+    def library_dir(self) -> Path:
         return self.path.library_dir
 
     @property
-    def verbose(self):
-        return self.project.verbose
+    def verbose(self) -> bool:
+        return bool(self.project.verbose)
 
-    def autorun(self):
-        return Composer.methods(self.auto, self)
-
-    def show_config(self):
-        Composer.print(self.dict())
+    def print_config(self):
+        Composer.print(self.config)
 
     def load_modules(self):
         """Load the modules"""
-        if self.module.get("modules") is None:
+        if not self.module.modules:
             logger.info("No modules to load")
             return
         library_dir = self.library_dir
@@ -160,12 +150,12 @@ class TaskConfig(BaseModel):
                 syspath = library_dir / syspath
             ensure_import_module(name, libpath, liburi, specname, syspath)
 
-    def reset(self, objects=None):
+    def reset(self, objects=None, release_gpu_memory=True):
         """Reset the memory cache"""
         if isinstance(objects, list):
             for obj in objects:
                 del obj
-        with contextlib.suppress(ImportError):
+        if release_gpu_memory:
             from hyfi.utils.gpu import GPUMon
 
             GPUMon.release_gpu_memory()

@@ -1,5 +1,4 @@
 defaults:
   - __task__
 
-batch_name: ${oc.select:..batch.batch_name, demo}
-batch_output: ${.task_outputs}/${.batch_name}
+batch_outputs: ${.task_outputs}/${oc.select:..batch_name,batch-outputs}

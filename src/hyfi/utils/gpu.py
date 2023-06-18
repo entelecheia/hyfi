@@ -115,6 +115,10 @@ def is_cuda_available():
         return False
 
 
+class CudaDeviceNotFoundError(Exception):
+    pass
+
+
 def set_cuda(device=0):
     """Set cuda device to use"""
     try:
@@ -135,4 +139,4 @@ def set_cuda(device=0):
         os.environ["CUDA_VISIBLE_DEVICES"] = device
     except ImportError as e:
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        raise Exception("Cuda device not found") from e
+        raise CudaDeviceNotFoundError("Cuda device not found") from e

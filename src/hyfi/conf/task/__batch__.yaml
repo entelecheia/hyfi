@@ -2,7 +2,7 @@ defaults:
   - __init__
   - override /path: __batch__
 
-name: task
+task_name: batch-task
 batch_name: demo-batch
 autoload: false
 version: "0.0.0"

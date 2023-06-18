@@ -6,7 +6,7 @@ from pydantic import BaseModel, validator
 
 from hyfi.__global__ import __about__
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import _compose
+from hyfi.hydra import Composer
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
 from hyfi.utils.logging import getLogger
@@ -59,21 +59,32 @@ class ProjectConfig(BaseModel):
     def __init__(
         self,
         config_name: str = "__init__",
+        config_group: str = "project",
         **data: Any,
     ):
-        data = _compose(
-            f"project={config_name}",
-            config_data=data,
-            config_module=__about__.config_module,
-        )  # type: ignore
-        super().__init__(config_name=config_name, **data)
+        super().__init__(**data)
+        self.initialize_configs(
+            config_name=config_name,
+            config_group=config_group,
+            **data,
+        )
 
-    def init_project(self):
+    def initialize_configs(
+        self,
+        config_name: str = "__init__",
+        config_group: str = "project",
+        **data,
+    ):
+        # Initialize the config with the given config_name.
+        data = Composer(
+            config_group=f"{config_group}={config_name}",
+            config_data=data,
+        ).config_as_dict
+        self.__dict__.update(data)
+
         self.dotenv = DotEnvConfig()
-        if self.path is None:
-            self.path = PathConfig()
-        if self.joblib is None:
-            self.joblib = JobLibConfig()
+        self.path = PathConfig(**self.__dict__["path"])
+        self.joblib = JobLibConfig(**self.__dict__["joblib"])
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
         self.dotenv.HYFI_TASK_NAME = self.task_name

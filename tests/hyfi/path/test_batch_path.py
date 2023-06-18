@@ -4,12 +4,14 @@ from pprint import pprint
 
 
 def test_path_config():
-    config = BatchPathConfig(batch_name="test", task_name="test_task")
+    config = BatchPathConfig(task_root="workspace/test_task")
     pprint(config.dict())
     # Test that the default values are set correctly
     assert config.config_name == "__batch__"
     print(config.batch_dir)
-    assert config.batch_dir == Path("workspace/test_task/outputs/test").absolute()
+    assert (
+        config.batch_dir == Path("workspace/test_task/outputs/batch-outputs").absolute()
+    )
 
     # Test that the log_dir is created
     assert Path(config.log_dir).is_dir()

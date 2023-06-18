@@ -1,8 +1,9 @@
 defaults:
-  - /module: __init__
-  - /path: __task__
   - /project: __init__
+  - /path: __task__
+  - /module: __init__
 
 task_name: demo-task
+task_root: ${.project.path.project_workspace_root}/${.task_name}
 autoload: false
 version: "0.0.0"

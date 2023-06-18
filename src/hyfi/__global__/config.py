@@ -228,7 +228,7 @@ class HyfiConfig(BaseModel):
             logger.info("No project config found, skip project config initialization.")
             return
         self.project = ProjectConfig(**config["project"])
-        self.project.init_project()
+        # self.project.init_project()
         # Initialize joblib backend if joblib is not set.
         if self.project.joblib:
             self.project.joblib.init_backend()

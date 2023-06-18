@@ -3,14 +3,14 @@ from typing import Any
 from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
-from hyfi.hydra import _compose
+from hyfi.hydra import Composer
 from hyfi.joblib.batch import batcher
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class DistFramwork(BaseModel):
+class DistFramworkConfig(BaseModel):
     """Distributed Framework Configuration"""
 
     backend: str = "joblib"
@@ -34,7 +34,7 @@ class JobLibConfig(BaseModel):
 
     config_name: str = "__init__"
     num_workers: int = 1
-    distributed_framework: DistFramwork = DistFramwork()
+    distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
 
@@ -45,14 +45,38 @@ class JobLibConfig(BaseModel):
     def __init__(
         self,
         config_name: str = "__init__",
+        config_group: str = "joblib",
         **data: Any,
     ):
-        data = _compose(
-            f"joblib={config_name}",
+        """
+        Initialize the config. This is the base implementation of __init__.
+        You can override this in your own subclass if you want to customize the initilization of a config by passing a keyword argument ` data `.
+
+        Args:
+                config_name: The name of the config to initialize
+                data: The data to initialize
+        """
+        super().__init__(**data)
+        self.initialize_configs(
+            config_name=config_name,
+            config_group=config_group,
+            **data,
+        )
+
+    def initialize_configs(
+        self,
+        config_name: str = "__init__",
+        config_group: str = "joblib",
+        **data,
+    ):
+        # Initialize the config with the given config_name.
+        data = Composer(
+            config_group=f"{config_group}={config_name}",
             config_data=data,
-            config_module=__about__.config_module,
-        )  # type: ignore
-        super().__init__(config_name=config_name, **data)
+        ).config_as_dict
+        self.__dict__.update(data)
+        self.distributed_framework = DistFramworkConfig(**self.__dict__["distributed_framework"])
+        self.batcher = BatcherConfig(**self.__dict__["batcher"])
 
     def init_backend(
         self,

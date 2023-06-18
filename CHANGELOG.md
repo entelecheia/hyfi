@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v0.8.0 (2023-06-18)
+
+### Feature
+
+* **path:** Add TaskPathConfig model class and properties ([`316f5ff`](https://github.com/entelecheia/hyfi/commit/316f5fffde28d92dd4ca8f85dd386bd54583a7f1))
+
+### Fix
+
+* **utils/gpu:** Set proper exception for CUDA device not found error ([`220c114`](https://github.com/entelecheia/hyfi/commit/220c114efcf3392e1802221b5121932229cc2763))
+
 ## v0.7.2 (2023-06-17)
 
 ### Fix

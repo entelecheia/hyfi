@@ -24,7 +24,12 @@ class TaskPathConfig(BaseModel):
     class Config:
         extra = "ignore"
 
-    def __init__(self, config_name: str = "__task__", **data: Any):
+    def __init__(
+        self,
+        config_name: str = "__task__",
+        config_group: str = "path",
+        **data: Any,
+    ):
         """
         Initialize the batch. This is the method you call when you want to initialize the batch from a config
 
@@ -32,11 +37,25 @@ class TaskPathConfig(BaseModel):
                 config_name: The name of the config you want to use
                 data: The data you want to initilize the
         """
+        super().__init__(**data)
+        self.initialize_configs(
+            config_name=config_name,
+            config_group=config_group,
+            **data,
+        )
+
+    def initialize_configs(
+        self,
+        config_name: str = "__task__",
+        config_group: str = "path",
+        **data,
+    ):
         # Initialize the config with the given config_name.
         data = Composer(
-            config_group=f"path={config_name}", config_data=data
+            config_group=f"{config_group}={config_name}",
+            config_data=data,
         ).config_as_dict
-        super().__init__(**data)
+        self.__dict__.update(data)
 
     @property
     def root_dir(self) -> Path:

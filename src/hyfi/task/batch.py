@@ -9,6 +9,7 @@ logger = getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
+    batch_name: str = "demo"
     batch: BatchConfig = None  # type: ignore
 
     class Config:
@@ -37,8 +38,8 @@ class BatchTaskConfig(TaskConfig):
     def __init__(self, **args):
         super().__init__(**args)
 
-    def set_name(self, val):
-        super().set_name(val)
+    def set_batch_name(self, val):
+        super().set_task_name(val)
         self._config_.batch.batch_name = val
         self.batch.batch_name = val
         self.initialize_configs(name=val)
@@ -48,9 +49,12 @@ class BatchTaskConfig(TaskConfig):
         self.batch.batch_num = val
 
     def initialize_configs(
-        self, root_dir=None, batch_config_class=BatchConfig, **kwargs
+        self,
+        task_root: str = "",
+        batch_config_class=BatchConfig,
+        **kwargs,
     ):
-        super().initialize_configs(root_dir=root_dir, **kwargs)
+        super().initialize_configs(task_root=task_root, **kwargs)
 
         self.batch = batch_config_class(**self.config.batch)
         self.batch_num = self.batch.batch_num
@@ -60,10 +64,6 @@ class BatchTaskConfig(TaskConfig):
             logger.info(
                 f"Initalized batch: {self.batch_name}({self.batch_num}) in {self.root_dir}"
             )
-
-    @property
-    def batch_name(self):
-        return self.batch.batch_name
 
     @property
     def batch_num(self):

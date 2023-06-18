@@ -13,10 +13,10 @@ logger = getLogger(__name__)
 class BatchConfig(BaseModel):
     config_name: str = "__init__"
     batch_name: str
-    batch_num: Optional[int] = None
+    batch_num: int = -1
     batch_root: str = "outputs"
     output_suffix: str = ""
-    output_extention: Optional[str] = ""
+    output_extention: str = ""
     random_seed: bool = True
     seed: int = -1
     resume_run: bool = False
@@ -66,6 +66,8 @@ class BatchConfig(BaseModel):
 
     def init_batch_num(self):
         if self.batch_num is None:
+            self.batch_num = -1
+        if self.batch_num < 0:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
             self.batch_num = num_files - 1 if self.resume_latest else num_files
         if self.verbose:

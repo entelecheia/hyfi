@@ -348,11 +348,6 @@ class Composer(BaseModel):
                     overrides.append(override)
                 else:
                     overrides = [override]
-        # Add config group overrides to overrides list.
-        if group_key and config_data:
-            for k, v in config_data.items():
-                if isinstance(v, (str, int)):
-                    overrides.append(f"{group_key}.{k}={v}")
         # if verbose:
         logger.debug(f"compose config with overrides: {overrides}")
         # Initialize hydra and return the configuration.
@@ -361,6 +356,29 @@ class Composer(BaseModel):
             config_module=config_module,
             overrides=overrides,
         )
+        # Add config group overrides to overrides list.
+        group_overrides = []
+        group_cfg = Composer.select(
+            cfg,
+            key=group_key,
+            default=None,
+            throw_on_missing=False,
+            throw_on_resolution_failure=False,
+        )
+        if config_data and group_cfg:
+            group_overrides.extend(
+                f"{group_key}.{k}={v}"
+                for k, v in config_data.items()
+                if isinstance(v, (str, int, float, bool)) and k in group_cfg
+            )
+        if group_overrides:
+            overrides.extend(group_overrides)
+            cfg = Composer.hydra_compose(
+                root_config_name=root_config_name,
+                config_module=config_module,
+                overrides=overrides,
+            )
+
         # Select the group_key from the configuration.
         if group_key and not global_package:
             cfg = Composer.select(

@@ -10,7 +10,7 @@ from pydantic import BaseModel, root_validator, validator
 from hyfi.__global__ import __about__, __hydra_config__
 from hyfi.about import AboutConfig
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import _compose
+from hyfi.hydra import Composer
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.env import check_and_set_osenv, expand_posix_vars
@@ -200,7 +200,7 @@ class HyfiConfig(BaseModel):
 
     def initialize(self, config: Union[DictConfig, Dict, None] = None):
         """
-        Initialize hyfi. This is called by : meth : ` __init__ ` to perform initialisation.
+        Initialize hyfi.
 
         Args:
                 config: Configuration dictionary or None.
@@ -218,10 +218,11 @@ class HyfiConfig(BaseModel):
 
         # If config is not set the default config is used.
         if config is None:
-            config = _compose(
-                overrides=["+project=__init__"], config_module=__about__.config_module
-            )
             logger.debug("Using default config.")
+            config = Composer(
+                overrides=["+project=__init__"],
+                config_module=__about__.config_module,
+            ).config_as_dict
 
         # Skip project config initialization.
         if "project" not in config:

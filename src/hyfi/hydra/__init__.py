@@ -236,7 +236,7 @@ class Composer(BaseModel):
         """
         # Convert a config object to a config object.
         if isinstance(cfg, dict):
-            cfg = _to_config(cfg)
+            cfg = Composer.to_config(cfg)
         # Returns a container for the given config.
         if isinstance(cfg, (DictConfig, ListConfig)):
             return OmegaConf.to_container(
@@ -334,7 +334,7 @@ class Composer(BaseModel):
                 config_module=config_module,
                 overrides=overrides,
             )
-            cfg = _select(
+            cfg = Composer.select(
                 cfg,
                 key=group_key,
                 default=None,
@@ -397,7 +397,7 @@ class Composer(BaseModel):
 
         if Composer.is_config(cfg):
             if resolve:
-                pprint.pprint(_to_dict(cfg), **kwargs)
+                pprint.pprint(Composer.to_dict(cfg), **kwargs)
             else:
                 pprint.pprint(cfg, **kwargs)
         else:
@@ -488,7 +488,7 @@ class Composer(BaseModel):
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
         if resolve:
-            cfg = _to_dict(cfg)
+            cfg = Composer.to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
@@ -583,75 +583,3 @@ class Composer(BaseModel):
             logger.info(f"args of {_fn}: {args}")
             return {k: v for k, v in _kwargs.items() if k in args}
         return _kwargs
-
-
-def _compose(
-    config_group: Union[str, None] = None,
-    overrides: Union[List[str], None] = None,
-    config_data: Union[Dict[str, Any], DictConfig, None] = None,
-    return_as_dict: bool = True,
-    throw_on_resolution_failure: bool = True,
-    throw_on_missing: bool = False,
-    root_config_name: Union[str, None] = None,
-    config_module: Union[str, None] = None,
-    global_package: bool = False,
-    verbose: bool = False,
-) -> Union[DictConfig, Dict]:  # sourcery skip: low-code-quality
-    """
-    Compose a configuration by applying overrides
-
-    Args:
-        config_group: Name of the config group to compose (`config_group=name`)
-        overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-        config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
-        return_as_dict: Return the result as a dict
-        throw_on_resolution_failure: If True throw an exception if resolution fails
-        throw_on_missing: If True throw an exception if config_group doesn't exist
-        root_config_name: Name of the root config to be used (e.g. `hconf`)
-        config_module: Module of the config to be used (e.g. `hyfi.conf`)
-        global_package: If True, the config assumed to be a global package
-        verbose: If True print configuration to stdout
-
-    Returns:
-        A config object or a dictionary with the composed config
-    """
-    cmpsr = Composer(
-        config_group=config_group,
-        overrides=overrides,
-        config_data=config_data,
-        throw_on_resolution_failure=throw_on_resolution_failure,
-        throw_on_missing=throw_on_missing,
-        config_name=root_config_name,
-        config_module=config_module,
-        global_package=global_package,
-        verbose=verbose,
-    )
-    return cmpsr.config_as_dict if return_as_dict else cmpsr.config
-
-
-def _select(
-    cfg: Any,
-    key: str,
-    default: Any = None,
-    throw_on_resolution_failure: bool = True,
-    throw_on_missing: bool = False,
-):
-    return Composer.select(
-        cfg=cfg,
-        key=key,
-        default=default,
-        throw_on_resolution_failure=throw_on_resolution_failure,
-        throw_on_missing=throw_on_missing,
-    )
-
-
-def _to_dict(
-    cfg: Any,
-) -> Any:
-    return Composer.to_dict(cfg)
-
-
-def _to_config(
-    cfg: Any,
-) -> Union[DictConfig, ListConfig]:
-    return Composer.to_config(cfg)

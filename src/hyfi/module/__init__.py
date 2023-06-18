@@ -9,4 +9,4 @@ class ModuleConfig(BaseModel):
     """Module Configuration"""
 
     library_dir: str = ""
-    modules: list = []
+    modules: list = None

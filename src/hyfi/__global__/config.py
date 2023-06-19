@@ -226,7 +226,7 @@ class HyfiConfig(BaseModel):
 
         # Skip project config initialization.
         if "project" not in config:
-            logger.info("No project config found, skip project config initialization.")
+            logger.debug("No project config found, skip project config initialization.")
             return
         self.project = ProjectConfig(**config["project"])
         # self.project.init_project()

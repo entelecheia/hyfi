@@ -1,9 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from pydantic import BaseModel
-
-from hyfi.hydra import Composer
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
@@ -13,7 +11,7 @@ from hyfi.utils.logging import getLogger
 logger = getLogger(__name__)
 
 
-class TaskConfig(BaseModel):
+class TaskConfig(BaseConfig):
     config_name: str = "__init__"
     config_group: str = "task"
 
@@ -42,13 +40,6 @@ class TaskConfig(BaseModel):
             "task_root": "set_task_root",
         }
 
-    def __init__(
-        self,
-        **data,
-    ):
-        super().__init__(**data)
-        self.initialize_configs(**data)
-
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
         if method := self.__config__.property_set_methods.get(key):  # type: ignore
@@ -69,22 +60,17 @@ class TaskConfig(BaseModel):
         **data,
     ):
         # Initialize the config with the given config_name.
-        logger.info(
-            "Initializing TaskConfig class with %s config in %s group.",
-            config_name,
-            config_group,
+        super().initialize_configs(
+            config_name=self.config_name,
+            config_group=self.config_group,
+            **data,
         )
-        data = Composer(
-            config_group=f"{config_group}={config_name}",
-            config_data=data,
-        ).config_as_dict
-        self.__dict__.update(data)
         if "module" in self.__dict__:
-            self.module = ModuleConfig(**self.__dict__["module"])
+            self.module = ModuleConfig.parse_obj(self.__dict__["module"])
         if "path" in self.__dict__:
-            self.path = BatchPathConfig(**data["path"])
+            self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
         if "project" in self.__dict__:
-            self.project = ProjectConfig(**self.__dict__["project"])
+            self.project = ProjectConfig.parse_obj(self.__dict__["project"])
 
     @property
     def config(self):

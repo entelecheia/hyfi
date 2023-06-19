@@ -2,11 +2,11 @@ import os
 from pathlib import Path
 from typing import Any, Union
 
-from pydantic import BaseModel, validator
+from pydantic import validator
 
 from hyfi.__global__ import __about__
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import Composer
+from hyfi.hydra import BaseConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
 from hyfi.utils.logging import getLogger
@@ -15,10 +15,12 @@ from hyfi.utils.notebook import is_notebook
 logger = getLogger(__name__)
 
 
-class ProjectConfig(BaseModel):
+class ProjectConfig(BaseConfig):
     """Project Config"""
 
     config_name: str = "__init__"
+    config_group: str = "project"
+    # Project Config
     project_name: str = "hyfi-project"
     task_name: str = ""
     project_description: str = ""
@@ -56,35 +58,12 @@ class ProjectConfig(BaseModel):
                 raise ValueError("verbose must be a boolean or a string of 0 or 1")
         return v
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "project",
-        **data: Any,
-    ):
-        super().__init__(**data)
-        self.initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
-            **data,
-        )
-
-    def initialize_configs(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "project",
-        **data,
-    ):
-        # Initialize the config with the given config_name.
-        data = Composer(
-            config_group=f"{config_group}={config_name}",
-            config_data=data,
-        ).config_as_dict
-        self.__dict__.update(data)
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
 
         self.dotenv = DotEnvConfig()
-        self.path = PathConfig(**self.__dict__["path"])
-        self.joblib = JobLibConfig(**self.__dict__["joblib"])
+        self.path = PathConfig.parse_obj(self.__dict__["path"])
+        self.joblib = JobLibConfig.parse_obj(self.__dict__["joblib"])
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
         self.dotenv.HYFI_TASK_NAME = self.task_name

@@ -1,17 +1,19 @@
 import random
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Union
 
-from pydantic import BaseModel, validator
+from pydantic import validator
 
-from hyfi.hydra import Composer
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class BatchConfig(BaseModel):
+class BatchConfig(BaseConfig):
     config_name: str = "__init__"
+    config_group: str = "batch"
+
     batch_name: str
     batch_num: int = -1
     batch_root: str = "outputs"
@@ -29,39 +31,8 @@ class BatchConfig(BaseModel):
     config_dirname = "configs"
     verbose: Union[bool, int] = False
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "batch",
-        **data: Any,
-    ):
-        """
-        Initialize the config. This is the base implementation of __init__.
-        You can override this in your own subclass if you want to customize the initilization of a config by passing a keyword argument ` data `.
-
-        Args:
-                config_name: The name of the config to initialize
-                data: The data to initialize
-        """
-        super().__init__(**data)
-        self.initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
-            **data,
-        )
-
-    def initialize_configs(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "batch",
-        **data,
-    ):
-        # Initialize the config with the given config_name.
-        data = Composer(
-            config_group=f"{config_group}={config_name}",
-            config_data=data,
-        ).config_as_dict
-        self.__dict__.update(data)
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
         self.init_batch_num()
 
     def init_batch_num(self):

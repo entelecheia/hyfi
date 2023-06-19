@@ -614,10 +614,10 @@ class BaseConfig(BaseModel):
         **data,
     ):
         if not self.config_group:
-            logger.info("There is no config group specified.")
+            logger.debug("There is no config group specified.")
             return
         # Initialize the config with the given config_name.
-        logger.info(
+        logger.debug(
             "Initializing `%s` class with `%s` config in `%s` group.",
             self.__class__.__name__,
             self.config_name,

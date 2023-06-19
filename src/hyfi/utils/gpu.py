@@ -14,7 +14,7 @@ logger = getLogger(__name__)
 try:
     import GPUtil  # type: ignore
 except ImportError:
-    logger.info("GPUtil not found. Please install it to use GPU utilities.")
+    logger.debug("GPUtil not found. Please install it to use GPU utilities.")
 
 
 class GPUMon(Thread):

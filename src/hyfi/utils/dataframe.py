@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Any, Union
 
 import pandas as pd
 
@@ -10,7 +10,7 @@ from hyfi.utils.logging import getLogger
 logger = getLogger(__name__)
 
 
-def is_dataframe(data) -> bool:
+def is_dataframe(data: Any) -> bool:
     """Check if data is a pandas dataframe"""
     return isinstance(data, pd.DataFrame)
 
@@ -205,3 +205,84 @@ def save_data(
                 logger.info(" >> elapsed time to save data: %s", elapsed())
     else:
         raise ValueError(f"Unsupported data type: {type(data)}")
+
+
+def to_datetime(data, _format=None, _columns=None, **kwargs):
+    """Convert a string, int, or datetime object to a datetime object"""
+    from datetime import datetime
+
+    import pandas as pd
+
+    if isinstance(data, datetime):
+        return data
+    elif isinstance(data, str):
+        if _format is None:
+            _format = "%Y-%m-%d"
+        return datetime.strptime(data, _format)
+    elif isinstance(data, int):
+        return datetime.fromtimestamp(data)
+    elif isinstance(data, pd.DataFrame):
+        if _columns:
+            if isinstance(_columns, str):
+                _columns = [_columns]
+            for _col in _columns:
+                data[_col] = pd.to_datetime(data[_col], format=_format, **kwargs)
+        return data
+    else:
+        return data
+
+
+def to_numeric(
+    data,
+    _columns=None,
+    errors="coerce",
+    downcast=None,
+    **kwargs,
+):
+    """Convert a string, int, or float object to a float object"""
+    import pandas as pd
+
+    if isinstance(data, str):
+        return float(data)
+    elif isinstance(data, (int, float)) or not isinstance(data, pd.DataFrame):
+        return data
+    else:
+        if _columns:
+            if isinstance(_columns, str):
+                _columns = [_columns]
+            for _col in _columns:
+                data[_col] = pd.to_numeric(data[_col], errors=errors, downcast=downcast)  # type: ignore
+        return data
+
+
+def dict_to_dataframe(
+    data,
+    orient="columns",
+    dtype=None,
+    columns=None,
+):
+    """Convert a dictionary to a pandas dataframe"""
+    import pandas as pd
+
+    return pd.DataFrame.from_dict(data, orient=orient, dtype=dtype, columns=columns)  # type: ignore
+
+
+def records_to_dataframe(
+    data,
+    index=None,
+    exclude=None,
+    columns=None,
+    coerce_float=False,
+    nrows=None,
+):
+    """Convert a list of records to a pandas dataframe"""
+    import pandas as pd
+
+    return pd.DataFrame.from_records(
+        data,
+        index=index,
+        exclude=exclude,
+        columns=columns,
+        coerce_float=coerce_float,
+        nrows=nrows,
+    )

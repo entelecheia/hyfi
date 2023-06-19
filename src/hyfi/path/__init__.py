@@ -4,14 +4,16 @@ from typing import Any
 from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
-from hyfi.hydra import Composer
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class PathConfig(BaseModel):
+class PathConfig(BaseConfig):
     config_name: str = "__init__"
+    config_group: str = "path"
+
     # internal paths for hyfi
     home: str = ""
     hyfi: str = ""
@@ -46,38 +48,9 @@ class PathConfig(BaseModel):
         extra = "allow"
         arbitrary_types_allowed = True
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "path",
-        **data: Any,
-    ):
-        """
-        Initialize the config. This is the base implementation of __init__. You can override this in your own subclass if you want to customize the initilization of a config by passing a keyword argument ` data `.
-
-        Args:
-                config_name: The name of the config to initialize
-                data: The data to initialize
-        """
-        super().__init__(**data)
-        self.initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
-            **data,
-        )
-
-    def initialize_configs(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "path",
-        **data,
-    ):
+    def initialize_configs(self, **data):
         # Initialize the config with the given config_name.
-        data = Composer(
-            config_group=f"{config_group}={config_name}",
-            config_data=data,
-        ).config_as_dict
-        self.__dict__.update(data)
+        super().initialize_configs(**data)
 
     @property
     def log_dir(self):

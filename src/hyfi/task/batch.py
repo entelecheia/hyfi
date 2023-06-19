@@ -50,25 +50,19 @@ class BatchTaskConfig(TaskConfig):
         config_group: str = "task",
         **data,
     ):
-        logger.info(
-            "Initializing BatchTaskConfig class with %s config in %s group.",
-            config_name,
-            config_group,
-        )
         super().initialize_configs(
             config_name=self.config_name,
             config_group=self.config_group,
             **data,
         )
         if "batch" in self.__dict__ and self.__dict__["batch"]:
-            self.batch = BatchConfig(**self.__dict__["batch"])
-        if self.verbose:
-            logger.info(
-                "Initalized batch: %s(%s) in %s",
-                self.batch_name,
-                self.batch_num,
-                self.batch_dir,
-            )
+            self.batch = BatchConfig.parse_obj(self.__dict__["batch"])
+        logger.info(
+            "Initalized batch: %s(%s) in %s",
+            self.batch_name,
+            self.batch_num,
+            self.batch_dir,
+        )
 
     @property
     def batch_num(self):

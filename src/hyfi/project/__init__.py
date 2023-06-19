@@ -58,8 +58,8 @@ class ProjectConfig(BaseConfig):
                 raise ValueError("verbose must be a boolean or a string of 0 or 1")
         return v
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
 
         self.dotenv = DotEnvConfig()
         self.path = PathConfig.parse_obj(self.__dict__["path"])

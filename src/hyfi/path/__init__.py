@@ -48,9 +48,9 @@ class PathConfig(BaseConfig):
         extra = "allow"
         arbitrary_types_allowed = True
 
-    def initialize_configs(self, **data):
+    def initialize_configs(self, **config_kwargs):
         # Initialize the config with the given config_name.
-        super().initialize_configs(**data)
+        super().initialize_configs(**config_kwargs)
 
     @property
     def log_dir(self):

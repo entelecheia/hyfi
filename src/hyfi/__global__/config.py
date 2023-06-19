@@ -117,14 +117,14 @@ class HyfiConfig(BaseModel):
         logger.setLevel(v)
         return v
 
-    def __init__(self, **data: Any):
+    def __init__(self, **config_kwargs: Any):
         """
         Initialize the object with data
 
         Args:
                 data: Data to initialize the
         """
-        super().__init__(**data)
+        super().__init__(**config_kwargs)
         # self.about = __about__
 
     def init_workspace(

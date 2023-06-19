@@ -31,8 +31,8 @@ class BatchConfig(BaseConfig):
     config_dirname = "configs"
     verbose: Union[bool, int] = False
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         self.init_batch_num()
 
     def init_batch_num(self):

@@ -600,9 +600,9 @@ class BaseConfig(BaseModel):
         underscore_attrs_are_private = True
         property_set_methods = {}
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.initialize_configs(**data)
+    def __init__(self, **config_kwargs):
+        super().__init__(**config_kwargs)
+        self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
@@ -611,7 +611,7 @@ class BaseConfig(BaseModel):
 
     def initialize_configs(
         self,
-        **data,
+        **config_kwargs,
     ):
         if not self.config_group:
             logger.debug("There is no config group specified.")

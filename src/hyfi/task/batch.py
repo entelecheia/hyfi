@@ -44,8 +44,8 @@ class BatchTaskConfig(TaskConfig):
     def set_batch_num(self, val):
         self.batch.batch_num = val
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         if "batch" in self.__dict__ and self.__dict__["batch"]:
             self.batch = BatchConfig.parse_obj(self.__dict__["batch"])
         logger.info(
@@ -133,7 +133,7 @@ class BatchTaskConfig(TaskConfig):
         self,
         batch_name: str = "",
         batch_num: int = -1,
-        **data,
+        **config_kwargs,
     ):
         """Load the config from the batch config file"""
         if self.verbose:

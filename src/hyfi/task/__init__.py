@@ -53,8 +53,8 @@ class TaskConfig(BaseConfig):
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         if "module" in self.__dict__:
             self.module = ModuleConfig.parse_obj(self.__dict__["module"])
         if "path" in self.__dict__:

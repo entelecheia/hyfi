@@ -1,22 +1,24 @@
 import random
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Union
 
-from pydantic import BaseModel, validator
+from pydantic import validator
 
-from hyfi.hydra import _compose
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class BatchConfig(BaseModel):
+class BatchConfig(BaseConfig):
     config_name: str = "__init__"
+    config_group: str = "batch"
+
     batch_name: str
-    batch_num: Optional[int] = None
+    batch_num: int = -1
     batch_root: str = "outputs"
     output_suffix: str = ""
-    output_extention: Optional[str] = ""
+    output_extention: str = ""
     random_seed: bool = True
     seed: int = -1
     resume_run: bool = False
@@ -29,20 +31,14 @@ class BatchConfig(BaseModel):
     config_dirname = "configs"
     verbose: Union[bool, int] = False
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        **data: Any,
-    ):
-        data = _compose(
-            f"batch={config_name}",
-            config_data=data,
-        )  # type: ignore
-        super().__init__(**data)
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
         self.init_batch_num()
 
     def init_batch_num(self):
         if self.batch_num is None:
+            self.batch_num = -1
+        if self.batch_num < 0:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
             self.batch_num = num_files - 1 if self.resume_latest else num_files
         if self.verbose:
@@ -62,7 +58,15 @@ class BatchConfig(BaseModel):
             return seed
         return v
 
-    @validator("output_extention")
+    @validator("batch_num", pre=True, always=True)
+    def _validate_batch_num(cls, v):
+        return v or -1
+
+    @validator("output_suffix", pre=True, always=True)
+    def _validate_output_suffix(cls, v):
+        return v or ""
+
+    @validator("output_extention", pre=True, always=True)
     def _validate_output_extention(cls, v):
         return v.strip(".") if v else ""
 

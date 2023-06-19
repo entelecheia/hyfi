@@ -18,8 +18,10 @@ from hyfi.__global__ import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import getLogger, setLogger
 
+if level := os.environ.get("HYFI_LOG_LEVEL"):
+    setLogger(level)
 logger = getLogger(__name__)
 
 DictKeyType = Union[str, int, Enum, float, bool]
@@ -236,7 +238,7 @@ class Composer(BaseModel):
         """
         # Convert a config object to a config object.
         if isinstance(cfg, dict):
-            cfg = _to_config(cfg)
+            cfg = Composer.to_config(cfg)
         # Returns a container for the given config.
         if isinstance(cfg, (DictConfig, ListConfig)):
             return OmegaConf.to_container(
@@ -334,7 +336,7 @@ class Composer(BaseModel):
                 config_module=config_module,
                 overrides=overrides,
             )
-            cfg = _select(
+            cfg = Composer.select(
                 cfg,
                 key=group_key,
                 default=None,
@@ -397,7 +399,7 @@ class Composer(BaseModel):
 
         if Composer.is_config(cfg):
             if resolve:
-                pprint.pprint(_to_dict(cfg), **kwargs)
+                pprint.pprint(Composer.to_dict(cfg), **kwargs)
             else:
                 pprint.pprint(cfg, **kwargs)
         else:
@@ -488,7 +490,7 @@ class Composer(BaseModel):
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
         if resolve:
-            cfg = _to_dict(cfg)
+            cfg = Composer.to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
@@ -585,73 +587,44 @@ class Composer(BaseModel):
         return _kwargs
 
 
-def _compose(
-    config_group: Union[str, None] = None,
-    overrides: Union[List[str], None] = None,
-    config_data: Union[Dict[str, Any], DictConfig, None] = None,
-    return_as_dict: bool = True,
-    throw_on_resolution_failure: bool = True,
-    throw_on_missing: bool = False,
-    root_config_name: Union[str, None] = None,
-    config_module: Union[str, None] = None,
-    global_package: bool = False,
-    verbose: bool = False,
-) -> Union[DictConfig, Dict]:  # sourcery skip: low-code-quality
-    """
-    Compose a configuration by applying overrides
+class BaseConfig(BaseModel):
+    config_name: str = "__init__"
+    config_group: str = ""
 
-    Args:
-        config_group: Name of the config group to compose (`config_group=name`)
-        overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-        config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
-        return_as_dict: Return the result as a dict
-        throw_on_resolution_failure: If True throw an exception if resolution fails
-        throw_on_missing: If True throw an exception if config_group doesn't exist
-        root_config_name: Name of the root config to be used (e.g. `hconf`)
-        config_module: Module of the config to be used (e.g. `hyfi.conf`)
-        global_package: If True, the config assumed to be a global package
-        verbose: If True print configuration to stdout
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+        validate_assignment = True
+        exclude = {}
+        include = {}
+        underscore_attrs_are_private = True
+        property_set_methods = {}
 
-    Returns:
-        A config object or a dictionary with the composed config
-    """
-    cmpsr = Composer(
-        config_group=config_group,
-        overrides=overrides,
-        config_data=config_data,
-        throw_on_resolution_failure=throw_on_resolution_failure,
-        throw_on_missing=throw_on_missing,
-        config_name=root_config_name,
-        config_module=config_module,
-        global_package=global_package,
-        verbose=verbose,
-    )
-    return cmpsr.config_as_dict if return_as_dict else cmpsr.config
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.initialize_configs(**data)
 
+    def __setattr__(self, key, val):
+        super().__setattr__(key, val)
+        if method := self.__config__.property_set_methods.get(key):  # type: ignore
+            getattr(self, method)(val)
 
-def _select(
-    cfg: Any,
-    key: str,
-    default: Any = None,
-    throw_on_resolution_failure: bool = True,
-    throw_on_missing: bool = False,
-):
-    return Composer.select(
-        cfg=cfg,
-        key=key,
-        default=default,
-        throw_on_resolution_failure=throw_on_resolution_failure,
-        throw_on_missing=throw_on_missing,
-    )
-
-
-def _to_dict(
-    cfg: Any,
-) -> Any:
-    return Composer.to_dict(cfg)
-
-
-def _to_config(
-    cfg: Any,
-) -> Union[DictConfig, ListConfig]:
-    return Composer.to_config(cfg)
+    def initialize_configs(
+        self,
+        **data,
+    ):
+        if not self.config_group:
+            logger.info("There is no config group specified.")
+            return
+        # Initialize the config with the given config_name.
+        logger.info(
+            "Initializing `%s` class with `%s` config in `%s` group.",
+            self.__class__.__name__,
+            self.config_name,
+            self.config_group,
+        )
+        data = Composer(
+            config_group=f"{self.config_group}={self.config_name}",
+            config_data=data,
+        ).config_as_dict
+        self.__dict__.update(data)

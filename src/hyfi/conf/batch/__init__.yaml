@@ -1,6 +1,6 @@
-batch_name: demo-batch
+batch_name: ${oc.select:..batch_name,demo-batch}
 batch_num:
-batch_root: ${oc.select:..path.batch_output,${.task_outputs}/${.batch_name}}
+batch_root: ${oc.select:..path.batch_outputs,tmp/batch-outputs/${.batch_name}}
 output_suffix:
 output_extention:
 random_seed: true

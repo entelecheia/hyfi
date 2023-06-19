@@ -1,9 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from pydantic import BaseModel
-
-from hyfi.hydra import Composer
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
@@ -13,9 +11,10 @@ from hyfi.utils.logging import getLogger
 logger = getLogger(__name__)
 
 
-class TaskConfig(BaseModel):
+class TaskConfig(BaseConfig):
     config_name: str = "__init__"
     config_group: str = "task"
+
     task_name: str = "demo-task"
     task_root: str = "tmp/task"
     autoload: bool = False
@@ -41,19 +40,6 @@ class TaskConfig(BaseModel):
             "task_root": "set_task_root",
         }
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "task",
-        **data,
-    ):
-        super().__init__(**data)
-        self.initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
-            **data,
-        )
-
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
         if method := self.__config__.property_set_methods.get(key):  # type: ignore
@@ -67,24 +53,14 @@ class TaskConfig(BaseModel):
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
 
-    def initialize_configs(
-        self,
-        config_name: str = "__init__",
-        config_group: str = "task",
-        **data,
-    ):
-        # Initialize the config with the given config_name.
-        data = Composer(
-            config_group=f"{config_group}={config_name}",
-            config_data=data,
-        ).config_as_dict
-        self.__dict__.update(data)
-        if "module" in data:
-            self.module = ModuleConfig(**data["module"])
-        if "path" in data:
-            self.path = BatchPathConfig(**data["path"])
-        if "project" in data:
-            self.project = ProjectConfig(**data["project"])
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
+        if "module" in self.__dict__:
+            self.module = ModuleConfig.parse_obj(self.__dict__["module"])
+        if "path" in self.__dict__:
+            self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
+        if "project" in self.__dict__:
+            self.project = ProjectConfig.parse_obj(self.__dict__["project"])
 
     @property
     def config(self):

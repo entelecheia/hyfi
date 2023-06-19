@@ -1,5 +1,6 @@
 defaults:
   - __init__
+  - /batch: __init__
   - override /path: __batch__
 
 task_name: batch-task

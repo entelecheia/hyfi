@@ -3,14 +3,14 @@ from typing import Any
 from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
-from hyfi.hydra import _compose
+from hyfi.hydra import BaseConfig, Composer
 from hyfi.joblib.batch import batcher
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class DistFramwork(BaseModel):
+class DistFramworkConfig(BaseModel):
     """Distributed Framework Configuration"""
 
     backend: str = "joblib"
@@ -29,12 +29,14 @@ class BatcherConfig(BaseModel):
     verbose: int = 10
 
 
-class JobLibConfig(BaseModel):
+class JobLibConfig(BaseConfig):
     """JobLib Configuration"""
 
     config_name: str = "__init__"
+    config_group: str = "joblib"
+
     num_workers: int = 1
-    distributed_framework: DistFramwork = DistFramwork()
+    distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
 
@@ -42,17 +44,12 @@ class JobLibConfig(BaseModel):
         extra = "allow"
         underscore_attrs_are_private = True
 
-    def __init__(
-        self,
-        config_name: str = "__init__",
-        **data: Any,
-    ):
-        data = _compose(
-            f"joblib={config_name}",
-            config_data=data,
-            config_module=__about__.config_module,
-        )  # type: ignore
-        super().__init__(config_name=config_name, **data)
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
+        self.batcher = BatcherConfig.parse_obj(self.__dict__["batcher"])
+        self.distributed_framework = DistFramworkConfig.parse_obj(
+            self.__dict__["distributed_framework"]
+        )
 
     def init_backend(
         self,

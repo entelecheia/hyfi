@@ -1,3 +1,5 @@
+from typing import Dict, List, Union
+
 from omegaconf import DictConfig
 
 from hyfi.batch import BatchConfig
@@ -9,6 +11,9 @@ logger = getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
+    config_name: str = "__batch__"
+    config_group: str = "task"
+
     batch_name: str = "demo"
     batch: BatchConfig = None  # type: ignore
 
@@ -22,48 +27,33 @@ class BatchTaskConfig(TaskConfig):
             "__data__",
             "path",
             "module",
-            "secret",
-            "auto",
             "project",
         }
         include = {}
         underscore_attrs_are_private = True
         property_set_methods = {
-            "name": "set_name",
-            "batch_name": "set_name",
+            "task_name": "set_task_name",
+            "task_root": "set_task_root",
+            "batch_name": "set_batch_name",
             "batch_num": "set_batch_num",
-            "root_dir": "set_root_dir",
         }
 
-    def __init__(self, **args):
-        super().__init__(**args)
-
     def set_batch_name(self, val):
-        super().set_task_name(val)
-        self._config_.batch.batch_name = val
-        self.batch.batch_name = val
-        self.initialize_configs(name=val)
+        self.initialize_configs(batch_name=val)
 
     def set_batch_num(self, val):
-        self._config_.batch.batch_num = val
         self.batch.batch_num = val
 
-    def initialize_configs(
-        self,
-        task_root: str = "",
-        batch_config_class=BatchConfig,
-        **kwargs,
-    ):
-        super().initialize_configs(task_root=task_root, **kwargs)
-
-        self.batch = batch_config_class(**self.config.batch)
-        self.batch_num = self.batch.batch_num
-        # if self.project.use_huggingface_hub:
-        #     self.secrets.init_huggingface_hub()
-        if self.verbose:
-            logger.info(
-                f"Initalized batch: {self.batch_name}({self.batch_num}) in {self.root_dir}"
-            )
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
+        if "batch" in self.__dict__ and self.__dict__["batch"]:
+            self.batch = BatchConfig.parse_obj(self.__dict__["batch"])
+        logger.info(
+            "Initalized batch: %s(%s) in %s",
+            self.batch_name,
+            self.batch_num,
+            self.batch_dir,
+        )
 
     @property
     def batch_num(self):
@@ -83,7 +73,7 @@ class BatchTaskConfig(TaskConfig):
 
     @property
     def verbose(self):
-        return self.batch.verbose
+        return self.project.verbose
 
     @property
     def device(self):
@@ -95,30 +85,33 @@ class BatchTaskConfig(TaskConfig):
 
     def save_config(
         self,
-        config=None,
-        exclude=None,
-        include=None,
+        config: Union[DictConfig, Dict, None] = None,
+        exclude: Union[str, List[str], None] = None,
+        include: Union[str, List[str], None] = None,
     ):
         """Save the batch config"""
-        if config is not None:
-            self._config_ = config
-        logger.info(f"Saving config to {self.batch.config_filepath}")
-        cfg = XC.to_dict(self.config)
-        if exclude is None:
-            exclude = self.__config__.exclude
+        if not config:
+            config = self.__dict__
+        logger.info(
+            "Saving config to %s",
+            self.batch.config_filepath,
+        )
+        cfg = XC.to_dict(config)
+        if not exclude:
+            exclude = self.__config__.exclude  # type: ignore
 
         if include:
             if isinstance(include, str):
                 include = [include]
-            args = {key: cfg[key] for key in include}
+            config_to_save = {key: cfg[key] for key in include}
         else:
-            args = cfg
+            config_to_save = cfg
             if exclude:
                 if isinstance(exclude, str):
                     exclude = [exclude]
                 for key in exclude:
-                    args.pop(key, None)
-        XC.save(args, self.batch.config_filepath)
+                    config_to_save.pop(key, None)
+        XC.save(config_to_save, self.batch.config_filepath)
         self.save_settings(exclude=exclude)
         return self.batch.config_filename
 
@@ -127,53 +120,57 @@ class BatchTaskConfig(TaskConfig):
             return XC.to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
 
         if exclude is None:
-            exclude = self.__config__.exclude
+            exclude = self.__config__.exclude  # type: ignore
         config = self.dict(exclude=exclude, exclude_none=exclude_none)
         if self.verbose:
-            logger.info(f"Saving config to {self.batch.config_jsonpath}")
+            logger.info(
+                "Saving config to %s",
+                self.batch.config_jsonpath,
+            )
         XC.save_json(config, self.batch.config_jsonpath, default=dumper)
 
     def load_config(
         self,
-        batch_name=None,
-        batch_num=None,
-        **args,
+        batch_name: str = "",
+        batch_num: int = -1,
+        **data,
     ):
         """Load the config from the batch config file"""
         if self.verbose:
             logger.info(
-                f"> Loading config for batch_name: {batch_name} batch_num: {batch_num}"
+                "> Loading config for batch_name: %s batch_num: %s",
+                batch_name,
+                batch_num,
             )
-        # self.config.batch.batch_num = batch_num
-        if batch_name is None:
+        if not batch_name:
             batch_name = self.batch_name
 
-        if batch_num is not None:
-            cfg = self._initial_config_.copy()
-            self.batch.batch_name = batch_name
-            self.batch.batch_num = batch_num
-            _path = self.batch.config_filepath
+        if batch_num is None:
+            batch_num = -1
+        cfg = self.__dict__.copy()
+        if batch_num >= 0:
+            batch = BatchConfig(batch_name=batch_name, batch_num=batch_num)
+            _path = batch.config_filepath
             if _path.is_file():
-                logger.info(f"Loading config from {_path}")
+                logger.info("Loading config from %s", _path)
                 batch_cfg = XC.load(_path)
-                if self.verbose:
-                    logger.info("Merging config with the loaded config")
+                logger.info("Merging config with the loaded config")
                 cfg = XC.merge(cfg, batch_cfg)
             else:
-                logger.info(f"No config file found at {_path}")
-                batch_num = None
-        else:
-            cfg = self.config
-
+                logger.info("No config file found at %s", _path)
+                batch_num = -1
         if self.verbose:
-            logger.info(f"Merging config with args: {args}")
-        self._config_ = XC.merge(cfg, args)
+            logger.info("Merging config with args: %s", data)
+        cfg = XC.to_dict(XC.merge(cfg, data))
 
-        self.batch_num = batch_num
-        self.batch_name = batch_name
+        self.initialize_configs(**cfg)
 
         return self.config
 
-    def show_config(self, batch_name=None, batch_num=None):
+    def print_config(
+        self,
+        batch_name: str = "",
+        batch_num: int = -1,
+    ):
         self.load_config(batch_name, batch_num)
         XC.print(self.dict())

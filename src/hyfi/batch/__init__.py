@@ -87,7 +87,15 @@ class BatchConfig(BaseModel):
             return seed
         return v
 
-    @validator("output_extention")
+    @validator("batch_num", pre=True, always=True)
+    def _validate_batch_num(cls, v):
+        return v or -1
+
+    @validator("output_suffix", pre=True, always=True)
+    def _validate_output_suffix(cls, v):
+        return v or ""
+
+    @validator("output_extention", pre=True, always=True)
     def _validate_output_extention(cls, v):
         return v.strip(".") if v else ""
 

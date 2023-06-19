@@ -18,8 +18,10 @@ from hyfi.__global__ import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import getLogger, setLogger
 
+if level := os.environ.get("HYFI_LOG_LEVEL"):
+    setLogger(level)
 logger = getLogger(__name__)
 
 DictKeyType = Union[str, int, Enum, float, bool]
@@ -583,3 +585,48 @@ class Composer(BaseModel):
             logger.info(f"args of {_fn}: {args}")
             return {k: v for k, v in _kwargs.items() if k in args}
         return _kwargs
+
+
+class BaseConfig(BaseModel):
+    config_name: str = "__init__"
+    config_group: str = ""
+
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+        validate_assignment = True
+        exclude = {}
+        include = {}
+        underscore_attrs_are_private = True
+        property_set_methods = {}
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.initialize_configs(**data)
+
+    def __setattr__(self, key, val):
+        super().__setattr__(key, val)
+        if method := self.__config__.property_set_methods.get(key):  # type: ignore
+            getattr(self, method)(val)
+
+    def initialize_configs(
+        self,
+        config_name: str = "__init__",
+        config_group: str = "",
+        **data,
+    ):
+        if not config_group:
+            logger.info("There is no config group specified.")
+            return
+        # Initialize the config with the given config_name.
+        logger.info(
+            "Initializing `%s` class with `%s` config in `%s` group.",
+            self.__class__.__name__,
+            config_name,
+            config_group,
+        )
+        data = Composer(
+            config_group=f"{config_group}={config_name}",
+            config_data=data,
+        ).config_as_dict
+        self.__dict__.update(data)

@@ -611,22 +611,20 @@ class BaseConfig(BaseModel):
 
     def initialize_configs(
         self,
-        config_name: str = "__init__",
-        config_group: str = "",
         **data,
     ):
-        if not config_group:
+        if not self.config_group:
             logger.info("There is no config group specified.")
             return
         # Initialize the config with the given config_name.
         logger.info(
             "Initializing `%s` class with `%s` config in `%s` group.",
             self.__class__.__name__,
-            config_name,
-            config_group,
+            self.config_name,
+            self.config_group,
         )
         data = Composer(
-            config_group=f"{config_group}={config_name}",
+            config_group=f"{self.config_group}={self.config_name}",
             config_data=data,
         ).config_as_dict
         self.__dict__.update(data)

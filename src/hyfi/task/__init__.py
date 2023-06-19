@@ -16,6 +16,7 @@ logger = getLogger(__name__)
 class TaskConfig(BaseModel):
     config_name: str = "__init__"
     config_group: str = "task"
+
     task_name: str = "demo-task"
     task_root: str = "tmp/task"
     autoload: bool = False
@@ -43,16 +44,10 @@ class TaskConfig(BaseModel):
 
     def __init__(
         self,
-        config_name: str = "__init__",
-        config_group: str = "task",
         **data,
     ):
         super().__init__(**data)
-        self.initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
-            **data,
-        )
+        self.initialize_configs(**data)
 
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
@@ -74,17 +69,22 @@ class TaskConfig(BaseModel):
         **data,
     ):
         # Initialize the config with the given config_name.
+        logger.info(
+            "Initializing TaskConfig class with %s config in %s group.",
+            config_name,
+            config_group,
+        )
         data = Composer(
             config_group=f"{config_group}={config_name}",
             config_data=data,
         ).config_as_dict
         self.__dict__.update(data)
-        if "module" in data:
-            self.module = ModuleConfig(**data["module"])
-        if "path" in data:
+        if "module" in self.__dict__:
+            self.module = ModuleConfig(**self.__dict__["module"])
+        if "path" in self.__dict__:
             self.path = BatchPathConfig(**data["path"])
-        if "project" in data:
-            self.project = ProjectConfig(**data["project"])
+        if "project" in self.__dict__:
+            self.project = ProjectConfig(**self.__dict__["project"])
 
     @property
     def config(self):

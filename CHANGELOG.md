@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.8.2 (2023-06-19)
+
+### Fix
+
+* **config:** Change log level of no config group message ([`8d29a6f`](https://github.com/entelecheia/hyfi/commit/8d29a6f69178130914c461ae159532c5199809af))
+* **logging:** Change logger level to debug in config file ([`23a5021`](https://github.com/entelecheia/hyfi/commit/23a5021faa6cb839d460d3db0051af06de1991f4))
+
 ## v0.8.1 (2023-06-19)
 
 ### Fix

@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.8.1 (2023-06-19)
+
+### Fix
+
+* **dependencies:** Update pandas, numpy, filelock, and huggingface-hub versions. ([`47ec1cb`](https://github.com/entelecheia/hyfi/commit/47ec1cbd25df8c24c3accb3f665bf6a928289542))
+* **dependencies:** Update logger.debug message in gpu.py ([`4eb9e6e`](https://github.com/entelecheia/hyfi/commit/4eb9e6ecd8c14832e78d331ea3e1df5970c615a4))
+
 ## v0.8.0 (2023-06-18)
 
 ### Feature

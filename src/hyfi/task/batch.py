@@ -11,6 +11,9 @@ logger = getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
+    config_name: str = "__batch__"
+    config_group: str = "task"
+
     batch_name: str = "demo"
     batch: BatchConfig = None  # type: ignore
 
@@ -35,9 +38,6 @@ class BatchTaskConfig(TaskConfig):
             "batch_num": "set_batch_num",
         }
 
-    def __init__(self, **args):
-        super().__init__(**args)
-
     def set_batch_name(self, val):
         self.initialize_configs(batch_name=val)
 
@@ -48,25 +48,26 @@ class BatchTaskConfig(TaskConfig):
         self,
         config_name: str = "__batch__",
         config_group: str = "task",
-        batch_config_class=BatchConfig,
         **data,
     ):
+        logger.info(
+            "Initializing BatchTaskConfig class with %s config in %s group.",
+            config_name,
+            config_group,
+        )
         super().initialize_configs(
-            config_name=config_name,
-            config_group=config_group,
+            config_name=self.config_name,
+            config_group=self.config_group,
             **data,
         )
-
-        self.batch = batch_config_class(**self.__dict__["batch"])
-        self.batch_num = self.batch.batch_num  # type: ignore
-        # if self.project.use_huggingface_hub:
-        #     self.secrets.init_huggingface_hub()
+        if "batch" in self.__dict__ and self.__dict__["batch"]:
+            self.batch = BatchConfig(**self.__dict__["batch"])
         if self.verbose:
             logger.info(
                 "Initalized batch: %s(%s) in %s",
                 self.batch_name,
                 self.batch_num,
-                self.root_dir,
+                self.batch_dir,
             )
 
     @property
@@ -87,7 +88,7 @@ class BatchTaskConfig(TaskConfig):
 
     @property
     def verbose(self):
-        return self.batch.verbose
+        return self.project.verbose
 
     @property
     def device(self):

@@ -44,17 +44,8 @@ class BatchTaskConfig(TaskConfig):
     def set_batch_num(self, val):
         self.batch.batch_num = val
 
-    def initialize_configs(
-        self,
-        config_name: str = "__batch__",
-        config_group: str = "task",
-        **data,
-    ):
-        super().initialize_configs(
-            config_name=self.config_name,
-            config_group=self.config_group,
-            **data,
-        )
+    def initialize_configs(self, **data):
+        super().initialize_configs(**data)
         if "batch" in self.__dict__ and self.__dict__["batch"]:
             self.batch = BatchConfig.parse_obj(self.__dict__["batch"])
         logger.info(

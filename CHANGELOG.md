@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v0.10.0 (2023-06-20)
+
+### Feature
+
+* **composer:** Rename hydra to composer and move main.py to extended.py ([`0defc55`](https://github.com/entelecheia/hyfi/commit/0defc55470b6e037175f7f84f4b8674fe5eb7d51))
+
+### Documentation
+
+* **readme:** Fix formatting in README.md ([`3c3c309`](https://github.com/entelecheia/hyfi/commit/3c3c30961d7afce629da8053759363e433040fc4))
+
 ## v0.9.1 (2023-06-20)
 
 ### Fix

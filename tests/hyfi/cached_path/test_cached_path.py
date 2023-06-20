@@ -1,4 +1,4 @@
-from hyfi.cached_path import cached_path
+from hyfi.main import HyFI
 
 
 def test_cached_path_hf() -> None:
@@ -6,7 +6,9 @@ def test_cached_path_hf() -> None:
     Test the cached_path function with huggingface.
     """
     # check version format
-    assert cached_path("hf://epwalsh/bert-xsmall-dummy/pytorch_model.bin") is not None
+    assert (
+        HyFI.cached_path("hf://epwalsh/bert-xsmall-dummy/pytorch_model.bin") is not None
+    )
 
 
 def test_cached_path_http() -> None:
@@ -15,7 +17,7 @@ def test_cached_path_http() -> None:
     """
     # check version format
     assert (
-        cached_path(
+        HyFI.cached_path(
             "https://github.com/entelecheia/ekorpkit-book/raw/main/assets/data/bok_minutes.zip",
             extract_archive=True,
         )

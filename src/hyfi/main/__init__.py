@@ -28,7 +28,7 @@ from hyfi.hydra.main import XC
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import Datasets
-from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
+from hyfi.utils.envs import Envs
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import dict_product, to_dateparm
 from hyfi.utils.gpu import nvidia_smi, set_cuda
@@ -79,28 +79,6 @@ class HyFI:
         __global_config__.terminate()
 
     @staticmethod
-    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
-        """
-        Expand POSIX variables in a string.
-
-        Args:
-            posix_expr (str): The string containing POSIX variables to be expanded.
-            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
-                Defaults to None.
-
-        Returns:
-            str: The expanded string.
-
-        Examples:
-            >>> expand_posix_vars("$HOME")
-            '/home/user'
-            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
-            '/home/user/testuser'
-
-        """
-        return expand_posix_vars(posix_expr, context=context)
-
-    @staticmethod
     def dotenv() -> DotEnvConfig:
         """Return the DotEnvConfig"""
         return DotEnvConfig()
@@ -109,15 +87,6 @@ class HyFI:
     def osenv():
         """Return the DotEnvConfig"""
         return os.environ
-
-    @staticmethod
-    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
-        """Get the value of an environment variable or return the default value"""
-        return get_osenv(key, default=default)
-
-    @staticmethod
-    def set_osenv(key, value):
-        return set_osenv(key, value)
 
     @staticmethod
     def compose(
@@ -306,20 +275,6 @@ class HyFI:
     @staticmethod
     def run(config: Any, **kwargs: Any) -> Any:
         XC.run(config, **kwargs)
-
-    @staticmethod
-    def load_dotenv(
-        override: bool = False,
-        dotenv_dir: str = "",
-        dotenv_filename: str = ".env",
-        verbose: bool = False,
-    ) -> None:
-        load_dotenv(
-            override=override,
-            dotenv_filename=dotenv_filename,
-            dotenv_dir=dotenv_dir,
-            verbose=verbose,
-        )
 
     @staticmethod
     def cached_path(
@@ -1099,7 +1054,7 @@ class HyFI:
         return Datasets.to_numeric(data, _columns, errors, downcast, **kwargs)
 
     ###############################
-    # Notebook utilities
+    # Notebook functions
     ###############################
     @staticmethod
     def is_colab():
@@ -1303,4 +1258,52 @@ class HyFI:
             style,
             layout,
             **kwargs,
+        )
+
+    ###############################
+    # Envs functions
+    ###############################
+    @staticmethod
+    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+        """
+        Expand POSIX variables in a string.
+
+        Args:
+            posix_expr (str): The string containing POSIX variables to be expanded.
+            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
+                Defaults to None.
+
+        Returns:
+            str: The expanded string.
+
+        Examples:
+            >>> expand_posix_vars("$HOME")
+            '/home/user'
+            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
+            '/home/user/testuser'
+
+        """
+        return Envs.expand_posix_vars(posix_expr, context=context)
+
+    @staticmethod
+    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
+        """Get the value of an environment variable or return the default value"""
+        return Envs.et_osenv(key, default=default)
+
+    @staticmethod
+    def set_osenv(key, value):
+        return Envs.set_osenv(key, value)
+
+    @staticmethod
+    def load_dotenv(
+        override: bool = False,
+        dotenv_dir: str = "",
+        dotenv_filename: str = ".env",
+        verbose: bool = False,
+    ) -> None:
+        Envs.load_dotenv(
+            override=override,
+            dotenv_filename=dotenv_filename,
+            dotenv_dir=dotenv_dir,
+            verbose=verbose,
         )

@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.10.3
+_commit: v0.11.0
 _src_path: gh:entelecheia/hyperfast-python-template
 author: Young Joon Lee
 build_and_release: true
@@ -18,6 +18,9 @@ google_analytics_id: G-RGCZCJ4ZZF
 logo_path: https://assets.entelecheia.ai/logo.png
 main_branch: main
 package_name: hyfi
+package_scripts:
+- hyfi = 'hyfi.__cli__:main'
+- hyfi-run = 'hyfi.__click__:cli'
 poe_task_files:
 - .tasks.toml
 - .tasks-extra.toml

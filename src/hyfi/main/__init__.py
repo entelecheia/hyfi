@@ -30,7 +30,7 @@ from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import Datasets
 from hyfi.utils.envs import Envs
 from hyfi.utils.func import dict_product, to_dateparm
-from hyfi.utils.gpu import nvidia_smi, set_cuda
+from hyfi.utils.gpumon import nvidia_smi, set_cuda
 from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.packages import Packages
 from hyfi.utils.logging import getLogger, setLogger

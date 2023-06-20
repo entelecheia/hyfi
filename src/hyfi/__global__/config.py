@@ -175,13 +175,17 @@ class HyfiConfig(BaseModel):
             envs.HYFI_PROJECT_ROOT = Envs.expand_posix_vars(project_root)
         # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(project_workspace_name)
+            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(
+                project_workspace_name
+            )
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
             envs.HYFI_GLOBAL_ROOT = Envs.expand_posix_vars(global_hyfi_root)
         # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(global_workspace_name)
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(
+                global_workspace_name
+            )
         # Set the number of workers to use.
         if num_workers:
             envs.HYFI_NUM_WORKERS = num_workers
@@ -297,4 +301,5 @@ __global_config__ = HyfiConfig()
 
 
 def __search_package_path__():
+    """Global HyFI config path for the package to search for."""
     return __global_config__.hyfi_config_path

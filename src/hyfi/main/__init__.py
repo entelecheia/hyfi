@@ -60,6 +60,59 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
+    def init_workspace(
+        project_name: str = "",
+        task_name: str = "",
+        project_description: str = "",
+        project_root: str = "",
+        project_workspace_name: str = "",
+        global_hyfi_root: str = "",
+        global_workspace_name: str = "",
+        num_workers: int = -1,
+        log_level: str = "",
+        autotime: bool = True,
+        retina: bool = True,
+        verbose: Union[bool, int] = False,
+        **kwargs,
+    ) -> ProjectConfig:
+        """
+        Initialize and start hyfi.
+
+        Args:
+                project_name: Name of the project to use.
+                task_name: Name of the task to use.
+                project_description: Description of the project that will be used.
+                project_root: Root directory of the project.
+                project_workspace_name: Name of the project's workspace directory.
+                global_hyfi_root: Root directory of the global hyfi.
+                global_workspace_name: Name of the global hierachical workspace directory.
+                num_workers: Number of workers to run.
+                log_level: Log level for the log.
+                autotime: Whether to automatically set time and / or keep track of run times.
+                retina: Whether to use retina or not.
+                verbose: Enables or disables logging
+        """
+        __global_config__.init_workspace(
+            project_name=project_name,
+            task_name=task_name,
+            project_description=project_description,
+            project_root=project_root,
+            project_workspace_name=project_workspace_name,
+            global_hyfi_root=global_hyfi_root,
+            global_workspace_name=global_workspace_name,
+            num_workers=num_workers,
+            log_level=log_level,
+            autotime=autotime,
+            retina=retina,
+            verbose=verbose,
+            **kwargs,
+        )
+        if __global_config__.project:
+            return __global_config__.project
+        else:
+            raise ValueError("Project not initialized.")
+
+    @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
         """Initialize the global config"""
         __global_config__.initialize(config)
@@ -268,48 +321,41 @@ class HyFI:
         XC.run(config, **kwargs)
 
     @staticmethod
-    def cached_path(
-        url_or_filename,
-        extract_archive: bool = False,
-        force_extract: bool = False,
-        return_parent_dir: bool = False,
-        cache_dir=None,
-        verbose: bool = False,
+    def ensure_list(value):
+        return Composer.ensure_list(value)
+
+    @staticmethod
+    def ensure_kwargs(_kwargs, _fn):
+        return Composer.ensure_kwargs(_kwargs, _fn)
+
+    @staticmethod
+    def getsource(obj):
+        return XC.getsource(obj)
+
+    @staticmethod
+    def viewsource(obj):
+        return XC.viewsource(obj)
+
+    ###############################
+    # Logging related functions
+    ###############################
+    @staticmethod
+    def getLogger(
+        name=None,
+        log_level=None,
     ):
-        """
-        Attempts to cache a file or URL and return the path to the cached file.
-        If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
+        return getLogger(name, log_level)
 
-        Args:
-            url_or_filename (str): The URL or filename to be cached.
-            extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
-            force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
-            return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
-            cache_dir (str, optional): Directory to store cached files. Defaults to None.
-            verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
+    @staticmethod
+    def setLogger(level=None, force=True, **kwargs):
+        return setLogger(level, force, **kwargs)
 
-        Raises:
-            ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
-
-        Returns:
-            str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
-        """
-        return cached_path(
-            url_or_filename,
-            extract_archive=extract_archive,
-            force_extract=force_extract,
-            return_parent_dir=return_parent_dir,
-            cache_dir=cache_dir,
-            verbose=verbose,
-        )
-
+    ###############################
+    # Batcher related functions
+    ###############################
     @staticmethod
     def pipe(data=None, cfg=None):
         return PIPE.pipe(data, cfg)
-
-    @staticmethod
-    def ensure_list(value):
-        return Composer.ensure_list(value)
 
     @staticmethod
     def apply(
@@ -332,239 +378,6 @@ class HyFI:
             verbose=verbose,
             **kwargs,
         )
-
-    @staticmethod
-    def ensure_kwargs(_kwargs, _fn):
-        return Composer.ensure_kwargs(_kwargs, _fn)
-
-    @staticmethod
-    def nvidia_smi():
-        return nvidia_smi()
-
-    @staticmethod
-    def collage(
-        images_or_uris,
-        collage_filepath=None,
-        ncols=3,
-        max_images=12,
-        collage_width=1200,
-        padding: int = 10,
-        bg_color: str = "black",
-        crop_to_min_size=False,
-        show_filename=False,
-        filename_offset=(5, 5),
-        fontname=None,
-        fontsize=12,
-        fontcolor="#000",
-        **kwargs,
-    ):
-        from hyfi.graphics.collage import collage as _collage
-
-        return _collage(
-            images_or_uris,
-            collage_filepath=collage_filepath,
-            ncols=ncols,
-            max_images=max_images,
-            collage_width=collage_width,
-            padding=padding,
-            bg_color=bg_color,
-            crop_to_min_size=crop_to_min_size,
-            show_filename=show_filename,
-            filename_offset=filename_offset,
-            fontname=fontname,
-            fontsize=fontsize,
-            fontcolor=fontcolor,
-            **kwargs,
-        )
-
-    @staticmethod
-    def make_gif(
-        image_filepaths=None,
-        filename_patterns: str = "",
-        base_dir: str = "",
-        output_filepath: str = "",
-        duration: int = 100,
-        loop: int = 0,
-        width: int = 0,
-        optimize: bool = True,
-        quality: int = 50,
-        show: bool = False,
-        force: bool = False,
-        **kwargs,
-    ):
-        from hyfi.graphics.motion import make_gif as _make_gif
-
-        return _make_gif(
-            image_filepaths=image_filepaths,
-            filename_patterns=filename_patterns,
-            base_dir=base_dir,
-            output_filepath=output_filepath,
-            duration=duration,
-            loop=loop,
-            width=width,
-            optimize=optimize,
-            quality=quality,
-            show=show,
-            force=force,
-            **kwargs,
-        )
-
-    @staticmethod
-    def getLogger(
-        name=None,
-        log_level=None,
-    ):
-        return getLogger(name, log_level)
-
-    @staticmethod
-    def setLogger(level=None, force=True, **kwargs):
-        return setLogger(level, force, **kwargs)
-
-    @staticmethod
-    def set_cuda(device=0):
-        return set_cuda(device)
-
-    @staticmethod
-    def getsource(obj):
-        return XC.getsource(obj)
-
-    @staticmethod
-    def viewsource(obj):
-        return XC.viewsource(obj)
-
-    @staticmethod
-    def get_image_font(fontname: str = "", fontsize: int = 12):
-        from hyfi.graphics.utils import get_image_font
-
-        return get_image_font(fontname, fontsize)
-
-    @staticmethod
-    def load_image(
-        image_or_uri,
-        max_width: int = 0,
-        max_height: int = 0,
-        max_pixels: int = 0,
-        scale: float = 1.0,
-        resize_to_multiple_of: int = 0,
-        crop_box=None,
-        mode="RGB",
-        **kwargs,
-    ):
-        from hyfi.graphics.utils import load_image
-
-        return load_image(
-            image_or_uri,
-            max_width,
-            max_height,
-            max_pixels,
-            scale,
-            resize_to_multiple_of,
-            crop_box,
-            mode,
-            **kwargs,
-        )
-
-    @staticmethod
-    def init_workspace(
-        project_name: str = "",
-        task_name: str = "",
-        project_description: str = "",
-        project_root: str = "",
-        project_workspace_name: str = "",
-        global_hyfi_root: str = "",
-        global_workspace_name: str = "",
-        num_workers: int = -1,
-        log_level: str = "",
-        autotime: bool = True,
-        retina: bool = True,
-        verbose: Union[bool, int] = False,
-        **kwargs,
-    ) -> ProjectConfig:
-        """
-        Initialize and start hyfi.
-
-        Args:
-                project_name: Name of the project to use.
-                task_name: Name of the task to use.
-                project_description: Description of the project that will be used.
-                project_root: Root directory of the project.
-                project_workspace_name: Name of the project's workspace directory.
-                global_hyfi_root: Root directory of the global hyfi.
-                global_workspace_name: Name of the global hierachical workspace directory.
-                num_workers: Number of workers to run.
-                log_level: Log level for the log.
-                autotime: Whether to automatically set time and / or keep track of run times.
-                retina: Whether to use retina or not.
-                verbose: Enables or disables logging
-        """
-        __global_config__.init_workspace(
-            project_name=project_name,
-            task_name=task_name,
-            project_description=project_description,
-            project_root=project_root,
-            project_workspace_name=project_workspace_name,
-            global_hyfi_root=global_hyfi_root,
-            global_workspace_name=global_workspace_name,
-            num_workers=num_workers,
-            log_level=log_level,
-            autotime=autotime,
-            retina=retina,
-            verbose=verbose,
-            **kwargs,
-        )
-        if __global_config__.project:
-            return __global_config__.project
-        else:
-            raise ValueError("Project not initialized.")
-
-    @staticmethod
-    def scale_image(
-        image,
-        max_width: int = 0,
-        max_height: int = 0,
-        max_pixels: int = 0,
-        scale: float = 1.0,
-        resize_to_multiple_of: int = 8,
-        resample: int = 1,
-    ):
-        """
-        Scale an image to a maximum width, height, or number of pixels.
-
-        resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
-                    Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
-        """
-        from hyfi.graphics.utils import scale_image
-
-        return scale_image(
-            image,
-            max_width,
-            max_height,
-            max_pixels,
-            scale,
-            resize_to_multiple_of,
-            resample,
-        )
-
-    @staticmethod
-    def gpu_usage(all=False, attrList=None, useOldCode=False):
-        """
-        Show GPU utilization in human readable format. This is a wrapper around the GPUtil library.
-
-        Args:
-                all: If True show all available GPUs ( default : False )
-                attrList: List of attributes to show ( default : None )
-                useOldCode: If True use old code instead of new code ( default : False )
-
-        Returns:
-                A string with the
-        """
-        try:
-            from GPUtil import showUtilization  # type: ignore
-        except ImportError:
-            logger.error("GPUtil is not installed. To install, run: pip install GPUtil")
-            return
-
-        return showUtilization(all, attrList, useOldCode)
 
     ###############################
     # Dataset related functions
@@ -1213,6 +1026,42 @@ class HyFI:
         """
         IOLibs.copyfile(src, dst, follow_symlinks=follow_symlinks)
 
+    @staticmethod
+    def cached_path(
+        url_or_filename,
+        extract_archive: bool = False,
+        force_extract: bool = False,
+        return_parent_dir: bool = False,
+        cache_dir=None,
+        verbose: bool = False,
+    ):
+        """
+        Attempts to cache a file or URL and return the path to the cached file.
+        If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
+
+        Args:
+            url_or_filename (str): The URL or filename to be cached.
+            extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
+            force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
+            return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
+            cache_dir (str, optional): Directory to store cached files. Defaults to None.
+            verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
+
+        Raises:
+            ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
+
+        Returns:
+            str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
+        """
+        return cached_path(
+            url_or_filename,
+            extract_archive=extract_archive,
+            force_extract=force_extract,
+            return_parent_dir=return_parent_dir,
+            cache_dir=cache_dir,
+            verbose=verbose,
+        )
+
     ###############################
     # Utility functions
     ###############################
@@ -1223,3 +1072,166 @@ class HyFI:
     @staticmethod
     def dict_product(dicts):
         return Funcs.dict_product(dicts)
+
+    ###############################
+    # GPU Utility functions
+    ###############################
+    @staticmethod
+    def nvidia_smi():
+        return nvidia_smi()
+
+    @staticmethod
+    def set_cuda(device=0):
+        return set_cuda(device)
+
+    @staticmethod
+    def gpu_usage(all=False, attrList=None, useOldCode=False):
+        """
+        Show GPU utilization in human readable format. This is a wrapper around the GPUtil library.
+
+        Args:
+                all: If True show all available GPUs ( default : False )
+                attrList: List of attributes to show ( default : None )
+                useOldCode: If True use old code instead of new code ( default : False )
+
+        Returns:
+                A string with the
+        """
+        try:
+            from GPUtil import showUtilization  # type: ignore
+        except ImportError:
+            logger.error("GPUtil is not installed. To install, run: pip install GPUtil")
+            return
+
+        return showUtilization(all, attrList, useOldCode)
+
+    ###############################
+    # Graphics functions
+    ###############################
+    @staticmethod
+    def collage(
+        images_or_uris,
+        collage_filepath=None,
+        ncols=3,
+        max_images=12,
+        collage_width=1200,
+        padding: int = 10,
+        bg_color: str = "black",
+        crop_to_min_size=False,
+        show_filename=False,
+        filename_offset=(5, 5),
+        fontname=None,
+        fontsize=12,
+        fontcolor="#000",
+        **kwargs,
+    ):
+        from hyfi.graphics.collage import collage as _collage
+
+        return _collage(
+            images_or_uris,
+            collage_filepath=collage_filepath,
+            ncols=ncols,
+            max_images=max_images,
+            collage_width=collage_width,
+            padding=padding,
+            bg_color=bg_color,
+            crop_to_min_size=crop_to_min_size,
+            show_filename=show_filename,
+            filename_offset=filename_offset,
+            fontname=fontname,
+            fontsize=fontsize,
+            fontcolor=fontcolor,
+            **kwargs,
+        )
+
+    @staticmethod
+    def make_gif(
+        image_filepaths=None,
+        filename_patterns: str = "",
+        base_dir: str = "",
+        output_filepath: str = "",
+        duration: int = 100,
+        loop: int = 0,
+        width: int = 0,
+        optimize: bool = True,
+        quality: int = 50,
+        show: bool = False,
+        force: bool = False,
+        **kwargs,
+    ):
+        from hyfi.graphics.motion import make_gif as _make_gif
+
+        return _make_gif(
+            image_filepaths=image_filepaths,
+            filename_patterns=filename_patterns,
+            base_dir=base_dir,
+            output_filepath=output_filepath,
+            duration=duration,
+            loop=loop,
+            width=width,
+            optimize=optimize,
+            quality=quality,
+            show=show,
+            force=force,
+            **kwargs,
+        )
+
+    @staticmethod
+    def get_image_font(fontname: str = "", fontsize: int = 12):
+        from hyfi.graphics.utils import get_image_font
+
+        return get_image_font(fontname, fontsize)
+
+    @staticmethod
+    def load_image(
+        image_or_uri,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
+        scale: float = 1.0,
+        resize_to_multiple_of: int = 0,
+        crop_box=None,
+        mode="RGB",
+        **kwargs,
+    ):
+        from hyfi.graphics.utils import load_image
+
+        return load_image(
+            image_or_uri,
+            max_width,
+            max_height,
+            max_pixels,
+            scale,
+            resize_to_multiple_of,
+            crop_box,
+            mode,
+            **kwargs,
+        )
+
+    @staticmethod
+    def scale_image(
+        image,
+        max_width: int = 0,
+        max_height: int = 0,
+        max_pixels: int = 0,
+        scale: float = 1.0,
+        resize_to_multiple_of: int = 8,
+        resample: int = 1,
+    ):
+        """
+        Scale an image to a maximum width, height, or number of pixels.
+
+        resample:   Image.NEAREST (0), Image.LANCZOS (1), Image.BILINEAR (2),
+                    Image.BICUBIC (3), Image.BOX (4) or Image.HAMMING (5)
+        """
+        from hyfi.graphics.utils import scale_image
+
+        return scale_image(
+            image,
+            max_width,
+            max_height,
+            max_pixels,
+            scale,
+            resize_to_multiple_of,
+            resample,
+        )

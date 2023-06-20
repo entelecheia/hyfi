@@ -14,10 +14,9 @@ from types import TracebackType
 from typing import Callable, List, Tuple, Union
 
 from hyfi.utils.logging import getLogger
+from hyfi.utils.types import PathLikeType
 
 logger = getLogger(__name__)
-
-PathLikeType = Union[str, PosixPath, WindowsPath]
 
 
 class IOLibs:
@@ -177,6 +176,7 @@ class IOLibs:
         _path = os.path.join(a, *p)
         return Path(_path).is_dir()
 
+    @staticmethod
     def check_path(_path: str, alt_path: str = "") -> str:
         """Check if path exists, return alt_path if not"""
         return _path if os.path.exists(_path) else alt_path
@@ -206,7 +206,11 @@ class IOLibs:
         return os.path.join(*p) if a is None else os.path.join(a, *p)
 
     @staticmethod
-    def copy(src, dst, *, follow_symlinks=True):
+    def copy(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
         """
         Copy a file or directory. This is a wrapper around shutil.copy.
         If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
@@ -216,8 +220,6 @@ class IOLibs:
                 dst: Path to the destination directory. If the destination directory does not exist it will be created.
                 follow_symlinks: Whether or not symlinks should be followed
         """
-        import shutil
-
         src = str(src)
         dst = str(dst)
         IOLibs.mkdir(dst)
@@ -225,7 +227,11 @@ class IOLibs:
         logger.info(f"copied {src} to {dst}")
 
     @staticmethod
-    def copyfile(src, dst, *, follow_symlinks=True):
+    def copyfile(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
         """
         Copy a file or directory. This is a wrapper around shutil.copyfile.
         If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
@@ -235,12 +241,21 @@ class IOLibs:
                 dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
                 follow_symlinks: Whether to follow symbolic links or not
         """
-        import shutil
-
         src = str(src)
         dst = str(dst)
         shutil.copyfile(src, dst, follow_symlinks=follow_symlinks)
         logger.info(f"copied {src} to {dst}")
+
+    @staticmethod
+    def copy_file(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ) -> None:
+        """Copy one file to another place."""
+        src = str(src)
+        dst = str(dst)
+        shutil.copy2(src, dst, follow_symlinks=follow_symlinks)
 
     @staticmethod
     def get_modified_time(path):
@@ -271,11 +286,6 @@ class IOLibs:
             raise
 
     @staticmethod
-    def copy_file(src_path: Path, dst_path: Path, follow_symlinks: bool = True) -> None:
-        """Copy one file to another place."""
-        shutil.copy2(src_path, dst_path, follow_symlinks=follow_symlinks)
-
-    @staticmethod
     def readlink(link: Path) -> Path:
         """A custom version of os.readlink/pathlib.Path.readlink.
 
@@ -288,6 +298,74 @@ class IOLibs:
             return Path(os.readlink(link))
         else:
             return Path(os.readlink(str(link)))
+
+    @staticmethod
+    def extractall(
+        path: str,
+        dest: str = "",
+        force_extract: bool = False,
+    ):
+        """Extract archive file.
+
+        Parameters
+        ----------
+        path: str
+            Path of archive file to be extracted.
+        dest: str, optional
+            Directory to which the archive file will be extracted.
+            If None, it will be set to the parent directory of the archive file.
+        """
+        import tarfile
+        from zipfile import ZipFile
+
+        if dest is None:
+            dest = os.path.dirname(path)
+
+        if path.endswith(".zip"):
+            opener, mode = ZipFile, "r"
+        elif path.endswith(".tar"):
+            opener, mode = tarfile.open, "r"
+        elif path.endswith(".tar.gz") or path.endswith(".tgz"):
+            opener, mode = tarfile.open, "r:gz"
+        elif path.endswith(".tar.bz2") or path.endswith(".tbz"):
+            opener, mode = tarfile.open, "r:bz2"
+        else:
+            logger.warning(
+                f"Could not extract '{path}' as no appropriate extractor is found"
+            )
+            return path, None
+
+        def namelist(f):
+            return (
+                f.namelist() if isinstance(f, ZipFile) else [m.path for m in f.members]
+            )
+
+        def filelist(f):
+            files = []
+            for fname in namelist(f):
+                fname = os.path.join(dest, fname)
+                files.append(fname)
+            return files
+
+        extraction_name = Path(path).stem
+        extraction_path = f"{dest}/{extraction_name}"
+        if extraction_path and (
+            os.path.isdir(extraction_path)
+            and os.listdir(extraction_path)
+            and not force_extract
+        ):
+            files = [
+                os.path.join(dirpath, filename)
+                for dirpath, _, filenames in os.walk(extraction_path)
+                for filename in filenames
+            ]
+
+            return dest, files
+
+        with opener(path, mode) as f:  # type: ignore
+            f.extractall(path=dest)
+
+        return dest, filelist(f)
 
 
 # See https://github.com/copier-org/copier/issues/345

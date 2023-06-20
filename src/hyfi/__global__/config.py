@@ -122,10 +122,9 @@ class HyfiConfig(BaseModel):
         Initialize the object with data
 
         Args:
-                data: Data to initialize the
+            config_kwargs: Dictionary of values to initialize the object with
         """
         super().__init__(**config_kwargs)
-        # self.about = __about__
 
     def init_workspace(
         self,
@@ -175,13 +174,17 @@ class HyfiConfig(BaseModel):
             envs.HYFI_PROJECT_ROOT = Envs.expand_posix_vars(project_root)
         # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(project_workspace_name)
+            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(
+                project_workspace_name
+            )
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
             envs.HYFI_GLOBAL_ROOT = Envs.expand_posix_vars(global_hyfi_root)
         # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(global_workspace_name)
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(
+                global_workspace_name
+            )
         # Set the number of workers to use.
         if num_workers:
             envs.HYFI_NUM_WORKERS = num_workers
@@ -294,7 +297,9 @@ class HyfiConfig(BaseModel):
 
 
 __global_config__ = HyfiConfig()
+__global_config__.about.version = __version__()
 
 
 def __search_package_path__():
+    """Global HyFI config path for the package to search for."""
     return __global_config__.hyfi_config_path

@@ -14,7 +14,7 @@ __about__ = AboutConfig()
 
 
 class HydraConfig(BaseModel):
-    """HyFI config primary class"""
+    """Global configuration for Hydra"""
 
     hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
@@ -25,8 +25,10 @@ __hydra_config__ = HydraConfig()
 
 
 def __hyfi_path__():
+    """Returns the path to the HyFI root folder"""
     return Path(__file__).parent.parent.as_posix()
 
 
 def __home_path__():
+    """Returns the path to the user's home folder"""
     return Path.home().as_posix()

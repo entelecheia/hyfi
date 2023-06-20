@@ -7,7 +7,7 @@ import time
 from threading import Thread
 
 from hyfi.utils.logging import getLogger
-from hyfi.utils.notebook import clear_output
+from hyfi.utils.notebooks import NBs
 
 logger = getLogger(__name__)
 
@@ -31,7 +31,7 @@ class GPUMon(Thread):
     def run(self):
         while not self.stopped:
             if self.clear_output:
-                clear_output()
+                NBs.clear_output()
             if self.show_current_time:
                 print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
             GPUtil.showUtilization()

@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.10.1 (2023-06-20)
+
+### Fix
+
+* **config:** Update version in global config ([`7dc72cc`](https://github.com/entelecheia/hyfi/commit/7dc72cc079e610f7d898bc65c7aabc5c77aa21f9))
+* **config:** Update version in about information ([`c00134a`](https://github.com/entelecheia/hyfi/commit/c00134a42366ae529a903b1f9730d16e0ec47e9d))
+
 ## v0.10.0 (2023-06-20)
 
 ### Feature

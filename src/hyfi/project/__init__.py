@@ -10,7 +10,7 @@ from hyfi.hydra import BaseConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
 from hyfi.utils.logging import getLogger
-from hyfi.utils.notebook import is_notebook
+from hyfi.utils.notebooks import NBs
 
 logger = getLogger(__name__)
 
@@ -123,7 +123,7 @@ class ProjectConfig(BaseConfig):
 
         local_token = HfFolder.get_token()
         if local_token is None:
-            if is_notebook():
+            if NBs.is_notebook():
                 notebook_login()
             else:
                 logger.info(

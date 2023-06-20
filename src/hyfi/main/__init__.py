@@ -6,17 +6,6 @@ import os
 from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
-import pandas as pd
-from datasets import Dataset, load_dataset
-from datasets.dataset_dict import DatasetDict, IterableDatasetDict
-from datasets.download.download_config import DownloadConfig
-from datasets.download.download_manager import DownloadMode
-from datasets.features import Features
-from datasets.iterable_dataset import IterableDataset
-from datasets.splits import Split
-from datasets.tasks import TaskTemplate
-from datasets.utils.info_utils import VerificationMode
-from datasets.utils.version import Version
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
@@ -27,34 +16,13 @@ from hyfi.hydra import Composer, DictKeyType, SpecialKeys
 from hyfi.hydra.main import XC
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
-from hyfi.utils.dataframe import (
-    dict_to_dataframe,
-    records_to_dataframe,
-    to_datetime,
-    to_numeric,
-)
+from hyfi.utils.datasets import *
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import dict_product, to_dateparm
-from hyfi.utils.google import mount_google_drive
 from hyfi.utils.gpu import nvidia_smi, set_cuda
 from hyfi.utils.logging import getLogger, setLogger
-from hyfi.utils.notebook import (
-    clear_output,
-    cprint,
-    create_button,
-    create_dropdown,
-    create_floatslider,
-    create_image,
-    create_radiobutton,
-    create_textarea,
-    display,
-    display_image,
-    get_display,
-    hide_code_in_slideshow,
-    is_colab,
-    is_notebook,
-)
+from hyfi.utils.notebooks import NBs
 
 logger = getLogger(__name__)
 
@@ -437,56 +405,6 @@ class HyFI:
         return Composer.ensure_kwargs(_kwargs, _fn)
 
     @staticmethod
-    def save_data(
-        data: Union[pd.DataFrame, dict],
-        filename: str,
-        base_dir: str = "",
-        columns=None,
-        index: bool = False,
-        filetype="parquet",
-        suffix: str = "",
-        verbose: bool = False,
-        **kwargs,
-    ):
-        from hyfi.utils.dataframe import save_data
-
-        save_data(
-            data,
-            filename,
-            base_dir=base_dir,
-            columns=columns,
-            index=index,
-            filetype=filetype,
-            suffix=suffix,
-            verbose=verbose,
-            **kwargs,
-        )
-
-    @staticmethod
-    def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        from hyfi.utils.dataframe import load_data
-
-        if filename is not None:
-            filename = str(filename)
-        if SpecialKeys.TARGET in kwargs:
-            return XC.instantiate(
-                kwargs,
-                filename=filename,
-                base_dir=base_dir,
-                verbose=verbose,
-                filetype=filetype,
-            )
-        if filename is None:
-            raise ValueError("filename must be specified")
-        return load_data(
-            filename,
-            base_dir=base_dir,
-            verbose=verbose,
-            filetype=filetype,
-            **kwargs,
-        )
-
-    @staticmethod
     def get_filepaths(
         filename_patterns: Union[str, PosixPath, WindowsPath],
         base_dir: Union[str, PosixPath, WindowsPath] = "",
@@ -503,42 +421,6 @@ class HyFI:
             verbose=verbose,
             **kwargs,
         )
-
-    @staticmethod
-    def concat_data(
-        data,
-        columns=None,
-        add_key_as_name=False,
-        name_column="_name_",
-        ignore_index=True,
-        verbose=False,
-        **kwargs,
-    ):
-        from hyfi.utils.dataframe import concat_data
-
-        return concat_data(
-            data,
-            columns=columns,
-            add_key_as_name=add_key_as_name,
-            name_column=name_column,
-            ignore_index=ignore_index,
-            verbose=verbose,
-            **kwargs,
-        )
-
-    @staticmethod
-    def is_dataframe(data):
-        from hyfi.utils.dataframe import is_dataframe
-
-        return is_dataframe(data)
-
-    @staticmethod
-    def is_colab():
-        return is_colab()
-
-    @staticmethod
-    def is_notebook():
-        return is_notebook()
 
     @staticmethod
     def nvidia_smi():
@@ -625,14 +507,6 @@ class HyFI:
         )
 
     @staticmethod
-    def to_datetime(data, _format=None, _columns=None, **kwargs):
-        return to_datetime(data, _format, _columns, **kwargs)
-
-    @staticmethod
-    def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
-        return to_numeric(data, _columns, errors, downcast, **kwargs)
-
-    @staticmethod
     def getLogger(
         name=None,
         log_level=None,
@@ -648,76 +522,12 @@ class HyFI:
         return set_cuda(device)
 
     @staticmethod
-    def mount_google_drive(
-        project_root: str = "",
-        project_name: str = "",
-        mountpoint: str = "/content/drive",
-        force_remount: bool = False,
-        timeout_ms: int = 120000,
-    ):
-        return mount_google_drive(
-            project_root, project_name, mountpoint, force_remount, timeout_ms
-        )
-
-    @staticmethod
     def getsource(obj):
         return XC.getsource(obj)
 
     @staticmethod
     def viewsource(obj):
         return XC.viewsource(obj)
-
-    @staticmethod
-    def clear_output(wait=False):
-        return clear_output(wait)
-
-    @staticmethod
-    def display(
-        *objs,
-        include=None,
-        exclude=None,
-        metadata=None,
-        transient=None,
-        display_id=None,
-        **kwargs,
-    ):
-        return display(
-            *objs,
-            include=include,
-            exclude=exclude,
-            metadata=metadata,
-            transient=transient,
-            display_id=display_id,
-            **kwargs,
-        )
-
-    @staticmethod
-    def display_image(
-        data=None,
-        url=None,
-        filename=None,
-        format=None,
-        embed=None,
-        width=None,
-        height=None,
-        retina=False,
-        unconfined=False,
-        metadata=None,
-        **kwargs,
-    ):
-        return display_image(
-            data=data,
-            url=url,
-            filename=filename,
-            format=format,
-            embed=embed,
-            width=width,
-            height=height,
-            retina=retina,
-            unconfined=unconfined,
-            metadata=metadata,
-            **kwargs,
-        )
 
     @staticmethod
     def pip(
@@ -768,158 +578,6 @@ class HyFI:
     @staticmethod
     def dict_product(dicts):
         return dict_product(dicts)
-
-    @staticmethod
-    def get_display():
-        return get_display()
-
-    @staticmethod
-    def hide_code_in_slideshow():
-        return hide_code_in_slideshow()
-
-    @staticmethod
-    def cprint(str_color_tuples, **kwargs):
-        return cprint(str_color_tuples)
-
-    @staticmethod
-    def dict_to_dataframe(
-        data,
-        orient="columns",
-        dtype=None,
-        columns=None,
-    ):
-        return dict_to_dataframe(data, orient, dtype, columns)
-
-    @staticmethod
-    def records_to_dataframe(
-        data,
-        index=None,
-        exclude=None,
-        columns=None,
-        coerce_float=False,
-        nrows=None,
-    ):
-        return records_to_dataframe(data, index, exclude, columns, coerce_float, nrows)
-
-    @staticmethod
-    def create_dropdown(
-        options,
-        value,
-        description,
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_dropdown(
-            options,
-            value,
-            description,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_textarea(
-        value,
-        description,
-        placeholder="",
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_textarea(
-            value,
-            description,
-            placeholder,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_button(
-        description,
-        button_style="",
-        icon="check",
-        layout=None,
-        **kwargs,
-    ):
-        return create_button(description, button_style, icon, layout, **kwargs)
-
-    @staticmethod
-    def create_radiobutton(
-        options,
-        description,
-        value=None,
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_radiobutton(
-            options,
-            description,
-            value,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_image(
-        filename=None,
-        format=None,
-        width=None,
-        height=None,
-        **kwargs,
-    ):
-        return create_image(filename, format, width, height, **kwargs)
-
-    @staticmethod
-    def create_floatslider(
-        min=0.0,
-        max=1.0,
-        step=0.1,
-        value=None,
-        description="",
-        disabled=False,
-        continuous_update=False,
-        orientation="horizontal",
-        readout=True,
-        readout_format=".1f",
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_floatslider(
-            min,
-            max,
-            step,
-            value,
-            description,
-            disabled,
-            continuous_update,
-            orientation,
-            readout,
-            readout_format,
-            style,
-            layout,
-            **kwargs,
-        )
 
     @staticmethod
     def get_image_font(fontname: str = "", fontsize: int = 12):
@@ -1098,6 +756,9 @@ class HyFI:
 
         return showUtilization(all, attrList, useOldCode)
 
+    ###############################
+    # Dataset related functions
+    ###############################
     @staticmethod
     def load_dataset(
         path: str,
@@ -1303,7 +964,7 @@ class HyFI:
         >>> ds = load_dataset('imagefolder', data_dir='/path/to/images', split='train')
         ```
         """
-        return load_dataset(
+        return Datasets.load_dataset(
             path=path,
             name=name,
             data_dir=data_dir,
@@ -1324,4 +985,311 @@ class HyFI:
             num_proc=num_proc,
             storage_options=storage_options,
             **config_kwargs,
+        )
+
+    @staticmethod
+    def dict_to_dataframe(
+        data,
+        orient="columns",
+        dtype=None,
+        columns=None,
+    ):
+        return Datasets.dict_to_dataframe(data, orient, dtype, columns)
+
+    @staticmethod
+    def records_to_dataframe(
+        data,
+        index=None,
+        exclude=None,
+        columns=None,
+        coerce_float=False,
+        nrows=None,
+    ):
+        return Datasets.records_to_dataframe(
+            data, index, exclude, columns, coerce_float, nrows
+        )
+
+    @staticmethod
+    def save_data(
+        data: Union[pd.DataFrame, dict],
+        filename: str,
+        base_dir: str = "",
+        columns=None,
+        index: bool = False,
+        filetype="parquet",
+        suffix: str = "",
+        verbose: bool = False,
+        **kwargs,
+    ):
+        Datasets.save_data(
+            data,
+            filename,
+            base_dir=base_dir,
+            columns=columns,
+            index=index,
+            filetype=filetype,
+            suffix=suffix,
+            verbose=verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
+        if filename is not None:
+            filename = str(filename)
+        if SpecialKeys.TARGET in kwargs:
+            return XC.instantiate(
+                kwargs,
+                filename=filename,
+                base_dir=base_dir,
+                verbose=verbose,
+                filetype=filetype,
+            )
+        if filename is None:
+            raise ValueError("filename must be specified")
+        return Datasets.load_data(
+            filename,
+            base_dir=base_dir,
+            verbose=verbose,
+            filetype=filetype,
+            **kwargs,
+        )
+
+    @staticmethod
+    def concat_data(
+        data,
+        columns=None,
+        add_key_as_name=False,
+        name_column="_name_",
+        ignore_index=True,
+        verbose=False,
+        **kwargs,
+    ):
+        return Datasets.concat_data(
+            data,
+            columns=columns,
+            add_key_as_name=add_key_as_name,
+            name_column=name_column,
+            ignore_index=ignore_index,
+            verbose=verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def is_dataframe(data):
+        return Datasets.is_dataframe(data)
+
+    @staticmethod
+    def to_datetime(data, _format=None, _columns=None, **kwargs):
+        return Datasets.to_datetime(data, _format, _columns, **kwargs)
+
+    @staticmethod
+    def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
+        return Datasets.to_numeric(data, _columns, errors, downcast, **kwargs)
+
+    ###############################
+    # Notebook utilities
+    ###############################
+    @staticmethod
+    def is_colab():
+        return NBs.is_colab()
+
+    @staticmethod
+    def is_notebook():
+        return NBs.is_notebook()
+
+    @staticmethod
+    def mount_google_drive(
+        project_root: str = "",
+        project_name: str = "",
+        mountpoint: str = "/content/drive",
+        force_remount: bool = False,
+        timeout_ms: int = 120000,
+    ):
+        return NBs.mount_google_drive(
+            project_root, project_name, mountpoint, force_remount, timeout_ms
+        )
+
+    @staticmethod
+    def clear_output(wait=False):
+        return NBs.clear_output(wait)
+
+    @staticmethod
+    def display(
+        *objs,
+        include=None,
+        exclude=None,
+        metadata=None,
+        transient=None,
+        display_id=None,
+        **kwargs,
+    ):
+        return NBs.display(
+            *objs,
+            include=include,
+            exclude=exclude,
+            metadata=metadata,
+            transient=transient,
+            display_id=display_id,
+            **kwargs,
+        )
+
+    @staticmethod
+    def display_image(
+        data=None,
+        url=None,
+        filename=None,
+        format=None,
+        embed=None,
+        width=None,
+        height=None,
+        retina=False,
+        unconfined=False,
+        metadata=None,
+        **kwargs,
+    ):
+        return NBs.display_image(
+            data=data,
+            url=url,
+            filename=filename,
+            format=format,
+            embed=embed,
+            width=width,
+            height=height,
+            retina=retina,
+            unconfined=unconfined,
+            metadata=metadata,
+            **kwargs,
+        )
+
+    @staticmethod
+    def get_display():
+        return NBs.get_display()
+
+    @staticmethod
+    def hide_code_in_slideshow():
+        return NBs.hide_code_in_slideshow()
+
+    @staticmethod
+    def cprint(str_color_tuples, **kwargs):
+        return NBs.cprint(str_color_tuples)
+
+    @staticmethod
+    def create_dropdown(
+        options,
+        value,
+        description,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_dropdown(
+            options,
+            value,
+            description,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_textarea(
+        value,
+        description,
+        placeholder="",
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_textarea(
+            value,
+            description,
+            placeholder,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_button(
+        description,
+        button_style="",
+        icon="check",
+        layout=None,
+        **kwargs,
+    ):
+        return NBs.create_button(description, button_style, icon, layout, **kwargs)
+
+    @staticmethod
+    def create_radiobutton(
+        options,
+        description,
+        value=None,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_radiobutton(
+            options,
+            description,
+            value,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_image(
+        filename=None,
+        format=None,
+        width=None,
+        height=None,
+        **kwargs,
+    ):
+        return NBs.create_image(filename, format, width, height, **kwargs)
+
+    @staticmethod
+    def create_floatslider(
+        min=0.0,
+        max=1.0,
+        step=0.1,
+        value=None,
+        description="",
+        disabled=False,
+        continuous_update=False,
+        orientation="horizontal",
+        readout=True,
+        readout_format=".1f",
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_floatslider(
+            min,
+            max,
+            step,
+            value,
+            description,
+            disabled,
+            continuous_update,
+            orientation,
+            readout,
+            readout_format,
+            style,
+            layout,
+            **kwargs,
         )

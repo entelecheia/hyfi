@@ -4,7 +4,7 @@ from typing import Any, Union
 
 from pydantic import validator
 
-from hyfi.hydra import BaseConfig
+from hyfi.composer import BaseConfig
 from hyfi.utils.logging import Logging
 
 logger = Logging.getLogger(__name__)

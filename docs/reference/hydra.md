@@ -1,3 +1,3 @@
-# `hyfi.hydra`
+# `hyfi.composer`
 
-::: hyfi.hydra
+::: hyfi.composer

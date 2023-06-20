@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from hyfi.hydra import BaseConfig, Composer
+from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig

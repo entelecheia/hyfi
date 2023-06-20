@@ -3,7 +3,7 @@ from typing import Dict, List, Union
 from omegaconf import DictConfig
 
 from hyfi.batch import BatchConfig
-from hyfi.hydra.main import XC
+from hyfi.composer.extended import XC
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import Logging
 

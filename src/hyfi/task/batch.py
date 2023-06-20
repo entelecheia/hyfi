@@ -160,8 +160,8 @@ class BatchTaskConfig(TaskConfig):
                 logger.info("No config file found at %s", _path)
                 batch_num = -1
         if self.verbose:
-            logger.info("Merging config with args: %s", data)
-        cfg = XC.to_dict(XC.merge(cfg, data))
+            logger.info("Merging config with args: %s", config_kwargs)
+        cfg = XC.to_dict(XC.merge(cfg, config_kwargs))
 
         self.initialize_configs(**cfg)
 

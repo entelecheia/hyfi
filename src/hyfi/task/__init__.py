@@ -132,6 +132,6 @@ class TaskConfig(BaseConfig):
             for obj in objects:
                 del obj
         if release_gpu_memory:
-            from hyfi.utils.gpu import GPUMon
+            from hyfi.utils.gpumon import GPUMon
 
             GPUMon.release_gpu_memory()

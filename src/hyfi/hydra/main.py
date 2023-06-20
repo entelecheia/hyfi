@@ -11,9 +11,9 @@ from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__, __search_package_path__
 from hyfi.cached_path import cached_path
 from hyfi.hydra import Composer, SpecialKeys
-from hyfi.utils.env import dotenv_values, getcwd
-from hyfi.utils.file import check_path, exists, join_path, mkdir
-from hyfi.utils.func import lower_case_with_underscores, strptime, today
+from hyfi.utils.envs import Envs
+from hyfi.utils.funcs import Funcs
+from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
@@ -160,21 +160,21 @@ class XC(Composer):
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
 OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
 OmegaConf.register_new_resolver("__home_path__", __home_path__)
-OmegaConf.register_new_resolver("today", today)
-OmegaConf.register_new_resolver("to_datetime", strptime)
+OmegaConf.register_new_resolver("today", Funcs.today)
+OmegaConf.register_new_resolver("to_datetime", Funcs.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
 OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
 OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
 OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
-OmegaConf.register_new_resolver("get_original_cwd", getcwd)
-OmegaConf.register_new_resolver("exists", exists)
-OmegaConf.register_new_resolver("join_path", join_path)
-OmegaConf.register_new_resolver("mkdir", mkdir)
+OmegaConf.register_new_resolver("get_original_cwd", Envs.getcwd)
+OmegaConf.register_new_resolver("exists", IOLibs.exists)
+OmegaConf.register_new_resolver("join_path", IOLibs.join_path)
+OmegaConf.register_new_resolver("mkdir", IOLibs.mkdir)
 OmegaConf.register_new_resolver("dirname", os.path.dirname)
 OmegaConf.register_new_resolver("basename", os.path.basename)
-OmegaConf.register_new_resolver("check_path", check_path)
+OmegaConf.register_new_resolver("check_path", IOLibs.check_path)
 OmegaConf.register_new_resolver("cached_path", cached_path)
 OmegaConf.register_new_resolver(
-    "lower_case_with_underscores", lower_case_with_underscores
+    "lower_case_with_underscores", Funcs.lower_case_with_underscores
 )
-OmegaConf.register_new_resolver("dotenv_values", dotenv_values)
+OmegaConf.register_new_resolver("dotenv_values", Envs.dotenv_values)

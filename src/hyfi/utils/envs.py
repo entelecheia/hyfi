@@ -8,7 +8,7 @@ from typing import Any, Union
 import dotenv
 import hydra
 
-from hyfi.utils.file import is_dir
+from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
@@ -148,7 +148,7 @@ class Envs:
     @staticmethod
     def set_osenv(key: str, value: Any) -> None:
         """Set the value of an environment variable"""
-        if value and is_dir(value):
+        if value and IOLibs.is_dir(value):
             value = os.path.abspath(value)
         if pre_val := os.environ.get(key):
             logger.info("Overwriting %s=%s with %s", key, pre_val, value)

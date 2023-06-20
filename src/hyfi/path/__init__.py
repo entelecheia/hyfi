@@ -5,9 +5,9 @@ from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
 from hyfi.hydra import BaseConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class PathConfig(BaseConfig):

@@ -5,9 +5,9 @@ from typing import Any, Union
 from pydantic import validator
 
 from hyfi.hydra import BaseConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class BatchConfig(BaseConfig):

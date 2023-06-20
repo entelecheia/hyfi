@@ -5,9 +5,9 @@ from pydantic import BaseSettings, SecretStr, root_validator
 from pydantic.env_settings import SettingsSourceCallable
 
 from hyfi.utils.envs import Envs
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class DotEnvConfig(BaseSettings):

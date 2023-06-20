@@ -9,10 +9,10 @@ from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import BaseConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.notebooks import NBs
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class ProjectConfig(BaseConfig):

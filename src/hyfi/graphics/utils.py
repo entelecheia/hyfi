@@ -11,9 +11,9 @@ from matplotlib import font_manager, rc
 from PIL import Image, ImageFont
 
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def scale_image(

@@ -18,11 +18,11 @@ from hyfi.__global__ import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
-from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.logging import Logging
 
 if level := os.environ.get("HYFI_LOG_LEVEL"):
-    setLogger(level)
-logger = getLogger(__name__)
+    Logging.setLogger(level)
+logger = Logging.getLogger(__name__)
 
 DictKeyType = Union[str, int, Enum, float, bool]
 

@@ -14,10 +14,10 @@ from hyfi.hydra import Composer
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.envs import Envs
-from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.notebooks import NBs
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def __version__():
@@ -188,7 +188,7 @@ class HyfiConfig(BaseModel):
         # Set the log level to the given log level.
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
-            setLogger(log_level)
+            Logging.setLogger(log_level)
             logger.setLevel(log_level)
         # Load the extentions for the autotime extension.
         if autotime:

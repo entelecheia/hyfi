@@ -14,9 +14,9 @@ from hyfi.hydra import Composer, SpecialKeys
 from hyfi.utils.envs import Envs
 from hyfi.utils.funcs import Funcs
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 # _config_ = XC.config.copy()

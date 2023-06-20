@@ -9,9 +9,9 @@ import pandas as pd
 import scipy.sparse as ssp
 from tqdm.auto import tqdm
 
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class Batcher(object):

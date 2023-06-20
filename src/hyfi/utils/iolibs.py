@@ -16,10 +16,10 @@ from typing import Callable, List, Tuple, Union
 import gdown
 
 from hyfi.cached_path import _cached_path
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.types import PathLikeType
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class IOLibs:

@@ -5,10 +5,10 @@ from hyfi.hydra import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.packages import Packages
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class TaskConfig(BaseConfig):

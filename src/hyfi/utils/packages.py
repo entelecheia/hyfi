@@ -6,9 +6,9 @@ import sys
 from pathlib import Path
 
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class Packages:

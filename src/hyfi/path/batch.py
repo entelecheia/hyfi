@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from hyfi.path.task import TaskPathConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class BatchPathConfig(TaskPathConfig):

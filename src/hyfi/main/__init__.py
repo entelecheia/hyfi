@@ -21,12 +21,12 @@ from hyfi.utils.envs import Envs
 from hyfi.utils.funcs import Funcs
 from hyfi.utils.gpumon import nvidia_smi, set_cuda
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.notebooks import NBs
 from hyfi.utils.packages import Packages
 from hyfi.utils.types import PathLikeType
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def _about(cfg):
@@ -344,11 +344,11 @@ class HyFI:
         name=None,
         log_level=None,
     ):
-        return getLogger(name, log_level)
+        return Logging.getLogger(name, log_level)
 
     @staticmethod
     def setLogger(level=None, force=True, **kwargs):
-        return setLogger(level, force, **kwargs)
+        return Logging.setLogger(level, force, **kwargs)
 
     ###############################
     # Batcher related functions

@@ -5,10 +5,10 @@ from pathlib import Path
 
 from hyfi.graphics.utils import load_images
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 from hyfi.utils.notebooks import NBs
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def make_gif(

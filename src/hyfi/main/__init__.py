@@ -6,6 +6,17 @@ import os
 from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
+import pandas as pd
+from datasets import Dataset
+from datasets.dataset_dict import DatasetDict, IterableDatasetDict
+from datasets.download.download_config import DownloadConfig
+from datasets.download.download_manager import DownloadMode
+from datasets.features import Features
+from datasets.iterable_dataset import IterableDataset
+from datasets.splits import Split
+from datasets.tasks import TaskTemplate
+from datasets.utils.info_utils import VerificationMode
+from datasets.utils.version import Version
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
@@ -16,7 +27,7 @@ from hyfi.hydra import Composer, DictKeyType, SpecialKeys
 from hyfi.hydra.main import XC
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
-from hyfi.utils.datasets import *
+from hyfi.utils.datasets import Datasets
 from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import dict_product, to_dateparm

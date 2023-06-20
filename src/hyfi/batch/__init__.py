@@ -4,10 +4,10 @@ from typing import Any, Union
 
 from pydantic import validator
 
-from hyfi.hydra import BaseConfig, Composer
-from hyfi.utils.logging import getLogger
+from hyfi.hydra import BaseConfig
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class BatchConfig(BaseConfig):
@@ -31,8 +31,8 @@ class BatchConfig(BaseConfig):
     config_dirname = "configs"
     verbose: Union[bool, int] = False
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         self.init_batch_num()
 
     def init_batch_num(self):

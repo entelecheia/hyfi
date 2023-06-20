@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from hyfi.path.task import TaskPathConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class BatchPathConfig(TaskPathConfig):
@@ -15,8 +15,8 @@ class BatchPathConfig(TaskPathConfig):
     class Config:
         extra = "ignore"
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
 
     @property
     def batch_dir(self) -> Path:

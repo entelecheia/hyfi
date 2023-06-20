@@ -14,4 +14,4 @@ from hyfi.__global__.config import __global_config__ as global_config
 from hyfi.main import HyFI
 from hyfi.main import HyFI as H
 from hyfi.main import HyFI as HI
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging

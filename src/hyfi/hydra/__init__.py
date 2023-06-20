@@ -18,11 +18,11 @@ from hyfi.__global__ import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
-from hyfi.utils.logging import getLogger, setLogger
+from hyfi.utils.logging import Logging
 
 if level := os.environ.get("HYFI_LOG_LEVEL"):
-    setLogger(level)
-logger = getLogger(__name__)
+    Logging.setLogger(level)
+logger = Logging.getLogger(__name__)
 
 DictKeyType = Union[str, int, Enum, float, bool]
 
@@ -600,9 +600,9 @@ class BaseConfig(BaseModel):
         underscore_attrs_are_private = True
         property_set_methods = {}
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.initialize_configs(**data)
+    def __init__(self, **config_kwargs):
+        super().__init__(**config_kwargs)
+        self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
         super().__setattr__(key, val)
@@ -611,7 +611,7 @@ class BaseConfig(BaseModel):
 
     def initialize_configs(
         self,
-        **data,
+        **config_kwargs,
     ):
         if not self.config_group:
             logger.debug("There is no config group specified.")
@@ -623,8 +623,8 @@ class BaseConfig(BaseModel):
             self.config_name,
             self.config_group,
         )
-        data = Composer(
+        config_kwargs = Composer(
             config_group=f"{self.config_group}={self.config_name}",
-            config_data=data,
+            config_data=config_kwargs,
         ).config_as_dict
-        self.__dict__.update(data)
+        self.__dict__.update(config_kwargs)

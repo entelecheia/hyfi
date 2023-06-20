@@ -13,11 +13,11 @@ from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import Composer
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.env import check_and_set_osenv, expand_posix_vars
-from hyfi.utils.logging import getLogger, setLogger
-from hyfi.utils.notebook import load_extentions, set_matplotlib_formats
+from hyfi.utils.envs import Envs
+from hyfi.utils.logging import Logging
+from hyfi.utils.notebooks import NBs
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def __version__():
@@ -75,12 +75,12 @@ class HyfiConfig(BaseModel):
                 Same dictionary with hyfi_config
         """
         key = "hyfi_config_path"
-        val = check_and_set_osenv(key, values.get(key))
+        val = Envs.check_and_set_osenv(key, values.get(key))
         values[key] = val
         # Set the hyfi_config_module value in the configuration file.
         if val is not None:
             key = "hyfi_config_module"
-            values[key] = check_and_set_osenv(key, val.replace("pkg://", ""))
+            values[key] = Envs.check_and_set_osenv(key, val.replace("pkg://", ""))
         return values
 
     @validator("hyfi_user_config_path")
@@ -95,7 +95,7 @@ class HyfiConfig(BaseModel):
         Returns:
                 True if valid False otherwise
         """
-        return check_and_set_osenv("hyfi_user_config_path", v)
+        return Envs.check_and_set_osenv("hyfi_user_config_path", v)
 
     @validator("logging_level")
     def _validate_logging_level(cls, v, values):
@@ -117,14 +117,14 @@ class HyfiConfig(BaseModel):
         logger.setLevel(v)
         return v
 
-    def __init__(self, **data: Any):
+    def __init__(self, **config_kwargs: Any):
         """
         Initialize the object with data
 
         Args:
                 data: Data to initialize the
         """
-        super().__init__(**data)
+        super().__init__(**config_kwargs)
         # self.about = __about__
 
     def init_workspace(
@@ -163,39 +163,39 @@ class HyfiConfig(BaseModel):
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
-            envs.HYFI_PROJECT_NAME = expand_posix_vars(project_name)
+            envs.HYFI_PROJECT_NAME = Envs.expand_posix_vars(project_name)
         # Set the task name environment variable HYFI_TASK_NAME to the task name.
         if task_name:
-            envs.HYFI_TASK_NAME = expand_posix_vars(task_name)
+            envs.HYFI_TASK_NAME = Envs.expand_posix_vars(task_name)
         # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
         if project_description:
-            envs.HYFI_PROJECT_DESC = expand_posix_vars(project_description)
+            envs.HYFI_PROJECT_DESC = Envs.expand_posix_vars(project_description)
         # Set environment variables HYFI_PROJECT_ROOT to the project root if project_root is set to true.
         if project_root:
-            envs.HYFI_PROJECT_ROOT = expand_posix_vars(project_root)
+            envs.HYFI_PROJECT_ROOT = Envs.expand_posix_vars(project_root)
         # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = expand_posix_vars(project_workspace_name)
+            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(project_workspace_name)
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
-            envs.HYFI_GLOBAL_ROOT = expand_posix_vars(global_hyfi_root)
+            envs.HYFI_GLOBAL_ROOT = Envs.expand_posix_vars(global_hyfi_root)
         # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = expand_posix_vars(global_workspace_name)
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(global_workspace_name)
         # Set the number of workers to use.
         if num_workers:
             envs.HYFI_NUM_WORKERS = num_workers
         # Set the log level to the given log level.
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
-            setLogger(log_level)
+            Logging.setLogger(log_level)
             logger.setLevel(log_level)
         # Load the extentions for the autotime extension.
         if autotime:
-            load_extentions(exts=["autotime"])
+            NBs.load_extentions(exts=["autotime"])
         # Set the retina matplotlib formats.
         if retina:
-            set_matplotlib_formats("retina")
+            NBs.set_matplotlib_formats("retina")
         self.initialize()
 
     def initialize(self, config: Union[DictConfig, Dict, None] = None):

@@ -4,49 +4,29 @@
 """
 import os
 from pathlib import Path, PosixPath, WindowsPath
-from typing import IO, Any, Dict, List, Tuple, Union
+from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
-from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import Composer, DictKeyType, SpecialKeys
 from hyfi.hydra.main import XC
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
-from hyfi.utils.dataframe import (
-    dict_to_dataframe,
-    records_to_dataframe,
-    to_datetime,
-    to_numeric,
-)
-from hyfi.utils.env import expand_posix_vars, get_osenv, load_dotenv, set_osenv
-from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
-from hyfi.utils.func import dict_product, to_dateparm
-from hyfi.utils.google import mount_google_drive
-from hyfi.utils.gpu import nvidia_smi, set_cuda
-from hyfi.utils.logging import getLogger, setLogger
-from hyfi.utils.notebook import (
-    clear_output,
-    cprint,
-    create_button,
-    create_dropdown,
-    create_floatslider,
-    create_image,
-    create_radiobutton,
-    create_textarea,
-    display,
-    display_image,
-    get_display,
-    hide_code_in_slideshow,
-    is_colab,
-    is_notebook,
-)
+from hyfi.utils.datasets import Datasets
+from hyfi.utils.envs import Envs
+from hyfi.utils.funcs import Funcs
+from hyfi.utils.gpumon import nvidia_smi, set_cuda
+from hyfi.utils.iolibs import IOLibs
+from hyfi.utils.logging import Logging
+from hyfi.utils.notebooks import NBs
+from hyfi.utils.packages import Packages
+from hyfi.utils.types import PathLikeType
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 def _about(cfg):
@@ -80,6 +60,59 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
+    def init_workspace(
+        project_name: str = "",
+        task_name: str = "",
+        project_description: str = "",
+        project_root: str = "",
+        project_workspace_name: str = "",
+        global_hyfi_root: str = "",
+        global_workspace_name: str = "",
+        num_workers: int = -1,
+        log_level: str = "",
+        autotime: bool = True,
+        retina: bool = True,
+        verbose: Union[bool, int] = False,
+        **kwargs,
+    ) -> ProjectConfig:
+        """
+        Initialize and start hyfi.
+
+        Args:
+                project_name: Name of the project to use.
+                task_name: Name of the task to use.
+                project_description: Description of the project that will be used.
+                project_root: Root directory of the project.
+                project_workspace_name: Name of the project's workspace directory.
+                global_hyfi_root: Root directory of the global hyfi.
+                global_workspace_name: Name of the global hierachical workspace directory.
+                num_workers: Number of workers to run.
+                log_level: Log level for the log.
+                autotime: Whether to automatically set time and / or keep track of run times.
+                retina: Whether to use retina or not.
+                verbose: Enables or disables logging
+        """
+        __global_config__.init_workspace(
+            project_name=project_name,
+            task_name=task_name,
+            project_description=project_description,
+            project_root=project_root,
+            project_workspace_name=project_workspace_name,
+            global_hyfi_root=global_hyfi_root,
+            global_workspace_name=global_workspace_name,
+            num_workers=num_workers,
+            log_level=log_level,
+            autotime=autotime,
+            retina=retina,
+            verbose=verbose,
+            **kwargs,
+        )
+        if __global_config__.project:
+            return __global_config__.project
+        else:
+            raise ValueError("Project not initialized.")
+
+    @staticmethod
     def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
         """Initialize the global config"""
         __global_config__.initialize(config)
@@ -90,28 +123,6 @@ class HyFI:
         __global_config__.terminate()
 
     @staticmethod
-    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
-        """
-        Expand POSIX variables in a string.
-
-        Args:
-            posix_expr (str): The string containing POSIX variables to be expanded.
-            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
-                Defaults to None.
-
-        Returns:
-            str: The expanded string.
-
-        Examples:
-            >>> expand_posix_vars("$HOME")
-            '/home/user'
-            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
-            '/home/user/testuser'
-
-        """
-        return expand_posix_vars(posix_expr, context=context)
-
-    @staticmethod
     def dotenv() -> DotEnvConfig:
         """Return the DotEnvConfig"""
         return DotEnvConfig()
@@ -120,15 +131,6 @@ class HyFI:
     def osenv():
         """Return the DotEnvConfig"""
         return os.environ
-
-    @staticmethod
-    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
-        """Get the value of an environment variable or return the default value"""
-        return get_osenv(key, default=default)
-
-    @staticmethod
-    def set_osenv(key, value):
-        return set_osenv(key, value)
 
     @staticmethod
     def compose(
@@ -319,86 +321,41 @@ class HyFI:
         XC.run(config, **kwargs)
 
     @staticmethod
-    def load_dotenv(
-        override: bool = False,
-        dotenv_dir: str = "",
-        dotenv_filename: str = ".env",
-        verbose: bool = False,
-    ) -> None:
-        load_dotenv(
-            override=override,
-            dotenv_filename=dotenv_filename,
-            dotenv_dir=dotenv_dir,
-            verbose=verbose,
-        )
-
-    @staticmethod
-    def cached_path(
-        url_or_filename,
-        extract_archive: bool = False,
-        force_extract: bool = False,
-        return_parent_dir: bool = False,
-        cache_dir=None,
-        verbose: bool = False,
-    ):
-        """
-        Attempts to cache a file or URL and return the path to the cached file.
-        If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
-
-        Args:
-            url_or_filename (str): The URL or filename to be cached.
-            extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
-            force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
-            return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
-            cache_dir (str, optional): Directory to store cached files. Defaults to None.
-            verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
-
-        Raises:
-            ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
-
-        Returns:
-            str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
-        """
-        return cached_path(
-            url_or_filename,
-            extract_archive=extract_archive,
-            force_extract=force_extract,
-            return_parent_dir=return_parent_dir,
-            cache_dir=cache_dir,
-            verbose=verbose,
-        )
-
-    @staticmethod
-    def pipe(data=None, cfg=None):
-        return PIPE.pipe(data, cfg)
-
-    @staticmethod
     def ensure_list(value):
         return Composer.ensure_list(value)
 
     @staticmethod
-    def to_dateparm(_date, _format="%Y-%m-%d"):
-        return to_dateparm(_date, _format)
+    def ensure_kwargs(_kwargs, _fn):
+        return Composer.ensure_kwargs(_kwargs, _fn)
 
     @staticmethod
-    def exists(a, *p):
-        return exists(a, *p)
+    def getsource(obj):
+        return XC.getsource(obj)
 
     @staticmethod
-    def is_file(a, *p):
-        return is_file(a, *p)
+    def viewsource(obj):
+        return XC.viewsource(obj)
+
+    ###############################
+    # Logging related functions
+    ###############################
+    @staticmethod
+    def getLogger(
+        name=None,
+        log_level=None,
+    ):
+        return Logging.getLogger(name, log_level)
 
     @staticmethod
-    def is_dir(a, *p):
-        return is_dir(a, *p)
+    def setLogger(level=None, force=True, **kwargs):
+        return Logging.setLogger(level, force, **kwargs)
 
+    ###############################
+    # Batcher related functions
+    ###############################
     @staticmethod
-    def mkdir(_path: str):
-        return mkdir(_path)
-
-    @staticmethod
-    def join_path(a, *p):
-        return join_path(a, *p)
+    def pipe(data=None, cfg=None):
+        return PIPE.pipe(data, cfg)
 
     @staticmethod
     def apply(
@@ -422,9 +379,195 @@ class HyFI:
             **kwargs,
         )
 
+    ###############################
+    # Dataset related functions
+    ###############################
     @staticmethod
-    def ensure_kwargs(_kwargs, _fn):
-        return Composer.ensure_kwargs(_kwargs, _fn)
+    def load_dataset(
+        path: str,
+        name: Optional[str] = None,
+        data_dir: Optional[str] = None,
+        data_files: Optional[
+            Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
+        ] = None,
+        split: Optional[str] = None,
+        cache_dir: Optional[str] = None,
+        ignore_verifications="deprecated",
+        keep_in_memory: Optional[bool] = None,
+        save_infos: bool = False,
+        use_auth_token: Optional[Union[bool, str]] = None,
+        streaming: bool = False,
+        num_proc: Optional[int] = None,
+        storage_options: Optional[Dict] = None,
+        **config_kwargs,
+    ) -> Any:
+        """Load a dataset from the Hugging Face Hub, or a local dataset.
+
+        It also allows to load a dataset from a local directory or a dataset repository on the Hugging Face Hub without dataset script.
+        In this case, it automatically loads all the data files from the directory or the dataset repository.
+
+        Args:
+
+            path (`str`):
+                Path or name of the dataset.
+                Depending on `path`, the dataset builder that is used comes from a generic dataset script (JSON, CSV, Parquet, text etc.) or from the dataset script (a python file) inside the dataset directory.
+
+                For local datasets:
+
+                - if `path` is a local directory (containing data files only)
+                -> load a generic dataset builder (csv, json, text etc.) based on the content of the directory
+                e.g. `'./path/to/directory/with/my/csv/data'`.
+                - if `path` is a local dataset script or a directory containing a local dataset script (if the script has the same name as the directory)
+                -> load the dataset builder from the dataset script
+                e.g. `'./dataset/squad'` or `'./dataset/squad/squad.py'`.
+
+                For datasets on the Hugging Face Hub (list all available datasets and ids with [`datasets.list_datasets`])
+
+                - if `path` is a dataset repository on the HF hub (containing data files only)
+                -> load a generic dataset builder (csv, text etc.) based on the content of the repository
+                e.g. `'username/dataset_name'`, a dataset repository on the HF hub containing your data files.
+                - if `path` is a dataset repository on the HF hub with a dataset script (if the script has the same name as the directory)
+                -> load the dataset builder from the dataset script in the dataset repository
+                e.g. `glue`, `squad`, `'username/dataset_name'`, a dataset repository on the HF hub containing a dataset script `'dataset_name.py'`.
+
+            name (`str`, *optional*):
+                Defining the name of the dataset configuration.
+            data_dir (`str`, *optional*):
+                Defining the `data_dir` of the dataset configuration. If specified for the generic builders (csv, text etc.) or the Hub datasets and `data_files` is `None`,
+                the behavior is equal to passing `os.path.join(data_dir, **)` as `data_files` to reference all the files in a directory.
+            data_files (`str` or `Sequence` or `Mapping`, *optional*):
+                Path(s) to source data file(s).
+            split (`Split` or `str`):
+                Which split of the data to load.
+                If `None`, will return a `dict` with all splits (typically `datasets.Split.TRAIN` and `datasets.Split.TEST`).
+                If given, will return a single Dataset.
+                Splits can be combined and specified like in tensorflow-datasets.
+            cache_dir (`str`, *optional*):
+                Directory to read/write data. Defaults to `"~/.cache/huggingface/datasets"`.
+            keep_in_memory (`bool`, defaults to `None`):
+                Whether to copy the dataset in-memory. If `None`, the dataset
+                will not be copied in-memory unless explicitly enabled by setting `datasets.config.IN_MEMORY_MAX_SIZE` to
+                nonzero. See more details in the [improve performance](../cache#improve-performance) section.
+            save_infos (`bool`, defaults to `False`):
+                Save the dataset information (checksums/size/splits/...).
+            revision ([`Version`] or `str`, *optional*):
+                Version of the dataset script to load.
+                As datasets have their own git repository on the Datasets Hub, the default version "main" corresponds to their "main" branch.
+                You can specify a different version than the default "main" by using a commit SHA or a git tag of the dataset repository.
+            use_auth_token (`str` or `bool`, *optional*):
+                Optional string or boolean to use as Bearer token for remote files on the Datasets Hub.
+                If `True`, or not specified, will get token from `"~/.huggingface"`.
+            streaming (`bool`, defaults to `False`):
+                If set to `True`, don't download the data files. Instead, it streams the data progressively while
+                iterating on the dataset. An [`IterableDataset`] or [`IterableDatasetDict`] is returned instead in this case.
+
+                Note that streaming works for datasets that use data formats that support being iterated over like txt, csv, jsonl for example.
+                Json files may be downloaded completely. Also streaming from remote zip or gzip files is supported but other compressed formats
+                like rar and xz are not yet supported. The tgz format doesn't allow streaming.
+            num_proc (`int`, *optional*, defaults to `None`):
+                Number of processes when downloading and generating the dataset locally.
+                Multiprocessing is disabled by default.
+
+                <Added version="2.7.0"/>
+            storage_options (`dict`, *optional*, defaults to `None`):
+                **Experimental**. Key/value pairs to be passed on to the dataset file-system backend, if any.
+
+                <Added version="2.11.0"/>
+            **config_kwargs (additional keyword arguments):
+                Keyword arguments to be passed to the `BuilderConfig`
+                and used in the [`DatasetBuilder`].
+
+        Returns:
+            [`Dataset`] or [`DatasetDict`]:
+            - if `split` is not `None`: the dataset requested,
+            - if `split` is `None`, a [`~datasets.DatasetDict`] with each split.
+
+            or [`IterableDataset`] or [`IterableDatasetDict`]: if `streaming=True`
+
+            - if `split` is not `None`, the dataset is requested
+            - if `split` is `None`, a [`~datasets.streaming.IterableDatasetDict`] with each split.
+
+        Example:
+
+        Load a dataset from the Hugging Face Hub:
+
+        ```py
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('rotten_tomatoes', split='train')
+
+        # Map data files to splits
+        >>> data_files = {'train': 'train.csv', 'test': 'test.csv'}
+        >>> ds = load_dataset('namespace/your_dataset_name', data_files=data_files)
+        ```
+
+        Load a local dataset:
+
+        ```py
+        # Load a CSV file
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('csv', data_files='path/to/local/my_dataset.csv')
+
+        # Load a JSON file
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('json', data_files='path/to/local/my_dataset.json')
+
+        # Load from a local loading script
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('path/to/local/loading_script/loading_script.py', split='train')
+        ```
+
+        Load an [`~datasets.IterableDataset`]:
+
+        ```py
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('rotten_tomatoes', split='train', streaming=True)
+        ```
+
+        Load an image dataset with the `ImageFolder` dataset builder:
+
+        ```py
+        >>> from datasets import load_dataset
+        >>> ds = load_dataset('imagefolder', data_dir='/path/to/images', split='train')
+        ```
+        """
+        return Datasets.load_dataset(
+            path=path,
+            name=name,
+            data_dir=data_dir,
+            data_files=data_files,
+            split=split,
+            cache_dir=cache_dir,
+            ignore_verifications=ignore_verifications,
+            keep_in_memory=keep_in_memory,
+            save_infos=save_infos,
+            use_auth_token=use_auth_token,
+            streaming=streaming,
+            num_proc=num_proc,
+            storage_options=storage_options,
+            **config_kwargs,
+        )
+
+    @staticmethod
+    def dict_to_dataframe(
+        data,
+        orient="columns",
+        dtype=None,
+        columns=None,
+    ):
+        return Datasets.dict_to_dataframe(data, orient, dtype, columns)
+
+    @staticmethod
+    def records_to_dataframe(
+        data,
+        index=None,
+        exclude=None,
+        columns=None,
+        coerce_float=False,
+        nrows=None,
+    ):
+        return Datasets.records_to_dataframe(
+            data, index, exclude, columns, coerce_float, nrows
+        )
 
     @staticmethod
     def save_data(
@@ -438,9 +581,7 @@ class HyFI:
         verbose: bool = False,
         **kwargs,
     ):
-        from hyfi.utils.dataframe import save_data
-
-        save_data(
+        Datasets.save_data(
             data,
             filename,
             base_dir=base_dir,
@@ -454,8 +595,6 @@ class HyFI:
 
     @staticmethod
     def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        from hyfi.utils.dataframe import load_data
-
         if filename is not None:
             filename = str(filename)
         if SpecialKeys.TARGET in kwargs:
@@ -468,29 +607,11 @@ class HyFI:
             )
         if filename is None:
             raise ValueError("filename must be specified")
-        return load_data(
+        return Datasets.load_data(
             filename,
             base_dir=base_dir,
             verbose=verbose,
             filetype=filetype,
-            **kwargs,
-        )
-
-    @staticmethod
-    def get_filepaths(
-        filename_patterns: Union[str, PosixPath, WindowsPath],
-        base_dir: Union[str, PosixPath, WindowsPath] = "",
-        recursive: bool = True,
-        verbose: bool = False,
-        **kwargs,
-    ):
-        from hyfi.utils.file import get_filepaths
-
-        return get_filepaths(
-            filename_patterns,
-            base_dir=base_dir,
-            recursive=recursive,
-            verbose=verbose,
             **kwargs,
         )
 
@@ -504,9 +625,7 @@ class HyFI:
         verbose=False,
         **kwargs,
     ):
-        from hyfi.utils.dataframe import concat_data
-
-        return concat_data(
+        return Datasets.concat_data(
             data,
             columns=columns,
             add_key_as_name=add_key_as_name,
@@ -518,22 +637,274 @@ class HyFI:
 
     @staticmethod
     def is_dataframe(data):
-        from hyfi.utils.dataframe import is_dataframe
-
-        return is_dataframe(data)
+        return Datasets.is_dataframe(data)
 
     @staticmethod
+    def to_datetime(data, _format=None, _columns=None, **kwargs):
+        return Datasets.to_datetime(data, _format, _columns, **kwargs)
+
+    @staticmethod
+    def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
+        return Datasets.to_numeric(data, _columns, errors, downcast, **kwargs)
+
+    ###############################
+    # Notebook functions
+    ###############################
+    @staticmethod
     def is_colab():
-        return is_colab()
+        return NBs.is_colab()
 
     @staticmethod
     def is_notebook():
-        return is_notebook()
+        return NBs.is_notebook()
 
     @staticmethod
-    def nvidia_smi():
-        return nvidia_smi()
+    def mount_google_drive(
+        project_root: str = "",
+        project_name: str = "",
+        mountpoint: str = "/content/drive",
+        force_remount: bool = False,
+        timeout_ms: int = 120000,
+    ):
+        return NBs.mount_google_drive(
+            project_root, project_name, mountpoint, force_remount, timeout_ms
+        )
 
+    @staticmethod
+    def clear_output(wait=False):
+        return NBs.clear_output(wait)
+
+    @staticmethod
+    def display(
+        *objs,
+        include=None,
+        exclude=None,
+        metadata=None,
+        transient=None,
+        display_id=None,
+        **kwargs,
+    ):
+        return NBs.display(
+            *objs,
+            include=include,
+            exclude=exclude,
+            metadata=metadata,
+            transient=transient,
+            display_id=display_id,
+            **kwargs,
+        )
+
+    @staticmethod
+    def display_image(
+        data=None,
+        url=None,
+        filename=None,
+        format=None,
+        embed=None,
+        width=None,
+        height=None,
+        retina=False,
+        unconfined=False,
+        metadata=None,
+        **kwargs,
+    ):
+        return NBs.display_image(
+            data=data,
+            url=url,
+            filename=filename,
+            format=format,
+            embed=embed,
+            width=width,
+            height=height,
+            retina=retina,
+            unconfined=unconfined,
+            metadata=metadata,
+            **kwargs,
+        )
+
+    @staticmethod
+    def get_display():
+        return NBs.get_display()
+
+    @staticmethod
+    def hide_code_in_slideshow():
+        return NBs.hide_code_in_slideshow()
+
+    @staticmethod
+    def cprint(str_color_tuples, **kwargs):
+        return NBs.cprint(str_color_tuples)
+
+    @staticmethod
+    def create_dropdown(
+        options,
+        value,
+        description,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_dropdown(
+            options,
+            value,
+            description,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_textarea(
+        value,
+        description,
+        placeholder="",
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_textarea(
+            value,
+            description,
+            placeholder,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_button(
+        description,
+        button_style="",
+        icon="check",
+        layout=None,
+        **kwargs,
+    ):
+        return NBs.create_button(description, button_style, icon, layout, **kwargs)
+
+    @staticmethod
+    def create_radiobutton(
+        options,
+        description,
+        value=None,
+        disabled=False,
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_radiobutton(
+            options,
+            description,
+            value,
+            disabled,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    @staticmethod
+    def create_image(
+        filename=None,
+        format=None,
+        width=None,
+        height=None,
+        **kwargs,
+    ):
+        return NBs.create_image(filename, format, width, height, **kwargs)
+
+    @staticmethod
+    def create_floatslider(
+        min=0.0,
+        max=1.0,
+        step=0.1,
+        value=None,
+        description="",
+        disabled=False,
+        continuous_update=False,
+        orientation="horizontal",
+        readout=True,
+        readout_format=".1f",
+        style=None,
+        layout=None,
+        **kwargs,
+    ):
+        if style is None:
+            style = {"description_width": "initial"}
+        return NBs.create_floatslider(
+            min,
+            max,
+            step,
+            value,
+            description,
+            disabled,
+            continuous_update,
+            orientation,
+            readout,
+            readout_format,
+            style,
+            layout,
+            **kwargs,
+        )
+
+    ###############################
+    # Envs functions
+    ###############################
+    @staticmethod
+    def expand_posix_vars(posix_expr: str, context: dict = None) -> str:  # type: ignore
+        """
+        Expand POSIX variables in a string.
+
+        Args:
+            posix_expr (str): The string containing POSIX variables to be expanded.
+            context (dict, optional): A dictionary containing additional variables to be used in the expansion.
+                Defaults to None.
+
+        Returns:
+            str: The expanded string.
+
+        Examples:
+            >>> expand_posix_vars("$HOME")
+            '/home/user'
+            >>> expand_posix_vars("$HOME/$USER", {"USER": "testuser"})
+            '/home/user/testuser'
+
+        """
+        return Envs.expand_posix_vars(posix_expr, context=context)
+
+    @staticmethod
+    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
+        """Get the value of an environment variable or return the default value"""
+        return Envs.get_osenv(key, default=default)
+
+    @staticmethod
+    def set_osenv(key, value):
+        return Envs.set_osenv(key, value)
+
+    @staticmethod
+    def load_dotenv(
+        override: bool = False,
+        dotenv_dir: str = "",
+        dotenv_filename: str = ".env",
+        verbose: bool = False,
+    ) -> None:
+        Envs.load_dotenv(
+            override=override,
+            dotenv_filename=dotenv_filename,
+            dotenv_dir=dotenv_dir,
+            verbose=verbose,
+        )
+
+    ###############################
+    # Packages functions
+    ###############################
     @staticmethod
     def ensure_import_module(
         name: str,
@@ -542,10 +913,209 @@ class HyFI:
         specname: str = "",
         syspath: str = "",
     ):
-        from hyfi.utils.lib import ensure_import_module
+        return Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
 
-        return ensure_import_module(name, libpath, liburi, specname, syspath)
+    @staticmethod
+    def pip(
+        name: str,
+        upgrade: bool = False,
+        prelease: bool = False,
+        editable: bool = False,
+        quiet: bool = True,
+        find_links: str = "",
+        requirement: bool = False,
+        force_reinstall: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        return Packages.pip(
+            name,
+            upgrade,
+            prelease,
+            editable,
+            quiet,
+            find_links,
+            requirement,
+            force_reinstall,
+            verbose,
+            **kwargs,
+        )
 
+    @staticmethod
+    def pipu(
+        prelease=False,
+        quiet=False,
+        force_reinstall=False,
+        **kwargs,
+    ):
+        return Packages.pip(
+            name="hyfi",
+            upgrade=True,
+            prelease=prelease,
+            quiet=quiet,
+            force_reinstall=force_reinstall,
+            **kwargs,
+        )
+
+    ###############################
+    # Files functions
+    ###############################
+    @staticmethod
+    def exists(a, *p):
+        return IOLibs.exists(a, *p)
+
+    @staticmethod
+    def is_file(a, *p):
+        return IOLibs.is_file(a, *p)
+
+    @staticmethod
+    def is_dir(a, *p):
+        return IOLibs.is_dir(a, *p)
+
+    @staticmethod
+    def mkdir(_path: str):
+        return IOLibs.mkdir(_path)
+
+    @staticmethod
+    def join_path(a, *p):
+        return IOLibs.join_path(a, *p)
+
+    @staticmethod
+    def get_filepaths(
+        filename_patterns: Union[str, PosixPath, WindowsPath],
+        base_dir: Union[str, PosixPath, WindowsPath] = "",
+        recursive: bool = True,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        return IOLibs.get_filepaths(
+            filename_patterns,
+            base_dir=base_dir,
+            recursive=recursive,
+            verbose=verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def read(uri, mode="rb", encoding=None, head=None, **kwargs):
+        return IOLibs.read(uri, mode, encoding, head, **kwargs)
+
+    @staticmethod
+    def copy(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copy.
+        If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
+
+        Args:
+                src: Path to the file or directory to be copied.
+                dst: Path to the destination directory. If the destination directory does not exist it will be created.
+                follow_symlinks: Whether or not symlinks should be followed
+        """
+        IOLibs.copy(src, dst, follow_symlinks=follow_symlinks)
+
+    @staticmethod
+    def copyfile(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copyfile.
+        If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
+
+        Args:
+                src: Path to the file or directory to copy.
+                dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
+                follow_symlinks: Whether to follow symbolic links or not
+        """
+        IOLibs.copyfile(src, dst, follow_symlinks=follow_symlinks)
+
+    @staticmethod
+    def cached_path(
+        url_or_filename: str,
+        extract_archive: bool = False,
+        force_extract: bool = False,
+        return_parent_dir: bool = False,
+        cache_dir: str = "",
+        verbose: bool = False,
+    ):
+        """
+        Attempts to cache a file or URL and return the path to the cached file.
+        If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
+
+        Args:
+            url_or_filename (str): The URL or filename to be cached.
+            extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
+            force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
+            return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
+            cache_dir (str, optional): Directory to store cached files. Defaults to None.
+            verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
+
+        Raises:
+            ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
+
+        Returns:
+            str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
+        """
+        return IOLibs.cached_path(
+            url_or_filename,
+            extract_archive=extract_archive,
+            force_extract=force_extract,
+            return_parent_dir=return_parent_dir,
+            cache_dir=cache_dir,
+            verbose=verbose,
+        )
+
+    ###############################
+    # Utility functions
+    ###############################
+    @staticmethod
+    def to_dateparm(_date, _format="%Y-%m-%d"):
+        return Funcs.to_dateparm(_date, _format)
+
+    @staticmethod
+    def dict_product(dicts):
+        return Funcs.dict_product(dicts)
+
+    ###############################
+    # GPU Utility functions
+    ###############################
+    @staticmethod
+    def nvidia_smi():
+        return nvidia_smi()
+
+    @staticmethod
+    def set_cuda(device=0):
+        return set_cuda(device)
+
+    @staticmethod
+    def gpu_usage(all=False, attrList=None, useOldCode=False):
+        """
+        Show GPU utilization in human readable format. This is a wrapper around the GPUtil library.
+
+        Args:
+                all: If True show all available GPUs ( default : False )
+                attrList: List of attributes to show ( default : None )
+                useOldCode: If True use old code instead of new code ( default : False )
+
+        Returns:
+                A string with the
+        """
+        try:
+            from GPUtil import showUtilization  # type: ignore
+        except ImportError:
+            logger.error("GPUtil is not installed. To install, run: pip install GPUtil")
+            return
+
+        return showUtilization(all, attrList, useOldCode)
+
+    ###############################
+    # Graphics functions
+    ###############################
     @staticmethod
     def collage(
         images_or_uris,
@@ -615,313 +1185,10 @@ class HyFI:
         )
 
     @staticmethod
-    def to_datetime(data, _format=None, _columns=None, **kwargs):
-        return to_datetime(data, _format, _columns, **kwargs)
-
-    @staticmethod
-    def to_numeric(data, _columns=None, errors="coerce", downcast=None, **kwargs):
-        return to_numeric(data, _columns, errors, downcast, **kwargs)
-
-    @staticmethod
-    def getLogger(
-        name=None,
-        log_level=None,
-    ):
-        return getLogger(name, log_level)
-
-    @staticmethod
-    def setLogger(level=None, force=True, **kwargs):
-        return setLogger(level, force, **kwargs)
-
-    @staticmethod
-    def set_cuda(device=0):
-        return set_cuda(device)
-
-    @staticmethod
-    def mount_google_drive(
-        project_root: str = "",
-        project_name: str = "",
-        mountpoint: str = "/content/drive",
-        force_remount: bool = False,
-        timeout_ms: int = 120000,
-    ):
-        return mount_google_drive(
-            project_root, project_name, mountpoint, force_remount, timeout_ms
-        )
-
-    @staticmethod
-    def getsource(obj):
-        return XC.getsource(obj)
-
-    @staticmethod
-    def viewsource(obj):
-        return XC.viewsource(obj)
-
-    @staticmethod
-    def clear_output(wait=False):
-        return clear_output(wait)
-
-    @staticmethod
-    def display(
-        *objs,
-        include=None,
-        exclude=None,
-        metadata=None,
-        transient=None,
-        display_id=None,
-        **kwargs,
-    ):
-        return display(
-            *objs,
-            include=include,
-            exclude=exclude,
-            metadata=metadata,
-            transient=transient,
-            display_id=display_id,
-            **kwargs,
-        )
-
-    @staticmethod
-    def display_image(
-        data=None,
-        url=None,
-        filename=None,
-        format=None,
-        embed=None,
-        width=None,
-        height=None,
-        retina=False,
-        unconfined=False,
-        metadata=None,
-        **kwargs,
-    ):
-        return display_image(
-            data=data,
-            url=url,
-            filename=filename,
-            format=format,
-            embed=embed,
-            width=width,
-            height=height,
-            retina=retina,
-            unconfined=unconfined,
-            metadata=metadata,
-            **kwargs,
-        )
-
-    @staticmethod
-    def pip(
-        name: str,
-        upgrade: bool = False,
-        prelease: bool = False,
-        editable: bool = False,
-        quiet: bool = True,
-        find_links: str = "",
-        requirement: bool = False,
-        force_reinstall: bool = False,
-        verbose: bool = False,
-        **kwargs,
-    ):
-        from hyfi.utils.lib import pip as _pip
-
-        return _pip(
-            name,
-            upgrade,
-            prelease,
-            editable,
-            quiet,
-            find_links,
-            requirement,
-            force_reinstall,
-            verbose,
-            **kwargs,
-        )
-
-    @staticmethod
-    def upgrade(
-        prelease=False,
-        quiet=False,
-        force_reinstall=False,
-        **kwargs,
-    ):
-        from hyfi.utils.lib import pip
-
-        return pip(
-            name="hyfi",
-            upgrade=True,
-            prelease=prelease,
-            quiet=quiet,
-            force_reinstall=force_reinstall,
-            **kwargs,
-        )
-
-    @staticmethod
-    def dict_product(dicts):
-        return dict_product(dicts)
-
-    @staticmethod
-    def get_display():
-        return get_display()
-
-    @staticmethod
-    def hide_code_in_slideshow():
-        return hide_code_in_slideshow()
-
-    @staticmethod
-    def cprint(str_color_tuples, **kwargs):
-        return cprint(str_color_tuples)
-
-    @staticmethod
-    def dict_to_dataframe(
-        data,
-        orient="columns",
-        dtype=None,
-        columns=None,
-    ):
-        return dict_to_dataframe(data, orient, dtype, columns)
-
-    @staticmethod
-    def records_to_dataframe(
-        data,
-        index=None,
-        exclude=None,
-        columns=None,
-        coerce_float=False,
-        nrows=None,
-    ):
-        return records_to_dataframe(data, index, exclude, columns, coerce_float, nrows)
-
-    @staticmethod
-    def create_dropdown(
-        options,
-        value,
-        description,
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_dropdown(
-            options,
-            value,
-            description,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_textarea(
-        value,
-        description,
-        placeholder="",
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_textarea(
-            value,
-            description,
-            placeholder,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_button(
-        description,
-        button_style="",
-        icon="check",
-        layout=None,
-        **kwargs,
-    ):
-        return create_button(description, button_style, icon, layout, **kwargs)
-
-    @staticmethod
-    def create_radiobutton(
-        options,
-        description,
-        value=None,
-        disabled=False,
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_radiobutton(
-            options,
-            description,
-            value,
-            disabled,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
-    def create_image(
-        filename=None,
-        format=None,
-        width=None,
-        height=None,
-        **kwargs,
-    ):
-        return create_image(filename, format, width, height, **kwargs)
-
-    @staticmethod
-    def create_floatslider(
-        min=0.0,
-        max=1.0,
-        step=0.1,
-        value=None,
-        description="",
-        disabled=False,
-        continuous_update=False,
-        orientation="horizontal",
-        readout=True,
-        readout_format=".1f",
-        style=None,
-        layout=None,
-        **kwargs,
-    ):
-        if style is None:
-            style = {"description_width": "initial"}
-        return create_floatslider(
-            min,
-            max,
-            step,
-            value,
-            description,
-            disabled,
-            continuous_update,
-            orientation,
-            readout,
-            readout_format,
-            style,
-            layout,
-            **kwargs,
-        )
-
-    @staticmethod
     def get_image_font(fontname: str = "", fontsize: int = 12):
         from hyfi.graphics.utils import get_image_font
 
         return get_image_font(fontname, fontsize)
-
-    @staticmethod
-    def read(uri, mode="rb", encoding=None, head=None, **kwargs):
-        from hyfi.utils.file import read as _read
-
-        return _read(uri, mode, encoding, head, **kwargs)
 
     @staticmethod
     def load_image(
@@ -950,59 +1217,6 @@ class HyFI:
         )
 
     @staticmethod
-    def init_workspace(
-        project_name: str = "",
-        task_name: str = "",
-        project_description: str = "",
-        project_root: str = "",
-        project_workspace_name: str = "",
-        global_hyfi_root: str = "",
-        global_workspace_name: str = "",
-        num_workers: int = -1,
-        log_level: str = "",
-        autotime: bool = True,
-        retina: bool = True,
-        verbose: Union[bool, int] = False,
-        **kwargs,
-    ) -> ProjectConfig:
-        """
-        Initialize and start hyfi.
-
-        Args:
-                project_name: Name of the project to use.
-                task_name: Name of the task to use.
-                project_description: Description of the project that will be used.
-                project_root: Root directory of the project.
-                project_workspace_name: Name of the project's workspace directory.
-                global_hyfi_root: Root directory of the global hyfi.
-                global_workspace_name: Name of the global hierachical workspace directory.
-                num_workers: Number of workers to run.
-                log_level: Log level for the log.
-                autotime: Whether to automatically set time and / or keep track of run times.
-                retina: Whether to use retina or not.
-                verbose: Enables or disables logging
-        """
-        __global_config__.init_workspace(
-            project_name=project_name,
-            task_name=task_name,
-            project_description=project_description,
-            project_root=project_root,
-            project_workspace_name=project_workspace_name,
-            global_hyfi_root=global_hyfi_root,
-            global_workspace_name=global_workspace_name,
-            num_workers=num_workers,
-            log_level=log_level,
-            autotime=autotime,
-            retina=retina,
-            verbose=verbose,
-            **kwargs,
-        )
-        if __global_config__.project:
-            return __global_config__.project
-        else:
-            raise ValueError("Project not initialized.")
-
-    @staticmethod
     def scale_image(
         image,
         max_width: int = 0,
@@ -1029,61 +1243,3 @@ class HyFI:
             resize_to_multiple_of,
             resample,
         )
-
-    @staticmethod
-    def copy(src, dst, *, follow_symlinks=True):
-        """
-        Copy a file or directory. This is a wrapper around shutil.copy.
-        If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
-
-        Args:
-                src: Path to the file or directory to be copied.
-                dst: Path to the destination directory. If the destination directory does not exist it will be created.
-                follow_symlinks: Whether or not symlinks should be followed
-        """
-        import shutil
-
-        src = str(src)
-        dst = str(dst)
-        mkdir(dst)
-        shutil.copy(src, dst, follow_symlinks=follow_symlinks)
-        logger.info(f"copied {src} to {dst}")
-
-    @staticmethod
-    def copyfile(src, dst, *, follow_symlinks=True):
-        """
-        Copy a file or directory. This is a wrapper around shutil.copyfile.
-        If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
-
-        Args:
-                src: Path to the file or directory to copy.
-                dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
-                follow_symlinks: Whether to follow symbolic links or not
-        """
-        import shutil
-
-        src = str(src)
-        dst = str(dst)
-        shutil.copyfile(src, dst, follow_symlinks=follow_symlinks)
-        logger.info(f"copied {src} to {dst}")
-
-    @staticmethod
-    def gpu_usage(all=False, attrList=None, useOldCode=False):
-        """
-        Show GPU utilization in human readable format. This is a wrapper around the GPUtil library.
-
-        Args:
-                all: If True show all available GPUs ( default : False )
-                attrList: List of attributes to show ( default : None )
-                useOldCode: If True use old code instead of new code ( default : False )
-
-        Returns:
-                A string with the
-        """
-        try:
-            from GPUtil import showUtilization  # type: ignore
-        except ImportError:
-            logger.error("GPUtil is not installed. To install, run: pip install GPUtil")
-            return
-
-        return showUtilization(all, attrList, useOldCode)

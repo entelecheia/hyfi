@@ -1,5 +1,5 @@
 from hyfi.path import PathConfig
-from hyfi.utils.env import expand_posix_vars
+from hyfi.utils.envs import Envs
 from pathlib import Path
 from pprint import pprint
 
@@ -7,13 +7,13 @@ from pprint import pprint
 def test_path_config():
     config = PathConfig(
         project_root="tmp",
-        global_hyfi_root=expand_posix_vars("$HOME/.hyfi"),
+        global_hyfi_root=Envs.expand_posix_vars("$HOME/.hyfi"),
         project_workspace_name="testspace",
     )
     pprint(config.dict())
     # Test that the default values are set correctly
     assert config.config_name == "__init__"
-    assert config.home == expand_posix_vars("$HOME")
+    assert config.home == Envs.expand_posix_vars("$HOME")
     assert Path(config.project_root).absolute() == (Path.cwd() / "tmp").absolute()
     assert (
         Path(config.project_workspace_root).absolute()

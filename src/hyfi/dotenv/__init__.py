@@ -4,10 +4,10 @@ from typing import Optional, Tuple, Union
 from pydantic import BaseSettings, SecretStr, root_validator
 from pydantic.env_settings import SettingsSourceCallable
 
-from hyfi.utils.env import load_dotenv
-from hyfi.utils.logging import getLogger
+from hyfi.utils.envs import Envs
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class DotEnvConfig(BaseSettings):
@@ -68,7 +68,7 @@ class DotEnvConfig(BaseSettings):
             env_settings: SettingsSourceCallable,
             file_secret_settings: SettingsSourceCallable,
         ) -> Tuple[SettingsSourceCallable, ...]:
-            load_dotenv()
+            Envs.load_dotenv()
             return env_settings, file_secret_settings, init_settings
 
     @root_validator()

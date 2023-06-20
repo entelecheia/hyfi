@@ -88,7 +88,7 @@ class Meta:
                 data["cached_path"] = path[:-5]
             if "size" not in data:
                 data["size"] = cls.get_resource_size(data["cached_path"])
-        return cls(**data)
+        return cls(**config_kwargs)
 
     @staticmethod
     def get_resource_size(path: PathOrStr) -> int:

@@ -7,9 +7,9 @@ from hyfi.__global__.config import HyfiConfig
 from hyfi._version import __version__
 from hyfi.copier import Copier
 from hyfi.main import _about
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 @click.group()

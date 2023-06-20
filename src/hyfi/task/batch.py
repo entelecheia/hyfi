@@ -5,9 +5,9 @@ from omegaconf import DictConfig
 from hyfi.batch import BatchConfig
 from hyfi.hydra.main import XC
 from hyfi.task import TaskConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
@@ -44,8 +44,8 @@ class BatchTaskConfig(TaskConfig):
     def set_batch_num(self, val):
         self.batch.batch_num = val
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         if "batch" in self.__dict__ and self.__dict__["batch"]:
             self.batch = BatchConfig.parse_obj(self.__dict__["batch"])
         logger.info(
@@ -133,7 +133,7 @@ class BatchTaskConfig(TaskConfig):
         self,
         batch_name: str = "",
         batch_num: int = -1,
-        **data,
+        **config_kwargs,
     ):
         """Load the config from the batch config file"""
         if self.verbose:
@@ -160,8 +160,8 @@ class BatchTaskConfig(TaskConfig):
                 logger.info("No config file found at %s", _path)
                 batch_num = -1
         if self.verbose:
-            logger.info("Merging config with args: %s", data)
-        cfg = XC.to_dict(XC.merge(cfg, data))
+            logger.info("Merging config with args: %s", config_kwargs)
+        cfg = XC.to_dict(XC.merge(cfg, config_kwargs))
 
         self.initialize_configs(**cfg)
 

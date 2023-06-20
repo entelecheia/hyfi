@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from hyfi.hydra import BaseConfig
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class TaskPathConfig(BaseConfig):
@@ -22,8 +22,8 @@ class TaskPathConfig(BaseConfig):
     class Config:
         extra = "ignore"
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
 
     @property
     def root_dir(self) -> Path:

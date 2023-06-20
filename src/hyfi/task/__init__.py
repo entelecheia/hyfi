@@ -5,10 +5,10 @@ from hyfi.hydra import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
-from hyfi.utils.lib import ensure_import_module
-from hyfi.utils.logging import getLogger
+from hyfi.utils.logging import Logging
+from hyfi.utils.packages import Packages
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class TaskConfig(BaseConfig):
@@ -53,8 +53,8 @@ class TaskConfig(BaseConfig):
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
 
-    def initialize_configs(self, **data):
-        super().initialize_configs(**data)
+    def initialize_configs(self, **config_kwargs):
+        super().initialize_configs(**config_kwargs)
         if "module" in self.__dict__:
             self.module = ModuleConfig.parse_obj(self.__dict__["module"])
         if "path" in self.__dict__:
@@ -124,7 +124,7 @@ class TaskConfig(BaseConfig):
             syspath = module.get("syspath")
             if syspath is not None:
                 syspath = library_dir / syspath
-            ensure_import_module(name, libpath, liburi, specname, syspath)
+            Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
 
     def reset(self, objects=None, release_gpu_memory=True):
         """Reset the memory cache"""
@@ -132,6 +132,6 @@ class TaskConfig(BaseConfig):
             for obj in objects:
                 del obj
         if release_gpu_memory:
-            from hyfi.utils.gpu import GPUMon
+            from hyfi.utils.gpumon import GPUMon
 
             GPUMon.release_gpu_memory()

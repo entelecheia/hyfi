@@ -4,10 +4,10 @@ from typing import Any
 from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
-from hyfi.hydra import BaseConfig, Composer
-from hyfi.utils.logging import getLogger
+from hyfi.hydra import BaseConfig
+from hyfi.utils.logging import Logging
 
-logger = getLogger(__name__)
+logger = Logging.getLogger(__name__)
 
 
 class PathConfig(BaseConfig):
@@ -48,9 +48,9 @@ class PathConfig(BaseConfig):
         extra = "allow"
         arbitrary_types_allowed = True
 
-    def initialize_configs(self, **data):
+    def initialize_configs(self, **config_kwargs):
         # Initialize the config with the given config_name.
-        super().initialize_configs(**data)
+        super().initialize_configs(**config_kwargs)
 
     @property
     def log_dir(self):

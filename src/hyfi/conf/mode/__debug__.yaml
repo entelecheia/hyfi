@@ -6,9 +6,9 @@ debug_mode: true
 print_config: true
 verbose: true
 ignore_warnings: false
-logging_level: ${oc.env:HYFI_LOG_LEVEL,DEBUG}
+logging_level: DEBUG
 hydra:
   verbose: false
   job_logging:
     root:
-      level: DEBUG
+      level: ${logging_level}

@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-from hyfi.utils.env import set_osenv
+from hyfi.utils.envs import Envs
 from hyfi.utils.file import read
 
 logger = logging.getLogger(__name__)
@@ -414,10 +414,10 @@ class NBs:
                     os.path.sep
                 ) and not project_root.startswith(".."):
                     project_root = os.path.join(mountpoint, project_root)
-                set_osenv("HYFI_PROJECT_ROOT", project_root)
+                Envs.set_osenv("HYFI_PROJECT_ROOT", project_root)
                 logger.info(f"Setting HYFI_PROJECT_ROOT to {project_root}")
             if project_name:
-                set_osenv("HYFI_PROJECT_NAME", project_name)
+                Envs.set_osenv("HYFI_PROJECT_NAME", project_name)
                 logger.info(f"Setting HYFI_PROJECT_NAME to {project_name}")
         except ImportError:
             logger.warning("Google Colab not detected.")

@@ -15,7 +15,7 @@ from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.env import check_and_set_osenv, expand_posix_vars
 from hyfi.utils.logging import getLogger, setLogger
-from hyfi.utils.notebook import load_extentions, set_matplotlib_formats
+from hyfi.utils.notebooks import NBs
 
 logger = getLogger(__name__)
 
@@ -192,10 +192,10 @@ class HyfiConfig(BaseModel):
             logger.setLevel(log_level)
         # Load the extentions for the autotime extension.
         if autotime:
-            load_extentions(exts=["autotime"])
+            NBs.load_extentions(exts=["autotime"])
         # Set the retina matplotlib formats.
         if retina:
-            set_matplotlib_formats("retina")
+            NBs.set_matplotlib_formats("retina")
         self.initialize()
 
     def initialize(self, config: Union[DictConfig, Dict, None] = None):

@@ -4,6 +4,12 @@ from hyfi._version import __version__
 from pprint import pprint
 
 
+def test_about():
+    print(HyFI.about())
+    HyFI.print(HyFI.config.dict())
+    assert HyFI.config.__version__ == __version__
+
+
 def test_version():
     assert HyFI.__version__ == __version__
 
@@ -37,6 +43,7 @@ def test_compose():
 
 
 if __name__ == "__main__":
+    test_about()
     test_version()
     test_envs()
     test_init_workspace()

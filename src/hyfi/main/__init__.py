@@ -32,6 +32,7 @@ from hyfi.utils.envs import Envs
 from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import dict_product, to_dateparm
 from hyfi.utils.gpu import nvidia_smi, set_cuda
+from hyfi.utils.libs import Libs
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebooks import NBs
 
@@ -393,18 +394,6 @@ class HyFI:
         return nvidia_smi()
 
     @staticmethod
-    def ensure_import_module(
-        name: str,
-        libpath: str,
-        liburi: str,
-        specname: str = "",
-        syspath: str = "",
-    ):
-        from hyfi.utils.lib import ensure_import_module
-
-        return ensure_import_module(name, libpath, liburi, specname, syspath)
-
-    @staticmethod
     def collage(
         images_or_uris,
         collage_filepath=None,
@@ -494,52 +483,6 @@ class HyFI:
     @staticmethod
     def viewsource(obj):
         return XC.viewsource(obj)
-
-    @staticmethod
-    def pip(
-        name: str,
-        upgrade: bool = False,
-        prelease: bool = False,
-        editable: bool = False,
-        quiet: bool = True,
-        find_links: str = "",
-        requirement: bool = False,
-        force_reinstall: bool = False,
-        verbose: bool = False,
-        **kwargs,
-    ):
-        from hyfi.utils.lib import pip as _pip
-
-        return _pip(
-            name,
-            upgrade,
-            prelease,
-            editable,
-            quiet,
-            find_links,
-            requirement,
-            force_reinstall,
-            verbose,
-            **kwargs,
-        )
-
-    @staticmethod
-    def upgrade(
-        prelease=False,
-        quiet=False,
-        force_reinstall=False,
-        **kwargs,
-    ):
-        from hyfi.utils.lib import pip
-
-        return pip(
-            name="hyfi",
-            upgrade=True,
-            prelease=prelease,
-            quiet=quiet,
-            force_reinstall=force_reinstall,
-            **kwargs,
-        )
 
     @staticmethod
     def dict_product(dicts):
@@ -1306,4 +1249,59 @@ class HyFI:
             dotenv_filename=dotenv_filename,
             dotenv_dir=dotenv_dir,
             verbose=verbose,
+        )
+
+    ###############################
+    # Libs functions
+    ###############################
+    @staticmethod
+    def ensure_import_module(
+        name: str,
+        libpath: str,
+        liburi: str,
+        specname: str = "",
+        syspath: str = "",
+    ):
+        return Libs.ensure_import_module(name, libpath, liburi, specname, syspath)
+
+    @staticmethod
+    def pip(
+        name: str,
+        upgrade: bool = False,
+        prelease: bool = False,
+        editable: bool = False,
+        quiet: bool = True,
+        find_links: str = "",
+        requirement: bool = False,
+        force_reinstall: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        return Libs.pip(
+            name,
+            upgrade,
+            prelease,
+            editable,
+            quiet,
+            find_links,
+            requirement,
+            force_reinstall,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def pipu(
+        prelease=False,
+        quiet=False,
+        force_reinstall=False,
+        **kwargs,
+    ):
+        return Libs.pip(
+            name="hyfi",
+            upgrade=True,
+            prelease=prelease,
+            quiet=quiet,
+            force_reinstall=force_reinstall,
+            **kwargs,
         )

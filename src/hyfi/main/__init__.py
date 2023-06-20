@@ -7,16 +7,7 @@ from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import pandas as pd
-from datasets import Dataset
-from datasets.dataset_dict import DatasetDict, IterableDatasetDict
-from datasets.download.download_config import DownloadConfig
-from datasets.download.download_manager import DownloadMode
-from datasets.features import Features
-from datasets.iterable_dataset import IterableDataset
 from datasets.splits import Split
-from datasets.tasks import TaskTemplate
-from datasets.utils.info_utils import VerificationMode
-from datasets.utils.version import Version
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
@@ -589,52 +580,16 @@ class HyFI:
         ] = None,
         split: Optional[Union[str, Split]] = None,
         cache_dir: Optional[str] = None,
-        features: Optional[Features] = None,
-        download_config: Optional[DownloadConfig] = None,
-        download_mode: Optional[Union[DownloadMode, str]] = None,
-        verification_mode: Optional[Union[VerificationMode, str]] = None,
         ignore_verifications="deprecated",
         keep_in_memory: Optional[bool] = None,
         save_infos: bool = False,
-        revision: Optional[Union[str, Version]] = None,
         use_auth_token: Optional[Union[bool, str]] = None,
-        task: Optional[Union[str, TaskTemplate]] = None,
         streaming: bool = False,
         num_proc: Optional[int] = None,
         storage_options: Optional[Dict] = None,
         **config_kwargs,
-    ) -> Union[DatasetDict, Dataset, IterableDatasetDict, IterableDataset]:
+    ) -> Any:
         """Load a dataset from the Hugging Face Hub, or a local dataset.
-
-        You can find the list of datasets on the [Hub](https://huggingface.co/datasets) or with [`datasets.list_datasets`].
-
-        A dataset is a directory that contains:
-
-        - some data files in generic formats (JSON, CSV, Parquet, text, etc.).
-        - and optionally a dataset script, if it requires some code to read the data files. This is used to load any kind of formats or structures.
-
-        Note that dataset scripts can also download and read data files from anywhere - in case your data files already exist online.
-
-        This function does the following under the hood:
-
-            1. Download and import in the library the dataset script from `path` if it's not already cached inside the library.
-
-                If the dataset has no dataset script, then a generic dataset script is imported instead (JSON, CSV, Parquet, text, etc.)
-
-                Dataset scripts are small python scripts that define dataset builders. They define the citation, info and format of the dataset,
-                contain the path or URL to the original data files and the code to load examples from the original data files.
-
-                You can find the complete list of datasets in the Datasets [Hub](https://huggingface.co/datasets).
-
-            2. Run the dataset script which will:
-
-                * Download the dataset file from the original URL (see the script) if it's not already available locally or cached.
-                * Process and cache the dataset in typed Arrow tables for caching.
-
-                    Arrow table are arbitrarily long, typed tables which can store nested objects and be mapped to numpy/pandas/python generic types.
-                    They can be directly accessed from disk, loaded in RAM or even streamed over the web.
-
-            3. Return a dataset built from the requested splits in `split` (default: all).
 
         It also allows to load a dataset from a local directory or a dataset repository on the Hugging Face Hub without dataset script.
         In this case, it automatically loads all the data files from the directory or the dataset repository.
@@ -677,25 +632,6 @@ class HyFI:
                 Splits can be combined and specified like in tensorflow-datasets.
             cache_dir (`str`, *optional*):
                 Directory to read/write data. Defaults to `"~/.cache/huggingface/datasets"`.
-            features (`Features`, *optional*):
-                Set the features type to use for this dataset.
-            download_config ([`DownloadConfig`], *optional*):
-                Specific download configuration parameters.
-            download_mode ([`DownloadMode`] or `str`, defaults to `REUSE_DATASET_IF_EXISTS`):
-                Download/generate mode.
-            verification_mode ([`VerificationMode`] or `str`, defaults to `BASIC_CHECKS`):
-                Verification mode determining the checks to run on the downloaded/processed dataset information (checksums/size/splits/...).
-
-                <Added version="2.9.1"/>
-            ignore_verifications (`bool`, defaults to `False`):
-                Ignore the verifications of the downloaded/processed dataset information (checksums/size/splits/...).
-
-                <Deprecated version="2.9.1">
-
-                `ignore_verifications` was deprecated in version 2.9.1 and will be removed in 3.0.0.
-                Please use `verification_mode` instead.
-
-                </Deprecated>
             keep_in_memory (`bool`, defaults to `None`):
                 Whether to copy the dataset in-memory. If `None`, the dataset
                 will not be copied in-memory unless explicitly enabled by setting `datasets.config.IN_MEMORY_MAX_SIZE` to
@@ -709,8 +645,6 @@ class HyFI:
             use_auth_token (`str` or `bool`, *optional*):
                 Optional string or boolean to use as Bearer token for remote files on the Datasets Hub.
                 If `True`, or not specified, will get token from `"~/.huggingface"`.
-            task (`str`):
-                The task to prepare the dataset for during training and evaluation. Casts the dataset's [`Features`] to standardized column names and types as detailed in `datasets.tasks`.
             streaming (`bool`, defaults to `False`):
                 If set to `True`, don't download the data files. Instead, it streams the data progressively while
                 iterating on the dataset. An [`IterableDataset`] or [`IterableDatasetDict`] is returned instead in this case.
@@ -791,16 +725,10 @@ class HyFI:
             data_files=data_files,
             split=split,
             cache_dir=cache_dir,
-            features=features,
-            download_config=download_config,
-            download_mode=download_mode,
-            verification_mode=verification_mode,
             ignore_verifications=ignore_verifications,
             keep_in_memory=keep_in_memory,
             save_infos=save_infos,
-            revision=revision,
             use_auth_token=use_auth_token,
-            task=task,
             streaming=streaming,
             num_proc=num_proc,
             storage_options=storage_options,
@@ -1142,7 +1070,7 @@ class HyFI:
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
-        return Envs.et_osenv(key, default=default)
+        return Envs.get_osenv(key, default=default)
 
     @staticmethod
     def set_osenv(key, value):

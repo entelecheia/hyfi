@@ -10,11 +10,11 @@ logger = getLogger(__name__)
 
 
 def cached_path(
-    url_or_filename,
+    url_or_filename: str,
     extract_archive: bool = False,
     force_extract: bool = False,
     return_parent_dir: bool = False,
-    cache_dir=None,
+    cache_dir: str = "",
     verbose: bool = False,
 ):
     """
@@ -58,10 +58,10 @@ def cached_path(
                     "Please install them using 'pip install cached-path' and try again."
                 )
 
-            if cache_dir is None:
-                cache_dir = Path.home() / ".hyfi" / ".cache" / "cached_path"
+            if cache_dir:
+                cache_dir = str(Path(cache_dir) / "cached_path")
             else:
-                cache_dir = Path(cache_dir) / "cached_path"
+                cache_dir = str(Path.home() / ".hyfi" / ".cache" / "cached_path")
 
             _path = _cpath.cached_path(
                 url_or_filename,
@@ -87,7 +87,11 @@ def cached_path(
 
 
 def cached_gdown(
-    url, verbose=False, extract_archive=None, force_extract=False, cache_dir=None
+    url: str,
+    verbose: bool = False,
+    extract_archive: bool = False,
+    force_extract: bool = False,
+    cache_dir: str = "",
 ):
     """
     :type url: str
@@ -106,11 +110,11 @@ def cached_gdown(
 
     if verbose:
         logger.info(f"Downloading {url}...")
-    if cache_dir is None:
-        cache_dir = Path.home() / ".hyfi" / ".cache" / "gdown"
+    if cache_dir:
+        cache_dir_ = Path(cache_dir) / "gdown"
     else:
-        cache_dir = Path(cache_dir) / "gdown"
-    cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_dir_ = Path.home() / ".hyfi" / ".cache" / "gdown"
+    cache_dir_.mkdir(parents=True, exist_ok=True)
 
     gd_prefix = "gd://"
     if url.startswith(gd_prefix):
@@ -130,7 +134,7 @@ def cached_gdown(
             extraction_path = path[:exclamation_index]
             fname = path[exclamation_index + 1 :]
 
-        cache_path = cache_dir / f".{id_}" / extraction_path
+        cache_path = cache_dir_ / f".{id_}" / extraction_path
         cache_path.parent.mkdir(parents=True, exist_ok=True)
 
         cache_path = gdown.cached_download(
@@ -154,22 +158,26 @@ def cached_gdown(
         return None
 
 
-def extractall(path, to=None, force_extract=False):
+def extractall(
+    path: str,
+    dest: str = "",
+    force_extract: bool = False,
+):
     """Extract archive file.
 
     Parameters
     ----------
     path: str
         Path of archive file to be extracted.
-    to: str, optional
+    dest: str, optional
         Directory to which the archive file will be extracted.
         If None, it will be set to the parent directory of the archive file.
     """
     import tarfile
     from zipfile import ZipFile
 
-    if to is None:
-        to = os.path.dirname(path)
+    if dest is None:
+        dest = os.path.dirname(path)
 
     if path.endswith(".zip"):
         opener, mode = ZipFile, "r"
@@ -191,12 +199,12 @@ def extractall(path, to=None, force_extract=False):
     def filelist(f):
         files = []
         for fname in namelist(f):
-            fname = os.path.join(to, fname)
+            fname = os.path.join(dest, fname)
             files.append(fname)
         return files
 
     extraction_name = Path(path).stem
-    extraction_path = f"{to}/{extraction_name}"
+    extraction_path = f"{dest}/{extraction_name}"
     if extraction_path and (
         os.path.isdir(extraction_path)
         and os.listdir(extraction_path)
@@ -208,9 +216,9 @@ def extractall(path, to=None, force_extract=False):
             for filename in filenames
         ]
 
-        return to, files
+        return dest, files
 
     with opener(path, mode) as f:
-        f.extractall(path=to)
+        f.extractall(path=dest)
 
-    return to, filelist(f)
+    return dest, filelist(f)

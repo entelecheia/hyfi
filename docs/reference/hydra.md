@@ -1,3 +1,0 @@
-# `hyfi.hydra`
-
-::: hyfi.hydra

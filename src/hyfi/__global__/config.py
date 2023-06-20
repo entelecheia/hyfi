@@ -9,8 +9,8 @@ from pydantic import BaseModel, root_validator, validator
 
 from hyfi.__global__ import __about__, __hydra_config__
 from hyfi.about import AboutConfig
+from hyfi.composer import Composer
 from hyfi.dotenv import DotEnvConfig
-from hyfi.hydra import Composer
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.envs import Envs

@@ -297,6 +297,7 @@ class HyfiConfig(BaseModel):
 
 
 __global_config__ = HyfiConfig()
+__global_config__.about.version = __version__()
 
 
 def __search_package_path__():

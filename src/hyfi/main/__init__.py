@@ -57,7 +57,6 @@ class HyFI:
     def about() -> None:
         """Print the about information"""
         cfg = __global_config__
-        cfg.about.version = HyFI.__version__
         _about(cfg)
 
     @staticmethod

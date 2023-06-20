@@ -4,8 +4,8 @@
 [![version-image]][release-url]
 [![release-date-image]][release-url]
 [![license-image]][license-url]
-[![codecov][codecov-image]][codecov-url]
 
+[![codecov][codecov-image]][codecov-url]
 
 <!-- Links: -->
 [codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
@@ -31,7 +31,7 @@ Hydra Fast Interface (Hydra and Pydantic based interface framework)
 - GitHub: [https://github.com/entelecheia/hyfi][repo-url]
 - PyPI: [https://pypi.org/project/hyfi][pypi-url]
 
-HyFI is a framework for building interfaces for Python applications. It is based on [Hydra] and [Pydantic] and provides a set of tools to build interfaces for Python applications.
+HyFI is a framework for building interfaces for Python applications. It is based on [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/) and provides a set of tools to build interfaces for Python applications.
 
 ## Changelog
 

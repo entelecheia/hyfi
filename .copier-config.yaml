@@ -1,10 +1,11 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.8.8
+_commit: v0.11.0
 _src_path: gh:entelecheia/hyperfast-python-template
 author: Young Joon Lee
 build_and_release: true
 code_template_answers_file: .copier-hyfi-config.yaml
 code_template_source: ''
+codecov_graph_token: HCYTYW1WVF
 copyright_year: 2023
 documentaion_tool: mkdocs
 documentation_url: https://hyfi.entelecheia.ai
@@ -17,9 +18,15 @@ google_analytics_id: G-RGCZCJ4ZZF
 logo_path: https://assets.entelecheia.ai/logo.png
 main_branch: main
 package_name: hyfi
+package_scripts:
+- hyfi = 'hyfi.__cli__:main'
+- hyfi-run = 'hyfi.__click__:cli'
+poe_task_files:
+- .tasks.toml
+- .tasks-extra.toml
 project_description: HyFI is a framework for building interfaces for Python applications.
-    It is based on [Hydra] and [Pydantic] and provides a set of tools to build interfaces
-    for Python applications.
+    It is based on [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/)
+    and provides a set of tools to build interfaces for Python applications.
 project_license: MIT
 project_name: hyfi
 project_short_description: Hydra Fast Interface (Hydra and Pydantic based interface

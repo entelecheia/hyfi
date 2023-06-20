@@ -24,4 +24,4 @@ hydra:
       file:
         level: ${hydra.job_logging.root.level}
     root:
-      level: ${oc.env:HYFI_LOG_LEVEL,INFO}
+      level: ${logging_level}

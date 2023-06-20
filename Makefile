@@ -119,4 +119,4 @@ init-project: initialize remove-template ## initialize the project (Warning: do 
 	@copier copy --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .
 
 reinit-project: install-copier ## reinitialize the project (Warning: this may overwrite existing files!)
-	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier copy "$${args[@]}" --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .'
+	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier copy --UNSAFE "$${args[@]}" --answers-file .copier-config.yaml gh:entelecheia/hyperfast-python-template .'

@@ -1,17 +1,17 @@
-"""Utilities for loading libraries and dependencies."""
+"""Utilities for loading library packages and dependencies."""
 import importlib
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-from hyfi.utils.file import is_dir, is_file
+from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class Libs:
+class Packages:
     @staticmethod
     def gitclone(
         url: str,
@@ -109,9 +109,9 @@ class Libs:
     def load_module_from_file(name: str, libpath: str, specname: str = "") -> None:
         """Load a module from a file"""
         module_path = os.path.join(libpath, name.replace(".", os.path.sep))
-        if is_file(f"{module_path}.py"):
+        if IOLibs.is_file(f"{module_path}.py"):
             module_path = f"{module_path}.py"
-        elif is_dir(module_path):
+        elif IOLibs.is_dir(module_path):
             module_path = os.path.join(module_path, "__init__.py")
         else:
             module_path = str(Path(module_path).parent / "__init__.py")
@@ -141,11 +141,11 @@ class Libs:
         except ImportError:
             if not os.path.exists(libpath):
                 logger.info(f"{libpath} not found, cloning from {liburi}")
-                Libs.gitclone(liburi, libpath)
+                Packages.gitclone(liburi, libpath)
             if not syspath:
                 syspath = libpath
             if syspath not in sys.path:
                 sys.path.append(syspath)
-            Libs.load_module_from_file(name, syspath, specname)
+            Packages.load_module_from_file(name, syspath, specname)
             specname = specname or name
             logger.info(f"{name} not imported, loading from {syspath} as {specname}")

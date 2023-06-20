@@ -1,12 +1,12 @@
 import os
 from hyfi.dotenv import DotEnvConfig
-from hyfi.utils.env import expand_posix_vars
+from hyfi.utils.envs import Envs
 from pprint import pprint
 
 
 def test_dotenv_config():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi"
-    os.environ["HYFI_GLOBAL_ROOT"] = expand_posix_vars("$WORKSPACE_ROOT")
+    os.environ["HYFI_GLOBAL_ROOT"] = Envs.expand_posix_vars("$WORKSPACE_ROOT")
     config = DotEnvConfig()
     pprint(config.dict())
     # Test that the default values are set correctly

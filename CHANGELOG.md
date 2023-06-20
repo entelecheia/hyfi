@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.9.1 (2023-06-20)
+
+### Fix
+
+* **envs:** Add check_and_set_osenv method. ([`c21af9a`](https://github.com/entelecheia/hyfi/commit/c21af9ac1cded179f048009fba5045d0745c79f9))
+
 ## v0.9.0 (2023-06-20)
 
 ### Feature

@@ -13,8 +13,8 @@ from datasets.tasks import TaskTemplate
 from datasets.utils.info_utils import VerificationMode
 from datasets.utils.version import Version
 
-from hyfi.utils.file import get_filepaths
-from hyfi.utils.func import elapsed_timer
+from hyfi.utils.iolibs import IOLibs
+from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import getLogger
 
 logger = getLogger(__name__)
@@ -78,9 +78,9 @@ class Datasets:
             return Datasets.load_dataframe(filename, verbose=verbose, **kwargs)
 
         if base_dir:
-            filepaths = get_filepaths(filename, base_dir)
+            filepaths = IOLibs.get_filepaths(filename, base_dir)
         else:
-            filepaths = get_filepaths(filename)
+            filepaths = IOLibs.get_filepaths(filename)
         if verbose:
             logger.info(f"Loading {len(filepaths)} dataframes from {filepaths}")
 

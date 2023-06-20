@@ -25,6 +25,7 @@ from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebooks import NBs
 from hyfi.utils.packages import Packages
+from hyfi.utils.types import PathLikeType
 
 logger = getLogger(__name__)
 
@@ -1001,7 +1002,11 @@ class HyFI:
         return IOLibs.read(uri, mode, encoding, head, **kwargs)
 
     @staticmethod
-    def copy(src, dst, *, follow_symlinks=True):
+    def copy(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
         """
         Copy a file or directory. This is a wrapper around shutil.copy.
         If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
@@ -1014,7 +1019,11 @@ class HyFI:
         IOLibs.copy(src, dst, follow_symlinks=follow_symlinks)
 
     @staticmethod
-    def copyfile(src, dst, *, follow_symlinks=True):
+    def copyfile(
+        src: PathLikeType,
+        dst: PathLikeType,
+        follow_symlinks: bool = True,
+    ):
         """
         Copy a file or directory. This is a wrapper around shutil.copyfile.
         If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
@@ -1028,11 +1037,11 @@ class HyFI:
 
     @staticmethod
     def cached_path(
-        url_or_filename,
+        url_or_filename: str,
         extract_archive: bool = False,
         force_extract: bool = False,
         return_parent_dir: bool = False,
-        cache_dir=None,
+        cache_dir: str = "",
         verbose: bool = False,
     ):
         """

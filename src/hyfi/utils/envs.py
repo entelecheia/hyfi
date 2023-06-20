@@ -156,6 +156,7 @@ class Envs:
             logger.info("Setting %s=%s", key, value)
         os.environ[key] = value
 
+    @staticmethod
     def check_and_set_osenv(key: str, value: Any) -> Any:
         """Check and set value to environment variable"""
         env_key = key.upper()

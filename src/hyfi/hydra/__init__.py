@@ -623,8 +623,8 @@ class BaseConfig(BaseModel):
             self.config_name,
             self.config_group,
         )
-        data = Composer(
+        config_kwargs = Composer(
             config_group=f"{self.config_group}={self.config_name}",
-            config_data=data,
+            config_data=config_kwargs,
         ).config_as_dict
-        self.__dict__.update(data)
+        self.__dict__.update(config_kwargs)

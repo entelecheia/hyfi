@@ -29,12 +29,12 @@ from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import Datasets
 from hyfi.utils.envs import Envs
-from hyfi.utils.func import dict_product, to_dateparm
+from hyfi.utils.funcs import Funcs
 from hyfi.utils.gpumon import nvidia_smi, set_cuda
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.packages import Packages
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebooks import NBs
+from hyfi.utils.packages import Packages
 
 logger = getLogger(__name__)
 
@@ -322,10 +322,6 @@ class HyFI:
         return Composer.ensure_list(value)
 
     @staticmethod
-    def to_dateparm(_date, _format="%Y-%m-%d"):
-        return to_dateparm(_date, _format)
-
-    @staticmethod
     def apply(
         func,
         series,
@@ -445,10 +441,6 @@ class HyFI:
     @staticmethod
     def viewsource(obj):
         return XC.viewsource(obj)
-
-    @staticmethod
-    def dict_product(dicts):
-        return dict_product(dicts)
 
     @staticmethod
     def get_image_font(fontname: str = "", fontsize: int = 12):
@@ -1293,3 +1285,14 @@ class HyFI:
                 follow_symlinks: Whether to follow symbolic links or not
         """
         IOLibs.copyfile(src, dst, follow_symlinks=follow_symlinks)
+
+    ###############################
+    # Utility functions
+    ###############################
+    @staticmethod
+    def to_dateparm(_date, _format="%Y-%m-%d"):
+        return Funcs.to_dateparm(_date, _format)
+
+    @staticmethod
+    def dict_product(dicts):
+        return Funcs.dict_product(dicts)

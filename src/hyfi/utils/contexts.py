@@ -1,5 +1,5 @@
-import os
 import datetime
+import os
 from contextlib import contextmanager
 from functools import partial
 from timeit import default_timer

@@ -29,9 +29,9 @@ from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import Datasets
 from hyfi.utils.envs import Envs
-from hyfi.utils.file import exists, is_dir, is_file, join_path, mkdir
 from hyfi.utils.func import dict_product, to_dateparm
 from hyfi.utils.gpu import nvidia_smi, set_cuda
+from hyfi.utils.iolibs import IOLibs
 from hyfi.utils.libs import Libs
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebooks import NBs
@@ -326,26 +326,6 @@ class HyFI:
         return to_dateparm(_date, _format)
 
     @staticmethod
-    def exists(a, *p):
-        return exists(a, *p)
-
-    @staticmethod
-    def is_file(a, *p):
-        return is_file(a, *p)
-
-    @staticmethod
-    def is_dir(a, *p):
-        return is_dir(a, *p)
-
-    @staticmethod
-    def mkdir(_path: str):
-        return mkdir(_path)
-
-    @staticmethod
-    def join_path(a, *p):
-        return join_path(a, *p)
-
-    @staticmethod
     def apply(
         func,
         series,
@@ -370,24 +350,6 @@ class HyFI:
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
         return Composer.ensure_kwargs(_kwargs, _fn)
-
-    @staticmethod
-    def get_filepaths(
-        filename_patterns: Union[str, PosixPath, WindowsPath],
-        base_dir: Union[str, PosixPath, WindowsPath] = "",
-        recursive: bool = True,
-        verbose: bool = False,
-        **kwargs,
-    ):
-        from hyfi.utils.file import get_filepaths
-
-        return get_filepaths(
-            filename_patterns,
-            base_dir=base_dir,
-            recursive=recursive,
-            verbose=verbose,
-            **kwargs,
-        )
 
     @staticmethod
     def nvidia_smi():
@@ -495,12 +457,6 @@ class HyFI:
         return get_image_font(fontname, fontsize)
 
     @staticmethod
-    def read(uri, mode="rb", encoding=None, head=None, **kwargs):
-        from hyfi.utils.file import read as _read
-
-        return _read(uri, mode, encoding, head, **kwargs)
-
-    @staticmethod
     def load_image(
         image_or_uri,
         max_width: int = 0,
@@ -606,43 +562,6 @@ class HyFI:
             resize_to_multiple_of,
             resample,
         )
-
-    @staticmethod
-    def copy(src, dst, *, follow_symlinks=True):
-        """
-        Copy a file or directory. This is a wrapper around shutil.copy.
-        If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
-
-        Args:
-                src: Path to the file or directory to be copied.
-                dst: Path to the destination directory. If the destination directory does not exist it will be created.
-                follow_symlinks: Whether or not symlinks should be followed
-        """
-        import shutil
-
-        src = str(src)
-        dst = str(dst)
-        mkdir(dst)
-        shutil.copy(src, dst, follow_symlinks=follow_symlinks)
-        logger.info(f"copied {src} to {dst}")
-
-    @staticmethod
-    def copyfile(src, dst, *, follow_symlinks=True):
-        """
-        Copy a file or directory. This is a wrapper around shutil.copyfile.
-        If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
-
-        Args:
-                src: Path to the file or directory to copy.
-                dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
-                follow_symlinks: Whether to follow symbolic links or not
-        """
-        import shutil
-
-        src = str(src)
-        dst = str(dst)
-        shutil.copyfile(src, dst, follow_symlinks=follow_symlinks)
-        logger.info(f"copied {src} to {dst}")
 
     @staticmethod
     def gpu_usage(all=False, attrList=None, useOldCode=False):
@@ -1305,3 +1224,72 @@ class HyFI:
             force_reinstall=force_reinstall,
             **kwargs,
         )
+
+    ###############################
+    # Files functions
+    ###############################
+    @staticmethod
+    def exists(a, *p):
+        return IOLibs.exists(a, *p)
+
+    @staticmethod
+    def is_file(a, *p):
+        return IOLibs.is_file(a, *p)
+
+    @staticmethod
+    def is_dir(a, *p):
+        return IOLibs.is_dir(a, *p)
+
+    @staticmethod
+    def mkdir(_path: str):
+        return IOLibs.mkdir(_path)
+
+    @staticmethod
+    def join_path(a, *p):
+        return IOLibs.join_path(a, *p)
+
+    @staticmethod
+    def get_filepaths(
+        filename_patterns: Union[str, PosixPath, WindowsPath],
+        base_dir: Union[str, PosixPath, WindowsPath] = "",
+        recursive: bool = True,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        return IOLibs.get_filepaths(
+            filename_patterns,
+            base_dir=base_dir,
+            recursive=recursive,
+            verbose=verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def read(uri, mode="rb", encoding=None, head=None, **kwargs):
+        return IOLibs.read(uri, mode, encoding, head, **kwargs)
+
+    @staticmethod
+    def copy(src, dst, *, follow_symlinks=True):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copy.
+        If you need to copy an entire directory (including all of its contents), or if you need to overwrite existing files in the destination directory, shutil.copy() would be a better choice.
+
+        Args:
+                src: Path to the file or directory to be copied.
+                dst: Path to the destination directory. If the destination directory does not exist it will be created.
+                follow_symlinks: Whether or not symlinks should be followed
+        """
+        IOLibs.copy(src, dst, follow_symlinks=follow_symlinks)
+
+    @staticmethod
+    def copyfile(src, dst, *, follow_symlinks=True):
+        """
+        Copy a file or directory. This is a wrapper around shutil.copyfile.
+        If you want to copy a single file from one location to another, shutil.copyfile() is the appropriate function to use.
+
+        Args:
+                src: Path to the file or directory to copy.
+                dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
+                follow_symlinks: Whether to follow symbolic links or not
+        """
+        IOLibs.copyfile(src, dst, follow_symlinks=follow_symlinks)

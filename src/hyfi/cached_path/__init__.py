@@ -1,224 +1,37 @@
-import os
-from pathlib import Path
+"""
+The idea behind **cached-path** is to provide a unified, simple, extendable interface for accessing
+both local and remote files.
+This can be used behind other APIs that need to access files agnostic to where they are located.
 
-import gdown
+For remote files, **cached-path** supports several different schemes out-of-the-box in addition
+``http`` and ``https``, including ``s3`` for AWS S3, ``gs`` for Google Cloud Storage,
+and ``hf`` for HuggingFace Hub. See :func:`cached_path.cached_path()` for more details.
 
-from hyfi.cached_path._cached_path import _cached_path as _cpath
-from hyfi.utils.logging import getLogger
+You can also extend **cached-path** to support other schemes with :func:`add_scheme_client()`.
+"""
 
-logger = getLogger(__name__)
+from ._cached_path import cached_path
+from .common import get_cache_dir, set_cache_dir
+from .progress import get_download_progress
+from .schemes import SchemeClient, add_scheme_client
+from .util import (
+    check_tarfile,
+    filename_to_url,
+    find_latest_cached,
+    is_url_or_existing_file,
+    resource_to_filename,
+)
 
-
-def cached_path(
-    url_or_filename: str,
-    extract_archive: bool = False,
-    force_extract: bool = False,
-    return_parent_dir: bool = False,
-    cache_dir: str = "",
-    verbose: bool = False,
-):
-    """
-    Attempts to cache a file or URL and return the path to the cached file.
-    If required libraries 'cached_path' and 'gdown' are not installed, raises an ImportError.
-
-    Args:
-        url_or_filename (str): The URL or filename to be cached.
-        extract_archive (bool, optional): Whether to extract the file if it's an archive. Defaults to False.
-        force_extract (bool, optional): Whether to force extraction even if the destination already exists. Defaults to False.
-        return_parent_dir (bool, optional): If True, returns the parent directory of the cached file. Defaults to False.
-        cache_dir (str, optional): Directory to store cached files. Defaults to None.
-        verbose (bool, optional): Whether to print informative messages during the process. Defaults to False.
-
-    Raises:
-        ImportError: If the required libraries 'cached_path' and 'gdown' are not imported.
-
-    Returns:
-        str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
-    """
-    if url_or_filename is None:
-        return None
-    if verbose:
-        logger.info(
-            f"caching path: {url_or_filename}, extract_archive: {extract_archive}, force_extract: {force_extract}, cache_dir: {cache_dir}"
-        )
-
-    try:
-        if url_or_filename.startswith("gd://"):
-            _path = cached_gdown(
-                url_or_filename,
-                verbose=verbose,
-                extract_archive=extract_archive,
-                force_extract=force_extract,
-                cache_dir=cache_dir,
-            )
-        else:
-            if _cpath is None or gdown is None:
-                raise ImportError(
-                    "Error importing required libraries 'cached-path'. "
-                    "Please install them using 'pip install cached-path' and try again."
-                )
-
-            if cache_dir:
-                cache_dir = str(Path(cache_dir) / "cached_path")
-            else:
-                cache_dir = str(Path.home() / ".hyfi" / ".cache" / "cached_path")
-
-            _path = _cpath.cached_path(
-                url_or_filename,
-                extract_archive=extract_archive,
-                force_extract=force_extract,
-                cache_dir=cache_dir,
-            ).as_posix()
-
-        logger.info(f"cached path: {_path}")
-
-        if Path(_path).is_file():
-            _parent_dir = Path(_path).parent
-        elif Path(_path).is_dir():
-            _parent_dir = Path(_path)
-        else:
-            logger.warning(f"Unknown path: {_path}")
-            return None
-
-        return _parent_dir.as_posix() if return_parent_dir else _path
-    except Exception as e:
-        logger.error(e)
-        return None
-
-
-def cached_gdown(
-    url: str,
-    verbose: bool = False,
-    extract_archive: bool = False,
-    force_extract: bool = False,
-    cache_dir: str = "",
-):
-    """
-    :type url: str
-          ex) gd://id:path
-    :type verbose: bool
-    :type extract_archive: bool
-    :type force_extract: bool
-    :type cache_dir: str
-    :returns: str
-    """
-    if gdown is None:
-        raise ImportError(
-            "Error importing required libraries 'gdown'. "
-            "Please install them using 'pip install gdown' and try again."
-        )
-
-    if verbose:
-        logger.info(f"Downloading {url}...")
-    if cache_dir:
-        cache_dir_ = Path(cache_dir) / "gdown"
-    else:
-        cache_dir_ = Path.home() / ".hyfi" / ".cache" / "gdown"
-    cache_dir_.mkdir(parents=True, exist_ok=True)
-
-    gd_prefix = "gd://"
-    if url.startswith(gd_prefix):
-        url = url[len(gd_prefix) :]
-        _url = url.split(":")
-        if len(_url) == 2:
-            id_, path = _url
-        else:
-            id_ = _url[0]
-            path = id_
-
-        # If we're using the path!c/d/file.txt syntax, handle it here.
-        fname = None
-        extraction_path = path
-        exclamation_index = path.find("!")
-        if extract_archive and exclamation_index >= 0:
-            extraction_path = path[:exclamation_index]
-            fname = path[exclamation_index + 1 :]
-
-        cache_path = cache_dir_ / f".{id_}" / extraction_path
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-
-        cache_path = gdown.cached_download(
-            id=id_,
-            path=cache_path.as_posix(),
-            quiet=not verbose,
-        )
-
-        if extract_archive:
-            extraction_path, files = extractall(cache_path, force_extract=force_extract)
-
-            if not fname or not files:
-                return extraction_path
-            for f in files:
-                if f.endswith(fname):
-                    return f
-        return cache_path
-
-    else:
-        logger.warning(f"Unknown url: {url}")
-        return None
-
-
-def extractall(
-    path: str,
-    dest: str = "",
-    force_extract: bool = False,
-):
-    """Extract archive file.
-
-    Parameters
-    ----------
-    path: str
-        Path of archive file to be extracted.
-    dest: str, optional
-        Directory to which the archive file will be extracted.
-        If None, it will be set to the parent directory of the archive file.
-    """
-    import tarfile
-    from zipfile import ZipFile
-
-    if dest is None:
-        dest = os.path.dirname(path)
-
-    if path.endswith(".zip"):
-        opener, mode = ZipFile, "r"
-    elif path.endswith(".tar"):
-        opener, mode = tarfile.open, "r"
-    elif path.endswith(".tar.gz") or path.endswith(".tgz"):
-        opener, mode = tarfile.open, "r:gz"
-    elif path.endswith(".tar.bz2") or path.endswith(".tbz"):
-        opener, mode = tarfile.open, "r:bz2"
-    else:
-        logger.warning(
-            f"Could not extract '{path}' as no appropriate extractor is found"
-        )
-        return path, None
-
-    def namelist(f):
-        return f.namelist() if isinstance(f, ZipFile) else [m.path for m in f.members]
-
-    def filelist(f):
-        files = []
-        for fname in namelist(f):
-            fname = os.path.join(dest, fname)
-            files.append(fname)
-        return files
-
-    extraction_name = Path(path).stem
-    extraction_path = f"{dest}/{extraction_name}"
-    if extraction_path and (
-        os.path.isdir(extraction_path)
-        and os.listdir(extraction_path)
-        and not force_extract
-    ):
-        files = [
-            os.path.join(dirpath, filename)
-            for dirpath, _, filenames in os.walk(extraction_path)
-            for filename in filenames
-        ]
-
-        return dest, files
-
-    with opener(path, mode) as f:
-        f.extractall(path=dest)
-
-    return dest, filelist(f)
+__all__ = [
+    "cached_path",
+    "get_cache_dir",
+    "set_cache_dir",
+    "get_download_progress",
+    "SchemeClient",
+    "add_scheme_client",
+    "check_tarfile",
+    "filename_to_url",
+    "find_latest_cached",
+    "is_url_or_existing_file",
+    "resource_to_filename",
+]

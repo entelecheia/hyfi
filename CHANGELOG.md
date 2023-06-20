@@ -1,5 +1,19 @@
 <!--next-version-placeholder-->
 
+## v0.9.0 (2023-06-20)
+
+### Feature
+
+* **iolibs:** Add cached_path method for caching URLs and files locally ([`2ee9a39`](https://github.com/entelecheia/hyfi/commit/2ee9a39d78d17b4c3dec164baed1e5b5284b1842))
+* **iolibs:** Add method to get file modified time ([`5ec4e36`](https://github.com/entelecheia/hyfi/commit/5ec4e3671b18021f4ce789c944d9aeb4c283d7a2))
+* **datasets:** Add load_dataset method for easily loading datasets from local or Hugging Face Hub directories or repositories. ([`54b7075`](https://github.com/entelecheia/hyfi/commit/54b707502ba92f1341247df86a99e90ba5eee66f))
+
+### Fix
+
+* **main:** Fix typo in Envs.get_osenv call ([`49e98e6`](https://github.com/entelecheia/hyfi/commit/49e98e65f140c85820db4b492aa290eb1ad52b8c))
+* **utils:** Import statement from modified Libs module ([`0e8901b`](https://github.com/entelecheia/hyfi/commit/0e8901bffebfc2e507dac3f1ff62c45c84c06294))
+* **libs:** Add Libs module and move relevant functions to it ([`185651e`](https://github.com/entelecheia/hyfi/commit/185651e271c4dd9954191bd89246ec12a4c9d04e))
+
 ## v0.8.2 (2023-06-19)
 
 ### Fix

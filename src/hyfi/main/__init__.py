@@ -11,7 +11,6 @@ from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
-from hyfi.cached_path import cached_path
 from hyfi.dotenv import DotEnvConfig
 from hyfi.hydra import Composer, DictKeyType, SpecialKeys
 from hyfi.hydra.main import XC
@@ -1062,7 +1061,7 @@ class HyFI:
         Returns:
             str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
         """
-        return cached_path(
+        return IOLibs.cached_path(
             url_or_filename,
             extract_archive=extract_archive,
             force_extract=force_extract,

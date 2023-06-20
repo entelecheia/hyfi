@@ -1,6 +1,7 @@
 """File I/O functions"""
 import os
 import re
+import time
 from glob import glob
 from pathlib import Path, PosixPath, WindowsPath
 from typing import List, Union
@@ -233,3 +234,11 @@ class IOLibs:
         dst = str(dst)
         shutil.copyfile(src, dst, follow_symlinks=follow_symlinks)
         logger.info(f"copied {src} to {dst}")
+
+    @staticmethod
+    def get_modified_time(path):
+        """Return the modification time of a file"""
+        if not os.path.exists(path):
+            return None
+        modTimesinceEpoc = os.path.getmtime(path)
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(modTimesinceEpoc))

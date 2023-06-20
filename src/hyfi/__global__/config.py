@@ -122,10 +122,9 @@ class HyfiConfig(BaseModel):
         Initialize the object with data
 
         Args:
-                data: Data to initialize the
+            config_kwargs: Dictionary of values to initialize the object with
         """
         super().__init__(**config_kwargs)
-        # self.about = __about__
 
     def init_workspace(
         self,

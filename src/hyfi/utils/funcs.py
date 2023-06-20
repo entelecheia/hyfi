@@ -2,9 +2,33 @@
 import ast
 import itertools
 import re
-from typing import List, Type
+import sys
+from contextlib import suppress
+from typing import Any, List, Optional, TextIO, Type, Union
 
 import chardet
+import colorama
+from pydantic import StrictBool
+
+from hyfi.utils.types import IntSeq
+
+colorama.init()
+
+
+class Style:
+    """Common color styles."""
+
+    OK: IntSeq = [colorama.Fore.GREEN, colorama.Style.BRIGHT]  # type: ignore
+    WARNING: IntSeq = [colorama.Fore.YELLOW, colorama.Style.BRIGHT]  # type: ignore
+    IGNORE: IntSeq = [colorama.Fore.CYAN]  # type: ignore
+    DANGER: IntSeq = [colorama.Fore.RED, colorama.Style.BRIGHT]  # type: ignore
+    RESET: IntSeq = [colorama.Fore.RESET, colorama.Style.RESET_ALL]  # type: ignore
+
+
+INDENT = " " * 2
+HLINE = "-" * 42
+
+NO_VALUE: object = object()
 
 
 class Funcs:
@@ -226,3 +250,75 @@ class Funcs:
         {'character': 'b', 'number': 2}]
         """
         return (dict(zip(dicts, x)) for x in itertools.product(*dicts.values()))
+
+    @staticmethod
+    def printf(
+        action: str,
+        msg: Any = "",
+        style: Optional[IntSeq] = None,
+        indent: int = 10,
+        verbose: Union[bool, StrictBool] = True,
+        file_: TextIO = sys.stdout,
+    ) -> Optional[str]:
+        """Print string with common format."""
+        if not verbose:
+            return None  # HACK: Satisfy MyPy
+        _msg = str(msg)
+        action = action.rjust(indent, " ")
+        if not style:
+            return action + _msg
+
+        out = style + [action] + Style.RESET + [INDENT, _msg]  # type: ignore
+        print(*out, sep="", file=file_)
+        return None  # HACK: Satisfy MyPy
+
+    @staticmethod
+    def printf_exception(
+        e: Exception, action: str, msg: str = "", indent: int = 0, quiet: bool = False
+    ) -> None:
+        """Print exception with common format."""
+        if not quiet:
+            print("", file=sys.stderr)
+            Funcs.printf(
+                action, msg=msg, style=Style.DANGER, indent=indent, file_=sys.stderr
+            )
+            print(HLINE, file=sys.stderr)
+            print(e, file=sys.stderr)
+            print(HLINE, file=sys.stderr)
+
+    @staticmethod
+    def cast_str_to_bool(value: Any) -> bool:
+        """Parse anything to bool.
+
+        Params:
+            value:
+                Anything to be casted to a bool. Tries to be as smart as possible.
+
+                1.  Cast to number. Then: 0 = False; anything else = True.
+                1.  Find [YAML booleans](https://yaml.org/type/bool.html),
+                    [YAML nulls](https://yaml.org/type/null.html) or `none` in it
+                    and use it appropriately.
+                1.  Cast to boolean using standard python `bool(value)`.
+        """
+        # Assume it's a number
+        with suppress(TypeError, ValueError):
+            return bool(float(value))
+        # Assume it's a string
+        with suppress(AttributeError):
+            lower = value.lower()
+            if lower in {"y", "yes", "t", "true", "on"}:
+                return True
+            elif lower in {"n", "no", "f", "false", "off", "~", "null", "none"}:
+                return False
+        # Assume nothing
+        return bool(value)
+
+    @staticmethod
+    def force_str_end(original_str: str, end: str = "\n") -> str:
+        """Make sure a `original_str` ends with `end`.
+
+        Params:
+            original_str: String that you want to ensure ending.
+            end: String that must exist at the end of `original_str`
+        """
+        return original_str if original_str.endswith(end) else original_str + end

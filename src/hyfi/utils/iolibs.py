@@ -1,10 +1,17 @@
 """File I/O functions"""
+import errno
 import os
 import re
+import shutil
+import stat
+import sys
+import tempfile
 import time
+import warnings
 from glob import glob
 from pathlib import Path, PosixPath, WindowsPath
-from typing import List, Union
+from types import TracebackType
+from typing import Callable, List, Tuple, Union
 
 from hyfi.utils.logging import getLogger
 
@@ -242,3 +249,68 @@ class IOLibs:
             return None
         modTimesinceEpoc = os.path.getmtime(path)
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(modTimesinceEpoc))
+
+    @staticmethod
+    def handle_remove_readonly(
+        func: Callable, path: str, exc: Tuple[BaseException, OSError, TracebackType]
+    ) -> None:
+        """Handle errors when trying to remove read-only files through `shutil.rmtree`.
+
+        This handler makes sure the given file is writable, then re-execute the given removal function.
+
+        Arguments:
+            func: An OS-dependant function used to remove a file.
+            path: The path to the file to remove.
+            exc: A `sys.exc_info()` object.
+        """
+        excvalue = exc[1]
+        if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+            os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+            func(path)
+        else:
+            raise
+
+    @staticmethod
+    def copy_file(src_path: Path, dst_path: Path, follow_symlinks: bool = True) -> None:
+        """Copy one file to another place."""
+        shutil.copy2(src_path, dst_path, follow_symlinks=follow_symlinks)
+
+    @staticmethod
+    def readlink(link: Path) -> Path:
+        """A custom version of os.readlink/pathlib.Path.readlink.
+
+        pathlib.Path.readlink is what we ideally would want to use, but it is only available on python>=3.9.
+        os.readlink doesn't support Path and bytes on Windows for python<3.8
+        """
+        if sys.version_info >= (3, 9):
+            return link.readlink()
+        elif sys.version_info >= (3, 8) or os.name != "nt":
+            return Path(os.readlink(link))
+        else:
+            return Path(os.readlink(str(link)))
+
+
+# See https://github.com/copier-org/copier/issues/345
+class TemporaryDirectory(tempfile.TemporaryDirectory):
+    """A custom version of `tempfile.TemporaryDirectory` that handles read-only files better.
+
+    On Windows, before Python 3.8, `shutil.rmtree` does not handle read-only files very well.
+    This custom class makes use of a [special error handler][copier.tools.handle_remove_readonly]
+    to make sure that a temporary directory containing read-only files (typically created
+    when git-cloning a repository) is properly cleaned-up (i.e. removed) after using it
+    in a context manager.
+    """
+
+    @classmethod
+    def _cleanup(cls, name, warn_message):
+        cls._robust_cleanup(name)
+        warnings.warn(warn_message, ResourceWarning)
+
+    def cleanup(self):
+        """Remove directory safely."""
+        if self._finalizer.detach():  # type: ignore
+            self._robust_cleanup(self.name)
+
+    @staticmethod
+    def _robust_cleanup(name):
+        shutil.rmtree(name, ignore_errors=False, onerror=IOLibs.handle_remove_readonly)

@@ -32,7 +32,7 @@ from hyfi.utils.envs import Envs
 from hyfi.utils.func import dict_product, to_dateparm
 from hyfi.utils.gpu import nvidia_smi, set_cuda
 from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.libs import Libs
+from hyfi.utils.packages import Packages
 from hyfi.utils.logging import getLogger, setLogger
 from hyfi.utils.notebooks import NBs
 
@@ -1171,7 +1171,7 @@ class HyFI:
         )
 
     ###############################
-    # Libs functions
+    # Packages functions
     ###############################
     @staticmethod
     def ensure_import_module(
@@ -1181,7 +1181,7 @@ class HyFI:
         specname: str = "",
         syspath: str = "",
     ):
-        return Libs.ensure_import_module(name, libpath, liburi, specname, syspath)
+        return Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
 
     @staticmethod
     def pip(
@@ -1196,7 +1196,7 @@ class HyFI:
         verbose: bool = False,
         **kwargs,
     ):
-        return Libs.pip(
+        return Packages.pip(
             name,
             upgrade,
             prelease,
@@ -1216,7 +1216,7 @@ class HyFI:
         force_reinstall=False,
         **kwargs,
     ):
-        return Libs.pip(
+        return Packages.pip(
             name="hyfi",
             upgrade=True,
             prelease=prelease,

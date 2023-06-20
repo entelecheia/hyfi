@@ -5,7 +5,7 @@ import os
 import sys
 
 from hyfi.utils.envs import Envs
-from hyfi.utils.file import read
+from hyfi.utils.iolibs import IOLibs
 
 logger = logging.getLogger(__name__)
 
@@ -309,10 +309,10 @@ class NBs:
         if filename is None:
             url = "https://assets.entelecheia.cc/img/placeholder.png"
             # img = urlopen(url).read()
-            img = read(url)
+            img = IOLibs.read(url)
             _format = "png"
         else:
-            img = read(filename)
+            img = IOLibs.read(filename)
             _format = format or filename.split(".")[-1]
         return widgets.Image(
             value=img,

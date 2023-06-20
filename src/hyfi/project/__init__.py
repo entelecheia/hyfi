@@ -5,8 +5,8 @@ from typing import Union
 from pydantic import validator
 
 from hyfi.__global__ import __about__
-from hyfi.dotenv import DotEnvConfig
 from hyfi.composer import BaseConfig
+from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
 from hyfi.utils.logging import Logging

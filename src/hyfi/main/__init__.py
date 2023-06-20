@@ -11,9 +11,9 @@ from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
-from hyfi.dotenv import DotEnvConfig
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
+from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import Datasets

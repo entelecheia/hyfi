@@ -7,7 +7,6 @@ from pathlib import Path, PosixPath, WindowsPath
 from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import pandas as pd
-from datasets.splits import Split
 from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
@@ -578,7 +577,7 @@ class HyFI:
         data_files: Optional[
             Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
         ] = None,
-        split: Optional[Union[str, Split]] = None,
+        split: Optional[str] = None,
         cache_dir: Optional[str] = None,
         ignore_verifications="deprecated",
         keep_in_memory: Optional[bool] = None,

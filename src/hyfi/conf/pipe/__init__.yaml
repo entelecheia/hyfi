@@ -1,6 +1,6 @@
-_func_:
-  _target_: hyfi.pipe.funcs.data_class_methods
-_method_:
+_func_: hyfi.pipe.funcs.apply_pipe_func
 apply_to: text
 rcParams:
+use_batcher: true
+num_workers: 1
 verbose: false

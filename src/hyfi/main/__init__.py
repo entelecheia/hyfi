@@ -245,11 +245,11 @@ class HyFI:
 
     @staticmethod
     def partial(
-        func_name: str,
+        config: Union[str, Dict],
         *args: Any,
         **kwargs: Any,
     ) -> Callable:
-        return XC.partial(func_name, *args, **kwargs)
+        return XC.partial(config, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:

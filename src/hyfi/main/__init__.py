@@ -16,7 +16,7 @@ from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
-from hyfi.utils.datasets import Datasets, DatasetType, DatasetLikeType
+from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import Envs
 from hyfi.utils.funcs import Funcs
 from hyfi.utils.gpumon import nvidia_smi, set_cuda

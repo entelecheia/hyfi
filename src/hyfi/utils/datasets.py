@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Union, TypeVar
+from typing import Any, Dict, List, Mapping, Optional, Sequence, TypeVar, Union
 
 import pandas as pd
 from datasets import Dataset, concatenate_datasets, load_dataset

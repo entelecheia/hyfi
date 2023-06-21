@@ -34,10 +34,13 @@ class XC(Composer):
         **kwargs: Any,
     ) -> Callable:
         if isinstance(config, str):
-            config = {SpecialKeys.TARGET: config}
+            config = {SpecialKeys.TARGET.value: config}
         else:
             config = XC.to_dict(config)
-        config[SpecialKeys.PARTIAL] = True
+        config[SpecialKeys.PARTIAL.value] = True
+        rcParams = config.pop(SpecialKeys.rcPARAMS, {})
+        if rcParams and kwargs:
+            kwargs = kwargs.update(rcParams)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod

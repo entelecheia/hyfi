@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v0.11.0 (2023-06-21)
+
+### Feature
+
+* **datasets:** Add support for loading and concatenating dataset-like objects and dataframes. ([`a6540e1`](https://github.com/entelecheia/hyfi/commit/a6540e134b92194466a3b2ec99af1c2d0b3ddded))
+
+### Fix
+
+* **datasets:** Add condition to concatenate datasets properly ([`ebc3b3e`](https://github.com/entelecheia/hyfi/commit/ebc3b3e88066999003dfcff2f32628e9ea6cc5b3))
+* **datasets:** Change load_data method arguments ([`7322eb6`](https://github.com/entelecheia/hyfi/commit/7322eb667846018d68d4ced0f9d604fa74cc3103))
+
 ## v0.10.1 (2023-06-20)
 
 ### Fix

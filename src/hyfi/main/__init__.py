@@ -618,10 +618,11 @@ class HyFI:
     @staticmethod
     def load_data(
         path: Optional[str] = "dataframe",
-        data_files: Optional[Union[str, Sequence[str]]] = None,
+        name: Optional[str] = None,
         data_dir: Optional[str] = "",
-        filetype: Optional[str] = "",
+        data_files: Optional[Union[str, Sequence[str]]] = None,
         split: Optional[str] = "train",
+        filetype: Optional[str] = "",
         concatenate: Optional[bool] = False,
         use_cached: bool = False,
         verbose: Optional[bool] = False,
@@ -629,10 +630,11 @@ class HyFI:
     ) -> Union[Dict[str, pd.DataFrame], Dict[str, DatasetType]]:
         return Datasets.load_data(
             path,
-            data_files,
+            name,
             data_dir,
-            filetype,
+            data_files,
             split,
+            filetype,
             concatenate,
             use_cached,
             verbose,

@@ -1,5 +1,26 @@
 <!--next-version-placeholder-->
 
+## v0.12.0 (2023-06-21)
+
+### Feature
+
+* **main:** Add reinit option in hyfi constructor ([`b521054`](https://github.com/entelecheia/hyfi/commit/b521054e4b2213a6365892eb6e74eac96c5016a4))
+* **config:** Add "reinit" parameter to initialize method ([`57e93cb`](https://github.com/entelecheia/hyfi/commit/57e93cb01ec7034112f8cef37790daa8f85c24b7))
+* **pipe:** Add lambda configuration file ([`9206107`](https://github.com/entelecheia/hyfi/commit/9206107a875d044398dc0e48504b35a2269c6f1f))
+* **composer:** Add support for new special key TYPE ([`2de9cfd`](https://github.com/entelecheia/hyfi/commit/2de9cfd06a22abb9a507658f59fd8481cc01b006))
+* **pipe:** Add PIPE and PipeConfig classes with apply and pipe methods. ([`df2c032`](https://github.com/entelecheia/hyfi/commit/df2c0321dd97fb3dc79576f24c188328cad47af0))
+* **pipe:** Add pipeline functions for dataframe operations ([`9d5f6e7`](https://github.com/entelecheia/hyfi/commit/9d5f6e77ffac6885c8759bde6d84416302831108))
+* **pipe:** Add initial configuration file for pipe function ([`f205e70`](https://github.com/entelecheia/hyfi/commit/f205e7083f819bad266279f05804cade3d69fb05))
+
+### Fix
+
+* **init:** Set reinit to True ([`be235ba`](https://github.com/entelecheia/hyfi/commit/be235ba62e07630a4407cbefaed723b2ca19afb0))
+* **config:** Set "reinit" to True in HyfiConfig class ([`a393cfc`](https://github.com/entelecheia/hyfi/commit/a393cfccebd10bd68422f557ad5c0927ac3b5bb8))
+* **pipe:** Add error handling for missing method in config ([`5fe151f`](https://github.com/entelecheia/hyfi/commit/5fe151f4a1b58d80b77c05788aeb9ad1bca97de4))
+* **pipe:** Update apply_to default value in PipeConfig class ([`90234f1`](https://github.com/entelecheia/hyfi/commit/90234f15bf4498b993bf2952c72df1d110cd765a))
+* **dependencies:** Add batcher instance to global init file ([`5af5726`](https://github.com/entelecheia/hyfi/commit/5af57269eafe0888085beabab89037d0e266f2d1))
+* **dependencies:** Add joblib 1.2.0 ([`cf06051`](https://github.com/entelecheia/hyfi/commit/cf060517df4a7b4545c2040ca1045a84e1231ab7))
+
 ## v0.11.0 (2023-06-21)
 
 ### Feature

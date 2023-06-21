@@ -33,8 +33,8 @@ def test_pipe():
     print(pipe_config)
     df4 = HyFI.pipe(df, pipe_config)
     print(df4)
-    # pipe_config = HyFI.compose("pipe=__lambda__")
-    pipe_config = HyFI.pipe_config(config_name="__lambda__")
+    config = HyFI.compose("pipe=__lambda__")
+    pipe_config = HyFI.pipe_config(**config)
     pipe_config._method_ = "lambda x: x.replace('Economic', 'ECON')"
     pipe_config.apply_to = "text"
     pipe_config.num_workers = 5

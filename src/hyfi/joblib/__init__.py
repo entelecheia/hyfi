@@ -39,6 +39,7 @@ class JobLibConfig(BaseConfig):
     distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
+    __batcher_instance__: Any = None
 
     class Config:
         extra = "allow"
@@ -50,6 +51,7 @@ class JobLibConfig(BaseConfig):
         self.distributed_framework = DistFramworkConfig.parse_obj(
             self.__dict__["distributed_framework"]
         )
+        self.init_backend()
 
     def init_backend(
         self,
@@ -78,6 +80,7 @@ class JobLibConfig(BaseConfig):
             batcher.batcher_instance = batcher.Batcher(
                 backend_handle=backend_handle, **self.batcher.dict()
             )
+            self.__batcher_instance__ = batcher.batcher_instance
             logger.debug(f"initialized batcher with {batcher.batcher_instance}")
         self.__initilized__ = True
 

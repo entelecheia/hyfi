@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.12.2 (2023-06-21)
+
+### Fix
+
+* **cli:** Rename print_resolved_config to resolve ([`388130a`](https://github.com/entelecheia/hyfi/commit/388130a27276703f7636f9c06b071581f3793796))
+* **config:** Rename print_resolved_config to resolve ([`7742516`](https://github.com/entelecheia/hyfi/commit/77425165c7138780cdd1494f8fef3be013572fe2))
+* **config:** Update mode config to use resolve instead of print_resolved_config ([`1a7792a`](https://github.com/entelecheia/hyfi/commit/1a7792a76d1c5be209659e8c6234ead9a4246616))
+
 ## v0.12.1 (2023-06-21)
 
 ### Fix

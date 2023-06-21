@@ -102,10 +102,11 @@ class Datasets:
     @staticmethod
     def load_data(
         path: Optional[str] = "dataframe",
-        data_files: Optional[Union[str, Sequence[str]]] = None,
+        name: Optional[str] = None,
         data_dir: Optional[str] = "",
+        data_files: Optional[Union[str, Sequence[str]]] = None,
+        split: Optional[str] = None,
         filetype: Optional[str] = "",
-        split: Optional[str] = "train",
         concatenate: Optional[bool] = False,
         use_cached: bool = False,
         verbose: Optional[bool] = False,
@@ -128,15 +129,16 @@ class Datasets:
             else:
                 return {}
         else:
-            dset = Datasets.load_datasets(
+            dset = Datasets.load_dataset(
                 path,
-                data_files=data_files,
+                name=name,
                 data_dir=data_dir,
-                filetype=filetype,
+                data_files=data_files,
                 split=split,
-                verbose=verbose,
+                **kwargs,
             )
-            if isinstance(dset, DatasetType):
+            split = split or "train"
+            if isinstance(dset, Dataset) or isinstance(dset, IterableDataset):
                 return {split: dset}
             else:
                 if concatenate:
@@ -197,9 +199,14 @@ class Datasets:
             return {}
 
         filepaths = Datasets.get_data_files(
-            data_files, data_dir, split=split, use_cached=use_cached, verbose=verbose, **kwargs
+            data_files,
+            data_dir,
+            split=split,
+            use_cached=use_cached,
+            verbose=verbose,
+            **kwargs,
         )
-        print(filepaths)
+
         if isinstance(filepaths, dict):
             data = {
                 name: pd.concat(

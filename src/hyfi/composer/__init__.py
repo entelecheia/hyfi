@@ -42,6 +42,7 @@ class SpecialKeys(str, Enum):
     RECURSIVE = "_recursive_"
     SUFFIX = "suffix"
     TARGET = "_target_"
+    TYPE = "_type_"
     VERBOSE = "verbose"
 
 

@@ -1,0 +1,5 @@
+defaults:
+  - __init__
+
+_type_: instance
+_method_:

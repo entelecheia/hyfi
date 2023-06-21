@@ -137,7 +137,7 @@ class HyfiConfig(BaseModel):
         global_workspace_name: str = "",
         num_workers: int = -1,
         log_level: str = "",
-        reinit: bool = False,
+        reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,

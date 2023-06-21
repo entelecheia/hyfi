@@ -1,8 +1,10 @@
 import os
+from os import PathLike
 from typing import Any, Dict, List, Mapping, Optional, Sequence, TypeVar, Union
 
+import datasets as hfds
 import pandas as pd
-from datasets import Dataset, concatenate_datasets, load_dataset
+from datasets import Dataset
 from datasets.dataset_dict import DatasetDict, IterableDatasetDict
 from datasets.download.download_config import DownloadConfig
 from datasets.download.download_manager import DownloadMode
@@ -142,7 +144,7 @@ class Datasets:
                 return {split: dset}
             else:
                 if concatenate:
-                    return {split: concatenate_datasets(dset.values())}
+                    return {split: Datasets.concatenate_datasets(dset.values())}
                 else:
                     return {k: v for k, v in dset.items() if v is not None}
 
@@ -469,7 +471,7 @@ class Datasets:
         >>> ds3 = concatenate_datasets([ds1, ds2])
         ```
         """
-        return concatenate_datasets(
+        return hfds.concatenate_datasets(
             dsets=dsets,
             info=info,
             split=split,
@@ -681,7 +683,7 @@ class Datasets:
         >>> ds = load_dataset('imagefolder', data_dir='/path/to/images', split='train')
         ```
         """
-        return load_dataset(
+        return hfds.load_dataset(
             path=path,
             name=name,
             data_dir=data_dir,
@@ -702,4 +704,33 @@ class Datasets:
             num_proc=num_proc,
             storage_options=storage_options,
             **config_kwargs,
+        )
+
+    @staticmethod
+    def save_to_disk(
+        dset,
+        dataset_path: PathLike,
+        max_shard_size: Optional[Union[str, int]] = None,
+        num_shards: Optional[int] = None,
+        num_proc: Optional[int] = None,
+        storage_options: Optional[dict] = None,
+    ):
+        dset.save_to_disk(
+            dataset_path=dataset_path,
+            max_shard_size=max_shard_size,
+            num_shards=num_shards,
+            num_proc=num_proc,
+            storage_options=storage_options,
+        )
+
+    @staticmethod
+    def load_from_disk(
+        dataset_path: str,
+        keep_in_memory: Optional[bool] = None,
+        storage_options: Optional[dict] = None,
+    ) -> Union[Dataset, DatasetDict]:
+        return hfds.load_from_disk(
+            dataset_path=dataset_path,
+            keep_in_memory=keep_in_memory,
+            storage_options=storage_options,
         )

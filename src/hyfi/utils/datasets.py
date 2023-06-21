@@ -104,7 +104,7 @@ class Datasets:
 
     @staticmethod
     def load_data(
-        path: Optional[str] = "dataframe",
+        path: Optional[str] = "pandas",
         name: Optional[str] = None,
         data_dir: Optional[str] = "",
         data_files: Optional[Union[str, Sequence[str]]] = None,
@@ -116,7 +116,7 @@ class Datasets:
         **kwargs,
     ) -> Union[Dict[str, pd.DataFrame], Dict[str, Dataset]]:
         """Load data from a file or a list of files"""
-        if path in ["dataframe", "df"]:
+        if path in ["dataframe", "df", "pandas"]:
             data = Datasets.load_dataframes(
                 data_files,
                 data_dir=data_dir,

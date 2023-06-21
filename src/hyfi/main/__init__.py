@@ -617,7 +617,7 @@ class HyFI:
 
     @staticmethod
     def load_data(
-        path: Optional[str] = "dataframe",
+        path: Optional[str] = "pandas",
         name: Optional[str] = None,
         data_dir: Optional[str] = "",
         data_files: Optional[Union[str, Sequence[str]]] = None,

@@ -4,10 +4,10 @@ A class to apply a pipe to a dataframe or a dictionary of dataframes.
 from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
 
 import pandas as pd
-from pydantic import BaseModel, validator
+from pydantic import validator
 from tqdm.auto import tqdm
 
-from hyfi.composer import SpecialKeys
+from hyfi.composer import BaseConfig
 from hyfi.composer.extended import XC
 from hyfi.joblib import JobLibConfig
 from hyfi.joblib.batch.apply import decorator_apply
@@ -16,27 +16,27 @@ from hyfi.utils.logging import Logging
 logger = Logging.getLogger(__name__)
 
 
-class PipeConfig(BaseModel):
+class PipeConfig(BaseConfig):
     """Pipe Configuration"""
+
+    config_name: str = "__init__"
+    config_group: str = "pipe"
 
     _func_: Union[str, Dict] = "hyfi.pipe.funcs.apply_pipe_func"
     _type_: str = "instance"
     _method_: str = ""
     apply_to: Union[str, List[str], None] = "text"
-    rcParams: Union[Dict, None] = None
+    rcParams: Optional[Dict[str, Any]] = None
     use_batcher: bool = True
     num_workers: Optional[int] = 1
     verbose: bool = False
 
     class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+        underscore_attrs_are_private = False
 
     @validator("rcParams", pre=True, always=True)
     def _validate_rcParams(cls, v):
-        if v is None:
-            return {}
-        return v
+        return {} if v is None else v
 
 
 class PIPE:
@@ -45,8 +45,10 @@ class PIPE:
     """
 
     @staticmethod
-    def pipe(data: Any, pipe_config: Dict):
-        _func_ = pipe_config.get(SpecialKeys.FUNC)
+    def pipe(data: Any, pipe_config: Union[Dict, PipeConfig]):
+        if isinstance(pipe_config, dict):
+            pipe_config = PipeConfig(**pipe_config)
+        _func_ = pipe_config._func_
         _fn = XC.partial(_func_)
         logger.info("Applying pipe: %s", _fn)
         return _fn(data, pipe_config)

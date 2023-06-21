@@ -1,7 +1,7 @@
 """
     Pipeline Functions
 """
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 import pandas as pd
 
@@ -13,16 +13,17 @@ from hyfi.utils.logging import Logging
 logger = Logging.getLogger(__name__)
 
 
-def apply_pipe_func(data: Any, config_kwargs: Dict):
-    config = PipeConfig(**config_kwargs)
-    if not config._method_:
+def apply_pipe_func(data: Any, pipe_config: Union[Dict, PipeConfig]):
+    if isinstance(pipe_config, dict):
+        pipe_config = PipeConfig(**pipe_config)
+    if not pipe_config._method_:
         raise ValueError("No method specified")
-    if config._type_ == "instance":
+    if pipe_config._type_ == "instance":
         apply_fn_ = apply_instance_methods
     else:
         apply_fn_ = apply_external_funcs
-    if config.verbose:
-        logger.info("Running dataframe function: %s", config_kwargs)
+    if pipe_config.verbose:
+        logger.info("Running dataframe function: %s", pipe_config)
     if isinstance(data, dict):
         dfs = {}
         for df_no, df_name in enumerate(data):
@@ -35,10 +36,10 @@ def apply_pipe_func(data: Any, config_kwargs: Dict):
                 len(data),
             )
 
-            dfs[df_name] = apply_fn_(df, config_kwargs)
+            dfs[df_name] = apply_fn_(df, pipe_config)
         return dfs
 
-    return apply_fn_(data, config_kwargs)
+    return apply_fn_(data, pipe_config)
 
 
 def apply_instance_methods(data: pd.DataFrame, config: PipeConfig):

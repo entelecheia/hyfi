@@ -26,7 +26,7 @@ from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
-from hyfi.pipe import PIPE
+from hyfi.pipe import PIPE, PipeConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import Envs
@@ -137,19 +137,24 @@ class HyFI:
         __global_config__.terminate()
 
     @staticmethod
-    def joblib() -> JobLibConfig:
+    def joblib(**kwargs) -> JobLibConfig:
         """Return the joblib pipe"""
-        return JobLibConfig()
+        return JobLibConfig(**kwargs)
 
     @staticmethod
-    def dotenv() -> DotEnvConfig:
+    def dotenv(**kwargs) -> DotEnvConfig:
         """Return the DotEnvConfig"""
-        return DotEnvConfig()
+        return DotEnvConfig(**kwargs)
 
     @staticmethod
     def osenv():
         """Return the DotEnvConfig"""
         return os.environ
+
+    @staticmethod
+    def pipe_config(**kwargs) -> PipeConfig:
+        """Return the PipeConfig"""
+        return PipeConfig(**kwargs)
 
     @staticmethod
     def compose(
@@ -372,7 +377,7 @@ class HyFI:
     # Batcher related functions
     ###############################
     @staticmethod
-    def pipe(data: Any, pipe_config: Dict):
+    def pipe(data: Any, pipe_config: Union[Dict, PipeConfig]):
         return PIPE.pipe(data, pipe_config)
 
     @staticmethod

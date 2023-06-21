@@ -6,7 +6,6 @@ from pprint import pprint
 
 def test_about():
     print(HyFI.about())
-    HyFI.print(HyFI.config.dict())
     assert HyFI.config.__version__ == __version__
 
 
@@ -32,7 +31,7 @@ def test_init_workspace():
         verbose=True,
     )
     pprint(ws.dict())
-    assert ws.path.project_root == "tmp/testspace/projects/hyfi2"
+    assert ws.path.global_workspace_name == "testspace"
 
 
 def test_compose():

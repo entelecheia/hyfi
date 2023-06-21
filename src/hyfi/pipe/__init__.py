@@ -19,7 +19,7 @@ logger = Logging.getLogger(__name__)
 class PipeConfig(BaseConfig):
     """Pipe Configuration"""
 
-    config_name: str = "__instance__"
+    config_name: str = "__init__"
     config_group: str = "pipe"
 
     _func_: Union[str, Dict] = "hyfi.pipe.funcs.apply_pipe_func"

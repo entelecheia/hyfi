@@ -1,14 +1,15 @@
 import os
-from typing import Any, Dict, Mapping, Optional, Sequence, Union
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Union, TypeVar
 
 import pandas as pd
-from datasets import Dataset, load_dataset
+from datasets import Dataset, concatenate_datasets, load_dataset
 from datasets.dataset_dict import DatasetDict, IterableDatasetDict
 from datasets.download.download_config import DownloadConfig
 from datasets.download.download_manager import DownloadMode
 from datasets.features import Features
+from datasets.info import DatasetInfo
 from datasets.iterable_dataset import IterableDataset
-from datasets.splits import Split
+from datasets.splits import NamedSplit, Split
 from datasets.tasks import TaskTemplate
 from datasets.utils.info_utils import VerificationMode
 from datasets.utils.version import Version
@@ -19,6 +20,11 @@ from hyfi.utils.logging import Logging
 
 logger = Logging.getLogger(__name__)
 
+DatasetType = TypeVar("DatasetType", Dataset, IterableDataset)
+DatasetLikeType = TypeVar(
+    "DatasetLikeType", Dataset, IterableDataset, DatasetDict, IterableDatasetDict
+)
+
 
 class Datasets:
     @staticmethod
@@ -27,109 +33,237 @@ class Datasets:
         return isinstance(data, pd.DataFrame)
 
     @staticmethod
-    def concat_data(
-        data,
-        columns=None,
-        add_key_as_name: bool = False,
-        name_column: str = "_name_",
+    def concatenate_data(
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
+        columns: Optional[Sequence[str]] = None,
+        add_split_key_column: bool = False,
+        added_column_name: str = "_name_",
         ignore_index: bool = True,
+        axis: int = 0,
+        split: Optional[str] = None,
+        verbose: bool = False,
         **kwargs,
-    ):
+    ) -> Union[pd.DataFrame, DatasetType]:
+        if isinstance(data, List(DatasetType)):
+            return Datasets.concatenate_datasets(
+                data,
+                axis=axis,
+                split=split,
+                **kwargs,
+            )
+        else:
+            return Datasets.concatenate_dataframes(
+                data,
+                columns=columns,
+                add_split_key_column=add_split_key_column,
+                added_column_name=added_column_name,
+                ignore_index=ignore_index,
+                axis=axis,
+                verbose=verbose,
+                **kwargs,
+            )
+
+    @staticmethod
+    def concatenate_dataframes(
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame]],
+        columns: Optional[Sequence[str]] = None,
+        add_split_key_column: bool = False,
+        added_column_name: str = "_name_",
+        ignore_index: bool = True,
+        axis: int = 0,
+        verbose: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
         """Concatenate dataframes"""
         if isinstance(data, dict):
-            logger.info(f"Concatenating {len(data)} dataframes")
             dfs = []
-            for df_name in data:
-                df_each = data[df_name]
-                if isinstance(columns, list):
-                    _columns = [c for c in columns if c in df_each.columns]
-                    df_each = df_each[_columns]
-                if add_key_as_name:
-                    df_each[name_column] = df_name
-                dfs.append(df_each)
-            return pd.concat(dfs, ignore_index=ignore_index) if dfs else None
-        elif isinstance(data, list):
-            logger.info(f"Concatenating {len(data)} dataframes")
-            return pd.concat(data, ignore_index=ignore_index) if len(data) > 0 else None
+            for split in data:
+                df = data[split]
+                if add_split_key_column:
+                    df[added_column_name] = split
+                dfs.append(df)
+            data = dfs
+        if add_split_key_column:
+            columns.append(added_column_name)
+        if isinstance(data, list):
+            if isinstance(columns, list):
+                _columns = [c for c in columns if c in df.columns]
+                data = [df[_columns] for df in data]
+            if verbose:
+                logger.info("Concatenating %s dataframes", len(data))
+            if len(data) > 0:
+                return pd.concat(data, ignore_index=ignore_index, axis=axis)
+            else:
+                raise ValueError("No dataframes to concatenate")
         else:
             logger.warning("Warning: data is not a dict")
             return data
 
     @staticmethod
     def load_data(
-        filename,
-        base_dir=None,
-        filetype=None,
-        verbose=False,
+        path: Optional[str] = "dataframe",
+        data_files: Optional[Union[str, Sequence[str]]] = None,
+        data_dir: Optional[str] = "",
+        filetype: Optional[str] = "",
+        split: Optional[str] = "train",
+        concatenate: Optional[bool] = False,
+        use_cached: bool = False,
+        verbose: Optional[bool] = False,
         **kwargs,
-    ):
+    ) -> Union[Dict[str, pd.DataFrame], Dict[str, Dataset]]:
         """Load data from a file or a list of files"""
-        concatenate = kwargs.pop("concatenate", False)
-        ignore_index = kwargs.pop("ignore_index", False)
-        if filename is not None:
-            filename = str(filename)
-
-        if filename.startswith("http"):
-            if not filetype:
-                filetype = filename.split(".")[-1]
-            if filetype not in ["csv", "parquet"]:
-                raise ValueError("`file` should be a csv or a parquet file.")
-            kwargs["filetype"] = filetype
-            return Datasets.load_dataframe(filename, verbose=verbose, **kwargs)
-
-        if base_dir:
-            filepaths = IOLibs.get_filepaths(filename, base_dir)
-        else:
-            filepaths = IOLibs.get_filepaths(filename)
-        if verbose:
-            logger.info(f"Loading {len(filepaths)} dataframes from {filepaths}")
-
-        data = {
-            os.path.basename(f): Datasets.load_dataframe(
-                f, verbose=verbose, filetype=filetype, **kwargs
+        if path in ["dataframe", "df"]:
+            data = Datasets.load_dataframes(
+                data_files,
+                data_dir=data_dir,
+                filetype=filetype,
+                split=split,
+                concatenate=concatenate,
+                use_cached=use_cached,
+                verbose=verbose,
+                **kwargs,
             )
-            for f in filepaths
-        }
-        data = {k: v for k, v in data.items() if v is not None}
-        if len(data) == 1:
-            return list(data.values())[0]
-        elif len(filepaths) > 1:
-            if concatenate:
-                return pd.concat(data.values(), ignore_index=ignore_index)
+            if data:
+                return data if isinstance(data, dict) else {split: data}
             else:
-                return data
+                return {}
         else:
-            logger.warning(f"No files found for {filename}")
-            return None
+            dset = Datasets.load_datasets(
+                path,
+                data_files=data_files,
+                data_dir=data_dir,
+                filetype=filetype,
+                split=split,
+                verbose=verbose,
+            )
+            if isinstance(dset, DatasetType):
+                return {split: dset}
+            else:
+                if concatenate:
+                    return {split: concatenate_datasets(dset.values())}
+                else:
+                    return {k: v for k, v in dset.items() if v is not None}
+
+    @staticmethod
+    def get_data_files(
+        data_files: Optional[
+            Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
+        ] = None,
+        data_dir: Optional[str] = None,
+        split: str = "",
+        recursive: bool = True,
+        use_cached: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ) -> Union[List[str], Dict[str, List[str]]]:
+        if isinstance(data_files, dict):
+            return {
+                name: IOLibs.get_filepaths(
+                    files,
+                    data_dir,
+                    recursive=recursive,
+                    use_cached=use_cached,
+                    verbose=verbose,
+                    **kwargs,
+                )
+                for name, files in data_files.items()
+            }
+        else:
+            filepaths = IOLibs.get_filepaths(
+                data_files,
+                data_dir,
+                recursive=recursive,
+                use_cached=use_cached,
+                verbose=verbose,
+                **kwargs,
+            )
+            return {split: filepaths} if split else filepaths
+
+    @staticmethod
+    def load_dataframes(
+        data_files: Union[str, Sequence[str]],
+        data_dir: str = "",
+        filetype: str = "",
+        split: str = "",
+        concatenate: bool = False,
+        ignore_index: bool = False,
+        use_cached: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ) -> Union[Dict[str, pd.DataFrame], pd.DataFrame]:
+        """Load data from a file or a list of files"""
+        if not data_files:
+            logger.warning("No data_files provided")
+            return {}
+
+        filepaths = Datasets.get_data_files(
+            data_files, data_dir, split=split, use_cached=use_cached, verbose=verbose, **kwargs
+        )
+        print(filepaths)
+        if isinstance(filepaths, dict):
+            data = {
+                name: pd.concat(
+                    [
+                        Datasets.load_dataframe(
+                            f, verbose=verbose, filetype=filetype, **kwargs
+                        )
+                        for f in files
+                    ],
+                    ignore_index=ignore_index,
+                )
+                for name, files in filepaths.items()
+            }
+            data = {k: v for k, v in data.items() if v is not None}
+            return data
+        else:
+            data = {
+                os.path.basename(f): Datasets.load_dataframe(
+                    f, verbose=verbose, filetype=filetype, **kwargs
+                )
+                for f in filepaths
+            }
+            data = {k: v for k, v in data.items() if v is not None}
+            if len(data) == 1:
+                data = list(data.values())[0]
+            elif len(data) > 1:
+                if concatenate or split:
+                    data = pd.concat(data.values(), ignore_index=ignore_index)
+            else:
+                logger.warning(f"No files found for {data_files}")
+                return None
+            return {split: data} if split else data
 
     @staticmethod
     def load_dataframe(
-        filename: str,
-        base_dir: str = "",
-        columns: list = None,  # type: ignore
-        index_col=None,
+        data_file: str,
+        data_dir: str = "",
+        filetype: str = "parquet",
+        columns: Optional[Sequence[str]] = None,
+        index_col: Union[str, int, Sequence[str], Sequence[int], None] = None,
         verbose: bool = False,
         **kwargs,
-    ) -> Union[pd.DataFrame, None]:
+    ) -> pd.DataFrame:
         """Load a dataframe from a file"""
         dtype = kwargs.pop("dtype", None)
         if isinstance(dtype, list):
             dtype = {k: "str" for k in dtype}
         parse_dates = kwargs.pop("parse_dates", False)
 
-        filetype = kwargs.pop("filetype", None) or "parquet"
-        if filename.startswith("http"):
-            filepath = filename
+        if data_file.startswith("http"):
+            filepath = data_file
         else:
-            fileinfo = os.path.splitext(filename)
-            filename = fileinfo[0]
-            filetype = fileinfo[1] if len(fileinfo) > 1 else filetype
-            filetype = "." + filetype.replace(".", "")
-            filename = f"{filename}{filetype}"
-            filepath = os.path.join(base_dir, filename) if base_dir else filename
+            filepath = os.path.join(data_dir, data_file) if data_dir else data_file
             if not os.path.exists(filepath):
                 logger.warning(f"File {filepath} does not exist")
-                return None
+                raise FileNotFoundError(f"File {filepath} does not exist")
+        filetype = (
+            data_file.split(".")[-1]
+            if data_file.split(".")[-1] in ["csv", "tsv", "parquet"]
+            else filetype
+        )
+        filetype = filetype.replace(".", "")
+        if filetype not in ["csv", "tsv", "parquet"]:
+            raise ValueError("`file` should be a csv or a parquet file.")
         if verbose:
             logger.info(f"Loading data from {filepath}")
         with elapsed_timer(format_time=True) as elapsed:
@@ -157,39 +291,39 @@ class Datasets:
         return data
 
     @staticmethod
-    def save_data(
+    def save_dataframes(
         data: Union[pd.DataFrame, dict],
-        filename: str,
-        base_dir: str = "",
-        columns=None,
+        data_file: str,
+        data_dir: str = "",
+        columns: Optional[Sequence[str]] = None,
         index: bool = False,
-        filetype="parquet",
+        filetype: str = "parquet",
         suffix: str = "",
         verbose: bool = False,
         **kwargs,
     ):
         """Save data to a file"""
-        if filename is None:
+        if data_file is None:
             raise ValueError("filename must be specified")
-        fileinfo = os.path.splitext(filename)
-        filename = fileinfo[0]
+        fileinfo = os.path.splitext(data_file)
+        data_file = fileinfo[0]
         filetype = fileinfo[1] if len(fileinfo) > 1 else filetype
         filetype = "." + filetype.replace(".", "")
         if suffix:
-            filename = f"{filename}-{suffix}{filetype}"
+            data_file = f"{data_file}-{suffix}{filetype}"
         else:
-            filename = f"{filename}{filetype}"
-        filepath = os.path.join(base_dir, filename) if base_dir else filename
-        base_dir = os.path.dirname(filepath)
-        filename = os.path.basename(filepath)
-        os.makedirs(base_dir, exist_ok=True)
+            data_file = f"{data_file}{filetype}"
+        filepath = os.path.join(data_dir, data_file) if data_dir else data_file
+        data_dir = os.path.dirname(filepath)
+        data_file = os.path.basename(filepath)
+        os.makedirs(data_dir, exist_ok=True)
 
         if isinstance(data, dict):
             for k, v in data.items():
-                Datasets.save_data(
+                Datasets.save_dataframes(
                     v,
-                    filename,
-                    base_dir=base_dir,
+                    data_file,
+                    data_dir=data_dir,
                     columns=columns,
                     index=index,
                     filetype=filetype,
@@ -297,6 +431,42 @@ class Datasets:
             columns=columns,
             coerce_float=coerce_float,
             nrows=nrows,
+        )
+
+    @staticmethod
+    def concatenate_datasets(
+        dsets: List[DatasetType],
+        info: Optional[DatasetInfo] = None,
+        split: Optional[NamedSplit] = None,
+        axis: int = 0,
+    ) -> DatasetType:
+        """
+        Converts a list of [`Dataset`] with the same schema into a single [`Dataset`].
+
+        Args:
+            dsets (`List[datasets.Dataset]`):
+                List of Datasets to concatenate.
+            info (`DatasetInfo`, *optional*):
+                Dataset information, like description, citation, etc.
+            split (`NamedSplit`, *optional*):
+                Name of the dataset split.
+            axis (`{0, 1}`, defaults to `0`):
+                Axis to concatenate over, where `0` means over rows (vertically) and `1` means over columns
+                (horizontally).
+
+                <Added version="1.6.0"/>
+
+        Example:
+
+        ```py
+        >>> ds3 = concatenate_datasets([ds1, ds2])
+        ```
+        """
+        return concatenate_datasets(
+            dsets=dsets,
+            info=info,
+            split=split,
+            axis=axis,
         )
 
     @staticmethod

@@ -70,6 +70,7 @@ class IOLibs:
         filename_patterns: Union[List[PathLikeType], PathLikeType],
         base_dir: Union[str, PosixPath, WindowsPath] = "",
         recursive: bool = True,
+        use_cached: bool = False,
         verbose: bool = False,
         **kwargs,
     ) -> List[str]:
@@ -84,17 +85,23 @@ class IOLibs:
         base_dir = str(base_dir) if base_dir else ""
         for file in filename_patterns:
             file = str(file)
-            filepath = os.path.join(base_dir, file) if base_dir else file
-            if os.path.exists(filepath):
-                if Path(filepath).is_file():
-                    filepaths.append(filepath)
+            if file.startswith("http") and not use_cached:
+                filepaths.append(file)
             else:
-                if os.path.dirname(file) != "":
-                    _dir = os.path.dirname(file)
-                    file = os.path.basename(file)
-                    base_dir = os.path.join(base_dir, _dir) if base_dir else _dir
-                filepaths += IOLibs.glob_re(file, base_dir, recursive=recursive)
-        filepaths = [fp for fp in filepaths if Path(fp).is_file()]
+                if file.startswith("http"):
+                    filepath = IOLibs.cached_path(file, **kwargs)
+                else:
+                    filepath = os.path.join(base_dir, file) if base_dir else file
+                if os.path.exists(filepath):
+                    if Path(filepath).is_file():
+                        filepaths.append(filepath)
+                else:
+                    if os.path.dirname(file) != "":
+                        _dir = os.path.dirname(file)
+                        file = os.path.basename(file)
+                        base_dir = os.path.join(base_dir, _dir) if base_dir else _dir
+                    filepaths += IOLibs.glob_re(file, base_dir, recursive=recursive)
+        filepaths = [fp for fp in filepaths if Path(fp).is_file() or fp.startswith("http")]
         if verbose:
             logger.info(f"Processing [{len(filepaths)}] files from {filename_patterns}")
 
@@ -419,7 +426,7 @@ class IOLibs:
                     cache_dir=cache_dir,
                 )
             else:
-                if _cached_path is None or gdown is None:
+                if _cached_path is None:
                     raise ImportError(
                         "Error importing required libraries 'cached-path'. "
                         "Please install them using 'pip install cached-path' and try again."

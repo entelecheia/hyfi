@@ -16,7 +16,7 @@ from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
-from hyfi.utils.datasets import Datasets
+from hyfi.utils.datasets import Datasets, DatasetType, DatasetLikeType
 from hyfi.utils.envs import Envs
 from hyfi.utils.funcs import Funcs
 from hyfi.utils.gpumon import nvidia_smi, set_cuda
@@ -400,7 +400,7 @@ class HyFI:
         num_proc: Optional[int] = None,
         storage_options: Optional[Dict] = None,
         **config_kwargs,
-    ) -> Any:
+    ) -> DatasetLikeType:
         """Load a dataset from the Hugging Face Hub, or a local dataset.
 
         It also allows to load a dataset from a local directory or a dataset repository on the Hugging Face Hub without dataset script.
@@ -570,73 +570,158 @@ class HyFI:
         )
 
     @staticmethod
-    def save_data(
+    def concatenate_data(
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
+        columns: Optional[Sequence[str]] = None,
+        add_split_key_column: bool = False,
+        added_column_name: str = "_name_",
+        ignore_index: bool = True,
+        axis: int = 0,
+        split: Optional[str] = None,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        return Datasets.concatenate_data(
+            data,
+            columns,
+            add_split_key_column,
+            added_column_name,
+            ignore_index,
+            axis,
+            split,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def concatenate_dataframes(
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame]],
+        columns: Optional[Sequence[str]] = None,
+        add_split_key_column: bool = False,
+        added_column_name: str = "_name_",
+        ignore_index: bool = True,
+        axis: int = 0,
+        verbose: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
+        return Datasets.concatenate_dataframes(
+            data,
+            columns,
+            add_split_key_column,
+            added_column_name,
+            ignore_index,
+            axis,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def load_data(
+        path: Optional[str] = "dataframe",
+        data_files: Optional[Union[str, Sequence[str]]] = None,
+        data_dir: Optional[str] = "",
+        filetype: Optional[str] = "",
+        split: Optional[str] = "train",
+        concatenate: Optional[bool] = False,
+        use_cached: bool = False,
+        verbose: Optional[bool] = False,
+        **kwargs,
+    ) -> Union[Dict[str, pd.DataFrame], Dict[str, DatasetType]]:
+        return Datasets.load_data(
+            path,
+            data_files,
+            data_dir,
+            filetype,
+            split,
+            concatenate,
+            use_cached,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def get_data_files(
+        data_files: Optional[
+            Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
+        ] = None,
+        data_dir: Optional[str] = None,
+        split: str = "",
+        recursive: bool = True,
+        use_cached: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ) -> Union[List[str], Dict[str, List[str]]]:
+        return Datasets.get_data_files(
+            data_files, data_dir, split, recursive, use_cached, verbose, **kwargs
+        )
+
+    @staticmethod
+    def load_dataframes(
+        data_files: Union[str, Sequence[str]],
+        data_dir: str = "",
+        filetype: str = "",
+        split: str = "",
+        concatenate: bool = False,
+        ignore_index: bool = False,
+        use_cached: bool = False,
+        verbose: bool = False,
+        **kwargs,
+    ) -> Union[Dict[str, pd.DataFrame], pd.DataFrame]:
+        """Load data from a file or a list of files"""
+        return Datasets.load_dataframes(
+            data_files,
+            data_dir,
+            filetype,
+            split,
+            concatenate,
+            ignore_index,
+            use_cached,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
+    def load_dataframe(
+        data_file: str,
+        data_dir: str = "",
+        filetype: str = "parquet",
+        columns: Optional[Sequence[str]] = None,
+        index_col: Union[str, int, Sequence[str], Sequence[int], None] = None,
+        verbose: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
+        """Load a dataframe from a file"""
+        return Datasets.load_dataframe(
+            data_file, data_dir, filetype, columns, index_col, verbose, **kwargs
+        )
+
+    @staticmethod
+    def save_dataframes(
         data: Union[pd.DataFrame, dict],
-        filename: str,
-        base_dir: str = "",
-        columns=None,
+        data_file: str,
+        data_dir: str = "",
+        columns: Optional[Sequence[str]] = None,
         index: bool = False,
-        filetype="parquet",
+        filetype: str = "parquet",
         suffix: str = "",
         verbose: bool = False,
         **kwargs,
     ):
-        Datasets.save_data(
+        """Save data to a file"""
+        Datasets.save_dataframes(
             data,
-            filename,
-            base_dir=base_dir,
-            columns=columns,
-            index=index,
-            filetype=filetype,
-            suffix=suffix,
-            verbose=verbose,
+            data_file,
+            data_dir,
+            columns,
+            index,
+            filetype,
+            suffix,
+            verbose,
             **kwargs,
         )
 
     @staticmethod
-    def load_data(filename=None, base_dir=None, filetype=None, verbose=False, **kwargs):
-        if filename is not None:
-            filename = str(filename)
-        if SpecialKeys.TARGET in kwargs:
-            return XC.instantiate(
-                kwargs,
-                filename=filename,
-                base_dir=base_dir,
-                verbose=verbose,
-                filetype=filetype,
-            )
-        if filename is None:
-            raise ValueError("filename must be specified")
-        return Datasets.load_data(
-            filename,
-            base_dir=base_dir,
-            verbose=verbose,
-            filetype=filetype,
-            **kwargs,
-        )
-
-    @staticmethod
-    def concat_data(
-        data,
-        columns=None,
-        add_key_as_name=False,
-        name_column="_name_",
-        ignore_index=True,
-        verbose=False,
-        **kwargs,
-    ):
-        return Datasets.concat_data(
-            data,
-            columns=columns,
-            add_key_as_name=add_key_as_name,
-            name_column=name_column,
-            ignore_index=ignore_index,
-            verbose=verbose,
-            **kwargs,
-        )
-
-    @staticmethod
-    def is_dataframe(data):
+    def is_dataframe(data) -> bool:
         return Datasets.is_dataframe(data)
 
     @staticmethod

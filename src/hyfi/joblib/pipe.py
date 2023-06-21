@@ -5,7 +5,7 @@ from tqdm.auto import tqdm
 
 from hyfi.composer import SpecialKeys
 from hyfi.composer.extended import XC
-from hyfi.joblib.batch import batcher
+from hyfi.joblib import JobLibConfig
 from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.utils.logging import Logging
 
@@ -51,7 +51,7 @@ class PIPE:
         num_workers=None,
         **kwargs,
     ):
-        batcher_instance = batcher.batcher_instance
+        batcher_instance = JobLibConfig().__batcher_instance__
         if use_batcher and batcher_instance is not None:
             batcher_minibatch_size = batcher_instance.minibatch_size
             if minibatch_size is None:

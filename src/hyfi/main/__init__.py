@@ -26,7 +26,7 @@ from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
-from hyfi.joblib.pipe import PIPE
+from hyfi.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import Envs
@@ -245,12 +245,11 @@ class HyFI:
 
     @staticmethod
     def partial(
-        config: Any = None,
-        config_group: Union[str, None] = None,
+        func_name: str,
         *args: Any,
         **kwargs: Any,
-    ) -> Any:
-        return XC.partial(config=config, config_group=config_group, *args, **kwargs)
+    ) -> Callable:
+        return XC.partial(func_name, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
@@ -371,8 +370,8 @@ class HyFI:
     # Batcher related functions
     ###############################
     @staticmethod
-    def pipe(data=None, cfg=None):
-        return PIPE.pipe(data, cfg)
+    def pipe(data: Any, pipe_config: Dict):
+        return PIPE.pipe(data, pipe_config)
 
     @staticmethod
     def apply(

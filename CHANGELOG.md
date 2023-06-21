@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.12.1 (2023-06-21)
+
+### Fix
+
+* **pipe:** Fix incorrect value in PipeConfig init method ([`dc9018d`](https://github.com/entelecheia/hyfi/commit/dc9018d2ca620ef261baf9c3a5d4ce08b4aa3205))
+* **main:** Add optional arguments to joblib and dotenv methods and add pipe_config method ([`2879e49`](https://github.com/entelecheia/hyfi/commit/2879e490df879b306f9fb908c27ce5bbe11a9613))
+
 ## v0.12.0 (2023-06-21)
 
 ### Feature

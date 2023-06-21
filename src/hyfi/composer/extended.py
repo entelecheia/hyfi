@@ -2,7 +2,7 @@ import importlib
 import inspect
 import os
 import random
-from typing import Any, Callable
+from typing import Any, Callable, Dict, Union
 
 import hydra
 from omegaconf import OmegaConf
@@ -29,11 +29,14 @@ class XC(Composer):
 
     @staticmethod
     def partial(
-        func_name: str,
+        config: Union[str, Dict],
         *args: Any,
         **kwargs: Any,
     ) -> Callable:
-        config = {SpecialKeys.TARGET: func_name}
+        if isinstance(config, str):
+            config = {SpecialKeys.TARGET: config}
+        else:
+            config = XC.to_dict(config)
         config[SpecialKeys.PARTIAL] = True
         return XC.instantiate(config, *args, **kwargs)
 

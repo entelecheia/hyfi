@@ -1,6 +1,9 @@
 """
 A class to apply a pipe to a dataframe or a dictionary of dataframes.
 """
+from typing import Callable, Mapping, Optional, Sequence, Union
+
+import pandas as pd
 from tqdm.auto import tqdm
 
 from hyfi.composer import SpecialKeys
@@ -43,12 +46,12 @@ class PIPE:
 
     @staticmethod
     def apply(
-        func,
-        series,
-        description=None,
-        use_batcher=True,
-        minibatch_size=None,
-        num_workers=None,
+        func: Callable,
+        series: Union[pd.Series, pd.DataFrame, Sequence, Mapping],
+        description: Optional[str] = None,
+        use_batcher: bool = True,
+        minibatch_size: Optional[int] = None,
+        num_workers: Optional[int] = None,
         **kwargs,
     ):
         batcher_instance = JobLibConfig().__batcher_instance__

@@ -4,7 +4,18 @@
 """
 import os
 from pathlib import Path, PosixPath, WindowsPath
-from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
@@ -365,13 +376,12 @@ class HyFI:
 
     @staticmethod
     def apply(
-        func,
-        series,
-        description=None,
-        use_batcher=True,
-        minibatch_size=None,
-        num_workers=None,
-        verbose=False,
+        func: Callable,
+        series: Union[pd.Series, pd.DataFrame, Sequence, Mapping],
+        description: Optional[str] = None,
+        use_batcher: bool = True,
+        minibatch_size: Optional[int] = None,
+        num_workers: Optional[int] = None,
         **kwargs,
     ):
         return PIPE.apply(
@@ -381,7 +391,6 @@ class HyFI:
             use_batcher=use_batcher,
             minibatch_size=minibatch_size,
             num_workers=num_workers,
-            verbose=verbose,
             **kwargs,
         )
 

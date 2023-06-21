@@ -2,7 +2,7 @@ import importlib
 import inspect
 import os
 import random
-from typing import Any, Union
+from typing import Any, Callable, Dict, Union
 
 import hydra
 from omegaconf import OmegaConf
@@ -29,17 +29,18 @@ class XC(Composer):
 
     @staticmethod
     def partial(
-        config: Any = None,
-        config_group: Union[str, None] = None,
+        config: Union[str, Dict],
         *args: Any,
         **kwargs: Any,
-    ) -> Any:
-        if config is None and config_group is None:
-            logger.warning("No config specified")
-            return None
-        elif config_group is not None:
-            config = XC._compose(config_group=config_group)
-        kwargs[SpecialKeys.PARTIAL] = True
+    ) -> Callable:
+        if isinstance(config, str):
+            config = {SpecialKeys.TARGET.value: config}
+        else:
+            config = XC.to_dict(config)
+        config[SpecialKeys.PARTIAL.value] = True
+        rcParams = config.pop(SpecialKeys.rcPARAMS, {})
+        if rcParams and kwargs:
+            kwargs = kwargs.update(rcParams)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod

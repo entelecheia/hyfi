@@ -137,6 +137,7 @@ class HyfiConfig(BaseModel):
         global_workspace_name: str = "",
         num_workers: int = -1,
         log_level: str = "",
+        reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,
@@ -199,9 +200,13 @@ class HyfiConfig(BaseModel):
         # Set the retina matplotlib formats.
         if retina:
             NBs.set_matplotlib_formats("retina")
-        self.initialize()
+        self.initialize(reinit=reinit)
 
-    def initialize(self, config: Union[DictConfig, Dict, None] = None):
+    def initialize(
+        self,
+        config: Union[DictConfig, Dict, None] = None,
+        reinit: bool = False,
+    ):
         """
         Initialize hyfi.
 
@@ -213,7 +218,7 @@ class HyfiConfig(BaseModel):
         """
         """Initialize hyfi config"""
         # Returns the current value of the __initilized__ attribute.
-        if self.__initilized__:
+        if self.__initilized__ and not reinit:
             return
         __hydra_config__.hyfi_config_module = self.hyfi_config_module
         __hydra_config__.hyfi_config_path = self.hyfi_config_path
@@ -234,8 +239,8 @@ class HyfiConfig(BaseModel):
         self.project = ProjectConfig(**config["project"])
         # self.project.init_project()
         # Initialize joblib backend if joblib is not set.
-        if self.project.joblib:
-            self.project.joblib.init_backend()
+        # if self.project.joblib:
+        #     self.project.joblib.init_backend()
 
         self.__initilized__ = True
 

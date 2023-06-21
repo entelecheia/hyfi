@@ -431,9 +431,6 @@ class Batcher(object):
             setattr(self, key, params[key])
 
 
-batcher_instance: Batcher
-
-
 @contextlib.contextmanager
 def tqdm_joblib(tqdm_object):
     """Context manager to patch joblib to report into tqdm progress bar given as argument"""

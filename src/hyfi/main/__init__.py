@@ -4,7 +4,18 @@
 """
 import os
 from pathlib import Path, PosixPath, WindowsPath
-from typing import IO, Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 import pandas as pd
 from omegaconf import DictConfig, ListConfig, SCMode
@@ -14,7 +25,8 @@ from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
-from hyfi.joblib.pipe import PIPE
+from hyfi.joblib import JobLibConfig
+from hyfi.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import Envs
@@ -70,6 +82,7 @@ class HyFI:
         global_workspace_name: str = "",
         num_workers: int = -1,
         log_level: str = "",
+        reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,
@@ -102,6 +115,7 @@ class HyFI:
             global_workspace_name=global_workspace_name,
             num_workers=num_workers,
             log_level=log_level,
+            reinit=reinit,
             autotime=autotime,
             retina=retina,
             verbose=verbose,
@@ -121,6 +135,11 @@ class HyFI:
     def terminate():
         """Terminate the global config"""
         __global_config__.terminate()
+
+    @staticmethod
+    def joblib() -> JobLibConfig:
+        """Return the joblib pipe"""
+        return JobLibConfig()
 
     @staticmethod
     def dotenv() -> DotEnvConfig:
@@ -228,12 +247,11 @@ class HyFI:
 
     @staticmethod
     def partial(
-        config: Any = None,
-        config_group: Union[str, None] = None,
+        config: Union[str, Dict],
         *args: Any,
         **kwargs: Any,
-    ) -> Any:
-        return XC.partial(config=config, config_group=config_group, *args, **kwargs)
+    ) -> Callable:
+        return XC.partial(config, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
@@ -354,18 +372,17 @@ class HyFI:
     # Batcher related functions
     ###############################
     @staticmethod
-    def pipe(data=None, cfg=None):
-        return PIPE.pipe(data, cfg)
+    def pipe(data: Any, pipe_config: Dict):
+        return PIPE.pipe(data, pipe_config)
 
     @staticmethod
     def apply(
-        func,
-        series,
-        description=None,
-        use_batcher=True,
-        minibatch_size=None,
-        num_workers=None,
-        verbose=False,
+        func: Callable,
+        series: Union[pd.Series, pd.DataFrame, Sequence, Mapping],
+        description: Optional[str] = None,
+        use_batcher: bool = True,
+        minibatch_size: Optional[int] = None,
+        num_workers: Optional[int] = None,
         **kwargs,
     ):
         return PIPE.apply(
@@ -375,7 +392,6 @@ class HyFI:
             use_batcher=use_batcher,
             minibatch_size=minibatch_size,
             num_workers=num_workers,
-            verbose=verbose,
             **kwargs,
         )
 

@@ -1,15 +1,42 @@
 """
 A class to apply a pipe to a dataframe or a dictionary of dataframes.
 """
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
+
+import pandas as pd
+from pydantic import BaseModel, validator
 from tqdm.auto import tqdm
 
 from hyfi.composer import SpecialKeys
 from hyfi.composer.extended import XC
-from hyfi.joblib.batch import batcher
+from hyfi.joblib import JobLibConfig
 from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.utils.logging import Logging
 
 logger = Logging.getLogger(__name__)
+
+
+class PipeConfig(BaseModel):
+    """Pipe Configuration"""
+
+    _func_: Union[str, Dict] = "hyfi.pipe.funcs.apply_pipe_func"
+    _type_: str = "instance"
+    _method_: str = ""
+    apply_to: Union[str, List[str], None] = "text"
+    rcParams: Union[Dict, None] = None
+    use_batcher: bool = True
+    num_workers: Optional[int] = 1
+    verbose: bool = False
+
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+
+    @validator("rcParams", pre=True, always=True)
+    def _validate_rcParams(cls, v):
+        if v is None:
+            return {}
+        return v
 
 
 class PIPE:
@@ -18,40 +45,23 @@ class PIPE:
     """
 
     @staticmethod
-    def pipe(data, pipe):
-        _func_ = pipe.get(SpecialKeys.FUNC)
+    def pipe(data: Any, pipe_config: Dict):
+        _func_ = pipe_config.get(SpecialKeys.FUNC)
         _fn = XC.partial(_func_)
         logger.info("Applying pipe: %s", _fn)
-        if isinstance(data, dict):
-            if "concat_dataframes" in str(_fn):
-                return _fn(data, pipe)
-            dfs = {}
-            for df_no, df_name in enumerate(data):
-                df_each = data[df_name]
-
-                logger.info(
-                    "Applying pipe to dataframe [%s], %d/%d",
-                    df_name,
-                    df_no + 1,
-                    len(data),
-                )
-
-                pipe[SpecialKeys.SUFFIX.value] = df_name
-                dfs[df_name] = _fn(df_each, pipe)
-            return dfs
-        return _fn(data, pipe)
+        return _fn(data, pipe_config)
 
     @staticmethod
     def apply(
-        func,
-        series,
-        description=None,
-        use_batcher=True,
-        minibatch_size=None,
-        num_workers=None,
+        func: Callable,
+        series: Union[pd.Series, pd.DataFrame, Sequence, Mapping],
+        description: Optional[str] = None,
+        use_batcher: bool = True,
+        minibatch_size: Optional[int] = None,
+        num_workers: Optional[int] = None,
         **kwargs,
     ):
-        batcher_instance = batcher.batcher_instance
+        batcher_instance = JobLibConfig().__batcher_instance__
         if use_batcher and batcher_instance is not None:
             batcher_minibatch_size = batcher_instance.minibatch_size
             if minibatch_size is None:

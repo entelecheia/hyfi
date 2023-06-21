@@ -1,0 +1,8 @@
+defaults:
+  - __init__
+
+_type_: external
+_method_:
+  _target_:
+  _name_:
+  rcParams:

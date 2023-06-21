@@ -1,0 +1,5 @@
+defaults:
+  - __init__
+
+_type_: lambda
+_method_:

@@ -36,13 +36,13 @@ class SpecialKeys(str, Enum):
     EXEC = "_exec_"
     FUNC = "_func_"
     METHOD = "_method_"
-    METHOD_NAME = "_name_"
-    NAME = "name"
+    NAME = "_name_"
     PARTIAL = "_partial_"
     rcPARAMS = "rcParams"
     RECURSIVE = "_recursive_"
     SUFFIX = "suffix"
     TARGET = "_target_"
+    TYPE = "_type_"
     VERBOSE = "verbose"
 
 

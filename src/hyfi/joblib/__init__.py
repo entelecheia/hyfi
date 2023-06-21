@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from hyfi.__global__ import __about__
+from hyfi import __global__
 from hyfi.composer import BaseConfig
 from hyfi.joblib.batch import batcher
 from hyfi.utils.logging import Logging
@@ -39,6 +39,7 @@ class JobLibConfig(BaseConfig):
     distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
+    __batcher_instance__: Any = None
 
     class Config:
         extra = "allow"
@@ -50,6 +51,7 @@ class JobLibConfig(BaseConfig):
         self.distributed_framework = DistFramworkConfig.parse_obj(
             self.__dict__["distributed_framework"]
         )
+        self.init_backend()
 
     def init_backend(
         self,
@@ -75,18 +77,19 @@ class JobLibConfig(BaseConfig):
                 ray.init(**ray_cfg)
                 backend_handle = ray
 
-            batcher.batcher_instance = batcher.Batcher(
+            __global__.__batcher_instance__ = batcher.Batcher(
                 backend_handle=backend_handle, **self.batcher.dict()
             )
-            logger.debug(f"initialized batcher with {batcher.batcher_instance}")
+            self.__batcher_instance__ = __global__.__batcher_instance__
+            logger.debug("initialized batcher with %s", __global__.__batcher_instance__)
         self.__initilized__ = True
 
     def stop_backend(self):
         """Stop the backend for joblib"""
         backend = self.distributed_framework.backend
-        if batcher.batcher_instance:
+        if __global__.__batcher_instance__:
             logger.debug("stopping batcher")
-            del batcher.batcher_instance
+            del __global__.__batcher_instance__
 
         logger.debug("stopping distributed framework")
         if self.distributed_framework.initialize:

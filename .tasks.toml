@@ -47,7 +47,7 @@ shell = "pytest --cov=src --cov-report=xml --cov-fail-under=50 --junitxml=tests/
 help = "run tests with pytest and generate a coverage report, fail if coverage is below 80%"
 
 [tool.poe.tasks.clean-cov]
-cmd = "rm -rf .coverage tests/htmlcov tests/pytest.xml tests/pytest-coverage.txt"
+cmd = "rm -rf .coverage* tests/htmlcov tests/pytest.xml tests/pytest-coverage.txt"
 help = "remove coverage reports"
 
 [tool.poe.tasks.clean-pycache]

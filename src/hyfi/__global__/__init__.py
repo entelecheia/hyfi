@@ -11,6 +11,7 @@ __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "default"
 
 __about__ = AboutConfig()
+__batcher_instance__ = None
 
 
 class HydraConfig(BaseModel):

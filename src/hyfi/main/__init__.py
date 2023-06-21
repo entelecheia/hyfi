@@ -14,6 +14,7 @@ from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
+from hyfi.joblib import JobLibConfig
 from hyfi.joblib.pipe import PIPE
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
@@ -121,6 +122,11 @@ class HyFI:
     def terminate():
         """Terminate the global config"""
         __global_config__.terminate()
+
+    @staticmethod
+    def joblib() -> JobLibConfig:
+        """Return the joblib pipe"""
+        return JobLibConfig()
 
     @staticmethod
     def dotenv() -> DotEnvConfig:

@@ -42,7 +42,7 @@ class HyfiConfig(BaseModel):
 
     debug_mode: bool = False
     print_config: bool = False
-    print_resolved_config: bool = False
+    resolve: bool = False
     verbose: bool = False
     logging_level: str = "WARNING"
 

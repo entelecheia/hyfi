@@ -13,6 +13,8 @@ from hyfi.utils.logging import Logging
 
 logger = Logging.getLogger(__name__)
 
+batcher_instance = None
+
 
 class Batcher(object):
     """Scheduler to handle parallel jobs on minibatches
@@ -429,9 +431,6 @@ class Batcher(object):
     def __setstate__(self, params):
         for key in params:
             setattr(self, key, params[key])
-
-
-batcher_instance: Batcher
 
 
 @contextlib.contextmanager

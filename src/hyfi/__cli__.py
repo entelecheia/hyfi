@@ -70,7 +70,7 @@ def cli_main(cfg: DictConfig) -> None:
     verbose = hyfi.verbose
     app_name = hyfi.about.name
     print_config = hyfi.print_config
-    print_resolved_config = hyfi.print_resolved_config
+    resolve = hyfi.resolve
 
     # Print out the command line interface for the application.
     if verbose:
@@ -80,7 +80,7 @@ def cli_main(cfg: DictConfig) -> None:
     # Print the configuration to the console.
     if print_config:
         # Prints the configuration to the console.
-        if print_resolved_config:
+        if resolve:
             logger.info("## hydra configuration resolved ##")
             HyFI.pprint(cfg)
         else:

@@ -36,7 +36,7 @@ class Datasets:
 
     @staticmethod
     def concatenate_data(
-        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], Sequence[Dataset]],
         columns: Optional[Sequence[str]] = None,
         add_split_key_column: bool = False,
         added_column_name: str = "_name_",

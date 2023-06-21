@@ -12,7 +12,7 @@ def test_dataframe_load_and_save():
     HyFI.save_dataframes(df, "tmp/meta-test.parquet")
 
 
-def test_dataset_load():
+def test_data_load_and_concat():
     dataset = HyFI.load_data("glue", "mrpc")
     print(dataset)
     ds = dataset["train"].to_pandas()
@@ -33,4 +33,4 @@ def test_dataset_load():
 
 if __name__ == "__main__":
     test_dataframe_load_and_save()
-    test_dataset_load()
+    test_data_load_and_concat()

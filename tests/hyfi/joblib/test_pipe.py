@@ -24,7 +24,7 @@ def test_pipe():
         num_workers=10,
     )
     print(df3)
-    pipe_config = HyFI.compose("pipe=__init__")
+    pipe_config = HyFI.compose("pipe=__instance__")
     pipe_config._method_ = "filter"
     pipe_config.apply_to = ""
     pipe_config.rcParams = {"items": ["text"]}
@@ -32,7 +32,14 @@ def test_pipe():
     print(pipe_config)
     df4 = HyFI.pipe(df, pipe_config)
     print(df4)
-    print(df4["text"].str.replace("Economic", "ECON").head())
+    pipe_config = HyFI.compose("pipe=__lambda__")
+    pipe_config._method_ = "lambda x: x.replace('Economic', 'ECON')"
+    pipe_config.apply_to = "text"
+    pipe_config.num_workers = 5
+    pipe_config.verbose = True
+    print(pipe_config)
+    df5 = HyFI.pipe(df, pipe_config)
+    print(df5)
 
 
 if __name__ == "__main__":

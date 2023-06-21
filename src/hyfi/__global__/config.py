@@ -213,8 +213,8 @@ class HyfiConfig(BaseModel):
         """
         """Initialize hyfi config"""
         # Returns the current value of the __initilized__ attribute.
-        if self.__initilized__:
-            return
+        # if self.__initilized__:
+        #     return
         __hydra_config__.hyfi_config_module = self.hyfi_config_module
         __hydra_config__.hyfi_config_path = self.hyfi_config_path
         __hydra_config__.hyfi_user_config_path = self.hyfi_user_config_path

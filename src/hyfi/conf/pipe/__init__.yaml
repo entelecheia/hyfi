@@ -1,4 +1,5 @@
-_func_: hyfi.pipe.funcs.data_class_methods
+_func_:
+  _target_: hyfi.pipe.funcs.data_class_methods
 _method_:
 apply_to: text
 rcParams:

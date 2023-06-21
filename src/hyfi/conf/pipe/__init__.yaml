@@ -1,5 +1,5 @@
-_func_: hyfi.pipe.pipe_fucntion
+_func_: hyfi.pipe.funcs.data_class_methods
 _method_:
-apply_to:
+apply_to: text
 rcParams:
 verbose: false

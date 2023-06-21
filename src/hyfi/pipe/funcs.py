@@ -14,6 +14,8 @@ logger = Logging.getLogger(__name__)
 
 def data_class_methods(data: Any, config_kwargs: Dict):
     config = PipeConfig(**config_kwargs)
+    if not config._method_:
+        raise ValueError("No method specified")
     if config.verbose:
         logger.info("Running dataframe function: %s", config_kwargs)
     if isinstance(data, dict):

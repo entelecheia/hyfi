@@ -19,7 +19,7 @@ logger = Logging.getLogger(__name__)
 class PipeConfig(BaseModel):
     """Pipe Configuration"""
 
-    _func_: str = "hyfi.pipe.funcs.data_class_methods"
+    _func_: Union[str, Dict] = "hyfi.pipe.funcs.data_class_methods"
     _method_: str = ""
     apply_to: Union[str, List[str], None] = "text"
     rcParams: dict = {}

@@ -46,7 +46,8 @@ class Datasets:
         verbose: bool = False,
         **kwargs,
     ) -> Union[pd.DataFrame, DatasetType]:
-        if isinstance(data, List(DatasetType)):
+        # if data is a list of datasets, concatenate them
+        if isinstance(data, list) and isinstance(data[0], Dataset):
             return Datasets.concatenate_datasets(
                 data,
                 axis=axis,

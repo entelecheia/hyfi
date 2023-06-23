@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.12.3 (2023-06-23)
+
+### Fix
+
+* **datasets:** Add save_dataframe method ([`9633738`](https://github.com/entelecheia/hyfi/commit/9633738481d2dc8c3d8434fca7d8e059247f0ac9))
+
 ## v0.12.2 (2023-06-21)
 
 ### Fix

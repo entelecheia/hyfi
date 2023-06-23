@@ -719,6 +719,31 @@ class HyFI:
         )
 
     @staticmethod
+    def save_dataframe(
+        data: pd.DataFrame,
+        data_file: str,
+        data_dir: str = "",
+        columns: Optional[Sequence[str]] = None,
+        index: bool = False,
+        filetype: str = "parquet",
+        suffix: str = "",
+        verbose: bool = False,
+        **kwargs,
+    ):
+        """Save data to a file"""
+        Datasets.save_dataframes(
+            data,
+            data_file,
+            data_dir,
+            columns,
+            index,
+            filetype,
+            suffix,
+            verbose,
+            **kwargs,
+        )
+
+    @staticmethod
     def save_dataframes(
         data: Union[pd.DataFrame, dict],
         data_file: str,

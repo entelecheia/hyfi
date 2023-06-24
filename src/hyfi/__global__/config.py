@@ -126,10 +126,9 @@ class HyfiConfig(BaseModel):
         """
         super().__init__(**config_kwargs)
 
-    def init_workspace(
+    def init_project(
         self,
         project_name: str = "",
-        task_name: str = "",
         project_description: str = "",
         project_root: str = "",
         project_workspace_name: str = "",
@@ -148,7 +147,6 @@ class HyfiConfig(BaseModel):
 
         Args:
                 project_name: Name of the project to use.
-                task_name: Name of the task to use.
                 project_description: Description of the project that will be used.
                 project_root: Root directory of the project.
                 project_workspace_name: Name of the project's workspace directory.
@@ -164,9 +162,6 @@ class HyfiConfig(BaseModel):
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
             envs.HYFI_PROJECT_NAME = Envs.expand_posix_vars(project_name)
-        # Set the task name environment variable HYFI_TASK_NAME to the task name.
-        if task_name:
-            envs.HYFI_TASK_NAME = Envs.expand_posix_vars(task_name)
         # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
         if project_description:
             envs.HYFI_PROJECT_DESC = Envs.expand_posix_vars(project_description)

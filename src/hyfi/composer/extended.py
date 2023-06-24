@@ -38,9 +38,9 @@ class XC(Composer):
         else:
             config = XC.to_dict(config)
         config[SpecialKeys.PARTIAL.value] = True
-        rcParams = config.pop(SpecialKeys.rcPARAMS, {})
-        if rcParams and kwargs:
-            kwargs = kwargs.update(rcParams)
+        rc_kwargs_ = config.pop(SpecialKeys.KWARGS, {})
+        if rc_kwargs_ and kwargs:
+            kwargs = kwargs.update(rc_kwargs_)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod

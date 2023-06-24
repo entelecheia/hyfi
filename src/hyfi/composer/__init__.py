@@ -38,7 +38,7 @@ class SpecialKeys(str, Enum):
     METHOD = "_method_"
     NAME = "_name_"
     PARTIAL = "_partial_"
-    rcPARAMS = "rcParams"
+    KWARGS = "_kwargs_"
     RECURSIVE = "_recursive_"
     SUFFIX = "suffix"
     TARGET = "_target_"
@@ -540,7 +540,7 @@ class Composer(BaseModel):
                 _call_ = True
             if _call_:
                 _fn = getattr(obj, _method_[SpecialKeys.METHOD_NAME])
-                _parms = _method_.pop(SpecialKeys.rcPARAMS, {})
+                _parms = _method_.pop(SpecialKeys.KWARGS, {})
                 if return_function:
                     if not _parms:
                         logger.info(f"Returning function {_fn}")
@@ -563,7 +563,7 @@ class Composer(BaseModel):
                         _call_ = True
                     if _call_:
                         getattr(obj, _each_method[SpecialKeys.METHOD_NAME])(
-                            **_each_method[SpecialKeys.rcPARAMS]
+                            **_each_method[SpecialKeys.KWARGS]
                         )
                     else:
                         logger.info(f"Skipping call to {_each_method}")
@@ -590,6 +590,8 @@ class Composer(BaseModel):
 class BaseConfig(BaseModel):
     config_name: str = "__init__"
     config_group: str = ""
+    name: str = ""
+    desc: str = ""
 
     class Config:
         arbitrary_types_allowed = True

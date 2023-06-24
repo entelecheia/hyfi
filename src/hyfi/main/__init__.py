@@ -72,9 +72,8 @@ class HyFI:
         _about(cfg)
 
     @staticmethod
-    def init_workspace(
+    def init_project(
         project_name: str = "",
-        task_name: str = "",
         project_description: str = "",
         project_root: str = "",
         project_workspace_name: str = "",
@@ -92,22 +91,20 @@ class HyFI:
         Initialize and start hyfi.
 
         Args:
-                project_name: Name of the project to use.
-                task_name: Name of the task to use.
-                project_description: Description of the project that will be used.
-                project_root: Root directory of the project.
-                project_workspace_name: Name of the project's workspace directory.
-                global_hyfi_root: Root directory of the global hyfi.
-                global_workspace_name: Name of the global hierachical workspace directory.
-                num_workers: Number of workers to run.
-                log_level: Log level for the log.
-                autotime: Whether to automatically set time and / or keep track of run times.
-                retina: Whether to use retina or not.
-                verbose: Enables or disables logging
+            project_name: Name of the project to use.
+            project_description: Description of the project that will be used.
+            project_root: Root directory of the project.
+            project_workspace_name: Name of the project's workspace directory.
+            global_hyfi_root: Root directory of the global hyfi.
+            global_workspace_name: Name of the global hierachical workspace directory.
+            num_workers: Number of workers to run.
+            log_level: Log level for the log.
+            autotime: Whether to automatically set time and / or keep track of run times.
+            retina: Whether to use retina or not.
+            verbose: Enables or disables logging
         """
-        __global_config__.init_workspace(
+        __global_config__.init_project(
             project_name=project_name,
-            task_name=task_name,
             project_description=project_description,
             project_root=project_root,
             project_workspace_name=project_workspace_name,

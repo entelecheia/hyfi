@@ -1,4 +1,10 @@
 _func_: hyfi.pipe.funcs.apply_pipe_func
+uses:
+name:
+desc:
+run:
+with:
+env:
 apply_to: text
 rcParams:
 use_batcher: true

@@ -89,4 +89,4 @@ class PIPE:
         if batcher_instance is None:
             logger.info("Warning: batcher not initialized")
         tqdm.pandas(desc=description)
-        return series.progress_apply(func)
+        return series.progress_apply(func)  # type: ignore

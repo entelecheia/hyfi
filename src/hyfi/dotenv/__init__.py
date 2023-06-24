@@ -72,13 +72,7 @@ class DotEnvConfig(BaseSettings):
 
     @root_validator()
     def check_and_set_osenvs(cls, values):
-        for k, v in values.items():
-            if v is not None:
-                old_value = os.getenv(k.upper())
-                if old_value is None or old_value != str(v):
-                    os.environ[k.upper()] = str(v)
-                    logger.debug(f"Set environment variable {k.upper()}={v}")
-        return values
+        return Envs.check_and_set_osenvs(values)
 
     @property
     def os(self):

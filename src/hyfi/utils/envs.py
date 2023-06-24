@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 from pathlib import Path
 from string import Template
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 import dotenv
 import hydra
@@ -166,3 +166,9 @@ class Envs:
                 os.environ[env_key] = str(value)
                 logger.debug("Set environment variable %s=%s", env_key, str(value))
         return value
+
+    @staticmethod
+    def check_and_set_osenvs(values: Dict[str, Any]) -> Dict[str, Any]:
+        for k, v in values.items():
+            Envs.check_and_set_osenv(k, v)
+        return values

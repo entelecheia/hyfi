@@ -1,4 +1,4 @@
-task_root: ${oc.select:..task_root, ./tmp}
+task_root: ${oc.select:..task_root, workspace/tasks/task1}
 task_outputs: ${.task_root}/outputs
 task_datasets: ${.task_root}/datasets
 task_library: ${.task_root}/libs

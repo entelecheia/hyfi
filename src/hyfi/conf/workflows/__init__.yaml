@@ -1,0 +1,3 @@
+defaults:
+  - /task@task:
+      - __init__

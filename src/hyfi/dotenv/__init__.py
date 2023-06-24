@@ -23,7 +23,6 @@ class DotEnvConfig(BaseSettings):
     HYFI_GLOBAL_ROOT: Optional[str] = ""
     HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = "workspace"
     HYFI_PROJECT_NAME: Optional[str] = ""
-    HYFI_TASK_NAME: Optional[str] = ""
     HYFI_PROJECT_DESC: Optional[str] = ""
     HYFI_PROJECT_ROOT: Optional[str] = ""
     HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"

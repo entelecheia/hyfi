@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from hyfi import __global__
 from hyfi.composer import BaseConfig
 from hyfi.joblib.batch import batcher
+from hyfi.joblib.batch.batcher import Batcher
 from hyfi.utils.logging import Logging
 
 logger = Logging.getLogger(__name__)
@@ -39,7 +40,7 @@ class JobLibConfig(BaseConfig):
     distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
-    __batcher_instance__: Any = None
+    __batcher_instance__: Batcher = None
 
     class Config:
         extra = "allow"

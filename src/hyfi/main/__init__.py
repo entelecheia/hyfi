@@ -25,7 +25,7 @@ from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
-from hyfi.joblib import JobLibConfig
+from hyfi.joblib import JobLibConfig, BATCHER
 from hyfi.pipe import PIPE, PipeConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
@@ -374,8 +374,8 @@ class HyFI:
     # Batcher related functions
     ###############################
     @staticmethod
-    def pipe(data: Any, pipe_config: Union[Dict, PipeConfig]):
-        return PIPE.pipe(data, pipe_config)
+    def pipe(obj: Any, pipe_config: Union[Dict, PipeConfig]):
+        return PIPE.pipe(obj, pipe_config)
 
     @staticmethod
     def apply(
@@ -387,7 +387,7 @@ class HyFI:
         num_workers: Optional[int] = None,
         **kwargs,
     ):
-        return PIPE.apply(
+        return BATCHER.apply(
             func,
             series,
             description=description,

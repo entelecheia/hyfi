@@ -8,13 +8,13 @@ from typing import Any, Union, Dict
 import dotenv
 import hydra
 
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
-class ENVS:
+class ENVs:
     @staticmethod
     def getcwd():
         """Get the original working directory before Hydra changed it.
@@ -94,7 +94,7 @@ class ENVS:
         Returns:
             None or a Path object for the. env file
         """
-        dotenv_dir = dotenv_dir or ENVS.getcwd()
+        dotenv_dir = dotenv_dir or ENVs.getcwd()
         dotenv_path = Path(dotenv_dir, dotenv_filename)
         # Load. env files and directories.
         if dotenv_path.is_file():
@@ -142,13 +142,13 @@ class ENVS:
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
-        ENVS.load_dotenv()
+        ENVs.load_dotenv()
         return os.environ.get(key, default) if key else os.environ
 
     @staticmethod
     def set_osenv(key: str, value: Any) -> None:
         """Set the value of an environment variable"""
-        if value and IOLibs.is_dir(value):
+        if value and IOLIBs.is_dir(value):
             value = os.path.abspath(value)
         if pre_val := os.environ.get(key):
             logger.info("Overwriting %s=%s with %s", key, pre_val, value)
@@ -170,5 +170,5 @@ class ENVS:
     @staticmethod
     def check_and_set_osenv_vars(values: Dict[str, Any]) -> Dict[str, Any]:
         for k, v in values.items():
-            ENVS.check_and_set_osenv_var(k, v)
+            ENVs.check_and_set_osenv_var(k, v)
         return values

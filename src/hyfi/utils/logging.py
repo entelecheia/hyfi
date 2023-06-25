@@ -5,7 +5,7 @@ import sys
 import warnings
 
 
-class Logging:
+class LOGGING:
     @staticmethod
     def setLogger(
         level=None,

@@ -4,8 +4,8 @@ import logging
 import os
 import sys
 
-from hyfi.utils.envs import Envs
-from hyfi.utils.iolibs import IOLibs
+from hyfi.utils.envs import ENVs
+from hyfi.utils.iolibs import IOLIBs
 
 logger = logging.getLogger(__name__)
 
@@ -309,10 +309,10 @@ class NBs:
         if filename is None:
             url = "https://assets.entelecheia.cc/img/placeholder.png"
             # img = urlopen(url).read()
-            img = IOLibs.read(url)
+            img = IOLIBs.read(url)
             _format = "png"
         else:
-            img = IOLibs.read(filename)
+            img = IOLIBs.read(filename)
             _format = format or filename.split(".")[-1]
         return widgets.Image(
             value=img,
@@ -414,10 +414,10 @@ class NBs:
                     os.path.sep
                 ) and not project_root.startswith(".."):
                     project_root = os.path.join(mountpoint, project_root)
-                Envs.set_osenv("HYFI_PROJECT_ROOT", project_root)
+                ENVs.set_osenv("HYFI_PROJECT_ROOT", project_root)
                 logger.info(f"Setting HYFI_PROJECT_ROOT to {project_root}")
             if project_name:
-                Envs.set_osenv("HYFI_PROJECT_NAME", project_name)
+                ENVs.set_osenv("HYFI_PROJECT_NAME", project_name)
                 logger.info(f"Setting HYFI_PROJECT_NAME to {project_name}")
         except ImportError:
             logger.warning("Google Colab not detected.")

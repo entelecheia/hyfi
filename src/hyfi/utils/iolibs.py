@@ -16,13 +16,13 @@ from typing import Callable, List, Tuple, Union
 import gdown
 
 from hyfi.cached_path import _cached_path
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.types import PathLikeType
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
-class IOLibs:
+class IOLIBs:
     @staticmethod
     def is_valid_regex(expr: str) -> bool:
         """Check if a string is a valid regular expression"""
@@ -43,12 +43,12 @@ class IOLibs:
         recursive: bool = False,
     ) -> list:
         """Glob files matching a regular expression"""
-        if IOLibs.is_valid_regex(pattern):
+        if IOLIBs.is_valid_regex(pattern):
             pattern = pattern[2:]
             rpattern = re.compile(pattern)  # type: ignore
             files = []
             if recursive:
-                for dirpath, dirnames, filenames in os.walk(base_dir):
+                for dirpath, _, filenames in os.walk(base_dir):
                     files += [
                         os.path.join(dirpath, file)
                         for file in filenames
@@ -61,7 +61,7 @@ class IOLibs:
                     if rpattern.search(file)
                 ]
         else:
-            file = os.path.join(base_dir, pattern) if base_dir else pattern
+            file = os.path.join(base_dir, pattern)
             files = glob(file, recursive=recursive)
         return files
 
@@ -83,25 +83,29 @@ class IOLibs:
             filename_patterns = [filename_patterns]
         filepaths = []
         base_dir = str(base_dir) if base_dir else ""
-        for file in filename_patterns:
-            file = str(file)
-            if file.startswith("http") and not use_cached:
-                filepaths.append(file)
+        for f_pattern in filename_patterns:
+            f_pattern = str(f_pattern)
+            if f_pattern.startswith("http") and not use_cached:
+                filepaths.append(f_pattern)
             else:
-                if file.startswith("http"):
-                    filepath = IOLibs.cached_path(file, **kwargs)
+                if f_pattern.startswith("http"):
+                    filepath = IOLIBs.cached_path(f_pattern, **kwargs)
                 else:
-                    filepath = os.path.join(base_dir, file) if base_dir else file
+                    filepath = os.path.join(base_dir, f_pattern)
                 if os.path.exists(filepath):
                     if Path(filepath).is_file():
                         filepaths.append(filepath)
                 else:
-                    if os.path.dirname(file) != "":
-                        _dir = os.path.dirname(file)
-                        file = os.path.basename(file)
-                        base_dir = os.path.join(base_dir, _dir) if base_dir else _dir
-                    filepaths += IOLibs.glob_re(file, base_dir, recursive=recursive)
-        filepaths = [fp for fp in filepaths if Path(fp).is_file() or fp.startswith("http")]
+                    if os.path.dirname(f_pattern) != "":
+                        _dir = os.path.dirname(f_pattern)
+                        f_pattern = os.path.basename(f_pattern)
+                        base_dir = os.path.join(base_dir, _dir)
+                    filepaths += IOLIBs.glob_re(
+                        f_pattern, base_dir, recursive=recursive
+                    )
+        filepaths = [
+            fp for fp in filepaths if Path(fp).is_file() or fp.startswith("http")
+        ]
         if verbose:
             logger.info(f"Processing [{len(filepaths)}] files from {filename_patterns}")
 
@@ -232,7 +236,7 @@ class IOLibs:
         """
         src = str(src)
         dst = str(dst)
-        IOLibs.mkdir(dst)
+        IOLIBs.mkdir(dst)
         shutil.copy(src, dst, follow_symlinks=follow_symlinks)
         logger.info(f"copied {src} to {dst}")
 
@@ -418,7 +422,7 @@ class IOLibs:
 
         try:
             if url_or_filename.startswith("gd://"):
-                _path = IOLibs.cached_gdown(
+                _path = IOLIBs.cached_gdown(
                     url_or_filename,
                     verbose=verbose,
                     extract_archive=extract_archive,
@@ -518,7 +522,7 @@ class IOLibs:
             )
 
             if extract_archive:
-                extraction_path, files = IOLibs.extractall(
+                extraction_path, files = IOLIBs.extractall(
                     cache_path, force_extract=force_extract
                 )
 
@@ -557,4 +561,4 @@ class TemporaryDirectory(tempfile.TemporaryDirectory):
 
     @staticmethod
     def _robust_cleanup(name):
-        shutil.rmtree(name, ignore_errors=False, onerror=IOLibs.handle_remove_readonly)
+        shutil.rmtree(name, ignore_errors=False, onerror=IOLIBs.handle_remove_readonly)

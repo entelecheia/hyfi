@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from hyfi.composer import BaseConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class TaskPathConfig(BaseConfig):

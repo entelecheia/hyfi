@@ -5,10 +5,10 @@ from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
-from hyfi.utils.logging import Logging
-from hyfi.utils.packages import Packages
+from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class TaskConfig(BaseConfig):
@@ -126,7 +126,7 @@ class TaskConfig(BaseConfig):
             syspath = module.get("syspath")
             if syspath is not None:
                 syspath = library_dir / syspath
-            Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
+            PKGs.ensure_import_module(name, libpath, liburi, specname, syspath)
 
     def reset(self, objects=None, release_gpu_memory=True):
         """Reset the memory cache"""

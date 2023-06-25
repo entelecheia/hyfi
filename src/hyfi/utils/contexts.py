@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from functools import partial
 from timeit import default_timer
 
-from hyfi.utils.funcs import Funcs
+from hyfi.utils.funcs import FUNCs
 
 
 def _elapser_timer(start):
@@ -36,15 +36,15 @@ def change_directory(directory):
     """Change directory and change back to original directory"""
     original = os.path.abspath(os.getcwd())
 
-    Funcs.fancy_print(f" Change directory to {directory}")
+    FUNCs.fancy_print(f" Change directory to {directory}")
     os.chdir(directory)
     try:
         yield
 
     except Exception as e:
-        Funcs.fancy_print(f" Exception: {e}")
+        FUNCs.fancy_print(f" Exception: {e}")
         raise e
 
     finally:
-        Funcs.fancy_print(f" Change directory back to {original}")
+        FUNCs.fancy_print(f" Change directory back to {original}")
         os.chdir(original)

@@ -25,20 +25,21 @@ from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
-from hyfi.joblib import JobLibConfig, BATCHER
-from hyfi.pipe import PIPE, PipeConfig
+from hyfi.joblib import BATCHER, JobLibConfig
+from hyfi.pipe import PipeConfig
+from hyfi.pipeline import PIPELINEs, PipelineConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
-from hyfi.utils.envs import Envs
-from hyfi.utils.funcs import Funcs
+from hyfi.utils.envs import ENVs
+from hyfi.utils.funcs import FUNCs
 from hyfi.utils.gpumon import nvidia_smi, set_cuda
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
-from hyfi.utils.packages import Packages
+from hyfi.utils.packages import PKGs
 from hyfi.utils.types import PathLikeType
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 def _about(cfg):
@@ -364,18 +365,22 @@ class HyFI:
         name=None,
         log_level=None,
     ):
-        return Logging.getLogger(name, log_level)
+        return LOGGING.getLogger(name, log_level)
 
     @staticmethod
     def setLogger(level=None, force=True, **kwargs):
-        return Logging.setLogger(level, force, **kwargs)
+        return LOGGING.setLogger(level, force, **kwargs)
 
     ###############################
     # Batcher related functions
     ###############################
     @staticmethod
-    def pipe(obj: Any, pipe_config: Union[Dict, PipeConfig]):
-        return PIPE.pipe(obj, pipe_config)
+    def run_pipeline(obj, config: Union[Dict, PipelineConfig]):
+        return PIPELINEs.run_pipeline(obj, config)
+
+    @staticmethod
+    def run_pipe(obj: Any, config: Union[Dict, PipeConfig]):
+        return PIPELINEs.run_pipe(obj, config)
 
     @staticmethod
     def apply(
@@ -1007,16 +1012,16 @@ class HyFI:
             '/home/user/testuser'
 
         """
-        return Envs.expand_posix_vars(posix_expr, context=context)
+        return ENVs.expand_posix_vars(posix_expr, context=context)
 
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
-        return Envs.get_osenv(key, default=default)
+        return ENVs.get_osenv(key, default=default)
 
     @staticmethod
     def set_osenv(key, value):
-        return Envs.set_osenv(key, value)
+        return ENVs.set_osenv(key, value)
 
     @staticmethod
     def load_dotenv(
@@ -1025,7 +1030,7 @@ class HyFI:
         dotenv_filename: str = ".env",
         verbose: bool = False,
     ) -> None:
-        Envs.load_dotenv(
+        ENVs.load_dotenv(
             override=override,
             dotenv_filename=dotenv_filename,
             dotenv_dir=dotenv_dir,
@@ -1043,7 +1048,7 @@ class HyFI:
         specname: str = "",
         syspath: str = "",
     ):
-        return Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
+        return PKGs.ensure_import_module(name, libpath, liburi, specname, syspath)
 
     @staticmethod
     def pip(
@@ -1058,7 +1063,7 @@ class HyFI:
         verbose: bool = False,
         **kwargs,
     ):
-        return Packages.pip(
+        return PKGs.pip(
             name,
             upgrade,
             prelease,
@@ -1078,7 +1083,7 @@ class HyFI:
         force_reinstall=False,
         **kwargs,
     ):
-        return Packages.pip(
+        return PKGs.pip(
             name="hyfi",
             upgrade=True,
             prelease=prelease,
@@ -1092,23 +1097,23 @@ class HyFI:
     ###############################
     @staticmethod
     def exists(a, *p):
-        return IOLibs.exists(a, *p)
+        return IOLIBs.exists(a, *p)
 
     @staticmethod
     def is_file(a, *p):
-        return IOLibs.is_file(a, *p)
+        return IOLIBs.is_file(a, *p)
 
     @staticmethod
     def is_dir(a, *p):
-        return IOLibs.is_dir(a, *p)
+        return IOLIBs.is_dir(a, *p)
 
     @staticmethod
     def mkdir(_path: str):
-        return IOLibs.mkdir(_path)
+        return IOLIBs.mkdir(_path)
 
     @staticmethod
     def join_path(a, *p):
-        return IOLibs.join_path(a, *p)
+        return IOLIBs.join_path(a, *p)
 
     @staticmethod
     def get_filepaths(
@@ -1118,7 +1123,7 @@ class HyFI:
         verbose: bool = False,
         **kwargs,
     ):
-        return IOLibs.get_filepaths(
+        return IOLIBs.get_filepaths(
             filename_patterns,
             base_dir=base_dir,
             recursive=recursive,
@@ -1128,7 +1133,7 @@ class HyFI:
 
     @staticmethod
     def read(uri, mode="rb", encoding=None, head=None, **kwargs):
-        return IOLibs.read(uri, mode, encoding, head, **kwargs)
+        return IOLIBs.read(uri, mode, encoding, head, **kwargs)
 
     @staticmethod
     def copy(
@@ -1145,7 +1150,7 @@ class HyFI:
                 dst: Path to the destination directory. If the destination directory does not exist it will be created.
                 follow_symlinks: Whether or not symlinks should be followed
         """
-        IOLibs.copy(src, dst, follow_symlinks=follow_symlinks)
+        IOLIBs.copy(src, dst, follow_symlinks=follow_symlinks)
 
     @staticmethod
     def copyfile(
@@ -1162,7 +1167,7 @@ class HyFI:
                 dst: Path to the destination file or directory. If the destination file already exists it will be overwritten.
                 follow_symlinks: Whether to follow symbolic links or not
         """
-        IOLibs.copyfile(src, dst, follow_symlinks=follow_symlinks)
+        IOLIBs.copyfile(src, dst, follow_symlinks=follow_symlinks)
 
     @staticmethod
     def cached_path(
@@ -1191,7 +1196,7 @@ class HyFI:
         Returns:
             str: Path to the cached file or its parent directory, depending on the 'return_parent_dir' parameter.
         """
-        return IOLibs.cached_path(
+        return IOLIBs.cached_path(
             url_or_filename,
             extract_archive=extract_archive,
             force_extract=force_extract,
@@ -1205,11 +1210,11 @@ class HyFI:
     ###############################
     @staticmethod
     def to_dateparm(_date, _format="%Y-%m-%d"):
-        return Funcs.to_dateparm(_date, _format)
+        return FUNCs.to_dateparm(_date, _format)
 
     @staticmethod
     def dict_product(dicts):
-        return Funcs.dict_product(dicts)
+        return FUNCs.dict_product(dicts)
 
     ###############################
     # GPU Utility functions

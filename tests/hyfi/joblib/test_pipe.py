@@ -28,7 +28,7 @@ def test_pipe():
     pipe_config = HyFI.pipe_config(config_name="__instance__")
     pipe_config._method_ = "filter"
     pipe_config.apply_to = ""
-    pipe_config.rcParams = {"items": ["text"]}
+    pipe_config.KWARGS = {"items": ["text"]}
     pipe_config.verbose = True
     print(pipe_config)
     df4 = HyFI.pipe(df, pipe_config)

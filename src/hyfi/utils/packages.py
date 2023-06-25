@@ -5,13 +5,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
-class Packages:
+class PKGs:
     @staticmethod
     def gitclone(
         url: str,
@@ -109,9 +109,9 @@ class Packages:
     def load_module_from_file(name: str, libpath: str, specname: str = "") -> None:
         """Load a module from a file"""
         module_path = os.path.join(libpath, name.replace(".", os.path.sep))
-        if IOLibs.is_file(f"{module_path}.py"):
+        if IOLIBs.is_file(f"{module_path}.py"):
             module_path = f"{module_path}.py"
-        elif IOLibs.is_dir(module_path):
+        elif IOLIBs.is_dir(module_path):
             module_path = os.path.join(module_path, "__init__.py")
         else:
             module_path = str(Path(module_path).parent / "__init__.py")
@@ -141,11 +141,11 @@ class Packages:
         except ImportError:
             if not os.path.exists(libpath):
                 logger.info(f"{libpath} not found, cloning from {liburi}")
-                Packages.gitclone(liburi, libpath)
+                PKGs.gitclone(liburi, libpath)
             if not syspath:
                 syspath = libpath
             if syspath not in sys.path:
                 sys.path.append(syspath)
-            Packages.load_module_from_file(name, syspath, specname)
+            PKGs.load_module_from_file(name, syspath, specname)
             specname = specname or name
             logger.info(f"{name} not imported, loading from {syspath} as {specname}")

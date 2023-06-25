@@ -10,10 +10,10 @@ import numpy as np
 from matplotlib import font_manager, rc
 from PIL import Image, ImageFont
 
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 def scale_image(
@@ -77,7 +77,7 @@ def load_image(
     elif Path(image_or_uri).is_file():
         img = Image.open(image_or_uri).convert(mode)
     else:
-        img = Image.open(io.BytesIO(IOLibs.read(image_or_uri, **kwargs))).convert(mode)
+        img = Image.open(io.BytesIO(IOLIBs.read(image_or_uri, **kwargs))).convert(mode)
     img = scale_image(
         img,
         max_width=max_width,

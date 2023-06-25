@@ -9,9 +9,9 @@ from hyfi.composer import BaseConfig
 from hyfi.joblib.batch import batcher
 from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.joblib.batch.batcher import Batcher
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class DistFramworkConfig(BaseModel):

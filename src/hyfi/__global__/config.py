@@ -13,11 +13,11 @@ from hyfi.composer import Composer
 from hyfi.dotenv import DotEnvConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.envs import Envs
-from hyfi.utils.logging import Logging
+from hyfi.utils.envs import ENVs
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 def __version__():
@@ -63,7 +63,7 @@ class HyfiConfig(BaseModel):
         extra = "allow"
 
     @root_validator()
-    def _check_and_set_osenvs(cls, values):
+    def _check_and_set_values(cls, values):
         """
         Validate and set values for the config file.
 
@@ -75,12 +75,12 @@ class HyfiConfig(BaseModel):
                 Same dictionary with hyfi_config
         """
         key = "hyfi_config_path"
-        val = Envs.check_and_set_osenv(key, values.get(key))
+        val = ENVs.check_and_set_osenv_var(key, values.get(key))
         values[key] = val
         # Set the hyfi_config_module value in the configuration file.
         if val is not None:
             key = "hyfi_config_module"
-            values[key] = Envs.check_and_set_osenv(key, val.replace("pkg://", ""))
+            values[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
         return values
 
     @validator("hyfi_user_config_path")
@@ -95,7 +95,7 @@ class HyfiConfig(BaseModel):
         Returns:
                 True if valid False otherwise
         """
-        return Envs.check_and_set_osenv("hyfi_user_config_path", v)
+        return ENVs.check_and_set_osenv_var("hyfi_user_config_path", v)
 
     @validator("logging_level")
     def _validate_logging_level(cls, v, values):
@@ -161,24 +161,24 @@ class HyfiConfig(BaseModel):
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
-            envs.HYFI_PROJECT_NAME = Envs.expand_posix_vars(project_name)
+            envs.HYFI_PROJECT_NAME = ENVs.expand_posix_vars(project_name)
         # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
         if project_description:
-            envs.HYFI_PROJECT_DESC = Envs.expand_posix_vars(project_description)
+            envs.HYFI_PROJECT_DESC = ENVs.expand_posix_vars(project_description)
         # Set environment variables HYFI_PROJECT_ROOT to the project root if project_root is set to true.
         if project_root:
-            envs.HYFI_PROJECT_ROOT = Envs.expand_posix_vars(project_root)
+            envs.HYFI_PROJECT_ROOT = ENVs.expand_posix_vars(project_root)
         # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = Envs.expand_posix_vars(
+            envs.HYFI_PROJECT_WORKSPACE_NAME = ENVs.expand_posix_vars(
                 project_workspace_name
             )
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
-            envs.HYFI_GLOBAL_ROOT = Envs.expand_posix_vars(global_hyfi_root)
+            envs.HYFI_GLOBAL_ROOT = ENVs.expand_posix_vars(global_hyfi_root)
         # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = Envs.expand_posix_vars(
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = ENVs.expand_posix_vars(
                 global_workspace_name
             )
         # Set the number of workers to use.
@@ -187,7 +187,7 @@ class HyfiConfig(BaseModel):
         # Set the log level to the given log level.
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
-            Logging.setLogger(log_level)
+            LOGGING.setLogger(log_level)
             logger.setLevel(log_level)
         # Load the extentions for the autotime extension.
         if autotime:

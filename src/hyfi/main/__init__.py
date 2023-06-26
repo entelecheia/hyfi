@@ -29,6 +29,7 @@ from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PipelineConfig, PIPELINEs
 from hyfi.pipeline.configs import PipeConfig
 from hyfi.project import ProjectConfig
+from hyfi.task import TaskConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import ENVs
 from hyfi.utils.funcs import FUNCs
@@ -153,6 +154,11 @@ class HyFI:
     def pipe_config(**kwargs) -> PipeConfig:
         """Return the PipeConfig"""
         return PipeConfig(**kwargs)
+
+    @staticmethod
+    def task_config(**kwargs) -> TaskConfig:
+        """Return the TaskConfig"""
+        return TaskConfig(**kwargs)
 
     @staticmethod
     def compose_as_dict(
@@ -394,14 +400,20 @@ class HyFI:
         return LOGGING.setLogger(level, force, **kwargs)
 
     ###############################
-    # Batcher related functions
+    # Pipeline related functions
     ###############################
+    @staticmethod
+    def run_task_pipelines(task: TaskConfig):
+        """Run the pipelines specified in the task"""
+        PIPELINEs.run_task_pipelines(task)
+
     @staticmethod
     def run_pipeline(
         config: Union[Dict, PipelineConfig],
-        initial_obj: Any = None,
+        initial_obj: Optional[Any] = None,
+        task: Optional[TaskConfig] = None,
     ) -> Any:
-        return PIPELINEs.run_pipeline(config, initial_obj)
+        return PIPELINEs.run_pipeline(config, initial_obj, task)
 
     @staticmethod
     def run_pipe(
@@ -410,6 +422,9 @@ class HyFI:
     ) -> Any:
         return PIPELINEs.run_pipe(obj, config)
 
+    ###############################
+    # Batcher related functions
+    ###############################
     @staticmethod
     def apply(
         func: Callable,

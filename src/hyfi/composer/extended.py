@@ -11,12 +11,12 @@ from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__, __search_package_path__
 from hyfi.cached_path import cached_path
 from hyfi.composer import Composer, SpecialKeys
-from hyfi.utils.envs import Envs
-from hyfi.utils.funcs import Funcs
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.envs import ENVs
+from hyfi.utils.funcs import FUNCs
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 # _config_ = XC.config.copy()
@@ -38,9 +38,9 @@ class XC(Composer):
         else:
             config = XC.to_dict(config)
         config[SpecialKeys.PARTIAL.value] = True
-        rcParams = config.pop(SpecialKeys.rcPARAMS, {})
-        if rcParams and kwargs:
-            kwargs = kwargs.update(rcParams)
+        rc_kwargs_ = config.pop(SpecialKeys.KWARGS, {})
+        if rc_kwargs_ and kwargs:
+            kwargs = kwargs.update(rc_kwargs_)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod
@@ -161,21 +161,21 @@ class XC(Composer):
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
 OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
 OmegaConf.register_new_resolver("__home_path__", __home_path__)
-OmegaConf.register_new_resolver("today", Funcs.today)
-OmegaConf.register_new_resolver("to_datetime", Funcs.strptime)
+OmegaConf.register_new_resolver("today", FUNCs.today)
+OmegaConf.register_new_resolver("to_datetime", FUNCs.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
 OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
 OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
 OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
-OmegaConf.register_new_resolver("get_original_cwd", Envs.getcwd)
-OmegaConf.register_new_resolver("exists", IOLibs.exists)
-OmegaConf.register_new_resolver("join_path", IOLibs.join_path)
-OmegaConf.register_new_resolver("mkdir", IOLibs.mkdir)
+OmegaConf.register_new_resolver("get_original_cwd", ENVs.getcwd)
+OmegaConf.register_new_resolver("exists", IOLIBs.exists)
+OmegaConf.register_new_resolver("join_path", IOLIBs.join_path)
+OmegaConf.register_new_resolver("mkdir", IOLIBs.mkdir)
 OmegaConf.register_new_resolver("dirname", os.path.dirname)
 OmegaConf.register_new_resolver("basename", os.path.basename)
-OmegaConf.register_new_resolver("check_path", IOLibs.check_path)
+OmegaConf.register_new_resolver("check_path", IOLIBs.check_path)
 OmegaConf.register_new_resolver("cached_path", cached_path)
 OmegaConf.register_new_resolver(
-    "lower_case_with_underscores", Funcs.lower_case_with_underscores
+    "lower_case_with_underscores", FUNCs.lower_case_with_underscores
 )
-OmegaConf.register_new_resolver("dotenv_values", Envs.dotenv_values)
+OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)

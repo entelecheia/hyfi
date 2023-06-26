@@ -3,9 +3,9 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from hyfi.about import AboutConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "default"

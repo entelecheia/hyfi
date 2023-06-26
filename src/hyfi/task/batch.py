@@ -5,9 +5,9 @@ from omegaconf import DictConfig
 from hyfi.batch import BatchConfig
 from hyfi.composer.extended import XC
 from hyfi.task import TaskConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):

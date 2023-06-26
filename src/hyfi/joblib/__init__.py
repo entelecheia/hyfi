@@ -1,13 +1,17 @@
-from typing import Any
+from typing import Callable, Mapping, Optional, Sequence, Union
 
+import pandas as pd
 from pydantic import BaseModel
+from tqdm.auto import tqdm
 
 from hyfi import __global__
 from hyfi.composer import BaseConfig
 from hyfi.joblib.batch import batcher
-from hyfi.utils.logging import Logging
+from hyfi.joblib.batch.apply import decorator_apply
+from hyfi.joblib.batch.batcher import Batcher
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class DistFramworkConfig(BaseModel):
@@ -39,7 +43,7 @@ class JobLibConfig(BaseConfig):
     distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
     __initilized__: bool = False
-    __batcher_instance__: Any = None
+    __batcher_instance__: Batcher = None
 
     class Config:
         extra = "allow"
@@ -112,3 +116,47 @@ class JobLibConfig(BaseConfig):
                         logger.debug("shutting down dask client")
                 except ImportError:
                     logger.warning("dask is not installed")
+
+
+class BATCHER:
+    """
+    A class to apply a function to a series or dataframe using joblib
+    """
+
+    @staticmethod
+    def apply(
+        func: Callable,
+        series: Union[pd.Series, pd.DataFrame, Sequence, Mapping],
+        description: Optional[str] = None,
+        use_batcher: bool = True,
+        minibatch_size: Optional[int] = None,
+        num_workers: Optional[int] = None,
+        **kwargs,
+    ):
+        batcher_instance = JobLibConfig().__batcher_instance__
+        if use_batcher and batcher_instance is not None:
+            batcher_minibatch_size = batcher_instance.minibatch_size
+            if minibatch_size is None:
+                minibatch_size = batcher_minibatch_size
+            if num_workers is not None:
+                batcher_instance.procs = int(num_workers)
+            if batcher_instance.procs > 1:
+                batcher_instance.minibatch_size = min(
+                    int(len(series) / batcher_instance.procs) + 1, minibatch_size
+                )
+                logger.info(
+                    f"Using batcher with minibatch size: {batcher_instance.minibatch_size}"
+                )
+                results = decorator_apply(
+                    func,
+                    batcher_instance,
+                    description=description,  # type: ignore
+                )(series)
+                if batcher_instance is not None:
+                    batcher_instance.minibatch_size = batcher_minibatch_size
+                return results
+
+        if batcher_instance is None:
+            logger.info("Warning: batcher not initialized")
+        tqdm.pandas(desc=description)
+        return series.progress_apply(func)  # type: ignore

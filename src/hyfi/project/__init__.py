@@ -9,10 +9,10 @@ from hyfi.composer import BaseConfig
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class ProjectConfig(BaseConfig):
@@ -22,7 +22,6 @@ class ProjectConfig(BaseConfig):
     config_group: str = "project"
     # Project Config
     project_name: str = "hyfi-project"
-    task_name: str = ""
     project_description: str = ""
     project_root: str = ""
     project_workspace_name: str = "workspace"
@@ -66,7 +65,6 @@ class ProjectConfig(BaseConfig):
         self.joblib = JobLibConfig.parse_obj(self.__dict__["joblib"])
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
-        self.dotenv.HYFI_TASK_NAME = self.task_name
         self.dotenv.HYFI_PROJECT_DESC = self.project_description
         self.dotenv.HYFI_PROJECT_ROOT = self.project_root
         self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
@@ -88,8 +86,7 @@ class ProjectConfig(BaseConfig):
         self.dotenv.WANDB_DIR = str(self.path.log_dir)
         project_name = self.project_name.replace("/", "-").replace("\\", "-")
         self.dotenv.WANDB_PROJECT = project_name
-        task_name = self.task_name.replace("/", "-").replace("\\", "-")
-        notebook_name = self.path.log_dir / f"{task_name}-nb"
+        notebook_name = self.path.log_dir / f"{project_name}-nb"
         notebook_name.mkdir(parents=True, exist_ok=True)
         self.dotenv.WANDB_NOTEBOOK_NAME = str(notebook_name)
         self.dotenv.WANDB_SILENT = str(not self.verbose)

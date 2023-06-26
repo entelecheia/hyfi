@@ -20,30 +20,29 @@ def test_envs():
     assert envs.HYFI_PROJECT_NAME == "hyfi"
 
 
-def test_init_workspace():
+def test_init_project():
     os.environ["HYFI_PROJECT_ROOT"] = ""
-    ws = HyFI.init_workspace(
+    prj = HyFI.init_project(
         project_name="hyfi2",
         global_hyfi_root="tmp",
         global_workspace_name="testspace",
-        task_name="test",
         log_level="WARNING",
         verbose=True,
     )
-    pprint(ws.dict())
-    assert ws.path.global_workspace_name == "testspace"
+    pprint(prj.dict())
+    assert prj.path.global_workspace_name == "testspace"
 
 
 def test_compose():
     os.environ["HYFI_PROJECT_ROOT"] = "."
     cfg = HyFI.compose("path=__task__")
     print(cfg["task_root"])
-    assert cfg["task_root"] == "./tmp"
+    assert cfg["task_root"] == "workspace/tasks/task1"
 
 
 if __name__ == "__main__":
     test_about()
     test_version()
     test_envs()
-    test_init_workspace()
+    test_init_project()
     test_compose()

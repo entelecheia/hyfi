@@ -1,13 +1,10 @@
 from pathlib import Path
-from typing import Any
-
-from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
 from hyfi.composer import BaseConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class PathConfig(BaseConfig):

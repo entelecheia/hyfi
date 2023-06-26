@@ -9,9 +9,9 @@ from hyfi.__global__ import __about__, __hydra_version_base__
 from hyfi.__global__.config import HyfiConfig
 from hyfi.copier import Copier
 from hyfi.main import HyFI, _about
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 __config_path__ = "conf"

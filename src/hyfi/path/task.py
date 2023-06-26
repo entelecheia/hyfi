@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from hyfi.composer import BaseConfig
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class TaskPathConfig(BaseConfig):
@@ -96,6 +96,7 @@ class TaskPathConfig(BaseConfig):
                 A path to the cache directory for this task or None if it is not set in the config
         """
         self.task_cache = self.task_cache or (self.root_dir / "cache").as_posix()
+        Path(self.task_cache).mkdir(parents=True, exist_ok=True)
         return Path(self.task_cache).absolute()
 
     @property

@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class ModuleConfig(BaseModel):

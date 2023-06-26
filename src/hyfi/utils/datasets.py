@@ -17,10 +17,10 @@ from datasets.utils.info_utils import VerificationMode
 from datasets.utils.version import Version
 
 from hyfi.utils.contexts import elapsed_timer
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 DatasetType = TypeVar("DatasetType", Dataset, IterableDataset)
 DatasetLikeType = TypeVar(
@@ -163,7 +163,7 @@ class Datasets:
     ) -> Union[List[str], Dict[str, List[str]]]:
         if isinstance(data_files, dict):
             return {
-                name: IOLibs.get_filepaths(
+                name: IOLIBs.get_filepaths(
                     files,
                     data_dir,
                     recursive=recursive,
@@ -174,7 +174,7 @@ class Datasets:
                 for name, files in data_files.items()
             }
         else:
-            filepaths = IOLibs.get_filepaths(
+            filepaths = IOLIBs.get_filepaths(
                 data_files,
                 data_dir,
                 recursive=recursive,

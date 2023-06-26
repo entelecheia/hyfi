@@ -6,10 +6,10 @@ import os
 import time
 from threading import Thread
 
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 try:
     import GPUtil  # type: ignore

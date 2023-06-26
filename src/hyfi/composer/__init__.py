@@ -1,12 +1,13 @@
 """
     Hydra configuration management
 """
+import collections.abc
 import functools
 import json
 import os
 from enum import Enum
 from pathlib import Path
-from typing import IO, Any, Dict, List, Tuple, Union
+from typing import IO, Any, Dict, List, Mapping, Tuple, Union
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
@@ -18,11 +19,11 @@ from hyfi.__global__ import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
-from hyfi.utils.logging import Logging
+from hyfi.utils.logging import LOGGING
 
 if level := os.environ.get("HYFI_LOG_LEVEL"):
-    Logging.setLogger(level)
-logger = Logging.getLogger(__name__)
+    LOGGING.setLogger(level)
+logger = LOGGING.getLogger(__name__)
 
 DictKeyType = Union[str, int, Enum, float, bool]
 
@@ -38,7 +39,7 @@ class SpecialKeys(str, Enum):
     METHOD = "_method_"
     NAME = "_name_"
     PARTIAL = "_partial_"
-    rcPARAMS = "rcParams"
+    KWARGS = "_kwargs_"
     RECURSIVE = "_recursive_"
     SUFFIX = "suffix"
     TARGET = "_target_"
@@ -309,6 +310,32 @@ class Composer(BaseModel):
         return config_group, group_key, group_value
 
     @staticmethod
+    def _compose_as_dict(
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+        root_config_name: Union[str, None] = None,
+        config_module: Union[str, None] = None,
+        global_package: bool = False,
+        **kwargs,
+    ) -> Dict:
+        return Composer.to_dict(
+            Composer._compose(
+                config_group=config_group,
+                overrides=overrides,
+                config_data=config_data,
+                throw_on_resolution_failure=throw_on_resolution_failure,
+                throw_on_missing=throw_on_missing,
+                root_config_name=root_config_name,
+                config_module=config_module,
+                global_package=global_package,
+                **kwargs,
+            )
+        )
+
+    @staticmethod
     def _compose(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
@@ -459,15 +486,37 @@ class Composer(BaseModel):
             return json.load(f, **kwargs)
 
     @staticmethod
-    def update(_dict, _overrides):
-        import collections.abc
-
+    def update(_dict: Mapping[str, Any], _overrides: Mapping[str, Any]) -> Mapping:
+        """
+        Update a dictionary with overrides
+        :param _dict: dictionary to update
+        :param _overrides: dictionary with overrides
+        :return: updated dictionary
+        """
         for k, v in _overrides.items():
             if isinstance(v, collections.abc.Mapping):
                 _dict[k] = Composer.update((_dict.get(k) or {}), v)
             else:
                 _dict[k] = v
         return _dict
+
+    @staticmethod
+    def replace_keys(_dict: Mapping[str, Any], old_key: str, new_key: str) -> Mapping:
+        """
+        Replace a key in a dictionary
+        :param _dict: dictionary to update
+        :param old_key: old key
+        :param new_key: new key
+        :return: updated dictionary
+        """
+        _new_dict = {}
+        for k, v in _dict.items():
+            key = new_key if k == old_key else k
+            if isinstance(v, collections.abc.Mapping):
+                _new_dict[key] = Composer.replace_keys(v, old_key, new_key)
+            else:
+                _new_dict[key] = v
+        return _new_dict
 
     @staticmethod
     def merge(
@@ -486,6 +535,24 @@ class Composer(BaseModel):
         :return: the merged config object.
         """
         return OmegaConf.merge(*configs)
+
+    @staticmethod
+    def merge_as_dict(
+        *configs: Union[
+            DictConfig,
+            ListConfig,
+            Dict[DictKeyType, Any],
+            List[Any],
+            Tuple[Any, ...],
+            Any,
+        ],
+    ) -> Union[ListConfig, DictConfig]:
+        """
+        Merge a list of previously created configs into a single one
+        :param configs: Input configs
+        :return: the merged config object.
+        """
+        return Composer.to_dict(OmegaConf.merge(*configs))
 
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
@@ -540,7 +607,7 @@ class Composer(BaseModel):
                 _call_ = True
             if _call_:
                 _fn = getattr(obj, _method_[SpecialKeys.METHOD_NAME])
-                _parms = _method_.pop(SpecialKeys.rcPARAMS, {})
+                _parms = _method_.pop(SpecialKeys.KWARGS, {})
                 if return_function:
                     if not _parms:
                         logger.info(f"Returning function {_fn}")
@@ -563,7 +630,7 @@ class Composer(BaseModel):
                         _call_ = True
                     if _call_:
                         getattr(obj, _each_method[SpecialKeys.METHOD_NAME])(
-                            **_each_method[SpecialKeys.rcPARAMS]
+                            **_each_method[SpecialKeys.KWARGS]
                         )
                     else:
                         logger.info(f"Skipping call to {_each_method}")
@@ -590,6 +657,7 @@ class Composer(BaseModel):
 class BaseConfig(BaseModel):
     config_name: str = "__init__"
     config_group: str = ""
+    verbose: bool = False
 
     class Config:
         arbitrary_types_allowed = True
@@ -601,6 +669,7 @@ class BaseConfig(BaseModel):
         property_set_methods = {}
 
     def __init__(self, **config_kwargs):
+        config_kwargs = Composer.to_dict(config_kwargs)
         super().__init__(**config_kwargs)
         self.initialize_configs(**config_kwargs)
 

@@ -4,11 +4,11 @@ import subprocess
 from pathlib import Path
 
 from hyfi.graphics.utils import load_images
-from hyfi.utils.iolibs import IOLibs
-from hyfi.utils.logging import Logging
+from hyfi.utils.iolibs import IOLIBs
+from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 def make_gif(
@@ -35,7 +35,7 @@ def make_gif(
     else:
         if image_filepaths is None:
             image_filepaths = sorted(
-                IOLibs.get_filepaths(filename_patterns, base_dir=base_dir)
+                IOLIBs.get_filepaths(filename_patterns, base_dir=base_dir)
             )
         if not image_filepaths:
             logger.warning("no images found")

@@ -31,8 +31,8 @@ from typing import List
 from pathspec import PathSpec
 from pydantic.dataclasses import dataclass
 
-from hyfi.utils.envs import Envs
-from hyfi.utils.funcs import Funcs, Style
+from hyfi.utils.envs import ENVs
+from hyfi.utils.funcs import FUNCs, Style
 
 
 @dataclass()
@@ -105,7 +105,7 @@ class Copier:
             self.filetypes = ["yaml", "yml", "py"]
 
         if not self.dst_path.is_absolute():
-            self.dst_path = Envs.getcwd() / self.dst_path
+            self.dst_path = ENVs.getcwd() / self.dst_path
         self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)
         self.dst_path_existed = self.dst_path.exists()
 
@@ -116,7 +116,7 @@ class Copier:
         """Exit the context manager, handling cleanup if needed."""
         if exc_type is not None and not self.dst_path_existed and self.cleanup_on_error:
             rmtree(self.dst_path)
-            Funcs.printf(
+            FUNCs.printf(
                 "CLEANUP",
                 f"Removed {self.dst_path}",
                 Style.DANGER,
@@ -130,7 +130,7 @@ class Copier:
         directory, and copy files based on the specified settings.
         """
         if not Path(self.src_path).is_dir():
-            Funcs.printf(
+            FUNCs.printf(
                 "ERROR",
                 f"Source path {self.src_path} does not exist.",
                 style=Style.DANGER,
@@ -146,14 +146,14 @@ class Copier:
                 dst_file = dst_file.absolute()
 
                 if self.path_spec.match_file(src_file):
-                    Funcs.printf(
+                    FUNCs.printf(
                         "EXCLUDED", f"{src_file}", Style.WARNING, verbose=self.verbose
                     )
                     continue
 
                 if dst_file.exists():
                     if self.skip_if_exists:
-                        Funcs.printf(
+                        FUNCs.printf(
                             "SKIPPED",
                             f"{src_file}",
                             Style.WARNING,
@@ -162,7 +162,7 @@ class Copier:
                         continue
 
                     if filecmp.cmp(src_file, dst_file, shallow=False):
-                        Funcs.printf(
+                        FUNCs.printf(
                             "UNCHANGED",
                             f"{src_file}",
                             Style.IGNORE,
@@ -174,7 +174,7 @@ class Copier:
                     if not self.overwrite:
                         answer = input(f"Overwrite {dst_file}? [Y/n]: ") or "Y"
                     if answer.lower() != "y":
-                        Funcs.printf(
+                        FUNCs.printf(
                             "IGNORED",
                             f"{src_file}",
                             Style.WARNING,
@@ -185,7 +185,7 @@ class Copier:
                 if not self.dry_run:
                     dst_file.parent.mkdir(parents=True, exist_ok=True)
                     copy2(src_file, dst_file)
-                Funcs.printf(
+                FUNCs.printf(
                     "COPIED",
                     f"{src_file} -> {dst_file}",
                     Style.OK,

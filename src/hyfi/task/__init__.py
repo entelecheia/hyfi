@@ -5,10 +5,10 @@ from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
 from hyfi.project import ProjectConfig
-from hyfi.utils.logging import Logging
-from hyfi.utils.packages import Packages
+from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class TaskConfig(BaseConfig):
@@ -55,11 +55,11 @@ class TaskConfig(BaseConfig):
 
     def initialize_configs(self, **config_kwargs):
         super().initialize_configs(**config_kwargs)
-        if "module" in self.__dict__:
+        if "module" in self.__dict__ and self.__dict__["module"]:
             self.module = ModuleConfig.parse_obj(self.__dict__["module"])
-        if "path" in self.__dict__:
+        if "path" in self.__dict__ and self.__dict__["path"]:
             self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
-        if "project" in self.__dict__:
+        if "project" in self.__dict__ and self.__dict__["project"]:
             self.project = ProjectConfig.parse_obj(self.__dict__["project"])
 
     @property
@@ -76,15 +76,17 @@ class TaskConfig(BaseConfig):
 
     @property
     def project_name(self):
-        return self.project.project_name
+        return self.project.project_name if self.project else None
 
     @property
     def project_dir(self) -> Path:
-        return Path(self.project.project_root)
+        return Path(self.project.project_root) if self.project else self.root_dir
 
     @property
     def workspace_dir(self) -> Path:
-        return Path(self.project.project_workspace_dir)
+        return (
+            Path(self.project.project_workspace_dir) if self.project else self.root_dir
+        )
 
     @property
     def model_dir(self) -> Path:
@@ -92,11 +94,11 @@ class TaskConfig(BaseConfig):
 
     @property
     def log_dir(self) -> Path:
-        return self.project.path.log_dir
+        return self.project.path.log_dir if self.project else self.path.log_dir
 
     @property
     def cache_dir(self) -> Path:
-        return self.project.path.cache_dir
+        return self.project.path.cache_dir if self.project else self.path.cache_dir
 
     @property
     def library_dir(self) -> Path:
@@ -124,7 +126,7 @@ class TaskConfig(BaseConfig):
             syspath = module.get("syspath")
             if syspath is not None:
                 syspath = library_dir / syspath
-            Packages.ensure_import_module(name, libpath, liburi, specname, syspath)
+            PKGs.ensure_import_module(name, libpath, liburi, specname, syspath)
 
     def reset(self, objects=None, release_gpu_memory=True):
         """Reset the memory cache"""

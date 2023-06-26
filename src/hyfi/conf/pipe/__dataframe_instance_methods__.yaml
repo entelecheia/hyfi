@@ -1,0 +1,4 @@
+defaults:
+  - __init__
+
+_target_: hyfi.pipe.dataframe_instance_methods

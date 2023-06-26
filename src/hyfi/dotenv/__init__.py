@@ -4,10 +4,10 @@ from typing import Optional, Tuple, Union
 from pydantic import BaseSettings, SecretStr, root_validator
 from pydantic.env_settings import SettingsSourceCallable
 
-from hyfi.utils.envs import Envs
-from hyfi.utils.logging import Logging
+from hyfi.utils.envs import ENVs
+from hyfi.utils.logging import LOGGING
 
-logger = Logging.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class DotEnvConfig(BaseSettings):
@@ -23,7 +23,6 @@ class DotEnvConfig(BaseSettings):
     HYFI_GLOBAL_ROOT: Optional[str] = ""
     HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = "workspace"
     HYFI_PROJECT_NAME: Optional[str] = ""
-    HYFI_TASK_NAME: Optional[str] = ""
     HYFI_PROJECT_DESC: Optional[str] = ""
     HYFI_PROJECT_ROOT: Optional[str] = ""
     HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"
@@ -68,18 +67,12 @@ class DotEnvConfig(BaseSettings):
             env_settings: SettingsSourceCallable,
             file_secret_settings: SettingsSourceCallable,
         ) -> Tuple[SettingsSourceCallable, ...]:
-            Envs.load_dotenv()
+            ENVs.load_dotenv()
             return env_settings, file_secret_settings, init_settings
 
     @root_validator()
-    def check_and_set_osenvs(cls, values):
-        for k, v in values.items():
-            if v is not None:
-                old_value = os.getenv(k.upper())
-                if old_value is None or old_value != str(v):
-                    os.environ[k.upper()] = str(v)
-                    logger.debug(f"Set environment variable {k.upper()}={v}")
-        return values
+    def check_and_set_values(cls, values):
+        return ENVs.check_and_set_osenv_vars(values)
 
     @property
     def os(self):

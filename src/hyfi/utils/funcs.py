@@ -31,7 +31,7 @@ HLINE = "-" * 42
 NO_VALUE: object = object()
 
 
-class Funcs:
+class FUNCs:
     @staticmethod
     def unescape_dict(d):
         """Unescape a dictionary"""
@@ -138,12 +138,12 @@ class Funcs:
     @staticmethod
     def len_wospc(x):
         """Return the length of a string in bytes without spaces"""
-        return Funcs.utf8len(re.sub(r"\s", "", str(x)))
+        return FUNCs.utf8len(re.sub(r"\s", "", str(x)))
 
     @staticmethod
     def len_bytes(x):
         """Return the length of a string in bytes"""
-        return Funcs.utf8len(x)
+        return FUNCs.utf8len(x)
 
     @staticmethod
     def len_words(x):
@@ -238,7 +238,7 @@ class Funcs:
     @staticmethod
     def readable_types_list(type_list: List[Type]) -> str:
         """Generates a useful-for-humans label for a list of types."""
-        return ", ".join(Funcs.human_readable_type_name(t) for t in type_list)
+        return ", ".join(FUNCs.human_readable_type_name(t) for t in type_list)
 
     @staticmethod
     def dict_product(dicts):
@@ -279,7 +279,7 @@ class Funcs:
         """Print exception with common format."""
         if not quiet:
             print("", file=sys.stderr)
-            Funcs.printf(
+            FUNCs.printf(
                 action, msg=msg, style=Style.DANGER, indent=indent, file_=sys.stderr
             )
             print(HLINE, file=sys.stderr)

@@ -55,20 +55,22 @@ def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipeConfig):
                 num_workers=config.num_workers,
             )
             # return original data if no return value to continue pipeline
-            data = data_ if data_ is not None else data
+            data = data if config.return_pipe_obj or data_ is None else data_
         else:
             data_arg = (
-                {config.pipe_obj_arg_name: data} if config.pipe_obj_arg_name else {}
+                {config.pipe_obj_arg_name: data}
+                if config.pipe_obj_arg_name and config.use_pipe_obj
+                else {}
             )
             data_ = (
                 _fn(**data_arg)
                 if data_arg
                 else _fn(data)
-                if data is not None
+                if data is not None and config.use_pipe_obj
                 else _fn()
             )
             # return original data if no return value to continue pipeline
-            data = data_ if data_ is not None else data
+            data = data if config.return_pipe_obj or data_ is None else data_
         if config.verbose:
             logger.info(" >> elapsed time: %s", elapsed())
             print(data.head())

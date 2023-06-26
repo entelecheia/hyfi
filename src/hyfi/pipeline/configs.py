@@ -56,6 +56,7 @@ class RunConfig(BaseRunConfig):
     """Run Configuration"""
 
     _target_: str = ""
+    pipe_obj_arg_name: Optional[str] = ""
 
     def set_enviroment(self):
         if self.env:
@@ -65,7 +66,10 @@ class RunConfig(BaseRunConfig):
         if self._target_.startswith("lambda"):
             return eval(self._target_)
         elif self._target_:
-            return XC.partial(self._target_, **self._with_ or {})
+            kwargs = self._with_ or {}
+            if self.pipe_obj_arg_name:
+                kwargs.pop(self.pipe_obj_arg_name)
+            return XC.partial(self._target_, **kwargs)
         else:
             return None
 

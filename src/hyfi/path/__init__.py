@@ -1,7 +1,4 @@
 from pathlib import Path
-from typing import Any
-
-from pydantic import BaseModel
 
 from hyfi.__global__ import __about__
 from hyfi.composer import BaseConfig

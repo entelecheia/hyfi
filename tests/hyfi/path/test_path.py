@@ -6,7 +6,7 @@ from pprint import pprint
 
 def test_path_config():
     config = PathConfig(
-        project_root="tmp",
+        project_root="workspace/tmp",
         global_hyfi_root=ENVs.expand_posix_vars("$HOME/.hyfi"),
         project_workspace_name="testspace",
     )
@@ -14,10 +14,10 @@ def test_path_config():
     # Test that the default values are set correctly
     assert config.config_name == "__init__"
     assert config.home == ENVs.expand_posix_vars("$HOME")
-    assert Path(config.project_root).absolute() == (Path.cwd() / "tmp").absolute()
+    assert Path(config.project_root).absolute() == (Path.cwd() / "workspace/tmp").absolute()
     assert (
         Path(config.project_workspace_root).absolute()
-        == Path.cwd().absolute() / "tmp/testspace"
+        == Path.cwd().absolute() / "workspace/tmp/testspace"
     )
 
     # Test that the log_dir and cache_dir properties return the correct values

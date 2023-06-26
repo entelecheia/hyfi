@@ -1,0 +1,13 @@
+defaults:
+  - __dataframe__
+
+_target_: hyfi.main.HyFI.load_dataframes
+_with_:
+  data_files:
+  data_dir:
+  filetype:
+  split:
+  concatenate: false
+  ignore_index: false
+  use_cached: false
+  verbose: false

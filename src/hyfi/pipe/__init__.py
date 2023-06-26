@@ -48,14 +48,25 @@ def dataframe_external_funcs(data: pd.DataFrame, rc: DataframeRunConfig):
                     else data[key].apply(_fn)
                 )
         elif rc.use_batcher:
-            data = BATCHER.apply(
+            data_ = BATCHER.apply(
                 _fn,
                 data,
                 use_batcher=rc.use_batcher,
                 num_workers=rc.num_workers,
             )
+            # return original data if no return value to continue pipeline
+            data = data_ if data_ is not None else data
         else:
-            data = _fn(data) if data is not None else _fn()
+            data_arg = {rc.pipe_obj_arg_name: data} if rc.pipe_obj_arg_name else {}
+            data_ = (
+                _fn(**data_arg)
+                if data_arg
+                else _fn(data)
+                if data is not None
+                else _fn()
+            )
+            # return original data if no return value to continue pipeline
+            data = data_ if data_ is not None else data
         logger.info(" >> elapsed time to replace: %s", elapsed())
         if rc.verbose:
             print(data.head())

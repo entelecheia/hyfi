@@ -9,7 +9,7 @@ def test_dataframe_load_and_save():
     assert df is not None
     print(df)
     # assert df.shape == (10, 2)
-    HyFI.save_dataframes(df, "tmp/meta-test.parquet")
+    HyFI.save_dataframes(df, "workspace/tmp/meta-test.parquet")
 
 
 def test_data_load_and_concat():

@@ -5,4 +5,4 @@ defaults:
 _target_: hyfi.__cli__.run_copy
 copier:
   src_path: ${__hyfi_path__:}/conf
-  dst_path: conf
+  dst_path: workpsace/tmp/conf

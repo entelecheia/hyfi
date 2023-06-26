@@ -1,0 +1,14 @@
+defaults:
+  - __dataframe__
+
+_target_: hyfi.main.HyFI.save_dataframes
+_with_:
+  data:
+  data_file:
+  data_dir:
+  columns:
+  index: false
+  filetype: parquet
+  suffix:
+  verbose: false
+pipe_obj_arg_name: data

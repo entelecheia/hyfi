@@ -1,10 +1,9 @@
 defaults:
   - /path: __task__
   - /module: __init__
-  - /pipeline@pipeline:
-      - __init__
+  - /pipeline@pipeline: __test__
 
-config_name: __init__
+config_name: __test__
 project: ${oc.select:project,null}
 task_name: demo-task
 task_root: ${oc.select:project.path.project_workspace_root,workspace/tasks}/${.task_name}

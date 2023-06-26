@@ -7,6 +7,7 @@ from pydantic import BaseModel, root_validator
 
 from hyfi.composer import Composer
 from hyfi.composer.extended import XC
+from hyfi.task import TaskConfig
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 
@@ -57,6 +58,7 @@ class RunConfig(BaseRunConfig):
 
     _target_: str = ""
     pipe_obj_arg_name: Optional[str] = ""
+    task: Optional[TaskConfig] = None
 
     def set_enviroment(self):
         if self.env:

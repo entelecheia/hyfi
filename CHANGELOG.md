@@ -1,5 +1,21 @@
 <!--next-version-placeholder-->
 
+## v0.14.0 (2023-06-26)
+
+### Feature
+
+* **pipeline:** Add task configuration to RunConfig object ([`9c16b6a`](https://github.com/entelecheia/hyfi/commit/9c16b6a9025673c758b0802a17055b0f8e0577c0))
+* **pipeline:** Add support for task-specific pipelines ([`8c4a595`](https://github.com/entelecheia/hyfi/commit/8c4a59550e51449f69bd8e44b1165b94b67b96ba))
+* **task:** Add new method to create TaskConfig objects. ([`3742b90`](https://github.com/entelecheia/hyfi/commit/3742b902826ab624743981d020ccc91c1490f976))
+* **pipe:** Add function to preprocess ESG ratings data ([`58773c3`](https://github.com/entelecheia/hyfi/commit/58773c35ee4b7d5b6e0e7a3d66bcce171f5c3024))
+* **preprocessing:** Add test_preprocessing.yaml configuration file ([`0190245`](https://github.com/entelecheia/hyfi/commit/0190245e8ae33cf31d77b6c685416484e34a878a))
+* **pipe:** Add save_dataframes.yaml config file ([`c11fbdc`](https://github.com/entelecheia/hyfi/commit/c11fbdc4f1803c8572a529e3c151ba29371bad95))
+
+### Fix
+
+* **cli:** Add validation for missing task configuration before running HyFi task pipelines ([`a2711cf`](https://github.com/entelecheia/hyfi/commit/a2711cf46b2cc3946f00f37a34987e1a9b13277d))
+* **tests:** Fix project root path in test PathConfig ([`32d49e1`](https://github.com/entelecheia/hyfi/commit/32d49e1d73e84ebbbb0b9ce357a30ca700febff0))
+
 ## v0.13.0 (2023-06-26)
 
 ### Feature

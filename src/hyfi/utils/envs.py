@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 from pathlib import Path
 from string import Template
-from typing import Any, Union, Dict
+from typing import Any, Dict, Union
 
 import dotenv
 import hydra

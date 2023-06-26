@@ -3,11 +3,10 @@
 """
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from hyfi.composer.extended import XC
-
 from pydantic import BaseModel
 
 from hyfi.composer import Composer
+from hyfi.composer.extended import XC
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 

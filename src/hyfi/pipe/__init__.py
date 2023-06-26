@@ -4,60 +4,62 @@
 import pandas as pd
 
 from hyfi.joblib import BATCHER
-from hyfi.pipeline.configs import DataframeRunConfig
+from hyfi.pipeline.configs import DataframePipeConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-def dataframe_instance_methods(data: pd.DataFrame, rc: DataframeRunConfig):
-    rc = DataframeRunConfig(**rc.dict())
+def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
+    config = DataframePipeConfig(**config.dict())
     with elapsed_timer(format_time=True) as elapsed:
-        if rc.columns:
-            for col_name in rc.columns:
+        if config.columns:
+            for col_name in config.columns:
                 logger.info("processing column: %s", col_name)
-                data[col_name] = getattr(data[col_name], rc._target_)(**rc.kwargs)
+                data[col_name] = getattr(data[col_name], config._run_)(**config.kwargs)
         else:
-            data = getattr(data, rc._target_)(**rc.kwargs)
+            data = getattr(data, config._run_)(**config.kwargs)
 
-        logger.info(" >> elapsed time to replace: %s", elapsed())
-        if rc.verbose:
+        if config.verbose:
+            logger.info(" >> elapsed time: %s", elapsed())
             print(data.head())
     return data
 
 
-def dataframe_external_funcs(data: pd.DataFrame, rc: DataframeRunConfig):
-    rc = DataframeRunConfig(**rc.dict())
-    _fn = rc.get_func()
+def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipeConfig):
+    config = DataframePipeConfig(**config.dict())
+    _fn = config.get_run_func()
     if _fn is None:
-        logger.warning("No function found for %s", rc)
+        logger.warning("No function found for %s", config)
         return data
     with elapsed_timer(format_time=True) as elapsed:
-        if rc.columns:
-            for key in rc.columns:
+        if config.columns:
+            for key in config.columns:
                 logger.info("processing column: %s", key)
                 data[key] = (
                     BATCHER.apply(
                         _fn,
                         data[key],
-                        use_batcher=rc.use_batcher,
-                        num_workers=rc.num_workers,
+                        use_batcher=config.use_batcher,
+                        num_workers=config.num_workers,
                     )
-                    if rc.use_batcher
+                    if config.use_batcher
                     else data[key].apply(_fn)
                 )
-        elif rc.use_batcher:
+        elif config.use_batcher:
             data_ = BATCHER.apply(
                 _fn,
                 data,
-                use_batcher=rc.use_batcher,
-                num_workers=rc.num_workers,
+                use_batcher=config.use_batcher,
+                num_workers=config.num_workers,
             )
             # return original data if no return value to continue pipeline
             data = data_ if data_ is not None else data
         else:
-            data_arg = {rc.pipe_obj_arg_name: data} if rc.pipe_obj_arg_name else {}
+            data_arg = (
+                {config.pipe_obj_arg_name: data} if config.pipe_obj_arg_name else {}
+            )
             data_ = (
                 _fn(**data_arg)
                 if data_arg
@@ -67,7 +69,7 @@ def dataframe_external_funcs(data: pd.DataFrame, rc: DataframeRunConfig):
             )
             # return original data if no return value to continue pipeline
             data = data_ if data_ is not None else data
-        logger.info(" >> elapsed time to replace: %s", elapsed())
-        if rc.verbose:
+        if config.verbose:
+            logger.info(" >> elapsed time: %s", elapsed())
             print(data.head())
     return data

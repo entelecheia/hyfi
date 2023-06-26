@@ -1,5 +1,8 @@
+_pipe_:
 _target_:
 _with_:
 name:
 desc:
+env:
+pipe_obj_arg_name:
 verbose: false

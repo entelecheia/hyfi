@@ -1,0 +1,6 @@
+defaults:
+  - __init__
+
+columns_to_apply:
+use_batcher: false
+num_workers: 1

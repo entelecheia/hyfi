@@ -73,7 +73,7 @@ class PIPELINEs:
             logger.warning("No pipe function specified")
             return obj
         if config.verbose:
-            logger.info("Running a pipe with %s", pipe_fn)
+            logger.info("Running a pipe with %s", config.run)
         if isinstance(obj, dict):
             objs = {}
             for no, name in enumerate(obj):

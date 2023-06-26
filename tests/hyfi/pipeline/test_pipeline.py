@@ -1,6 +1,7 @@
 import pandas as pd
 
 from hyfi.main import HyFI
+from hyfi.pipeline import PipelineConfig
 from hyfi.pipeline.configs import PipeConfig, RunningConfig
 
 
@@ -28,7 +29,8 @@ def test_pipeline():
     )
     config = HyFI.compose("pipeline=__test__")
     config.pipe1.run._with_ = {"data_files": data_path}
-    HyFI.print(config)
+    config = PipelineConfig(**config)
+    HyFI.print(config.dict(exclude_none=True))
     data = HyFI.run_pipeline(config)
     assert type(data) == pd.DataFrame
     print(data[data.code == "A005930"])

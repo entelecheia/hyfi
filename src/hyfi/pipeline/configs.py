@@ -35,6 +35,7 @@ class BaseRunConfig(BaseModel):
     def __init__(self, **config_kwargs):
         config_kwargs = Composer.to_dict(config_kwargs)
         config_kwargs = Composer.replace_keys(config_kwargs, "with", "_with_")
+        config_kwargs = Composer.replace_keys(config_kwargs, "run", "_run_")
         super().__init__(**config_kwargs)
 
     @property
@@ -53,10 +54,11 @@ Pipelines = List[RunningConfig]
 Tasks = List[RunningConfig]
 
 
-class RunConfig(BaseRunConfig):
-    """Run Configuration"""
+class PipeConfig(BaseRunConfig):
+    """Pipe Configuration"""
 
-    _target_: str = ""
+    _pipe_: str = ""
+    _run_: str = ""
     pipe_obj_arg_name: Optional[str] = ""
     task: Optional[TaskConfig] = None
 
@@ -64,19 +66,27 @@ class RunConfig(BaseRunConfig):
         if self.env:
             ENVs.check_and_set_osenv_vars(self.env)
 
-    def get_func(self) -> Optional[Callable]:
-        if self._target_.startswith("lambda"):
-            return eval(self._target_)
-        elif self._target_:
+    def get_pipe_func(self) -> Optional[Callable]:
+        if self._pipe_.startswith("lambda"):
+            return eval(self._pipe_)
+        elif self._pipe_:
+            return XC.partial(self._pipe_)
+        else:
+            return None
+
+    def get_run_func(self) -> Optional[Callable]:
+        if self._run_.startswith("lambda"):
+            return eval(self._run_)
+        elif self._run_:
             kwargs = self._with_ or {}
             if self.pipe_obj_arg_name:
                 kwargs.pop(self.pipe_obj_arg_name)
-            return XC.partial(self._target_, **kwargs)
+            return XC.partial(self._run_, **kwargs)
         else:
             return None
 
 
-class DataframeRunConfig(RunConfig):
+class DataframePipeConfig(PipeConfig):
     columns_to_apply: Optional[Union[str, List[str]]] = []
     use_batcher: bool = True
     num_workers: int = 1
@@ -97,12 +107,6 @@ class DataframeRunConfig(RunConfig):
             if isinstance(self.columns_to_apply, str)
             else self.columns_to_apply
         )
-
-
-class PipeConfig(RunConfig):
-    """Pipe Configuration"""
-
-    run: RunConfig = RunConfig()
 
 
 Pipes = List[PipeConfig]

@@ -1,4 +1,4 @@
 defaults:
-  - __init__
+  - __dataframe__
 
-_target_: hyfi.pipe.dataframe_external_funcs
+_pipe_: hyfi.pipe.dataframe_external_funcs

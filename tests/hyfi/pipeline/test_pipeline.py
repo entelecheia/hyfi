@@ -14,13 +14,13 @@ def test_running_config():
 def test_pipe():
     data_path = "https://assets.entelecheia.ai/datasets/bok_minutes/meta-bok_minutes-train.parquet"
     config = HyFI.compose("pipe=load_dataframes")
-    config.run._with_ = {"data_files": data_path}
+    config._with_ = {"data_files": data_path}
     config.verbose = True
     HyFI.print(config)
     pipe = PipeConfig(**config)
     HyFI.print(pipe.dict())
-    print(pipe.run.kwargs)
-    assert pipe.run._target_ == "hyfi.main.HyFI.load_dataframes"
+    print(pipe.kwargs)
+    assert pipe._run_ == "hyfi.main.HyFI.load_dataframes"
 
 
 def test_pipeline():
@@ -28,7 +28,7 @@ def test_pipeline():
         "https://assets.entelecheia.ai/datasets/esg_coverage/ESG_ratings_raw.csv"
     )
     config = HyFI.compose("pipeline=__test__")
-    config.pipe1.run._with_ = {"data_files": data_path}
+    config.pipe1._with_ = {"data_files": data_path}
     config = PipelineConfig(**config)
     HyFI.print(config.dict(exclude_none=True))
     data = HyFI.run_pipeline(config)

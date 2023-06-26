@@ -1,4 +1,5 @@
 from hyfi.main import HyFI
+from hyfi.pipeline.configs import DataframePipeConfig
 
 
 def test_pipe():
@@ -25,18 +26,17 @@ def test_pipe():
     )
     print(df3)
     config = HyFI.compose("pipe=__dataframe_instance_methods__")
-    pipe_config = HyFI.pipe_config(**config)
-    pipe_config.run._target_ = "filter"
-    pipe_config.run._with_ = {"items": ["id"]}
-    pipe_config.verbose = True
+    pipe_config = DataframePipeConfig(**config)
+    pipe_config._run_ = "filter"
+    pipe_config._with_ = {"items": ["id"]}
     print(pipe_config)
     df4 = HyFI.run_pipe(df, pipe_config)
     print(df4)
     config = HyFI.compose("pipe=__dataframe_external_funcs__")
-    pipe_config = HyFI.pipe_config(**config)
-    pipe_config.run._target_ = "lambda x: x.replace('Economic', 'ECON')"
-    pipe_config.run.columns_to_apply = "text"
-    pipe_config.run.num_workers = 5
+    pipe_config = DataframePipeConfig(**config)
+    pipe_config._run_ = "lambda x: x.replace('Economic', 'ECON')"
+    pipe_config.columns_to_apply = "text"
+    pipe_config.num_workers = 5
     pipe_config.verbose = True
     print(pipe_config)
     df5 = HyFI.run_pipe(df, pipe_config)

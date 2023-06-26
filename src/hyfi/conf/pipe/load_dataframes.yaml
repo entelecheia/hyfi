@@ -11,3 +11,4 @@ _with_:
   ignore_index: false
   use_cached: false
   verbose: false
+use_pipe_obj: false

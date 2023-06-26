@@ -24,7 +24,7 @@ def test_init_project():
     os.environ["HYFI_PROJECT_ROOT"] = ""
     prj = HyFI.init_project(
         project_name="hyfi2",
-        global_hyfi_root="tmp",
+        global_hyfi_root="workspace",
         global_workspace_name="testspace",
         log_level="WARNING",
         verbose=True,

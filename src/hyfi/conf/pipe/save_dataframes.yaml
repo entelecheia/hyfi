@@ -12,3 +12,4 @@ _with_:
   suffix:
   verbose: false
 pipe_obj_arg_name: data
+return_pipe_obj: true

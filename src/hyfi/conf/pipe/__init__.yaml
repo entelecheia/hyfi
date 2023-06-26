@@ -4,5 +4,7 @@ _with_:
 name:
 desc:
 env:
+use_pipe_obj: true
 pipe_obj_arg_name:
+return_pipe_obj: false
 verbose: false

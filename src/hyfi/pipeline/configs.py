@@ -59,7 +59,9 @@ class PipeConfig(BaseRunConfig):
 
     _pipe_: str = ""
     _run_: str = ""
+    use_pipe_obj: bool = True
     pipe_obj_arg_name: Optional[str] = ""
+    return_pipe_obj: bool = False
     task: Optional[TaskConfig] = None
 
     def set_enviroment(self):

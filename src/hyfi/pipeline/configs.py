@@ -3,7 +3,7 @@
 """
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 
 from hyfi.composer import Composer
 from hyfi.composer.extended import XC
@@ -74,6 +74,13 @@ class DataframeRunConfig(RunConfig):
     columns_to_apply: Optional[Union[str, List[str]]] = []
     use_batcher: bool = True
     num_workers: int = 1
+
+    @root_validator()
+    def _check_and_set_values(cls, values):
+        num_workers = values.get("num_workers")
+        if num_workers and num_workers > 1:
+            values["use_batcher"] = True
+        return values
 
     @property
     def columns(self) -> List[str]:

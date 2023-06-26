@@ -34,7 +34,9 @@ class TaskPathConfig(BaseConfig):
                 an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
         # return as an absolute path
-        return Path(self.task_root).absolute()
+        path_ = Path(self.task_root)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_.absolute()
 
     @property
     def output_dir(self) -> Path:
@@ -46,7 +48,9 @@ class TaskPathConfig(BaseConfig):
                 absolute path to the output directory of the task ( relative to the task root directory ) or None if not
         """
         self.task_outputs = self.task_outputs or (self.root_dir / "outputs").as_posix()
-        return Path(self.task_outputs).absolute()
+        path_ = Path(self.task_outputs)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_.absolute()
 
     @property
     def library_dir(self) -> Path:

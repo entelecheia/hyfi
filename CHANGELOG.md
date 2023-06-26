@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v0.14.1 (2023-06-26)
+
+### Fix
+
+* **configs:** Rename RunConfig to PipeConfig, add _pipe_ and _run_ keys ([`d732cbd`](https://github.com/entelecheia/hyfi/commit/d732cbd967a788d0a5f9951cd8484f04ea8795dc))
+* **pipeline:** Update get_pipe_func call in PIPELINEs class ([`6354d57`](https://github.com/entelecheia/hyfi/commit/6354d572a32487959e94f492083fff5a4a74ee49))
+* **pipe:** Rename DataframeRunConfig to DataframePipeConfig ([`7d24e76`](https://github.com/entelecheia/hyfi/commit/7d24e7624a06f59f5f901a5b08f24b8b7bb25a87))
+* **conf:** Modify dataframe_instance_methods.yaml defaults key ([`6bda0c1`](https://github.com/entelecheia/hyfi/commit/6bda0c1be35d433a96e65c632e3f8f1e52e1a4cb))
+* **pipe:** Modify dataframe external functions default configuration ([`afbaa52`](https://github.com/entelecheia/hyfi/commit/afbaa52e32b202cf2b352227afb33a7ca7a3840c))
+
 ## v0.14.0 (2023-06-26)
 
 ### Feature

@@ -12,6 +12,7 @@ logger = LOGGING.getLogger(__name__)
 
 
 def dataframe_instance_methods(data: pd.DataFrame, rc: DataframeRunConfig):
+    rc = DataframeRunConfig(**rc.dict())
     with elapsed_timer(format_time=True) as elapsed:
         if rc.columns:
             for col_name in rc.columns:

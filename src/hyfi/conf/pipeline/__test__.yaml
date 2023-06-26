@@ -1,14 +1,16 @@
 defaults:
   - __init__
-  - /pipe@pipe1:
-      - load_dataframes
+  - /pipe@pipe1: load_dataframes
+  - /pipe@pipe2: test_preprocessing
+  - /pipe@pipe3: save_dataframes
 
 steps:
-  - uses: pipe1
+  - pipe1
+  - uses: pipe2
+    verbose: true
+  - uses: pipe3
     run:
       with:
-        path: .cache
-    env:
-      key: value
-      key2: value2
-  - pipe2
+        data_file: workspace/processed/ESG_ratings_raw.parquet
+      verbose: true
+    verbose: true

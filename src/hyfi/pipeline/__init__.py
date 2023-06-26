@@ -79,8 +79,7 @@ class PIPELINEs:
     ) -> Any:
         if not isinstance(config, PipeConfig):
             config = PipeConfig(**Composer.to_dict(config))
-        config.run.task = config.task
-        pipe_fn = config.get_func()
+        pipe_fn = config.get_pipe_func()
         if pipe_fn is None:
             logger.warning("No pipe function specified")
             return obj
@@ -99,10 +98,10 @@ class PIPELINEs:
                         len(obj),
                     )
 
-                objs[name] = pipe_fn(obj_, config.run)
+                objs[name] = pipe_fn(obj_, config)
             return objs
 
-        return pipe_fn(obj, config.run)
+        return pipe_fn(obj, config)
 
     @staticmethod
     def get_RCs(config_list: list) -> List[RunningConfig]:

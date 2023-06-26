@@ -1,11 +1,3 @@
-defaults:
-  - /pipe@pipe1:
-      - __instance__
-  - /pipe@pipe2:
-      - __lambda__
-uses:
 name:
 desc:
-run:
-with:
-env:
+steps:

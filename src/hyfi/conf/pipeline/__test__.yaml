@@ -1,0 +1,14 @@
+defaults:
+  - __init__
+  - /pipe@pipe1:
+      - load_dataframes
+
+steps:
+  - uses: pipe1
+    run:
+      with:
+        path: .cache
+    env:
+      key: value
+      key2: value2
+  - pipe2

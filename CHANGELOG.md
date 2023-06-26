@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.14.2 (2023-06-26)
+
+### Fix
+
+* **configs:** Add use_pipe_obj and return_pipe_obj flags ([`6b10ceb`](https://github.com/entelecheia/hyfi/commit/6b10ceb34be48e74b3fe04775d367049d6fe1735))
+* **pipe:** Improve handling of data input and output ([`3d217a0`](https://github.com/entelecheia/hyfi/commit/3d217a0234363399d7d2735091861b9cfada887b))
+* **conf:** Update pipe configuration with new options ([`a0d1297`](https://github.com/entelecheia/hyfi/commit/a0d1297af783ffde3f8e01b2f6f8589e49bb457c))
+
 ## v0.14.1 (2023-06-26)
 
 ### Fix

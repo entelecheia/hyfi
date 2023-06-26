@@ -23,14 +23,15 @@ def test_pipe():
 
 
 def test_pipeline():
-    data_path = "https://assets.entelecheia.ai/datasets/bok_minutes/meta-bok_minutes-train.parquet"
+    data_path = (
+        "https://assets.entelecheia.ai/datasets/esg_coverage/ESG_ratings_raw.csv"
+    )
     config = HyFI.compose("pipeline=__test__")
     config.pipe1.run._with_ = {"data_files": data_path}
     HyFI.print(config)
     data = HyFI.run_pipeline(config)
-    print(type(data))
-    print(data)
     assert type(data) == pd.DataFrame
+    print(data[data.code == "A005930"])
 
 
 if __name__ == "__main__":

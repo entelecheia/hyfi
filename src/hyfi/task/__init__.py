@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union
+from typing import Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
@@ -22,11 +22,9 @@ class TaskConfig(BaseConfig):
     module: ModuleConfig = None  # type: ignore
     path: BatchPathConfig = None  # type: ignore
     project: ProjectConfig = None  # type: ignore
+    pipelines: Optional[List[Union[str, Dict]]] = []
 
     class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
-        validate_assignment = False
         exclude = {
             "__data__",
             "path",
@@ -34,7 +32,6 @@ class TaskConfig(BaseConfig):
             "project",
         }
         include = {}
-        underscore_attrs_are_private = True
         property_set_methods = {
             "task_name": "set_task_name",
             "task_root": "set_task_root",
@@ -106,7 +103,7 @@ class TaskConfig(BaseConfig):
 
     @property
     def verbose(self) -> bool:
-        return bool(self.project.verbose)
+        return bool(self.project.verbose) if self.project else False
 
     def print_config(self):
         Composer.print(self.config)

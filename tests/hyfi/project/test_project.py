@@ -10,7 +10,7 @@ def test_project_config():
     # config.init_project()
     pprint(config.dict())
     assert config.project_name == "test"
-    assert Path(config.project_root).absolute() == (Path.cwd() / "workspace/workspacetmp").absolute()
+    assert Path(config.project_root).absolute() == (Path.cwd() / "workspace/tmp").absolute()
     assert config.num_workers == 2
     # pprint(config.path.dict())
 

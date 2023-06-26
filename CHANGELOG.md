@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v0.13.0 (2023-06-26)
+
+### Feature
+
+* **pipeline:** Add a PipelineConfig class and PIPELINEs class with methods for running a pipeline, running a pipe, and getting running configs from a list. ([`6a4a321`](https://github.com/entelecheia/hyfi/commit/6a4a32112ad083900fe636da0eb2c438df052bb4))
+* **pipeline:** Add "compose_as_dict" method to allow composing configuration as a dictionary ([`09ad137`](https://github.com/entelecheia/hyfi/commit/09ad137995a50be06185fe3e2f7ca5dbd252f9f7))
+* **pipe:** Add load_dataframes.yaml configuration file ([`98b9e59`](https://github.com/entelecheia/hyfi/commit/98b9e59d0843ccfffcb36eac90da9b982c0b9449))
+* **conf:** Add running config file ([`e604129`](https://github.com/entelecheia/hyfi/commit/e60412991fe38530481a4a53818e48c2aaba386b))
+* **pipeline:** Add __test__.yaml configuration for testing pipeline ([`01a1957`](https://github.com/entelecheia/hyfi/commit/01a195780681ec35f784dab50d4d3af1520de595))
+* **pipeline:** Add configs module with BaseRunConfig, RunningConfig, Steps, Pipelines, Tasks, RunConfig, DataframeRunConfig, and PipeConfig ([`2c39ae2`](https://github.com/entelecheia/hyfi/commit/2c39ae2f071ddeaed648e15d83ad1ea2bf96f1d3))
+* **joblib:** Add BATCHER class and apply method ([`bf89e1d`](https://github.com/entelecheia/hyfi/commit/bf89e1d9708ab9bc5d22c5b42cc5568c3979a73d))
+
+### Fix
+
+* **utils:** Fix import statement in test_utils_env.py ([`a9ed751`](https://github.com/entelecheia/hyfi/commit/a9ed751dc365fb1fbe403b666fecfb8a69574157))
+* **utils:** Fix class naming and update method names for clarity ([`1a3f559`](https://github.com/entelecheia/hyfi/commit/1a3f559162af98dbc8811641a68ecfd6e386e122))
+* **joblib:** Update pipe function to use BATCHER instead of PIPE in HyFI class ([`cd3c94c`](https://github.com/entelecheia/hyfi/commit/cd3c94cbeb15c830d20419d6cb92c5fee664d86c))
+
 ## v0.12.3 (2023-06-23)
 
 ### Fix

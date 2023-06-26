@@ -50,7 +50,10 @@ def run_copy(**args):
 
 
 def run_task(**args):
-    print(args["task"].keys())
+    if "task" not in args:
+        raise ValueError("No task configuration found")
+    task = HyFI.task_config(**args["task"])
+    HyFI.run_task_pipelines(task)
 
 
 def cli_main(cfg: DictConfig) -> None:

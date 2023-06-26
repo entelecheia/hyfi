@@ -1,6 +1,3 @@
 defaults:
   - __dataframe_external_funcs__
-  - /run: __dataframe__
-
-run:
-  _target_: hyfi.main.HyFI.load_dataframes
+  - /run: load_dataframes

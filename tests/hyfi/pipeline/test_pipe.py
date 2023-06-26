@@ -24,23 +24,22 @@ def test_pipe():
         num_workers=10,
     )
     print(df3)
-    # pipe_config = HyFI.compose("pipe=__instance__")
-    pipe_config = HyFI.pipe_config(config_name="__instance__")
-    pipe_config._method_ = "filter"
-    pipe_config.apply_to = ""
-    pipe_config.KWARGS = {"items": ["text"]}
-    pipe_config.verbose = True
-    print(pipe_config)
-    df4 = HyFI.pipe(df, pipe_config)
-    print(df4)
-    config = HyFI.compose("pipe=__lambda__")
+    config = HyFI.compose("pipe=__dataframe_instance_methods__")
     pipe_config = HyFI.pipe_config(**config)
-    pipe_config._method_ = "lambda x: x.replace('Economic', 'ECON')"
-    pipe_config.apply_to = "text"
-    pipe_config.num_workers = 5
+    pipe_config.run._target_ = "filter"
+    pipe_config.run._with_ = {"items": ["id"]}
     pipe_config.verbose = True
     print(pipe_config)
-    df5 = HyFI.pipe(df, pipe_config)
+    df4 = HyFI.run_pipe(df, pipe_config)
+    print(df4)
+    config = HyFI.compose("pipe=__dataframe_external_funcs__")
+    pipe_config = HyFI.pipe_config(**config)
+    pipe_config.run._target_ = "lambda x: x.replace('Economic', 'ECON')"
+    pipe_config.run.columns_to_apply = "text"
+    pipe_config.run.num_workers = 5
+    pipe_config.verbose = True
+    print(pipe_config)
+    df5 = HyFI.run_pipe(df, pipe_config)
     print(df5)
 
 

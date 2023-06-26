@@ -26,8 +26,8 @@ from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import BATCHER, JobLibConfig
-from hyfi.pipe import PipeConfig
-from hyfi.pipeline import PIPELINEs, PipelineConfig
+from hyfi.pipeline import PipelineConfig, PIPELINEs
+from hyfi.pipeline.configs import PipeConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.datasets import DatasetLikeType, Datasets, DatasetType
 from hyfi.utils.envs import ENVs
@@ -155,18 +155,41 @@ class HyFI:
         return PipeConfig(**kwargs)
 
     @staticmethod
-    def compose(
+    def compose_as_dict(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
-        return_as_dict: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
         config_module: Union[str, None] = None,
         global_package: bool = False,
         verbose: bool = False,
-    ) -> Union[DictConfig, Dict]:
+    ) -> Dict:
+        return Composer._compose_as_dict(
+            config_group=config_group,
+            overrides=overrides,
+            config_data=config_data,
+            throw_on_resolution_failure=throw_on_resolution_failure,
+            throw_on_missing=throw_on_missing,
+            config_name=root_config_name,
+            config_module=config_module,
+            global_package=global_package,
+            verbose=verbose,
+        )
+
+    @staticmethod
+    def compose(
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+        root_config_name: Union[str, None] = None,
+        config_module: Union[str, None] = None,
+        global_package: bool = False,
+        verbose: bool = False,
+    ) -> DictConfig:
         """
         Compose a configuration by applying overrides
 
@@ -189,7 +212,6 @@ class HyFI:
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
-            return_as_dict=return_as_dict,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             config_name=root_config_name,
@@ -375,11 +397,17 @@ class HyFI:
     # Batcher related functions
     ###############################
     @staticmethod
-    def run_pipeline(obj, config: Union[Dict, PipelineConfig]):
-        return PIPELINEs.run_pipeline(obj, config)
+    def run_pipeline(
+        config: Union[Dict, PipelineConfig],
+        initial_obj: Any = None,
+    ) -> Any:
+        return PIPELINEs.run_pipeline(config, initial_obj)
 
     @staticmethod
-    def run_pipe(obj: Any, config: Union[Dict, PipeConfig]):
+    def run_pipe(
+        obj: Any,
+        config: Union[Dict, PipeConfig],
+    ) -> Any:
         return PIPELINEs.run_pipe(obj, config)
 
     @staticmethod

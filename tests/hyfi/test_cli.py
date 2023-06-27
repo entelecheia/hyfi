@@ -32,7 +32,15 @@ def test_click() -> None:
 
 def test_click_cc() -> None:
     """Test cli module"""
-    command = ["poetry", "run", "hyfi-run", "cc", "--dst_path", "workspace/hyfi_test/conf", "--overwrite"]
+    command = [
+        "poetry",
+        "run",
+        "hyfi-run",
+        "cc",
+        "--dst_path",
+        "workspace/hyfi_test/conf",
+        "--overwrite",
+    ]
     out, err, exitcode = capture(command)
     assert exitcode == 0
 
@@ -47,6 +55,19 @@ def test_cli_copy_conf() -> None:
         "copier.dst_path=workspace/hyfi_test/conf",
         "copier.exclude='**/*/about/__init__.yaml'",
         "copier.overwrite=True",
+    ]
+    out, err, exitcode = capture(command)
+    assert exitcode == 0
+
+
+def test_cli_run_workflow() -> None:
+    """Test cli command run_workflow"""
+    command = [
+        "poetry",
+        "run",
+        "hyfi",
+        "cmd=run_workflow",
+        "workflow=__test__",
     ]
     out, err, exitcode = capture(command)
     assert exitcode == 0

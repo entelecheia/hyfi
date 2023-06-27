@@ -2,14 +2,13 @@
 Hyfi configuration file.
 """
 import os
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 from omegaconf import DictConfig
 from pydantic import BaseModel, root_validator, validator
 
 from hyfi.__global__ import __about__, __hydra_config__
 from hyfi.about import AboutConfig
-from hyfi.composer import Composer
 from hyfi.dotenv import DotEnvConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
@@ -195,59 +194,40 @@ class HyfiConfig(BaseModel):
         # Set the retina matplotlib formats.
         if retina:
             NBs.set_matplotlib_formats("retina")
-        self.initialize(reinit=reinit)
 
-    def initialize(
-        self,
-        config: Union[DictConfig, Dict, None] = None,
-        reinit: bool = False,
-    ):
+        self.initialize(force=reinit)
+        self.project = ProjectConfig()
+
+    def initialize(self, force: bool = False) -> bool:
         """
         Initialize hyfi.
 
-        Args:
-                config: Configuration dictionary or None.
-
         Returns:
-                A boolean indicating whether initialization was successful
+            A boolean indicating whether initialization was successful
         """
-        """Initialize hyfi config"""
         # Returns the current value of the __initilized__ attribute.
-        if self.__initilized__ and not reinit:
-            return
-        __hydra_config__.hyfi_config_module = self.hyfi_config_module
-        __hydra_config__.hyfi_config_path = self.hyfi_config_path
+        if self.__initilized__ and not force:
+            return True
+        __hydra_config__.hyfi_config_module = __about__.config_module
+        __hydra_config__.hyfi_config_path = __about__.config_path
         __hydra_config__.hyfi_user_config_path = self.hyfi_user_config_path
-
-        # If config is not set the default config is used.
-        if config is None:
-            logger.debug("Using default config.")
-            config = Composer(
-                overrides=["+project=__init__"],
-                config_module=__about__.config_module,
-            ).config_as_dict
-
-        # Skip project config initialization.
-        if "project" not in config:
-            logger.debug("No project config found, skip project config initialization.")
-            return
-        self.project = ProjectConfig(**config["project"])
-        # self.project.init_project()
-        # Initialize joblib backend if joblib is not set.
-        # if self.project.joblib:
-        #     self.project.joblib.init_backend()
+        logger.debug(
+            "HyFiConfig initialized with hyfi_config_module=%s, hyfi_config_path=%s, hyfi_user_config_path=%s",
+            __hydra_config__.hyfi_config_module,
+            __hydra_config__.hyfi_config_path,
+            __hydra_config__.hyfi_user_config_path,
+        )
 
         self.__initilized__ = True
+        return True
 
-    def terminate(self):
+    def terminate(self) -> bool:
         """
         Terminate hyfi config by stopping joblib
 
-
         Returns:
-                True if successful False
+            True if successful False
         """
-        """Terminate hyfi config"""
         # If the module is not initialized yet.
         if not self.__initilized__:
             return
@@ -255,11 +235,11 @@ class HyfiConfig(BaseModel):
         if self.project and self.project.joblib:
             self.project.joblib.stop_backend()
         self.__initilized__ = False
+        return True
 
     def __repr__(self):
         """
         Returns a string representation of HyFIConfig.
-
 
         Returns:
                 The string representation of HyFI
@@ -269,7 +249,6 @@ class HyfiConfig(BaseModel):
     def __str__(self):
         """
         Returns a string representation of the object.
-
 
         Returns:
                 The string representation of the

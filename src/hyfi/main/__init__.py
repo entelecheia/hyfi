@@ -39,6 +39,7 @@ from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 from hyfi.utils.packages import PKGs
 from hyfi.utils.types import PathLikeType
+from hyfi.workflow import WorkflowConfig
 
 logger = LOGGING.getLogger(__name__)
 
@@ -126,14 +127,14 @@ class HyFI:
             raise ValueError("Project not initialized.")
 
     @staticmethod
-    def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
+    def initialize(force: bool = False) -> bool:
         """Initialize the global config"""
-        __global_config__.initialize(config)
+        return __global_config__.initialize(force=force)
 
     @staticmethod
-    def terminate():
+    def terminate() -> bool:
         """Terminate the global config"""
-        __global_config__.terminate()
+        return __global_config__.terminate()
 
     @staticmethod
     def joblib(**kwargs) -> JobLibConfig:
@@ -159,6 +160,11 @@ class HyFI:
     def task_config(**kwargs) -> TaskConfig:
         """Return the TaskConfig"""
         return TaskConfig(**kwargs)
+
+    @staticmethod
+    def workflow_config(**kwargs) -> WorkflowConfig:
+        """Return the WorkflowConfig"""
+        return WorkflowConfig(**kwargs)
 
     @staticmethod
     def compose_as_dict(
@@ -403,9 +409,14 @@ class HyFI:
     # Pipeline related functions
     ###############################
     @staticmethod
-    def run_task_pipelines(task: TaskConfig):
+    def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
         """Run the pipelines specified in the task"""
-        PIPELINEs.run_task_pipelines(task)
+        PIPELINEs.run_task(task, project)
+
+    @staticmethod
+    def run_workflow(workflow: WorkflowConfig):
+        """Run the pipelines specified in the workflow"""
+        PIPELINEs.run_workflow(workflow)
 
     @staticmethod
     def run_pipeline(

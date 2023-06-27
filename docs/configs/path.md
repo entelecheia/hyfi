@@ -1,4 +1,4 @@
-# Path Configurations
+# Path Configs
 
 ## `__init__.yaml`
 

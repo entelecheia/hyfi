@@ -5,13 +5,13 @@
 Here's an example of how you can use the expand_posix_vars function in a Python script:
 
 ```python
-from hypi.utils.env import expand_posix_vars
+from hypi.utils.envs import ENVs
 
 # Define a POSIX expression with variables
 posix_expr = "The current working directory is $PWD and the user is $USER."
 
 # Call the expand_posix_vars function with the POSIX expression
-expanded_expr = expand_posix_vars(posix_expr)
+expanded_expr = ENVs.expand_posix_vars(posix_expr)
 
 # Print the expanded expression
 print(expanded_expr)
@@ -26,7 +26,7 @@ The current working directory is /home/user and the user is user.
 You can also pass in a dictionary of additional variables to be used in the expansion, like this:
 
 ```python
-from hypi.utils.env import expand_posix_vars
+from hypi.utils.envs import ENVs
 
 # Define a POSIX expression with variables
 posix_expr = "The value of MY_VAR is $MY_VAR."
@@ -35,7 +35,7 @@ posix_expr = "The value of MY_VAR is $MY_VAR."
 context = {"MY_VAR": "hello world"}
 
 # Call the expand_posix_vars function with the POSIX expression and context
-expanded_expr = expand_posix_vars(posix_expr, context)
+expanded_expr = ENVs.expand_posix_vars(posix_expr, context)
 
 # Print the expanded expression
 print(expanded_expr)

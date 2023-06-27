@@ -126,14 +126,14 @@ class HyFI:
             raise ValueError("Project not initialized.")
 
     @staticmethod
-    def initialize(config: Union[DictConfig, Dict] = None):  # type: ignore
+    def initialize(force: bool = False) -> bool:
         """Initialize the global config"""
-        __global_config__.initialize(config)
+        return __global_config__.initialize(force=force)
 
     @staticmethod
-    def terminate():
+    def terminate() -> bool:
         """Terminate the global config"""
-        __global_config__.terminate()
+        return __global_config__.terminate()
 
     @staticmethod
     def joblib(**kwargs) -> JobLibConfig:
@@ -403,9 +403,9 @@ class HyFI:
     # Pipeline related functions
     ###############################
     @staticmethod
-    def run_task_pipelines(task: TaskConfig):
+    def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
         """Run the pipelines specified in the task"""
-        PIPELINEs.run_task_pipelines(task)
+        PIPELINEs.run_task(task, project)
 
     @staticmethod
     def run_pipeline(

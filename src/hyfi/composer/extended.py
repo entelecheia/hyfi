@@ -18,9 +18,6 @@ from hyfi.utils.packages import PKGs
 logger = LOGGING.getLogger(__name__)
 
 
-# _config_ = XC.config.copy()
-
-
 class XC(Composer):
     """
     Extended Composer class
@@ -32,6 +29,25 @@ class XC(Composer):
         *args: Any,
         **kwargs: Any,
     ) -> Callable:
+        """
+        Returns a callable object that is a partial version of the function or class specified in the config object.
+
+        Args:
+            config: An config object describing what to call and what params to use.
+                    In addition to the parameters, the config must contain:
+                    _target_ : target class or callable name (str)
+                    And may contain:
+                    _partial_: If True, return functools.partial wrapped method or object
+                                False by default. Configure per target.
+            args: Optional positional parameters pass-through
+            kwargs: Optional named parameters to override
+                    parameters in the config object. Parameters not present
+                    in the config objects are being passed as is to the target.
+                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                                and cannot be used as passthrough
+        Returns:
+            A callable object that is a partial version of the function or class specified in the config object.
+        """
         if isinstance(config, str):
             config = {SpecialKeys.TARGET.value: config}
         else:
@@ -45,7 +61,10 @@ class XC(Composer):
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         """
-        :param config: An config object describing what to call and what params to use.
+        Instantiates an object using the provided config object.
+
+        Args:
+            config: An config object describing what to call and what params to use.
                     In addition to the parameters, the config must contain:
                     _target_ : target class or callable name (str)
                     And may contain:
@@ -63,14 +82,16 @@ class XC(Composer):
                     _partial_: If True, return functools.partial wrapped method or object
                                 False by default. Configure per target.
                     _args_: List-like of positional arguments
-        :param args: Optional positional parameters pass-through
-        :param kwargs: Optional named parameters to override
+            args: Optional positional parameters pass-through
+            kwargs: Optional named parameters to override
                     parameters in the config object. Parameters not present
                     in the config objects are being passed as is to the target.
                     IMPORTANT: dataclasses instances in kwargs are interpreted as config
                                 and cannot be used as passthrough
-        :return: if _target_ is a class name: the instantiated object
-                if _target_ is a callable: the return value of the call
+
+        Returns:
+            if _target_ is a class name: the instantiated object
+            if _target_ is a callable: the return value of the call
         """
         verbose = config.get(SpecialKeys.VERBOSE, False)
         if not __global_config__.__initilized__:
@@ -88,7 +109,16 @@ class XC(Composer):
 
     @staticmethod
     def getsource(obj: Any) -> str:
-        """Return the source code of the object."""
+        """
+        Return the source code of the object.
+
+        Args:
+            obj: The object to get the source code of.
+
+        Returns:
+            The source code of the object as a string.
+
+        """
         try:
             if XC.is_config(obj):
                 if SpecialKeys.TARGET in obj:
@@ -102,7 +132,13 @@ class XC(Composer):
 
     @staticmethod
     def viewsource(obj: Any):
-        """Print the source code of the object."""
+        """
+        Print the source code of the object.
+
+        Args:
+            obj: The object to print the source code of.
+
+        """
         print(XC.getsource(obj))
 
 

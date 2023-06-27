@@ -52,8 +52,9 @@ def run_copy(**args):
 def run_task(**args):
     if "task" not in args:
         raise ValueError("No task configuration found")
+    project = HyFI.init_project(**args["project"]) if "project" in args else None
     task = HyFI.task_config(**args["task"])
-    HyFI.run_task(task)
+    HyFI.run_task(task, project=project)
 
 
 def cli_main(cfg: DictConfig) -> None:

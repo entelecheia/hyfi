@@ -674,12 +674,12 @@ class BaseConfig(BaseModel):
         self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
-        super().__setattr__(key, val)
         if method := self.__config__.property_set_methods.get(key):  # type: ignore
             logger.info(
                 "Setting %s to %s", key, val if isinstance(val, str) else type(val)
             )
             getattr(self, method)(val)
+        super().__setattr__(key, val)
 
     def initialize_configs(
         self,

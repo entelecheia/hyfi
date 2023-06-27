@@ -1,6 +1,6 @@
 """Utilities for loading library packages and dependencies."""
-import inspect
 import importlib
+import inspect
 import os
 import subprocess
 import sys

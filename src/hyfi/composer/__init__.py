@@ -590,11 +590,15 @@ class Composer(BaseModel):
     @staticmethod
     def replace_keys(_dict: Mapping[str, Any], old_key: str, new_key: str) -> Mapping:
         """
-        Replace a key in a dictionary
-        :param _dict: dictionary to update
-        :param old_key: old key
-        :param new_key: new key
-        :return: updated dictionary
+        Replace a key in a dictionary.
+
+        Args:
+            _dict (Mapping[str, Any]): The dictionary to update.
+            old_key (str): The old key to replace.
+            new_key (str): The new key to use.
+
+        Returns:
+            Mapping: The updated dictionary.
         """
         _new_dict = {}
         for k, v in _dict.items():
@@ -617,9 +621,13 @@ class Composer(BaseModel):
         ],
     ) -> Union[ListConfig, DictConfig]:
         """
-        Merge a list of previously created configs into a single one
-        :param configs: Input configs
-        :return: the merged config object.
+        Merge a list of previously created configs into a single one.
+
+        Args:
+            *configs: Input configs.
+
+        Returns:
+            Union[ListConfig, DictConfig]: The merged config object.
         """
         return OmegaConf.merge(*configs)
 
@@ -635,14 +643,29 @@ class Composer(BaseModel):
         ],
     ) -> Union[ListConfig, DictConfig]:
         """
-        Merge a list of previously created configs into a single one
-        :param configs: Input configs
-        :return: the merged config object.
+        Merge a list of previously created configs into a single dictionary.
+
+        Args:
+            *configs: Input configs.
+
+        Returns:
+            Union[ListConfig, DictConfig]: The merged config object as a dictionary.
         """
         return Composer.to_dict(OmegaConf.merge(*configs))
 
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        """
+        Convert the input config object to a YAML string.
+
+        Args:
+            cfg (Any): The input config object.
+            resolve (bool, optional): Whether to resolve the config object before converting it to YAML. Defaults to False.
+            sort_keys (bool, optional): Whether to sort the keys in the resulting YAML string. Defaults to False.
+
+        Returns:
+            str: The YAML string representation of the input config object.
+        """
         if resolve:
             cfg = Composer.to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
@@ -655,6 +678,19 @@ class Composer(BaseModel):
         enum_to_str: bool = False,
         structured_config_mode: SCMode = SCMode.DICT,
     ):
+        """
+        Convert the input config object to a nested container (e.g. dictionary).
+
+        Args:
+            cfg (Any): The input config object.
+            resolve (bool, optional): Whether to resolve the config object before converting it to a container. Defaults to False.
+            throw_on_missing (bool, optional): Whether to throw an exception if a missing key is encountered. Defaults to False.
+            enum_to_str (bool, optional): Whether to convert enum values to strings. Defaults to False.
+            structured_config_mode (SCMode, optional): The structured config mode to use. Defaults to SCMode.DICT.
+
+        Returns:
+            The nested container (e.g. dictionary) representation of the input config object.
+        """
         return OmegaConf.to_container(
             cfg,
             resolve=resolve,
@@ -724,6 +760,18 @@ class Composer(BaseModel):
 
     @staticmethod
     def ensure_list(value):
+        """
+        Ensure that the given value is a list. If the value is None or an empty string, an empty list is returned.
+        If the value is already a list, it is returned as is. If the value is a string, it is returned as a list
+        containing only that string. Otherwise, the value is converted to a dictionary using the Composer.to_dict method
+        and the resulting dictionary is returned as a list.
+
+        Args:
+            value (Any): The value to ensure as a list.
+
+        Returns:
+            List: The value as a list.
+        """
         if not value:
             return []
         elif isinstance(value, str):

@@ -19,9 +19,9 @@ class TaskConfig(BaseConfig):
     task_root: str = "tmp/task"
     autoload: bool = False
     version: str = "0.0.0"
-    module: ModuleConfig = None  # type: ignore
-    path: BatchPathConfig = None  # type: ignore
-    project: ProjectConfig = None  # type: ignore
+    module: Optional[ModuleConfig] = None
+    path: Optional[BatchPathConfig] = None
+    project: Optional[ProjectConfig] = None
     pipelines: Optional[List[Union[str, Dict]]] = []
 
     class Config:

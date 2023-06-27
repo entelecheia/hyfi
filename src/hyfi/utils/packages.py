@@ -1,4 +1,5 @@
 """Utilities for loading library packages and dependencies."""
+import inspect
 import importlib
 import os
 import subprocess
@@ -149,3 +150,20 @@ class PKGs:
             PKGs.load_module_from_file(name, syspath, specname)
             specname = specname or name
             logger.info(f"{name} not imported, loading from {syspath} as {specname}")
+
+    @staticmethod
+    def getsource(obj: str) -> str:
+        """Return the source code of the object."""
+        try:
+            mod_name, object_name = obj.rsplit(".", 1)
+            mod = importlib.import_module(mod_name)
+            obj = getattr(mod, object_name)
+            return inspect.getsource(obj)
+        except Exception as e:
+            logger.error(f"Error getting source: {e}")
+            return ""
+
+    @staticmethod
+    def viewsource(obj: str) -> None:
+        """Print the source code of the object."""
+        print(PKGs.getsource(obj))

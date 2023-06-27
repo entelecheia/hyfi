@@ -128,42 +128,100 @@ class HyFI:
 
     @staticmethod
     def initialize(force: bool = False) -> bool:
-        """Initialize the global config"""
+        """
+        Initialize the global config.
+
+        Args:
+            force: If True, force initialization even if already initialized.
+
+        Returns:
+            bool: True if initialization was successful, False otherwise.
+        """
         return __global_config__.initialize(force=force)
 
     @staticmethod
     def terminate() -> bool:
-        """Terminate the global config"""
+        """
+        Terminate the global config.
+
+        Returns:
+            bool: True if termination was successful, False otherwise.
+        """
         return __global_config__.terminate()
 
     @staticmethod
     def joblib(**kwargs) -> JobLibConfig:
-        """Return the joblib pipe"""
+        """
+        Return the joblib pipe.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the JobLibConfig constructor.
+
+        Returns:
+            JobLibConfig: An instance of the JobLibConfig class.
+        """
         return JobLibConfig(**kwargs)
 
     @staticmethod
     def dotenv(**kwargs) -> DotEnvConfig:
-        """Return the DotEnvConfig"""
+        """
+        Return the DotEnvConfig.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the DotEnvConfig constructor.
+
+        Returns:
+            DotEnvConfig: An instance of the DotEnvConfig class.
+        """
         return DotEnvConfig(**kwargs)
 
     @staticmethod
     def osenv():
-        """Return the DotEnvConfig"""
+        """
+        Return the os environment variables as a dictionary.
+
+        Returns:
+            dict: A dictionary containing the os environment variables.
+        """
         return os.environ
 
     @staticmethod
     def pipe_config(**kwargs) -> PipeConfig:
-        """Return the PipeConfig"""
+        """
+        Return the PipeConfig.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the PipeConfig constructor.
+
+        Returns:
+            PipeConfig: An instance of the PipeConfig class.
+        """
         return PipeConfig(**kwargs)
 
     @staticmethod
     def task_config(**kwargs) -> TaskConfig:
-        """Return the TaskConfig"""
+        """
+        Return the TaskConfig.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the TaskConfig constructor.
+
+        Returns:
+            TaskConfig: An instance of the TaskConfig class.
+        """
         return TaskConfig(**kwargs)
 
     @staticmethod
     def workflow_config(**kwargs) -> WorkflowConfig:
-        """Return the WorkflowConfig"""
+        """
+        Return the WorkflowConfig.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the WorkflowConfig constructor.
+
+        Returns:
+            WorkflowConfig: An instance of the WorkflowConfig class.
+        """
         return WorkflowConfig(**kwargs)
 
     @staticmethod
@@ -178,6 +236,23 @@ class HyFI:
         global_package: bool = False,
         verbose: bool = False,
     ) -> Dict:
+        """
+        Compose a configuration by applying overrides and return the result as a dict(
+
+        Args:
+            config_group (Union[str, None], optional): Name of the config group to compose (`config_group=name`). Defaults to None.
+            overrides (Union[List[str], None], optional): List of config groups to apply overrides to (`overrides=["override_name"]`). Defaults to None.
+            config_data (Union[Dict[str, Any], DictConfig, None], optional): Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`). Defaults to None.
+            throw_on_resolution_failure (bool, optional): If True throw an exception if resolution fails. Defaults to True.
+            throw_on_missing (bool, optional): If True throw an exception if config_group doesn't exist. Defaults to False.
+            root_config_name (Union[str, None], optional): Name of the root config to be used (e.g. `hconf`). Defaults to None.
+            config_module (Union[str, None], optional): Name of the module containing the configuration. Defaults to None.
+            global_package (bool, optional): If True, the configuration is loaded from the global package. Defaults to False.
+            verbose (bool, optional): If True, print verbose output. Defaults to False.
+
+        Returns:
+            Dict: The composed configuration as a dictionary.
+        """
         return Composer._compose_as_dict(
             config_group=config_group,
             overrides=overrides,
@@ -241,6 +316,19 @@ class HyFI:
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
     ):
+        """
+        Select a value from a configuration object using a key.
+
+        Args:
+            cfg: The configuration object to select from.
+            key: The key to use for the selection.
+            default: The default value to return if the key is not found.
+            throw_on_resolution_failure: If True, throw an exception if resolution fails.
+            throw_on_missing: If True, throw an exception if the key is not found.
+
+        Returns:
+            The selected value, or the default value if the key is not found and no exception is thrown.
+        """
         return Composer.select(
             cfg,
             key,
@@ -253,16 +341,45 @@ class HyFI:
     def to_dict(
         cfg: Any,
     ):
+        """
+        Convert a configuration object to a dictionary.
+
+        Args:
+            cfg: The configuration object to convert.
+
+        Returns:
+            The configuration object as a dictionary.
+        """
         return Composer.to_dict(cfg)
 
     @staticmethod
     def to_config(
         cfg: Any,
     ):
+        """
+        Convert a configuration object to a Config object.
+
+        Args:
+            cfg: The configuration object to convert.
+
+        Returns:
+            The configuration object as a Config object.
+        """
         return Composer.to_config(cfg)
 
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        """
+        Convert a configuration object to a YAML string.
+
+        Args:
+            cfg: The configuration object to convert.
+            resolve: Whether to resolve references in the configuration object.
+            sort_keys: Whether to sort the keys in the resulting YAML string.
+
+        Returns:
+            The configuration object as a YAML string.
+        """
         return Composer.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
@@ -274,6 +391,19 @@ class HyFI:
         enum_to_str: bool = False,
         structured_config_mode: SCMode = SCMode.DICT,
     ):
+        """
+        Convert a configuration object to a structured container.
+
+        Args:
+            cfg: The configuration object to convert.
+            resolve: Whether to resolve references in the configuration object.
+            throw_on_missing: Whether to throw an error if a key is missing.
+            enum_to_str: Whether to convert enums to strings.
+            structured_config_mode: The structured config mode to use.
+
+        Returns:
+            The configuration object as a structured container.
+        """
         return Composer.to_container(
             cfg=cfg,
             resolve=resolve,
@@ -330,9 +460,17 @@ class HyFI:
         ],
     ) -> Union[ListConfig, DictConfig]:
         """
-        Merge a list of previously created configs into a single one
-        :param configs: Input configs
-        :return: the merged config object.
+        Merges multiple configurations into a single configuration.
+
+        Args:
+            *configs: One or more configurations to merge. These can be of various types, including
+                `DictConfig`, `ListConfig`, `dict`, `list`, `tuple`, or any other type that can be
+                converted to a `DictConfig` or `ListConfig`.
+
+        Returns:
+            A new configuration that is the result of merging all of the input configurations.
+            The type of the returned configuration will be the same as the type of the first input
+            configuration.
         """
         return Composer.merge(*configs)
 

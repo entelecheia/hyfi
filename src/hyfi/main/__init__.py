@@ -364,18 +364,6 @@ class HyFI:
         Composer.print(cfg, resolve=resolve, **kwargs)
 
     @staticmethod
-    def methods(cfg: Any, obj: object, return_function=False):
-        return Composer.methods(cfg, obj, return_function)
-
-    @staticmethod
-    def function(cfg: Any, _name_, return_function=False, **parms):
-        return XC.function(cfg, _name_, return_function, **parms)
-
-    @staticmethod
-    def run(config: Any, **kwargs: Any) -> Any:
-        XC.run(config, **kwargs)
-
-    @staticmethod
     def ensure_list(value):
         return Composer.ensure_list(value)
 

@@ -1,0 +1,7 @@
+defaults:
+  - __init__
+
+project_name: hyfi-test
+project_description: A test project for HyFI
+project_root: workspace/hyfi-test
+verbose: true

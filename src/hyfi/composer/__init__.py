@@ -700,65 +700,6 @@ class Composer(BaseModel):
         )
 
     @staticmethod
-    def methods(cfg: Any, obj: object, return_function=False):
-        cfg = Composer.to_dict(cfg)
-        if not cfg:
-            logger.info("No method defined to call")
-            return
-
-        if isinstance(cfg, dict) and SpecialKeys.METHOD in cfg:
-            _method_ = cfg[SpecialKeys.METHOD]
-        elif isinstance(cfg, dict):
-            _method_ = cfg
-        elif isinstance(cfg, str):
-            _method_ = cfg
-            cfg = {}
-        else:
-            raise ValueError(f"Invalid method: {cfg}")
-
-        if isinstance(_method_, str):
-            _fn = getattr(obj, _method_)
-            if return_function:
-                logger.info(f"Returning function {_fn}")
-                return _fn
-            logger.info(f"Calling {_method_}")
-            return _fn(**cfg)
-        elif isinstance(_method_, dict):
-            if SpecialKeys.CALL in _method_:
-                _call_ = _method_.pop(SpecialKeys.CALL)
-            else:
-                _call_ = True
-            if _call_:
-                _fn = getattr(obj, _method_[SpecialKeys.METHOD_NAME])
-                _parms = _method_.pop(SpecialKeys.KWARGS, {})
-                if return_function:
-                    if not _parms:
-                        logger.info(f"Returning function {_fn}")
-                        return _fn
-                    logger.info(f"Returning function {_fn} with params {_parms}")
-                    return functools.partial(_fn, **_parms)
-                logger.info(f"Calling {_method_}")
-                return _fn(**_parms)
-            else:
-                logger.info(f"Skipping call to {_method_}")
-        elif isinstance(_method_, list):
-            for _each_method in _method_:
-                logger.info(f"Calling {_each_method}")
-                if isinstance(_each_method, str):
-                    getattr(obj, _each_method)()
-                elif isinstance(_each_method, dict):
-                    if SpecialKeys.CALL in _each_method:
-                        _call_ = _each_method.pop(SpecialKeys.CALL)
-                    else:
-                        _call_ = True
-                    if _call_:
-                        getattr(obj, _each_method[SpecialKeys.METHOD_NAME])(
-                            **_each_method[SpecialKeys.KWARGS]
-                        )
-                    else:
-                        logger.info(f"Skipping call to {_each_method}")
-
-    @staticmethod
     def ensure_list(value):
         """
         Ensure that the given value is a list. If the value is None or an empty string, an empty list is returned.
@@ -800,6 +741,10 @@ class Composer(BaseModel):
 
 
 class BaseConfig(BaseModel):
+    """
+    Base class for all config classes.
+    """
+
     config_name: str = "__init__"
     config_group: str = ""
     verbose: bool = False
@@ -819,12 +764,38 @@ class BaseConfig(BaseModel):
         self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
+        """
+        Overrides the default __setattr__ method to allow for custom property set methods.
+
+        Args:
+            key (str): The name of the attribute to set.
+            val (Any): The value to set the attribute to.
+        """
         if method := self.__config__.property_set_methods.get(key):  # type: ignore
             logger.info(
                 "Setting %s to %s", key, val if isinstance(val, str) else type(val)
             )
             getattr(self, method)(val)
         super().__setattr__(key, val)
+
+
+# Initializes the config with the given config_name. If there is no config group specified, the function returns without doing anything. The function updates the object's dictionary with the given config data, after excluding any attributes specified in the object's `exclude` list.
+
+
+def initialize_configs(
+    self,
+    **config_kwargs,
+):
+    """
+    Initializes the config with the given config_name. If there is no config group specified, the function returns without doing anything. The function updates the object's dictionary with the given config data, after excluding any attributes specified in the object's `exclude` list.
+
+    Args:
+        self: The object to update with the given config data.
+        **config_kwargs: The config data to update the object with.
+
+    Returns:
+        None
+    """
 
     def initialize_configs(
         self,

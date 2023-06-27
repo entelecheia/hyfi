@@ -50,6 +50,10 @@ def run_copy(**args):
 
 
 def run_task(**args):
+    """
+    Run a task. This is a wrapper around HyFI
+    """
+    # Check if task is not in args
     if "task" not in args:
         raise ValueError("No task configuration found")
     project = HyFI.init_project(**args["project"]) if "project" in args else None
@@ -58,6 +62,10 @@ def run_task(**args):
 
 
 def run_workflow(**args):
+    """
+    Run a workflow. This is a wrapper around HyFI. run_workflow
+    """
+    # Raised if no workflow configuration is specified.
     if "workflow" not in args:
         raise ValueError("No workflow configuration found")
     workflow = HyFI.workflow_config(**args["workflow"])

@@ -1,4 +1,4 @@
-# Project Configurations
+# Project Configs
 
 ## `__init__.yaml`
 

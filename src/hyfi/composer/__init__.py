@@ -780,6 +780,16 @@ class Composer(BaseModel):
 
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
+        """
+        Ensure that the given keyword arguments are valid for the given function.
+
+        Args:
+            _kwargs (dict): The keyword arguments to validate.
+            _fn (callable): The function to validate the keyword arguments against.
+
+        Returns:
+            dict: The valid keyword arguments for the given function.
+        """
         from inspect import getfullargspec as getargspec
 
         if callable(_fn):

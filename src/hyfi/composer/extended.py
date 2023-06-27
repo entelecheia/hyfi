@@ -1,5 +1,3 @@
-import importlib
-import inspect
 import os
 import random
 from typing import Any, Callable, Dict, Union
@@ -15,6 +13,7 @@ from hyfi.utils.envs import ENVs
 from hyfi.utils.funcs import FUNCs
 from hyfi.utils.iolibs import IOLIBs
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 
@@ -134,26 +133,21 @@ class XC(Composer):
             return None
 
     @staticmethod
-    def getsource(obj):
+    def getsource(obj: Any) -> str:
         """Return the source code of the object."""
         try:
             if XC.is_config(obj):
                 if SpecialKeys.TARGET in obj:
                     target_string = obj[SpecialKeys.TARGET]
-                    mod_name, object_name = target_string.rsplit(".", 1)
-                    mod = importlib.import_module(mod_name)
-                    obj = getattr(mod, object_name)
             elif isinstance(obj, str):
-                mod_name, object_name = obj.rsplit(".", 1)
-                mod = importlib.import_module(mod_name)
-                obj = getattr(mod, object_name)
-            return inspect.getsource(obj)
+                target_string = obj
+            return PKGs.getsource(target_string)
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""
 
     @staticmethod
-    def viewsource(obj):
+    def viewsource(obj: Any):
         """Print the source code of the object."""
         print(XC.getsource(obj))
 

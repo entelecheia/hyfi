@@ -1,0 +1,3 @@
+# `hyfi.path`
+
+::: hyfi.path

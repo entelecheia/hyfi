@@ -57,6 +57,13 @@ def run_task(**args):
     HyFI.run_task(task, project=project)
 
 
+def run_workflow(**args):
+    if "workflow" not in args:
+        raise ValueError("No workflow configuration found")
+    workflow = HyFI.workflow_config(**args["workflow"])
+    HyFI.run_workflow(workflow)
+
+
 def cli_main(cfg: DictConfig) -> None:
     """
     Main function for the command line interface.

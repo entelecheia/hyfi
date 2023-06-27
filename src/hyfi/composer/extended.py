@@ -1,5 +1,3 @@
-import importlib
-import inspect
 import os
 import random
 from typing import Any, Callable, Dict, Union
@@ -15,11 +13,9 @@ from hyfi.utils.envs import ENVs
 from hyfi.utils.funcs import FUNCs
 from hyfi.utils.iolibs import IOLIBs
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
-
-
-# _config_ = XC.config.copy()
 
 
 class XC(Composer):
@@ -33,6 +29,25 @@ class XC(Composer):
         *args: Any,
         **kwargs: Any,
     ) -> Callable:
+        """
+        Returns a callable object that is a partial version of the function or class specified in the config object.
+
+        Args:
+            config: An config object describing what to call and what params to use.
+                    In addition to the parameters, the config must contain:
+                    _target_ : target class or callable name (str)
+                    And may contain:
+                    _partial_: If True, return functools.partial wrapped method or object
+                                False by default. Configure per target.
+            args: Optional positional parameters pass-through
+            kwargs: Optional named parameters to override
+                    parameters in the config object. Parameters not present
+                    in the config objects are being passed as is to the target.
+                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                                and cannot be used as passthrough
+        Returns:
+            A callable object that is a partial version of the function or class specified in the config object.
+        """
         if isinstance(config, str):
             config = {SpecialKeys.TARGET.value: config}
         else:
@@ -46,7 +61,10 @@ class XC(Composer):
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         """
-        :param config: An config object describing what to call and what params to use.
+        Instantiates an object using the provided config object.
+
+        Args:
+            config: An config object describing what to call and what params to use.
                     In addition to the parameters, the config must contain:
                     _target_ : target class or callable name (str)
                     And may contain:
@@ -64,14 +82,16 @@ class XC(Composer):
                     _partial_: If True, return functools.partial wrapped method or object
                                 False by default. Configure per target.
                     _args_: List-like of positional arguments
-        :param args: Optional positional parameters pass-through
-        :param kwargs: Optional named parameters to override
+            args: Optional positional parameters pass-through
+            kwargs: Optional named parameters to override
                     parameters in the config object. Parameters not present
                     in the config objects are being passed as is to the target.
                     IMPORTANT: dataclasses instances in kwargs are interpreted as config
                                 and cannot be used as passthrough
-        :return: if _target_ is a class name: the instantiated object
-                if _target_ is a callable: the return value of the call
+
+        Returns:
+            if _target_ is a class name: the instantiated object
+            if _target_ is a callable: the return value of the call
         """
         verbose = config.get(SpecialKeys.VERBOSE, False)
         if not __global_config__.__initilized__:
@@ -88,73 +108,37 @@ class XC(Composer):
         return hydra.utils.instantiate(config, *args, **kwargs)
 
     @staticmethod
-    def run(config: Any, **kwargs: Any) -> Any:
-        config = XC.merge(config, kwargs)
-        _config_ = config.get(SpecialKeys.CONFIG)
-        if _config_ is None:
-            logger.warning("No _config_ specified in config")
-            return None
-        if isinstance(_config_, str):
-            _config_ = [_config_]
-        for _cfg_ in _config_:
-            cfg = XC.select(config, _cfg_)
-            XC.instantiate(cfg)
+    def getsource(obj: Any) -> str:
+        """
+        Return the source code of the object.
 
-    @staticmethod
-    def function(cfg: Any, _name_, return_function=False, **parms):
-        cfg = XC.to_dict(cfg)
-        if not isinstance(cfg, dict):
-            logger.info("No function defined to execute")
-            return None
+        Args:
+            obj: The object to get the source code of.
 
-        if SpecialKeys.FUNC not in cfg:
-            logger.info("No function defined to execute")
-            return None
+        Returns:
+            The source code of the object as a string.
 
-        _functions_ = cfg[SpecialKeys.FUNC]
-        fn = XC.partial(_functions_[_name_])
-        if _name_ in cfg:
-            _parms = cfg[_name_]
-            _parms = {**_parms, **parms}
-        else:
-            _parms = parms
-        _exec_ = _parms.pop(SpecialKeys.EXEC) if SpecialKeys.EXEC in _parms else True
-        if _exec_:
-            if callable(fn):
-                if return_function:
-                    logger.info(f"Returning function {fn}")
-                    return fn
-                logger.info(f"Executing function {fn} with parms {_parms}")
-                return fn(**_parms)
-            else:
-                logger.info(f"Function {_name_} not callable")
-                return None
-        else:
-            logger.info(f"Skipping execute of {fn}")
-            return None
-
-    @staticmethod
-    def getsource(obj):
-        """Return the source code of the object."""
+        """
         try:
             if XC.is_config(obj):
                 if SpecialKeys.TARGET in obj:
                     target_string = obj[SpecialKeys.TARGET]
-                    mod_name, object_name = target_string.rsplit(".", 1)
-                    mod = importlib.import_module(mod_name)
-                    obj = getattr(mod, object_name)
             elif isinstance(obj, str):
-                mod_name, object_name = obj.rsplit(".", 1)
-                mod = importlib.import_module(mod_name)
-                obj = getattr(mod, object_name)
-            return inspect.getsource(obj)
+                target_string = obj
+            return PKGs.getsource(target_string)
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""
 
     @staticmethod
-    def viewsource(obj):
-        """Print the source code of the object."""
+    def viewsource(obj: Any):
+        """
+        Print the source code of the object.
+
+        Args:
+            obj: The object to print the source code of.
+
+        """
         print(XC.getsource(obj))
 
 

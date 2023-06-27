@@ -29,22 +29,25 @@ DictKeyType = Union[str, int, Enum, float, bool]
 
 
 class SpecialKeys(str, Enum):
-    """Special keys in configs used by hyfi."""
+    """Special keys in configs used by HyFI."""
 
     CALL = "_call_"
     CONFIG = "_config_"
-    CONFIG_GROUP = "_config_group_"
+    CONFIG_GROUP = "config_group"
+    CONFIG_NAME = "config_name"
     EXEC = "_exec_"
     FUNC = "_func_"
+    KWARGS = "_kwargs_"
     METHOD = "_method_"
     NAME = "_name_"
     PARTIAL = "_partial_"
-    KWARGS = "_kwargs_"
+    PIPE = "_pipe_"
     RECURSIVE = "_recursive_"
+    RUN = "_run_"
     SUFFIX = "suffix"
     TARGET = "_target_"
-    TYPE = "_type_"
     VERBOSE = "verbose"
+    WITH = "_with_"
 
 
 class Composer(BaseModel):
@@ -128,10 +131,16 @@ class Composer(BaseModel):
 
     @property
     def config(self) -> DictConfig:
+        """
+        Returns the composed configuration.
+        """
         return self.__cfg__
 
     @property
     def config_as_dict(self) -> Dict:
+        """
+        Return the configuration as a dictionary.
+        """
         return Composer.to_dict(self.__cfg__)
 
     def __call__(
@@ -422,6 +431,17 @@ class Composer(BaseModel):
 
     @staticmethod
     def print(cfg: Any, resolve: bool = True, **kwargs):
+        """
+        Prints the configuration object in a human-readable format.
+
+        Args:
+            cfg (Any): The configuration object to print.
+            resolve (bool, optional): Whether to resolve the configuration object before printing. Defaults to True.
+            **kwargs: Additional keyword arguments to pass to the pprint.pprint function.
+
+        Returns:
+            None
+        """
         import pprint
 
         if Composer.is_config(cfg):
@@ -433,27 +453,67 @@ class Composer(BaseModel):
             print(cfg)
 
     @staticmethod
-    def is_config(
-        cfg: Any,
-    ):
+    def is_config(cfg: Any):
+        """
+        Determines whether the input object is a valid configuration object.
+
+        Args:
+            cfg (Any): The object to check.
+
+        Returns:
+            bool: True if the object is a valid configuration object, False otherwise.
+        """
         return isinstance(cfg, (DictConfig, dict))
 
     @staticmethod
-    def is_list(
-        cfg: Any,
-    ):
+    def is_list(cfg: Any):
+        """
+        Determines whether the input object is a valid list configuration object.
+
+        Args:
+            cfg (Any): The object to check.
+
+        Returns:
+            bool: True if the object is a valid list configuration object, False otherwise.
+        """
         return isinstance(cfg, (ListConfig, list))
 
     @staticmethod
     def is_instantiatable(cfg: Any):
+        """
+        Determines whether the input configuration object is instantiatable.
+
+        Args:
+            cfg (Any): The configuration object to check.
+
+        Returns:
+            bool: True if the configuration object is instantiatable, False otherwise.
+        """
         return Composer.is_config(cfg) and SpecialKeys.TARGET in cfg
 
     @staticmethod
     def load(file_: Union[str, Path, IO[Any]]) -> Union[DictConfig, ListConfig]:
+        """
+        Load a configuration file and return a configuration object.
+
+        Args:
+            file_ (Union[str, Path, IO[Any]]): The path to the configuration file or a file-like object.
+
+        Returns:
+            Union[DictConfig, ListConfig]: The configuration object.
+        """
         return OmegaConf.load(file_)
 
     @staticmethod
     def save(config: Any, f: Union[str, Path, IO[Any]], resolve: bool = False) -> None:
+        """
+        Save a configuration object to a file.
+
+        Args:
+            config (Any): The configuration object to save.
+            f (Union[str, Path, IO[Any]]): The path to the file or a file-like object.
+            resolve (bool, optional): Whether to resolve the configuration object before saving. Defaults to False.
+        """
         os.makedirs(os.path.dirname(str(f)), exist_ok=True)
         OmegaConf.save(config, f, resolve=resolve)
 
@@ -467,6 +527,18 @@ class Composer(BaseModel):
         encoding="utf-8",
         **kwargs,
     ):
+        """
+        Save a dictionary to a JSON file.
+
+        Args:
+            json_dict (dict): The dictionary to save.
+            f (Union[str, Path, IO[Any]]): The path to the file or a file-like object.
+            indent (int, optional): The number of spaces to use for indentation. Defaults to 4.
+            ensure_ascii (bool, optional): Whether to escape non-ASCII characters. Defaults to False.
+            default (Any, optional): A function to convert non-serializable objects. Defaults to None.
+            encoding (str, optional): The encoding to use. Defaults to "utf-8".
+            **kwargs: Additional arguments to pass to json.dump().
+        """
         f = str(f)
         os.makedirs(os.path.dirname(f), exist_ok=True)
         with open(f, "w", encoding=encoding) as f:
@@ -481,6 +553,17 @@ class Composer(BaseModel):
 
     @staticmethod
     def load_json(f: Union[str, Path, IO[Any]], encoding="utf-8", **kwargs) -> dict:
+        """
+        Load a JSON file into a dictionary.
+
+        Args:
+            f (Union[str, Path, IO[Any]]): The path to the file or a file-like object.
+            encoding (str, optional): The encoding to use. Defaults to "utf-8".
+            **kwargs: Additional arguments to pass to json.load().
+
+        Returns:
+            dict: The dictionary loaded from the JSON file.
+        """
         f = str(f)
         with open(f, "r", encoding=encoding) as f:
             return json.load(f, **kwargs)
@@ -488,10 +571,14 @@ class Composer(BaseModel):
     @staticmethod
     def update(_dict: Mapping[str, Any], _overrides: Mapping[str, Any]) -> Mapping:
         """
-        Update a dictionary with overrides
-        :param _dict: dictionary to update
-        :param _overrides: dictionary with overrides
-        :return: updated dictionary
+        Update a dictionary with overrides.
+
+        Args:
+            _dict (Mapping[str, Any]): The dictionary to update.
+            _overrides (Mapping[str, Any]): The dictionary with overrides.
+
+        Returns:
+            Mapping: The updated dictionary.
         """
         for k, v in _overrides.items():
             if isinstance(v, collections.abc.Mapping):
@@ -503,11 +590,15 @@ class Composer(BaseModel):
     @staticmethod
     def replace_keys(_dict: Mapping[str, Any], old_key: str, new_key: str) -> Mapping:
         """
-        Replace a key in a dictionary
-        :param _dict: dictionary to update
-        :param old_key: old key
-        :param new_key: new key
-        :return: updated dictionary
+        Replace a key in a dictionary.
+
+        Args:
+            _dict (Mapping[str, Any]): The dictionary to update.
+            old_key (str): The old key to replace.
+            new_key (str): The new key to use.
+
+        Returns:
+            Mapping: The updated dictionary.
         """
         _new_dict = {}
         for k, v in _dict.items():
@@ -530,9 +621,13 @@ class Composer(BaseModel):
         ],
     ) -> Union[ListConfig, DictConfig]:
         """
-        Merge a list of previously created configs into a single one
-        :param configs: Input configs
-        :return: the merged config object.
+        Merge a list of previously created configs into a single one.
+
+        Args:
+            *configs: Input configs.
+
+        Returns:
+            Union[ListConfig, DictConfig]: The merged config object.
         """
         return OmegaConf.merge(*configs)
 
@@ -548,14 +643,29 @@ class Composer(BaseModel):
         ],
     ) -> Union[ListConfig, DictConfig]:
         """
-        Merge a list of previously created configs into a single one
-        :param configs: Input configs
-        :return: the merged config object.
+        Merge a list of previously created configs into a single dictionary.
+
+        Args:
+            *configs: Input configs.
+
+        Returns:
+            Union[ListConfig, DictConfig]: The merged config object as a dictionary.
         """
         return Composer.to_dict(OmegaConf.merge(*configs))
 
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
+        """
+        Convert the input config object to a YAML string.
+
+        Args:
+            cfg (Any): The input config object.
+            resolve (bool, optional): Whether to resolve the config object before converting it to YAML. Defaults to False.
+            sort_keys (bool, optional): Whether to sort the keys in the resulting YAML string. Defaults to False.
+
+        Returns:
+            str: The YAML string representation of the input config object.
+        """
         if resolve:
             cfg = Composer.to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
@@ -568,6 +678,19 @@ class Composer(BaseModel):
         enum_to_str: bool = False,
         structured_config_mode: SCMode = SCMode.DICT,
     ):
+        """
+        Convert the input config object to a nested container (e.g. dictionary).
+
+        Args:
+            cfg (Any): The input config object.
+            resolve (bool, optional): Whether to resolve the config object before converting it to a container. Defaults to False.
+            throw_on_missing (bool, optional): Whether to throw an exception if a missing key is encountered. Defaults to False.
+            enum_to_str (bool, optional): Whether to convert enum values to strings. Defaults to False.
+            structured_config_mode (SCMode, optional): The structured config mode to use. Defaults to SCMode.DICT.
+
+        Returns:
+            The nested container (e.g. dictionary) representation of the input config object.
+        """
         return OmegaConf.to_container(
             cfg,
             resolve=resolve,
@@ -577,66 +700,19 @@ class Composer(BaseModel):
         )
 
     @staticmethod
-    def methods(cfg: Any, obj: object, return_function=False):
-        cfg = Composer.to_dict(cfg)
-        if not cfg:
-            logger.info("No method defined to call")
-            return
-
-        if isinstance(cfg, dict) and SpecialKeys.METHOD in cfg:
-            _method_ = cfg[SpecialKeys.METHOD]
-        elif isinstance(cfg, dict):
-            _method_ = cfg
-        elif isinstance(cfg, str):
-            _method_ = cfg
-            cfg = {}
-        else:
-            raise ValueError(f"Invalid method: {cfg}")
-
-        if isinstance(_method_, str):
-            _fn = getattr(obj, _method_)
-            if return_function:
-                logger.info(f"Returning function {_fn}")
-                return _fn
-            logger.info(f"Calling {_method_}")
-            return _fn(**cfg)
-        elif isinstance(_method_, dict):
-            if SpecialKeys.CALL in _method_:
-                _call_ = _method_.pop(SpecialKeys.CALL)
-            else:
-                _call_ = True
-            if _call_:
-                _fn = getattr(obj, _method_[SpecialKeys.METHOD_NAME])
-                _parms = _method_.pop(SpecialKeys.KWARGS, {})
-                if return_function:
-                    if not _parms:
-                        logger.info(f"Returning function {_fn}")
-                        return _fn
-                    logger.info(f"Returning function {_fn} with params {_parms}")
-                    return functools.partial(_fn, **_parms)
-                logger.info(f"Calling {_method_}")
-                return _fn(**_parms)
-            else:
-                logger.info(f"Skipping call to {_method_}")
-        elif isinstance(_method_, list):
-            for _each_method in _method_:
-                logger.info(f"Calling {_each_method}")
-                if isinstance(_each_method, str):
-                    getattr(obj, _each_method)()
-                elif isinstance(_each_method, dict):
-                    if SpecialKeys.CALL in _each_method:
-                        _call_ = _each_method.pop(SpecialKeys.CALL)
-                    else:
-                        _call_ = True
-                    if _call_:
-                        getattr(obj, _each_method[SpecialKeys.METHOD_NAME])(
-                            **_each_method[SpecialKeys.KWARGS]
-                        )
-                    else:
-                        logger.info(f"Skipping call to {_each_method}")
-
-    @staticmethod
     def ensure_list(value):
+        """
+        Ensure that the given value is a list. If the value is None or an empty string, an empty list is returned.
+        If the value is already a list, it is returned as is. If the value is a string, it is returned as a list
+        containing only that string. Otherwise, the value is converted to a dictionary using the Composer.to_dict method
+        and the resulting dictionary is returned as a list.
+
+        Args:
+            value (Any): The value to ensure as a list.
+
+        Returns:
+            List: The value as a list.
+        """
         if not value:
             return []
         elif isinstance(value, str):
@@ -645,6 +721,16 @@ class Composer(BaseModel):
 
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
+        """
+        Ensure that the given keyword arguments are valid for the given function.
+
+        Args:
+            _kwargs (dict): The keyword arguments to validate.
+            _fn (callable): The function to validate the keyword arguments against.
+
+        Returns:
+            dict: The valid keyword arguments for the given function.
+        """
         from inspect import getfullargspec as getargspec
 
         if callable(_fn):
@@ -655,6 +741,10 @@ class Composer(BaseModel):
 
 
 class BaseConfig(BaseModel):
+    """
+    Base class for all config classes.
+    """
+
     config_name: str = "__init__"
     config_group: str = ""
     verbose: bool = False
@@ -674,6 +764,13 @@ class BaseConfig(BaseModel):
         self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
+        """
+        Overrides the default __setattr__ method to allow for custom property set methods.
+
+        Args:
+            key (str): The name of the attribute to set.
+            val (Any): The value to set the attribute to.
+        """
         if method := self.__config__.property_set_methods.get(key):  # type: ignore
             logger.info(
                 "Setting %s to %s", key, val if isinstance(val, str) else type(val)
@@ -685,6 +782,16 @@ class BaseConfig(BaseModel):
         self,
         **config_kwargs,
     ):
+        """
+        Initializes the config with the given config_name. If there is no config group specified, the function returns without doing anything. The function updates the object's dictionary with the given config data, after excluding any attributes specified in the object's `exclude` list.
+
+        Args:
+            self: The object to update with the given config data.
+            **config_kwargs: The config data to update the object with.
+
+        Returns:
+            None
+        """
         if not self.config_group:
             logger.debug("There is no config group specified.")
             return

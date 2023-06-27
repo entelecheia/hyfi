@@ -16,12 +16,11 @@ Now, let's check the version of the `hyfi` package we are using.
 HyFI.about()
 ```
 
-## Initialize Workspace
+## Initialize Project
 
-We'll initialize the workspace using the `HyFI.init_workspace` function. The function takes the following parameters:
+We'll initialize the project using the `HyFI.init_project` function. The function takes the following parameters:
 
 - `project_name`: Name of the project to use.
-- `task_name`: Name of the task to use.
 - `project_description`: Description of the project that will be used.
 - `project_root`: Root directory of the project.
 - `project_workspace_name`: Name of the project's workspace directory.
@@ -39,9 +38,8 @@ We'll check if we're running in Google Colab, and if so, we'll mount Google Driv
 if HyFI.is_colab():
     HyFI.mount_google_drive()
 
-ws = HyFI.init_workspace(
+ws = HyFI.init_project(
     project_name="hyfi",
-    task_name="test",
     log_level="DEBUG",
     verbose=True,
 )

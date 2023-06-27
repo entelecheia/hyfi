@@ -39,6 +39,7 @@ from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 from hyfi.utils.packages import PKGs
 from hyfi.utils.types import PathLikeType
+from hyfi.workflow import WorkflowConfig
 
 logger = LOGGING.getLogger(__name__)
 
@@ -159,6 +160,11 @@ class HyFI:
     def task_config(**kwargs) -> TaskConfig:
         """Return the TaskConfig"""
         return TaskConfig(**kwargs)
+
+    @staticmethod
+    def workflow_config(**kwargs) -> WorkflowConfig:
+        """Return the WorkflowConfig"""
+        return WorkflowConfig(**kwargs)
 
     @staticmethod
     def compose_as_dict(
@@ -406,6 +412,11 @@ class HyFI:
     def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
         """Run the pipelines specified in the task"""
         PIPELINEs.run_task(task, project)
+
+    @staticmethod
+    def run_workflow(workflow: WorkflowConfig):
+        """Run the pipelines specified in the workflow"""
+        PIPELINEs.run_workflow(workflow)
 
     @staticmethod
     def run_pipeline(

@@ -1,5 +1,27 @@
 <!--next-version-placeholder-->
 
+## v0.15.0 (2023-06-27)
+
+### Feature
+
+* **cli:** Add test for command 'run_workflow' ([`9658d12`](https://github.com/entelecheia/hyfi/commit/9658d12ba2bed52fbb24ececb8882ebd0e6444a5))
+* **workflow:** Add WorkflowConfig class to __init__.py ([`aa23b50`](https://github.com/entelecheia/hyfi/commit/aa23b5094afacbb483fc79b65ae572b6b7f56a8c))
+* **pipeline:** Add workflow support ([`6114f28`](https://github.com/entelecheia/hyfi/commit/6114f28e582cd47d466f455a286c79f78e844047))
+* **workflow:** Add function to run the pipelines specified in a workflow ([`1382f3c`](https://github.com/entelecheia/hyfi/commit/1382f3c54f159b0839d5aa57f3db46cf1a8f1f71))
+* **cmd:** Add run_workflow.yaml ([`e17fc5a`](https://github.com/entelecheia/hyfi/commit/e17fc5a77018d32b5e41ddc8ff93f6602cf29ddc))
+* **cli:** Add run workflow command ([`7035e1d`](https://github.com/entelecheia/hyfi/commit/7035e1de4707aa022327815b5c94a766e6fa1711))
+* **pipeline:** Add support for project config in task pipeline testing ([`db034a4`](https://github.com/entelecheia/hyfi/commit/db034a41ca565404ac90516505aaab31b8fc7642))
+
+### Fix
+
+* **cli:** Add project parameter to run_task method ([`ced932b`](https://github.com/entelecheia/hyfi/commit/ced932b4eb9524a03438dc27a11b9fe10e80741d))
+
+### Documentation
+
+* **pipeline:** Add docstrings and improve readability ([`d3c80b7`](https://github.com/entelecheia/hyfi/commit/d3c80b703200964a7487faa81f2db7d73806413b))
+* **cli:** Add docstrings to run_copy and run_workflow functions ([`34f17dc`](https://github.com/entelecheia/hyfi/commit/34f17dce34f112da7f0ec3b8460574432a98fcf4))
+* **pipeline:** Add initial documentation ([`9286832`](https://github.com/entelecheia/hyfi/commit/9286832470d6a8df9f39a47443e9b154371376c4))
+
 ## v0.14.2 (2023-06-26)
 
 ### Fix

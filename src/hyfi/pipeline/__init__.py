@@ -6,8 +6,10 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import validator
 
+from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer
 from hyfi.pipeline.configs import BaseRunConfig, PipeConfig, Pipes, RunningConfig
+from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.contexts import change_directory
 from hyfi.utils.logging import LOGGING
@@ -129,8 +131,10 @@ class PIPELINEs:
         return pipelines
 
     @staticmethod
-    def run_task_pipelines(task: TaskConfig):
+    def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
         """Run the pipelines specified in the task"""
+        if project:
+            task.project = project
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
                 logger.info("Running pipeline: %s", pipeline.dict())

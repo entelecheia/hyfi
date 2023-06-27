@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Tuple, Union
 
-from pydantic import BaseSettings, SecretStr, root_validator
+from pydantic import BaseSettings, Field, SecretStr, root_validator
 from pydantic.env_settings import SettingsSourceCallable
 
 from hyfi.utils.envs import ENVs
@@ -42,14 +42,14 @@ class DotEnvConfig(BaseSettings):
     KMP_DUPLICATE_LIB_OK: Optional[str] = "True"
     TOKENIZERS_PARALLELISM: Optional[Union[bool, str]] = False
     # API Keys and Tokens
-    WANDB_API_KEY: Optional[SecretStr] = None
-    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr] = None
-    OPENAI_API_KEY: Optional[SecretStr] = None
-    ECOS_API_KEY: Optional[SecretStr] = None
-    FRED_API_KEY: Optional[SecretStr] = None
-    NASDAQ_API_KEY: Optional[SecretStr] = None
-    HF_USER_ACCESS_TOKEN: Optional[SecretStr] = None
-    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = None
+    WANDB_API_KEY: Optional[SecretStr] = Field(exclude=True)
+    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr] = Field(exclude=True)
+    OPENAI_API_KEY: Optional[SecretStr] = Field(exclude=True)
+    ECOS_API_KEY: Optional[SecretStr] = Field(exclude=True)
+    FRED_API_KEY: Optional[SecretStr] = Field(exclude=True)
+    NASDAQ_API_KEY: Optional[SecretStr] = Field(exclude=True)
+    HF_USER_ACCESS_TOKEN: Optional[SecretStr] = Field(exclude=True)
+    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = Field(exclude=True)
 
     class Config:
         env_prefix = ""

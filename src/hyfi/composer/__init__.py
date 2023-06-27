@@ -33,18 +33,21 @@ class SpecialKeys(str, Enum):
 
     CALL = "_call_"
     CONFIG = "_config_"
-    CONFIG_GROUP = "_config_group_"
+    CONFIG_GROUP = "config_group"
+    CONFIG_NAME = "config_name"
     EXEC = "_exec_"
     FUNC = "_func_"
+    KWARGS = "_kwargs_"
     METHOD = "_method_"
     NAME = "_name_"
     PARTIAL = "_partial_"
-    KWARGS = "_kwargs_"
+    PIPE = "_pipe_"
     RECURSIVE = "_recursive_"
+    RUN = "_run_"
     SUFFIX = "suffix"
     TARGET = "_target_"
-    TYPE = "_type_"
     VERBOSE = "verbose"
+    WITH = "_with_"
 
 
 class Composer(BaseModel):

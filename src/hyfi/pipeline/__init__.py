@@ -13,6 +13,7 @@ from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.contexts import change_directory
 from hyfi.utils.logging import LOGGING
+from hyfi.workflow import WorkflowConfig
 
 logger = LOGGING.getLogger(__name__)
 
@@ -139,3 +140,11 @@ class PIPELINEs:
             if task.verbose:
                 logger.info("Running pipeline: %s", pipeline.dict())
             PIPELINEs.run_pipeline(pipeline, task=task)
+
+    @staticmethod
+    def run_workflow(workflow: WorkflowConfig):
+        """Run the tasks specified in the workflow"""
+        for task in workflow.get_tasks():
+            if workflow.verbose:
+                logger.info("Running task: %s", task.task_name)
+            PIPELINEs.run_task(task, project=workflow.project)

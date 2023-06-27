@@ -27,28 +27,27 @@ class TaskConfig(BaseConfig):
     class Config:
         exclude = {
             "__data__",
-            "path",
-            "module",
             "project",
         }
         include = {}
         property_set_methods = {
             "task_name": "set_task_name",
             "task_root": "set_task_root",
+            "project": "set_project",
         }
-
-    def __setattr__(self, key, val):
-        super().__setattr__(key, val)
-        if method := self.__config__.property_set_methods.get(key):  # type: ignore
-            getattr(self, method)(val)
 
     def set_task_root(self, val: Union[str, Path]):
         if not self.task_root or self.task_root != val:
             self.initialize_configs(task_root=val)
 
     def set_task_name(self, val):
+        print("set_task_name: ", val, "self.task_name: ", self.task_name)
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
+
+    def set_project(self, val):
+        if isinstance(val, ProjectConfig):
+            self.task_root = str(val.project_workspace_dir / self.task_name)
 
     def initialize_configs(self, **config_kwargs):
         super().initialize_configs(**config_kwargs)
@@ -56,8 +55,6 @@ class TaskConfig(BaseConfig):
             self.module = ModuleConfig.parse_obj(self.__dict__["module"])
         if "path" in self.__dict__ and self.__dict__["path"]:
             self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
-        if "project" in self.__dict__ and self.__dict__["project"]:
-            self.project = ProjectConfig.parse_obj(self.__dict__["project"])
 
     @property
     def config(self):
@@ -72,8 +69,10 @@ class TaskConfig(BaseConfig):
         return self.path.output_dir
 
     @property
-    def project_name(self):
-        return self.project.project_name if self.project else None
+    def project_name(self) -> str:
+        return (
+            self.project.project_name if self.project else f"{self.task_name}-project"
+        )
 
     @property
     def project_dir(self) -> Path:

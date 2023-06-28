@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v0.15.1 (2023-06-28)
+
+### Fix
+
+* **pipeline:** Fix argument name in get_RCs method ([`0698f5a`](https://github.com/entelecheia/hyfi/commit/0698f5a01110dad1c21e7d6e24070efc6a443529))
+
+### Documentation
+
+* Update reference global and path pages, rename about and main pages to index.md ([`043aa23`](https://github.com/entelecheia/hyfi/commit/043aa2316ecf3db2a05ee6aa194ebc85b9a06f03))
+* **configurations:** Add path and project configurations with init, task, batch, and test files included ([`f0aa8a6`](https://github.com/entelecheia/hyfi/commit/f0aa8a6e4941223891fb4096bc6acbc9614b5077))
+* Add config.yaml documentation ([`f0af38a`](https://github.com/entelecheia/hyfi/commit/f0af38a3734916c4c92a6ac93cb1249296cdb012))
+* **config:** Improve method documentation ([`fd6dbf2`](https://github.com/entelecheia/hyfi/commit/fd6dbf26f4387c50376e417974a4f63b3ce0e4cc))
+* **composer:** Simplify XC class, add docstrings ([`b5d8804`](https://github.com/entelecheia/hyfi/commit/b5d880478c8533a9d7e2f396b492cbf04dbe9251))
+* **composer:** Add documentation for ensure_kwargs method ([`389baa3`](https://github.com/entelecheia/hyfi/commit/389baa3d5398161645aa6fefa419165c149deee3))
+* **composer:** Clarify method docstrings and add missing args and returns information ([`db5d260`](https://github.com/entelecheia/hyfi/commit/db5d260a7fa68e21b64da52a639c82343fb7cdbb))
+* **composer:** Clarify comments and docstrings ([`cd92334`](https://github.com/entelecheia/hyfi/commit/cd9233444d6bfb21821acc966e946261cc02a052))
+* Rename composer.md to composer/index.md and add extended.md ([`a662885`](https://github.com/entelecheia/hyfi/commit/a662885739705898f32e46c2322c0df463cd66f6))
+
 ## v0.15.0 (2023-06-27)
 
 ### Feature

@@ -166,23 +166,23 @@ class PIPELINEs:
         return pipe_fn(obj, config)
 
     @staticmethod
-    def get_RCs(config_list: list) -> List[RunningConfig]:
+    def get_RCs(steps: list) -> List[RunningConfig]:
         """
         Parses and returns list of running configs
 
         Args:
-            config_list: list of config to parse
+            steps: list of config to parse
 
         Returns:
             list of : class : `RunningConfig` objects
         """
         RCs: List[RunningConfig] = []
         # Return the list of running RCs
-        if not config_list:
+        if not steps:
             logger.warning("No running configs provided")
             return RCs
         # Add running config to the list of running configs.
-        for rc in config_list:
+        for rc in steps:
             # Append a running config to the RCs list.
             if isinstance(rc, str):
                 RCs.append(RunningConfig(uses=rc))

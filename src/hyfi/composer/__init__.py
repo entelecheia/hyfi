@@ -7,7 +7,7 @@ import json
 import os
 from enum import Enum
 from pathlib import Path
-from typing import IO, Any, Dict, List, Mapping, Tuple, Union
+from typing import IO, Any, Dict, List, Mapping, Tuple, Union, Set
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
@@ -33,20 +33,18 @@ class SpecialKeys(str, Enum):
 
     CALL = "_call_"
     CONFIG = "_config_"
-    CONFIG_GROUP = "config_group"
-    CONFIG_NAME = "config_name"
+    CONFIG_GROUP = "_config_group_"
+    CONFIG_NAME = "_config_name_"
     EXEC = "_exec_"
     FUNC = "_func_"
     KWARGS = "_kwargs_"
     METHOD = "_method_"
-    NAME = "_name_"
     PARTIAL = "_partial_"
     PIPE = "_pipe_"
     RECURSIVE = "_recursive_"
     RUN = "_run_"
-    SUFFIX = "suffix"
     TARGET = "_target_"
-    VERBOSE = "verbose"
+    TYPE = "_type_"
     WITH = "_with_"
 
 
@@ -395,7 +393,7 @@ class Composer(BaseModel):
             overrides=overrides,
         )
         # Add config group overrides to overrides list.
-        group_overrides = []
+        group_overrides: List[str] = []
         group_cfg = Composer.select(
             cfg,
             key=group_key,
@@ -745,18 +743,18 @@ class BaseConfig(BaseModel):
     Base class for all config classes.
     """
 
-    config_name: str = "__init__"
-    config_group: str = ""
+    _config_name_: str = "__init__"
+    _config_group_: str = ""
     verbose: bool = False
 
     class Config:
         arbitrary_types_allowed = True
         extra = "allow"
         validate_assignment = True
-        exclude = {}
-        include = {}
-        underscore_attrs_are_private = True
-        property_set_methods = {}
+        underscore_attrs_are_private = False
+        exclude: Set[str] = set()
+        include: Set[str] = set()
+        property_set_methods: Dict[str, str] = {}
 
     def __init__(self, **config_kwargs):
         config_kwargs = Composer.to_dict(config_kwargs)
@@ -792,21 +790,21 @@ class BaseConfig(BaseModel):
         Returns:
             None
         """
-        if not self.config_group:
+        if not self._config_group_:
             logger.debug("There is no config group specified.")
             return
         # Initialize the config with the given config_name.
         logger.debug(
             "Initializing `%s` class with `%s` config in `%s` group.",
             self.__class__.__name__,
-            self.config_name,
-            self.config_group,
+            self._config_name_,
+            self._config_group_,
         )
         config_kwargs = Composer(
-            config_group=f"{self.config_group}={self.config_name}",
+            config_group=f"{self._config_group_}={self._config_name_}",
             config_data=config_kwargs,
         ).config_as_dict
-        for name in self.__config__.exclude:
+        for name in self.__config__.exclude:  # type: ignore
             if name in self.__dict__ and self.__dict__[name] is not None:
                 logger.info("Removing %s from config", name)
                 config_kwargs.pop(name, None)

@@ -18,15 +18,6 @@ __config_path__ = "conf"
 __config_name__ = "config"
 
 
-def cmd(**args):
-    """
-    Run the command defined in the config file
-    Args
-        args : dict Arguments to pass to HyFI.
-    """
-    HyFI.run(args)
-
-
 def about(**args):
     """
     Print the about information for Hyfi.
@@ -94,7 +85,7 @@ def cli_main(cfg: DictConfig) -> None:
     # Print out the command line interface for the application.
     if verbose:
         print(f"## Command Line Interface for {app_name} ##")
-    HyFI.initialize(cfg)
+    HyFI.initialize()
 
     # Print the configuration to the console.
     if print_config:

@@ -11,8 +11,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BatchConfig(BaseConfig):
-    config_name: str = "__init__"
-    config_group: str = "batch"
+    _config_name_: str = "__init__"
+    _config_group_: str = "batch"
 
     batch_name: str
     batch_num: int = -1

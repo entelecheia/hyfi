@@ -1,7 +1,8 @@
 defaults:
   - /path: __task__
   - /module: __init__
-  - /pipeline@pipeline: __test__
+  - /pipeline@pipeline1: __test_general__
+  - /pipeline@pipeline2: __test_dataframe__
 
 _config_name_: __test__
 project: ${oc.select:project,null}
@@ -10,4 +11,5 @@ task_root: ${oc.select:project.path.project_workspace_root,workspace/tasks}/${.t
 autoload: false
 version: "0.0.0"
 pipelines:
-  - pipeline
+  - pipeline1
+  - pipeline2

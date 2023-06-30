@@ -811,6 +811,22 @@ class BaseConfig(BaseModel):
                 config_kwargs.pop(name, None)
         self.__dict__.update(config_kwargs)
 
+    def initialize_subconfigs(
+        self,
+        subconfigs: Dict[str, Any],
+        **config_kwargs,
+    ):
+        for name, config in subconfigs.items():
+            if name in self.__dict__ and self.__dict__[name]:
+                cfg = self.__dict__[name]
+                if (
+                    name in config_kwargs
+                    and isinstance(config_kwargs[name], dict)
+                    and isinstance(cfg, dict)
+                ):
+                    cfg.update(config_kwargs[name])
+                setattr(self, name, config.parse_obj(cfg))
+
     def export_config(
         self,
         exclude: Optional[Union[str, List[str], Set[str], None]] = None,

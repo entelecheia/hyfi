@@ -18,8 +18,8 @@ logger = LOGGING.getLogger(__name__)
 class ProjectConfig(BaseConfig):
     """Project Config"""
 
-    config_name: str = "__init__"
-    config_group: str = "project"
+    _config_name_: str = "__init__"
+    _config_group_: str = "project"
     # Project Config
     project_name: str = "hyfi-project"
     project_description: str = ""

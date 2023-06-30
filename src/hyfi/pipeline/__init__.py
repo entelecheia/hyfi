@@ -23,7 +23,7 @@ class PipelineConfig(BaseRunConfig):
 
     steps: Optional[List[Union[str, Dict]]] = []
     initial_object: Optional[Any] = None
-    use_self_as_initial_object: bool = False
+    use_task_as_initial_object: bool = False
 
     @validator("steps", pre=True)
     def steps_to_list(cls, v):
@@ -231,7 +231,7 @@ class PIPELINEs:
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
                 logger.info("Running pipeline: %s", pipeline.dict())
-            initial_object = task if pipeline.use_self_as_initial_object else None
+            initial_object = task if pipeline.use_task_as_initial_object else None
             PIPELINEs.run_pipeline(pipeline, initial_object, task)
 
     @staticmethod

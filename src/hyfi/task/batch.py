@@ -11,8 +11,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
-    config_name: str = "__batch__"
-    config_group: str = "task"
+    _config_name_: str = "__batch__"
+    _config_group_: str = "task"
 
     batch_name: str = "demo"
     batch: BatchConfig = None  # type: ignore

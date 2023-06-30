@@ -101,6 +101,10 @@ class TaskConfig(BaseConfig):
         return self.path.library_dir
 
     @property
+    def dataset_dir(self):
+        return self.path.dataset_dir
+
+    @property
     def verbose(self) -> bool:
         return bool(self.project.verbose) if self.project else False
 

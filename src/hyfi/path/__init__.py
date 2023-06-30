@@ -8,8 +8,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class PathConfig(BaseConfig):
-    config_name: str = "__init__"
-    config_group: str = "path"
+    _config_name_: str = "__init__"
+    _config_group_: str = "path"
 
     # internal paths for hyfi
     home: str = ""

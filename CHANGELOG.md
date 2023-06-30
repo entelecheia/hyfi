@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v0.16.1 (2023-06-30)
+
+### Fix
+
+* **batch:** Update BatchConfig initialization logic ([`a4b8080`](https://github.com/entelecheia/hyfi/commit/a4b8080e70256a6332ecc94139d3d3db3a52371f))
+
 ## v0.16.0 (2023-06-30)
 
 ### Feature

@@ -40,7 +40,6 @@ class TaskConfig(BaseConfig):
             self.initialize_configs(task_root=val)
 
     def set_task_name(self, val):
-        print("set_task_name: ", val, "self.task_name: ", self.task_name)
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
 
@@ -53,12 +52,15 @@ class TaskConfig(BaseConfig):
         subconfigs = {
             "module": ModuleConfig,
             "path": BatchPathConfig,
-            "project": ProjectConfig,
         }
         for name, config in subconfigs.items():
             if name in self.__dict__ and self.__dict__[name]:
                 cfg = self.__dict__[name]
-                if name in config_kwargs:
+                if (
+                    name in config_kwargs
+                    and isinstance(config_kwargs[name], dict)
+                    and isinstance(cfg, dict)
+                ):
                     cfg.update(config_kwargs[name])
                 setattr(self, name, config.parse_obj(cfg))
 
@@ -68,11 +70,11 @@ class TaskConfig(BaseConfig):
 
     @property
     def root_dir(self) -> Path:
-        return self.path.root_dir
+        return self.path.root_dir if self.path else Path(self.task_root)
 
     @property
     def output_dir(self) -> Path:
-        return self.path.output_dir
+        return self.path.output_dir if self.path else self.root_dir / "outputs"
 
     @property
     def project_name(self) -> str:
@@ -92,23 +94,35 @@ class TaskConfig(BaseConfig):
 
     @property
     def model_dir(self) -> Path:
-        return self.path.model_dir
+        return self.path.model_dir if self.path else self.root_dir / "models"
 
     @property
     def log_dir(self) -> Path:
-        return self.project.path.log_dir if self.project else self.path.log_dir
+        return (
+            self.project.path.log_dir
+            if self.project
+            else self.path.log_dir
+            if self.path
+            else self.root_dir / "logs"
+        )
 
     @property
     def cache_dir(self) -> Path:
-        return self.project.path.cache_dir if self.project else self.path.cache_dir
+        return (
+            self.project.path.cache_dir
+            if self.project
+            else self.path.cache_dir
+            if self.path
+            else self.root_dir / "cache"
+        )
 
     @property
     def library_dir(self) -> Path:
-        return self.path.library_dir
+        return self.path.library_dir if self.path else self.root_dir / "library"
 
     @property
     def dataset_dir(self):
-        return self.path.dataset_dir
+        return self.path.dataset_dir if self.path else self.root_dir / "datasets"
 
     @property
     def verbose(self) -> bool:
@@ -119,6 +133,9 @@ class TaskConfig(BaseConfig):
 
     def load_modules(self):
         """Load the modules"""
+        if not self.module:
+            logger.info("No module to load")
+            return
         if not self.module.modules:
             logger.info("No modules to load")
             return

@@ -22,10 +22,8 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
-DatasetType = TypeVar("DatasetType", Dataset, IterableDataset)
-DatasetLikeType = TypeVar(
-    "DatasetLikeType", Dataset, IterableDataset, DatasetDict, IterableDatasetDict
-)
+DatasetType = Union[Dataset, IterableDataset]
+DatasetLikeType = Union[Dataset, IterableDataset, DatasetDict, IterableDatasetDict]
 
 
 class Datasets:
@@ -36,7 +34,7 @@ class Datasets:
 
     @staticmethod
     def concatenate_data(
-        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], Sequence[Dataset]],
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
         columns: Optional[Sequence[str]] = None,
         add_split_key_column: bool = False,
         added_column_name: str = "_name_",

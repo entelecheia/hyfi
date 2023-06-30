@@ -12,7 +12,7 @@ def test_path_config():
     )
     pprint(config.dict())
     # Test that the default values are set correctly
-    assert config.config_name == "__init__"
+    assert config._config_name_ == "__init__"
     assert config.home == ENVs.expand_posix_vars("$HOME")
     assert Path(config.project_root).absolute() == (Path.cwd() / "workspace/tmp").absolute()
     assert (

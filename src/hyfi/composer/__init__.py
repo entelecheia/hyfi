@@ -816,6 +816,19 @@ class BaseConfig(BaseModel):
         subconfigs: Dict[str, Any],
         **config_kwargs,
     ):
+        """
+        Initializes subconfigs with the given config data.
+        The function updates the object's dictionary with the given config data,
+        after excluding any attributes specified in the object's `exclude` list.
+
+        Args:
+            self: The object to update with the given config data.
+            subconfigs: A dictionary of subconfigs to initialize.
+            **config_kwargs: The config data to update the object with.
+
+        Returns:
+            None
+        """
         for name, config in subconfigs.items():
             if name in self.__dict__ and self.__dict__[name]:
                 cfg = self.__dict__[name]

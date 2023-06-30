@@ -11,8 +11,8 @@ Tasks = List[TaskConfig]
 
 
 class WorkflowConfig(BaseConfig):
-    config_name: str = "__init__"
-    config_group: str = "workflow"
+    _config_name_: str = "__init__"
+    _config_group_: str = "workflow"
 
     project: Optional[ProjectConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []

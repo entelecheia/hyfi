@@ -7,8 +7,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BatchPathConfig(TaskPathConfig):
-    config_name: str = "__batch__"
-    config_group: str = "path"
+    _config_name_: str = "__batch__"
+    _config_group_: str = "path"
 
     batch_outputs: str = ""
 

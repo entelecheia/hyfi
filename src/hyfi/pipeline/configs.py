@@ -1,7 +1,7 @@
 """
     Configuration for HyFi Pipelines
 """
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from pydantic import BaseModel, root_validator
 
@@ -28,9 +28,9 @@ class BaseRunConfig(BaseModel):
         arbitrary_types_allowed = True
         extra = "allow"
         validate_assignment = True
-        exclude = {}
-        include = {}
         underscore_attrs_are_private = False
+        exclude: Set[str] = set()
+        include: Set[str] = set()
 
     def __init__(self, **config_kwargs):
         config_kwargs = Composer.to_dict(config_kwargs)

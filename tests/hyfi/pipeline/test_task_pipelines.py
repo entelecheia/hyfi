@@ -8,7 +8,7 @@ def test_task_config():
         project_name="run_task", project_root="workspace/run_task", num_workers=2
     )
 
-    task = TaskConfig(config_name="__test__")
+    task = TaskConfig(_config_name_="__test__")
     HyFI.print(task.dict())
     HyFI.run_task(task, project=project)
     HyFI.print(task.dict())

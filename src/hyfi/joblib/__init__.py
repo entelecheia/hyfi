@@ -36,8 +36,8 @@ class BatcherConfig(BaseModel):
 class JobLibConfig(BaseConfig):
     """JobLib Configuration"""
 
-    config_name: str = "__init__"
-    config_group: str = "joblib"
+    _config_name_: str = "__init__"
+    _config_group_: str = "joblib"
 
     num_workers: int = 1
     distributed_framework: DistFramworkConfig = DistFramworkConfig()

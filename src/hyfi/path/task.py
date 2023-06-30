@@ -7,10 +7,11 @@ logger = LOGGING.getLogger(__name__)
 
 
 class TaskPathConfig(BaseConfig):
-    config_name: str = "__task__"
-    config_group: str = "path"
+    _config_name_: str = "__task__"
+    _config_group_: str = "path"
 
     task_root: str = "tmp/task"
+    task_inputs: str = ""
     task_outputs: str = ""
     task_datasets: str = ""
     task_library: str = ""
@@ -31,7 +32,7 @@ class TaskPathConfig(BaseConfig):
         Returns the absolute path to the task root directory.
 
         Returns:
-                an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
+            an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
         # return as an absolute path
         path_ = Path(self.task_root)
@@ -39,13 +40,29 @@ class TaskPathConfig(BaseConfig):
         return path_.absolute()
 
     @property
-    def output_dir(self) -> Path:
+    def input_dir(self) -> Path:
         """
-        Returns the directory where the task outputs are stored. It is used to determine where the output files will be stored when running the task.
+        Returns the directory where the task inputs are stored.
+        It is used to determine where the input files will be loaded from when running the task.
 
 
         Returns:
-                absolute path to the output directory of the task ( relative to the task root directory ) or None if not
+            absolute path to the input directory of the task ( relative to the task root directory ) or None if not
+        """
+        self.task_inputs = self.task_inputs or (self.root_dir / "inputs").as_posix()
+        path_ = Path(self.task_inputs)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_.absolute()
+
+    @property
+    def output_dir(self) -> Path:
+        """
+        Returns the directory where the task outputs are stored.
+        It is used to determine where the output files will be stored when running the task.
+
+
+        Returns:
+            absolute path to the output directory of the task ( relative to the task root directory ) or None if not
         """
         self.task_outputs = self.task_outputs or (self.root_dir / "outputs").as_posix()
         path_ = Path(self.task_outputs)
@@ -59,7 +76,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                absolute path to the library directory ( relative to the task root directory ).
+            absolute path to the library directory ( relative to the task root directory ).
         """
         self.task_library = self.task_library or (self.root_dir / "library").as_posix()
         return Path(self.task_library).absolute()
@@ -71,7 +88,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                absolute path to the dataset directory ( relative to the root directory ) or None if not set in the
+            absolute path to the dataset directory ( relative to the root directory ) or None if not set in the
         """
         self.task_datasets = (
             self.task_datasets or (self.root_dir / "datasets").as_posix()
@@ -85,7 +102,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                Absolute path to the models directory on the task's filesystem ( relative to the root_dir )
+            Absolute path to the models directory on the task's filesystem ( relative to the root_dir )
         """
         self.task_models = self.task_models or (self.root_dir / "models").as_posix()
         return Path(self.task_models).absolute()
@@ -97,7 +114,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                A path to the cache directory for this task or None if it is not set in the config
+            A path to the cache directory for this task or None if it is not set in the config
         """
         self.task_cache = self.task_cache or (self.root_dir / "cache").as_posix()
         Path(self.task_cache).mkdir(parents=True, exist_ok=True)
@@ -110,7 +127,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                absolute path to the temporary directory of the task ( relative to the root_dir ).
+            absolute path to the temporary directory of the task ( relative to the root_dir ).
         """
         self.task_tmp = self.task_tmp or (self.root_dir / "tmp").as_posix()
         return Path(self.task_tmp).absolute()
@@ -122,7 +139,7 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-                absolute path to the log directory of the task ( relative to the root_dir ).
+            absolute path to the log directory of the task ( relative to the root_dir ).
         """
         self.task_log = self.task_log or (self.root_dir / "logs").as_posix()
         log_dir = Path(self.task_log).absolute()

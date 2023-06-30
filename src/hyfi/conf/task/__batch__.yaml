@@ -3,7 +3,7 @@ defaults:
   - /batch: __init__
   - override /path: __batch__
 
-config_name: __batch__
+_config_name_: __batch__
 task_name: batch-task
 batch_name: demo-batch
 autoload: false

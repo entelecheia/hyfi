@@ -547,10 +547,10 @@ class HyFI:
     @staticmethod
     def run_pipeline(
         config: Union[Dict, PipelineConfig],
-        initial_obj: Optional[Any] = None,
+        initial_object: Optional[Any] = None,
         task: Optional[TaskConfig] = None,
     ) -> Any:
-        return PIPELINEs.run_pipeline(config, initial_obj, task)
+        return PIPELINEs.run_pipeline(config, initial_object, task)
 
     @staticmethod
     def run_pipe(

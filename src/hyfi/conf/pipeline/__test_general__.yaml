@@ -1,0 +1,13 @@
+defaults:
+  - __init__
+  - /pipe@pipe1: __general_instance_methods__
+  - /pipe@pipe2: __general_external_funcs__
+
+use_task_as_initial_object: true
+steps:
+  - uses: pipe1
+    run: print_config
+    verbose: true
+  - uses: pipe2
+    run: builtins.print
+    verbose: true

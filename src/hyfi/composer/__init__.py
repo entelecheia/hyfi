@@ -781,7 +781,10 @@ class BaseConfig(BaseModel):
         **config_kwargs,
     ):
         """
-        Initializes the config with the given config_name. If there is no config group specified, the function returns without doing anything. The function updates the object's dictionary with the given config data, after excluding any attributes specified in the object's `exclude` list.
+        Initializes the config with the given config_name.
+        If there is no config group specified, the function returns without doing anything.
+        The function updates the object's dictionary with the given config data,
+        after excluding any attributes specified in the object's `exclude` list.
 
         Args:
             self: The object to update with the given config data.

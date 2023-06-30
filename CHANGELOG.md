@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v0.16.2 (2023-06-30)
+
+### Fix
+
+* **task:** Simplify load_config method ([`997cb98`](https://github.com/entelecheia/hyfi/commit/997cb988f07a5fa5aacde32e7ba4bbb445dae78f))
+* **composer:** Improve config export and saving methods ([`d77eea2`](https://github.com/entelecheia/hyfi/commit/d77eea266cf8fd9a7088bff60de5d3f4bf5ce82c))
+
 ## v0.16.1 (2023-06-30)
 
 ### Fix

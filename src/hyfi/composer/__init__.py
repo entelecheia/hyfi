@@ -2,12 +2,11 @@
     Hydra configuration management
 """
 import collections.abc
-import functools
 import json
 import os
 from enum import Enum
 from pathlib import Path
-from typing import IO, Any, Dict, List, Mapping, Set, Tuple, Union
+from typing import IO, Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
@@ -753,7 +752,6 @@ class BaseConfig(BaseModel):
         validate_assignment = True
         underscore_attrs_are_private = False
         exclude: Set[str] = set()
-        include: Set[str] = set()
         property_set_methods: Dict[str, str] = {}
 
     def __init__(self, **config_kwargs):
@@ -812,3 +810,86 @@ class BaseConfig(BaseModel):
                 logger.info("Removing %s from config", name)
                 config_kwargs.pop(name, None)
         self.__dict__.update(config_kwargs)
+
+    def export_config(
+        self,
+        exclude: Optional[Union[str, List[str], Set[str], None]] = None,
+        exclude_none: bool = True,
+        only_include: Optional[Union[str, List[str], Set[str], None]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Export the configuration to a dictionary.
+
+        Args:
+            exclude (Optional[Union[str, List[str], Set[str], None]]): Keys to exclude from the saved configuration.
+                Defaults to None.
+            exclude_none (bool): Whether to exclude keys with None values. Defaults to True.
+            only_include (Optional[Union[str, List[str], Set[str], None]]): Keys to include in the saved configuration.
+                Defaults to None.
+
+        Returns:
+            Dict[str, Any]: The configuration dictionary.
+        """
+        if not exclude:
+            exclude = self.__config__.exclude  # type: ignore
+        if isinstance(exclude, str):
+            exclude = [exclude]
+        if exclude is None:
+            exclude = []
+        if isinstance(only_include, str):
+            only_include = [only_include]
+        if only_include is None:
+            only_include = []
+
+        config = self.dict(exclude=exclude, exclude_none=exclude_none)  # type: ignore
+        if only_include:
+            config = {key: config[key] for key in only_include if key in config}
+
+        return config
+
+    def save_config(
+        self,
+        filepath: Union[str, Path],
+        exclude: Optional[Union[str, List[str], Set[str], None]] = None,
+        exclude_none: bool = True,
+        only_include: Optional[Union[str, List[str], Set[str], None]] = None,
+    ) -> str:
+        """
+        Save the batch configuration to file.
+
+        Args:
+            filepath ([Union[str, Path]): The filepath to save the configuration to.
+            exclude (Optional[Union[str, List[str], Set[str], None]]): Keys to exclude from the saved configuration.
+                Defaults to None.
+            exclude_none (bool): Whether to exclude keys with None values. Defaults to True.
+            only_include (Optional[Union[str, List[str], Set[str], None]]): Keys to include in the saved configuration.
+                Defaults to None.
+
+        Returns:
+            str: The filename of the saved configuration.
+        """
+        logger.info("Saving config to %s", filepath)
+
+        config_to_save = self.export_config(
+            exclude=exclude, exclude_none=exclude_none, only_include=only_include
+        )
+
+        Composer.save(config_to_save, filepath)
+        return filepath
+
+    def save_config_as_json(
+        self,
+        filepath: Union[str, Path],
+        exclude: Optional[Union[str, List[str], Set[str], None]] = None,
+        exclude_none: bool = True,
+        only_include: Optional[Union[str, List[str], Set[str], None]] = None,
+    ) -> str:
+        def dumper(obj):
+            return Composer.to_dict(obj) if isinstance(obj, DictConfig) else str(obj)
+
+        config_to_save = self.export_config(
+            exclude=exclude, exclude_none=exclude_none, only_include=only_include
+        )
+        logger.info("Saving config to %s", filepath)
+        Composer.save_json(config_to_save, filepath, default=dumper)
+        return filepath

@@ -1,8 +1,9 @@
 """
     Pipeline Functions
 """
-import pandas as pd
 from typing import Any
+
+import pandas as pd
 
 from hyfi.joblib import BATCHER
 from hyfi.pipeline.configs import DataframePipeConfig, PipeConfig

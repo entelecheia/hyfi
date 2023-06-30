@@ -3,7 +3,7 @@ defaults:
   - /pipe@pipe1: __general_instance_methods__
   - /pipe@pipe2: __general_external_funcs__
 
-use_self_as_initial_object: true
+use_task_as_initial_object: true
 steps:
   - uses: pipe1
     run: print_config

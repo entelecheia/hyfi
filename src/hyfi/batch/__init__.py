@@ -1,6 +1,6 @@
 import random
 from pathlib import Path
-from typing import Any, Union
+from typing import Optional, Union
 
 from pydantic import validator
 
@@ -15,7 +15,7 @@ class BatchConfig(BaseConfig):
     _config_group_: str = "batch"
 
     batch_name: str
-    batch_num: int = -1
+    batch_num: Optional[int] = None
     batch_root: str = "outputs"
     output_suffix: str = ""
     output_extention: str = ""
@@ -29,7 +29,7 @@ class BatchConfig(BaseConfig):
     config_yaml = "config.yaml"
     config_json = "config.json"
     config_dirname = "configs"
-    verbose: Union[bool, int] = False
+    verbose: bool = False
 
     def initialize_configs(self, **config_kwargs):
         super().initialize_configs(**config_kwargs)
@@ -40,7 +40,9 @@ class BatchConfig(BaseConfig):
             self.batch_num = -1
         if self.batch_num < 0:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
-            self.batch_num = num_files - 1 if self.resume_latest else num_files
+            self.batch_num = (
+                num_files - 1 if self.resume_latest and num_files > 0 else num_files
+            )
         if self.verbose:
             logger.info(
                 "Init batch - Batch name: %s, Batch num: %s",
@@ -60,7 +62,7 @@ class BatchConfig(BaseConfig):
 
     @validator("batch_num", pre=True, always=True)
     def _validate_batch_num(cls, v):
-        return v or -1
+        return v if v is not None else -1
 
     @validator("output_suffix", pre=True, always=True)
     def _validate_output_suffix(cls, v):

@@ -10,7 +10,7 @@ def test_dotenv_config():
     config = DotEnvConfig()
     pprint(config.dict())
     # Test that the default values are set correctly
-    assert config.config_name == "__init__"
+    assert config._config_name_ == "__init__"
     assert config.HYFI_PROJECT_NAME == "hyfi"
 
 

@@ -822,7 +822,6 @@ class BaseConfig(BaseModel):
         after excluding any attributes specified in the object's `exclude` list.
 
         Args:
-            self: The object to update with the given config data.
             subconfigs: A dictionary of subconfigs to initialize.
             **config_kwargs: The config data to update the object with.
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyfi"
-version = "0.15.1"
+version = "0.16.0"
 description = "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
 authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
 license = "MIT"

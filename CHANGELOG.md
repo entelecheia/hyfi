@@ -1,5 +1,26 @@
 <!--next-version-placeholder-->
 
+## v0.16.0 (2023-06-30)
+
+### Feature
+
+* **pipeline:** Update initial object configuration ([`d695ca2`](https://github.com/entelecheia/hyfi/commit/d695ca2c1b6901f34800c13dccb21feda45cd472))
+* **task:** Add new pipelines ([`ab2d1bb`](https://github.com/entelecheia/hyfi/commit/ab2d1bb797db937f62a90f609c7a1834a86fa3cd))
+* **pipeline:** Add __test_general__.yaml ([`893ee20`](https://github.com/entelecheia/hyfi/commit/893ee20d1f948ec58f9b8e31fa6f9eda8c49d76d))
+* **pipeline:** Update run_pipeline method ([`1498128`](https://github.com/entelecheia/hyfi/commit/1498128390190e243108ef570ec35fbf78e0c5c3))
+* **pipe:** Add general_instance_methods and general_external_funcs ([`efbae91`](https://github.com/entelecheia/hyfi/commit/efbae91599506ffec13ac893452d7404889c1dfe))
+* **pipeline:** Add use_self_as_initial_object ([`cb7f5db`](https://github.com/entelecheia/hyfi/commit/cb7f5db17a49b4acde7daab84e009b9e91b00b29))
+* **conf:** Add __general_instance_methods__.yaml ([`04cd575`](https://github.com/entelecheia/hyfi/commit/04cd5751038e0eba13ec8bdeebd3b98d42f88f44))
+* **pipe:** Add general external functions ([`5e6db50`](https://github.com/entelecheia/hyfi/commit/5e6db5021c03e894f26a48752da196d9f6b1d1c8))
+
+### Fix
+
+* **pipeline:** Fix use_task_as_initial_object typo ([`88c2561`](https://github.com/entelecheia/hyfi/commit/88c25617afe4e1ba3e2f53a39824daffbba9ecc0))
+* **pipeline:** Update initial object usage ([`c222f45`](https://github.com/entelecheia/hyfi/commit/c222f459312b395f206bd4a1a479223bad812536))
+* **hyfi/pipeline:** Fix task configuration naming ([`85317cf`](https://github.com/entelecheia/hyfi/commit/85317cf74075e1a7f5e582c0233e0ef16f1b1182))
+* **dotenv:** Fix variable name in DotEnvConfig ([`09de6f4`](https://github.com/entelecheia/hyfi/commit/09de6f4dd34a1d40a845a1834883aef166e391c0))
+* **conf:** Fix config file names ([`354c9b4`](https://github.com/entelecheia/hyfi/commit/354c9b48250ee283f00940c640e840ecce3edc57))
+
 ## v0.15.1 (2023-06-28)
 
 ### Fix

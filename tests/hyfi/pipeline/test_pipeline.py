@@ -27,7 +27,7 @@ def test_pipeline():
     data_path = (
         "https://assets.entelecheia.ai/datasets/esg_coverage/ESG_ratings_raw.csv"
     )
-    config = HyFI.compose("pipeline=__test__")
+    config = HyFI.compose("pipeline=__test_dataframe__")
     config.pipe1._with_ = {"data_files": data_path}
     config = PipelineConfig(**config)
     HyFI.print(config.dict(exclude_none=True))

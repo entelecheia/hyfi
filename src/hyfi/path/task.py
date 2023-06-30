@@ -7,8 +7,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class TaskPathConfig(BaseConfig):
-    config_name: str = "__task__"
-    config_group: str = "path"
+    _config_name_: str = "__task__"
+    _config_group_: str = "path"
 
     task_root: str = "tmp/task"
     task_outputs: str = ""

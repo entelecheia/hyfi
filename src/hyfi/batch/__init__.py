@@ -78,9 +78,8 @@ class BatchConfig(BaseConfig):
 
     @property
     def batch_dir(self):
-        batch_dir = self.root_dir / self.batch_name
-        batch_dir.mkdir(parents=True, exist_ok=True)
-        return batch_dir
+        self.root_dir.mkdir(parents=True, exist_ok=True)
+        return self.root_dir
 
     @property
     def config_dir(self):

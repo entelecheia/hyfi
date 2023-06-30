@@ -1,6 +1,6 @@
 import os
 from os import PathLike
-from typing import Any, Dict, List, Mapping, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
 import datasets as hfds
 import pandas as pd
@@ -22,10 +22,8 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
-DatasetType = TypeVar("DatasetType", Dataset, IterableDataset)
-DatasetLikeType = TypeVar(
-    "DatasetLikeType", Dataset, IterableDataset, DatasetDict, IterableDatasetDict
-)
+DatasetType = Union[Dataset, IterableDataset]
+DatasetLikeType = Union[Dataset, IterableDataset, DatasetDict, IterableDatasetDict]
 
 
 class Datasets:
@@ -36,7 +34,7 @@ class Datasets:
 
     @staticmethod
     def concatenate_data(
-        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], Sequence[Dataset]],
+        data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
         columns: Optional[Sequence[str]] = None,
         add_split_key_column: bool = False,
         added_column_name: str = "_name_",
@@ -114,10 +112,10 @@ class Datasets:
         use_cached: bool = False,
         verbose: Optional[bool] = False,
         **kwargs,
-    ) -> Union[Dict[str, pd.DataFrame], Dict[str, Dataset]]:
+    ) -> Union[Dict[str, pd.DataFrame], Dict[str, DatasetType]]:
         """Load data from a file or a list of files"""
         if path in ["dataframe", "df", "pandas"]:
-            data = Datasets.load_dataframes(
+            if data := Datasets.load_dataframes(
                 data_files,
                 data_dir=data_dir,
                 filetype=filetype,
@@ -126,8 +124,7 @@ class Datasets:
                 use_cached=use_cached,
                 verbose=verbose,
                 **kwargs,
-            )
-            if data:
+            ):
                 return data if isinstance(data, dict) else {split: data}
             else:
                 return {}
@@ -141,13 +138,12 @@ class Datasets:
                 **kwargs,
             )
             split = split or "train"
-            if isinstance(dset, Dataset) or isinstance(dset, IterableDataset):
+            if isinstance(dset, (Dataset, IterableDataset)):
                 return {split: dset}
+            if concatenate:
+                return {split: Datasets.concatenate_datasets(dset.values())}
             else:
-                if concatenate:
-                    return {split: Datasets.concatenate_datasets(dset.values())}
-                else:
-                    return {k: v for k, v in dset.items() if v is not None}
+                return {k: v for k, v in dset.items() if v is not None}
 
     @staticmethod
     def get_data_files(
@@ -173,16 +169,15 @@ class Datasets:
                 )
                 for name, files in data_files.items()
             }
-        else:
-            filepaths = IOLIBs.get_filepaths(
-                data_files,
-                data_dir,
-                recursive=recursive,
-                use_cached=use_cached,
-                verbose=verbose,
-                **kwargs,
-            )
-            return {split: filepaths} if split else filepaths
+        filepaths = IOLIBs.get_filepaths(
+            data_files,
+            data_dir,
+            recursive=recursive,
+            use_cached=use_cached,
+            verbose=verbose,
+            **kwargs,
+        )
+        return {split: filepaths} if split else filepaths
 
     @staticmethod
     def load_dataframes(

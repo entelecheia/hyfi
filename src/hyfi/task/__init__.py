@@ -29,7 +29,6 @@ class TaskConfig(BaseConfig):
             "__data__",
             "project",
         }
-        include = {}
         property_set_methods = {
             "task_name": "set_task_name",
             "task_root": "set_task_root",
@@ -41,7 +40,6 @@ class TaskConfig(BaseConfig):
             self.initialize_configs(task_root=val)
 
     def set_task_name(self, val):
-        print("set_task_name: ", val, "self.task_name: ", self.task_name)
         if not self.task_name or self.task_name != val:
             self.initialize_configs(task_name=val)
 
@@ -51,10 +49,20 @@ class TaskConfig(BaseConfig):
 
     def initialize_configs(self, **config_kwargs):
         super().initialize_configs(**config_kwargs)
-        if "module" in self.__dict__ and self.__dict__["module"]:
-            self.module = ModuleConfig.parse_obj(self.__dict__["module"])
-        if "path" in self.__dict__ and self.__dict__["path"]:
-            self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
+        subconfigs = {
+            "module": ModuleConfig,
+            "path": BatchPathConfig,
+        }
+        for name, config in subconfigs.items():
+            if name in self.__dict__ and self.__dict__[name]:
+                cfg = self.__dict__[name]
+                if (
+                    name in config_kwargs
+                    and isinstance(config_kwargs[name], dict)
+                    and isinstance(cfg, dict)
+                ):
+                    cfg.update(config_kwargs[name])
+                setattr(self, name, config.parse_obj(cfg))
 
     @property
     def config(self):
@@ -62,11 +70,11 @@ class TaskConfig(BaseConfig):
 
     @property
     def root_dir(self) -> Path:
-        return self.path.root_dir
+        return self.path.root_dir if self.path else Path(self.task_root)
 
     @property
     def output_dir(self) -> Path:
-        return self.path.output_dir
+        return self.path.output_dir if self.path else self.root_dir / "outputs"
 
     @property
     def project_name(self) -> str:
@@ -86,19 +94,35 @@ class TaskConfig(BaseConfig):
 
     @property
     def model_dir(self) -> Path:
-        return self.path.model_dir
+        return self.path.model_dir if self.path else self.root_dir / "models"
 
     @property
     def log_dir(self) -> Path:
-        return self.project.path.log_dir if self.project else self.path.log_dir
+        return (
+            self.project.path.log_dir
+            if self.project
+            else self.path.log_dir
+            if self.path
+            else self.root_dir / "logs"
+        )
 
     @property
     def cache_dir(self) -> Path:
-        return self.project.path.cache_dir if self.project else self.path.cache_dir
+        return (
+            self.project.path.cache_dir
+            if self.project
+            else self.path.cache_dir
+            if self.path
+            else self.root_dir / "cache"
+        )
 
     @property
     def library_dir(self) -> Path:
-        return self.path.library_dir
+        return self.path.library_dir if self.path else self.root_dir / "library"
+
+    @property
+    def dataset_dir(self):
+        return self.path.dataset_dir if self.path else self.root_dir / "datasets"
 
     @property
     def verbose(self) -> bool:
@@ -109,6 +133,9 @@ class TaskConfig(BaseConfig):
 
     def load_modules(self):
         """Load the modules"""
+        if not self.module:
+            logger.info("No module to load")
+            return
         if not self.module.modules:
             logger.info("No modules to load")
             return

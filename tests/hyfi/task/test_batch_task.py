@@ -17,6 +17,9 @@ def test_batch_task_config():
     # Test that the log_dir and cache_dir properties return the correct values
     assert Path(config.log_dir).is_dir()
     assert Path(config.cache_dir).is_dir()
+    config.save_config()
+    cfg = config.load_config(batch_num=1)
+    pprint(cfg)
 
 
 if __name__ == "__main__":

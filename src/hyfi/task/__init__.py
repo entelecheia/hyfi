@@ -29,7 +29,6 @@ class TaskConfig(BaseConfig):
             "__data__",
             "project",
         }
-        include = {}
         property_set_methods = {
             "task_name": "set_task_name",
             "task_root": "set_task_root",
@@ -51,10 +50,17 @@ class TaskConfig(BaseConfig):
 
     def initialize_configs(self, **config_kwargs):
         super().initialize_configs(**config_kwargs)
-        if "module" in self.__dict__ and self.__dict__["module"]:
-            self.module = ModuleConfig.parse_obj(self.__dict__["module"])
-        if "path" in self.__dict__ and self.__dict__["path"]:
-            self.path = BatchPathConfig.parse_obj(self.__dict__["path"])
+        subconfigs = {
+            "module": ModuleConfig,
+            "path": BatchPathConfig,
+            "project": ProjectConfig,
+        }
+        for name, config in subconfigs.items():
+            if name in self.__dict__ and self.__dict__[name]:
+                cfg = self.__dict__[name]
+                if name in config_kwargs:
+                    cfg.update(config_kwargs[name])
+                setattr(self, name, config.parse_obj(cfg))
 
     @property
     def config(self):

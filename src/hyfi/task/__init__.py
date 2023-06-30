@@ -12,8 +12,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class TaskConfig(BaseConfig):
-    config_name: str = "__init__"
-    config_group: str = "task"
+    _config_name_: str = "__init__"
+    _config_group_: str = "task"
 
     task_name: str = "demo-task"
     task_root: str = "tmp/task"

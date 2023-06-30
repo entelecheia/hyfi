@@ -13,7 +13,7 @@ logger = LOGGING.getLogger(__name__)
 class DotEnvConfig(BaseSettings):
     """Environment variables for HyFI"""
 
-    config_name: str = "__init__"
+    _config_name_: str = "__init__"
 
     DOTENV_FILENAME: Optional[str] = ".env"
     DOTENV_DIR: Optional[str] = ""

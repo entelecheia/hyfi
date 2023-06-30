@@ -68,14 +68,6 @@ class BatchTaskConfig(TaskConfig):
         return self.batch.batch_dir
 
     @property
-    def dataset_dir(self):
-        return self.path.dataset_dir
-
-    @property
-    def verbose(self):
-        return self.project.verbose
-
-    @property
     def device(self):
         return self.batch.device
 

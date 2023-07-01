@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v0.16.3 (2023-07-01)
+
+### Fix
+
+* **composer): Fix type annotations in update method; fix(composer:** Return filepath as string in save_config_as_json method ([`7bb3849`](https://github.com/entelecheia/hyfi/commit/7bb3849327db551f46eac2c5ff5acaeb4672b245))
+* **utils:** Fix lower_case_with_underscores function ([`56ea30b`](https://github.com/entelecheia/hyfi/commit/56ea30b86c4d3faf6d9366e65f40b8c83ec84da2))
+
+### Documentation
+
+* **composer:** Update docstring in BaseConfig ([`5106221`](https://github.com/entelecheia/hyfi/commit/5106221ffcbbc02e20e6f9d397e45827e0c0a40e))
+
 ## v0.16.2 (2023-06-30)
 
 ### Fix

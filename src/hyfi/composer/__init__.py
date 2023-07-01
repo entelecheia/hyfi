@@ -579,9 +579,9 @@ class Composer(BaseModel):
         """
         for k, v in _overrides.items():
             if isinstance(v, collections.abc.Mapping):
-                _dict[k] = Composer.update((_dict.get(k) or {}), v)
+                _dict[k] = Composer.update((_dict.get(k) or {}), v)  # type: ignore
             else:
-                _dict[k] = v
+                _dict[k] = v  # type: ignore
         return _dict
 
     @staticmethod
@@ -903,7 +903,7 @@ class BaseConfig(BaseModel):
         )
 
         Composer.save(config_to_save, filepath)
-        return filepath
+        return str(filepath)
 
     def save_config_as_json(
         self,
@@ -920,4 +920,4 @@ class BaseConfig(BaseModel):
         )
         logger.info("Saving config to %s", filepath)
         Composer.save_json(config_to_save, filepath, default=dumper)
-        return filepath
+        return str(filepath)

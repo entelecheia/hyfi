@@ -53,16 +53,7 @@ class TaskConfig(BaseConfig):
             "module": ModuleConfig,
             "path": BatchPathConfig,
         }
-        for name, config in subconfigs.items():
-            if name in self.__dict__ and self.__dict__[name]:
-                cfg = self.__dict__[name]
-                if (
-                    name in config_kwargs
-                    and isinstance(config_kwargs[name], dict)
-                    and isinstance(cfg, dict)
-                ):
-                    cfg.update(config_kwargs[name])
-                setattr(self, name, config.parse_obj(cfg))
+        self.initialize_subconfigs(subconfigs, **config_kwargs)
 
     @property
     def config(self):

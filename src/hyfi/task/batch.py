@@ -35,12 +35,7 @@ class BatchTaskConfig(TaskConfig):
         subconfigs = {
             "batch": BatchConfig,
         }
-        for name, config in subconfigs.items():
-            if name in self.__dict__ and self.__dict__[name]:
-                cfg = self.__dict__[name]
-                if name in config_kwargs:
-                    cfg.update(config_kwargs[name])
-                setattr(self, name, config.parse_obj(cfg))
+        self.initialize_subconfigs(subconfigs, **config_kwargs)
         logger.info(
             "Initalized batch: %s(%s) in %s",
             self.batch_name,

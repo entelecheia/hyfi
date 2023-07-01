@@ -4,7 +4,7 @@ import itertools
 import re
 import sys
 from contextlib import suppress
-from typing import Any, List, Optional, TextIO, Type, Union
+from typing import Any, Dict, List, Optional, TextIO, Type, Union
 
 import chardet
 import colorama
@@ -40,7 +40,11 @@ class FUNCs:
     @staticmethod
     def lower_case_with_underscores(string):
         """Converts 'CamelCased' to 'camel_cased'."""
-        return re.sub(r"\s+", "_", string.lower()).replace("-", "_")
+        return (
+            re.sub(r"\s+", "_", re.sub(r"(?<!^)(?=[A-Z])", "_", string).lower())
+            .replace("-", "_")
+            .replace("__", "_")
+        )
 
     @staticmethod
     def ordinal(num):
@@ -58,7 +62,7 @@ class FUNCs:
         offset_ranges = [0]
         pv_cnt = 1
         for i in range(num_workers):
-            pv_cnt = count if i == num_workers - 1 else pv_cnt + step_sz
+            pv_cnt = count + 1 if i == num_workers - 1 else pv_cnt + step_sz
             offset_ranges.append(pv_cnt)
         return offset_ranges
 
@@ -241,7 +245,7 @@ class FUNCs:
         return ", ".join(FUNCs.human_readable_type_name(t) for t in type_list)
 
     @staticmethod
-    def dict_product(dicts):
+    def dict_product(dicts) -> List[Dict]:
         """
         >>> list(dict_product(dict(number=[1,2], character='ab')))
         [{'character': 'a', 'number': 1},
@@ -249,7 +253,7 @@ class FUNCs:
         {'character': 'b', 'number': 1},
         {'character': 'b', 'number': 2}]
         """
-        return (dict(zip(dicts, x)) for x in itertools.product(*dicts.values()))
+        return [dict(zip(dicts, x)) for x in itertools.product(*dicts.values())]
 
     @staticmethod
     def printf(

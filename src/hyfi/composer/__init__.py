@@ -579,9 +579,9 @@ class Composer(BaseModel):
         """
         for k, v in _overrides.items():
             if isinstance(v, collections.abc.Mapping):
-                _dict[k] = Composer.update((_dict.get(k) or {}), v)
+                _dict[k] = Composer.update((_dict.get(k) or {}), v)  # type: ignore
             else:
-                _dict[k] = v
+                _dict[k] = v  # type: ignore
         return _dict
 
     @staticmethod
@@ -811,6 +811,34 @@ class BaseConfig(BaseModel):
                 config_kwargs.pop(name, None)
         self.__dict__.update(config_kwargs)
 
+    def initialize_subconfigs(
+        self,
+        subconfigs: Dict[str, Any],
+        **config_kwargs,
+    ):
+        """
+        Initializes subconfigs with the given config data.
+        The function updates the object's dictionary with the given config data,
+        after excluding any attributes specified in the object's `exclude` list.
+
+        Args:
+            subconfigs: A dictionary of subconfigs to initialize.
+            **config_kwargs: The config data to update the object with.
+
+        Returns:
+            None
+        """
+        for name, config in subconfigs.items():
+            if name in self.__dict__ and self.__dict__[name]:
+                cfg = self.__dict__[name]
+                if (
+                    name in config_kwargs
+                    and isinstance(config_kwargs[name], dict)
+                    and isinstance(cfg, dict)
+                ):
+                    cfg.update(config_kwargs[name])
+                setattr(self, name, config.parse_obj(cfg))
+
     def export_config(
         self,
         exclude: Optional[Union[str, List[str], Set[str], None]] = None,
@@ -875,7 +903,7 @@ class BaseConfig(BaseModel):
         )
 
         Composer.save(config_to_save, filepath)
-        return filepath
+        return str(filepath)
 
     def save_config_as_json(
         self,
@@ -892,4 +920,4 @@ class BaseConfig(BaseModel):
         )
         logger.info("Saving config to %s", filepath)
         Composer.save_json(config_to_save, filepath, default=dumper)
-        return filepath
+        return str(filepath)

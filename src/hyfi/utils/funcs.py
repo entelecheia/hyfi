@@ -4,7 +4,7 @@ import itertools
 import re
 import sys
 from contextlib import suppress
-from typing import Any, List, Optional, TextIO, Type, Union
+from typing import Any, Dict, List, Optional, TextIO, Type, Union
 
 import chardet
 import colorama
@@ -245,7 +245,7 @@ class FUNCs:
         return ", ".join(FUNCs.human_readable_type_name(t) for t in type_list)
 
     @staticmethod
-    def dict_product(dicts):
+    def dict_product(dicts) -> List[Dict]:
         """
         >>> list(dict_product(dict(number=[1,2], character='ab')))
         [{'character': 'a', 'number': 1},
@@ -253,7 +253,7 @@ class FUNCs:
         {'character': 'b', 'number': 1},
         {'character': 'b', 'number': 2}]
         """
-        return (dict(zip(dicts, x)) for x in itertools.product(*dicts.values()))
+        return [dict(zip(dicts, x)) for x in itertools.product(*dicts.values())]
 
     @staticmethod
     def printf(

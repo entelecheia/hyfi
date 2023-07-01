@@ -40,7 +40,11 @@ class FUNCs:
     @staticmethod
     def lower_case_with_underscores(string):
         """Converts 'CamelCased' to 'camel_cased'."""
-        return re.sub(r"\s+", "_", string.lower()).replace("-", "_")
+        return (
+            re.sub(r"\s+", "_", re.sub(r"(?<!^)(?=[A-Z])", "_", string).lower())
+            .replace("-", "_")
+            .replace("__", "_")
+        )
 
     @staticmethod
     def ordinal(num):
@@ -58,7 +62,7 @@ class FUNCs:
         offset_ranges = [0]
         pv_cnt = 1
         for i in range(num_workers):
-            pv_cnt = count if i == num_workers - 1 else pv_cnt + step_sz
+            pv_cnt = count + 1 if i == num_workers - 1 else pv_cnt + step_sz
             offset_ranges.append(pv_cnt)
         return offset_ranges
 

@@ -69,25 +69,29 @@ class HyfiConfig(BaseModel):
     )  # type: ignore
 
     @model_validator(mode="before")
-    def _check_and_set_values(cls, values):
+    def _validate_model_data(cls, data):
         """
-        Validate and set values for the config file.
+        Validate and set the model data.
 
         Args:
             cls: Class to use for config lookup
-            values: Dictionary of values to check and set
+            data: Dictionary of values to check and set
 
         Returns:
-            Same dictionary with hyfi_config
+            Validated dictionary of values
         """
         key = "hyfi_config_path"
-        val = ENVs.check_and_set_osenv_var(key, values.get(key))
+        val = ENVs.check_and_set_osenv_var(key, data.get(key))
         # Set the hyfi_config_module value in the configuration file.
         if val is not None:
-            values[key] = val
+            data[key] = val
             key = "hyfi_config_module"
-            values[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
-        return values
+            data[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
+        key = "hyfi_user_config_path"
+        val = data.get(key)
+        if val is None:
+            data[key] = ENVs.get_osenv(key, ".")
+        return data
 
     @field_validator("hyfi_user_config_path")
     def _validate_hyfi_user_config_path(cls, v):

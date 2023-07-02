@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from hyfi.composer import BaseConfig
+from hyfi.path.dirnames import DirnamesConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -10,34 +11,35 @@ class TaskPathConfig(BaseConfig):
     _config_name_: str = "__task__"
     _config_group_: str = "path"
 
-    task_root: str = "tmp/task"
-    task_inputs: str = ""
-    task_outputs: str = ""
-    task_datasets: str = ""
-    task_library: str = ""
-    task_models: str = ""
-    task_cache: str = ""
-    task_tmp: str = ""
-    task_log: str = ""
-
-    class Config:
-        extra = "ignore"
-
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
+    task_name: str = "demo-task"
+    task_root: str = "workspace/tasks"
+    dirnames: DirnamesConfig = DirnamesConfig()
 
     @property
     def root_dir(self) -> Path:
         """
-        Returns the absolute path to the task root directory.
+        Returns the path to the task root directory.
 
         Returns:
-            an absolute path to the task root directory or None if it doesn't exist or cannot be converted to a path object
+            an path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
-        # return as an absolute path
+        # return as an path
         path_ = Path(self.task_root)
         path_.mkdir(parents=True, exist_ok=True)
-        return path_.absolute()
+        return path_
+
+    @property
+    def task_dir(self) -> Path:
+        """
+        Returns the path to the task root directory.
+
+        Returns:
+            an path to the task root directory or None if it doesn't exist or cannot be converted to a path object
+        """
+        # return as an path
+        path_ = self.root_dir / self.task_name
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def input_dir(self) -> Path:
@@ -45,14 +47,12 @@ class TaskPathConfig(BaseConfig):
         Returns the directory where the task inputs are stored.
         It is used to determine where the input files will be loaded from when running the task.
 
-
         Returns:
-            absolute path to the input directory of the task ( relative to the task root directory ) or None if not
+            path to the input directory of the task ( relative to the task root directory ) or None if not
         """
-        self.task_inputs = self.task_inputs or (self.root_dir / "inputs").as_posix()
-        path_ = Path(self.task_inputs)
+        path_ = self.task_dir / self.dirnames.inputs
         path_.mkdir(parents=True, exist_ok=True)
-        return path_.absolute()
+        return path_
 
     @property
     def output_dir(self) -> Path:
@@ -60,26 +60,24 @@ class TaskPathConfig(BaseConfig):
         Returns the directory where the task outputs are stored.
         It is used to determine where the output files will be stored when running the task.
 
-
         Returns:
-            absolute path to the output directory of the task ( relative to the task root directory ) or None if not
+            path to the output directory of the task ( relative to the task root directory ) or None if not
         """
-        self.task_outputs = self.task_outputs or (self.root_dir / "outputs").as_posix()
-        path_ = Path(self.task_outputs)
+        path_ = self.task_dir / self.dirnames.outputs
         path_.mkdir(parents=True, exist_ok=True)
-        return path_.absolute()
+        return path_
 
     @property
     def library_dir(self) -> Path:
         """
         The path to the library.
 
-
         Returns:
-            absolute path to the library directory ( relative to the task root directory ).
+            path to the library directory ( relative to the task root directory ).
         """
-        self.task_library = self.task_library or (self.root_dir / "library").as_posix()
-        return Path(self.task_library).absolute()
+        path_ = self.task_dir / self.dirnames.library
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def dataset_dir(self) -> Path:
@@ -88,12 +86,11 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-            absolute path to the dataset directory ( relative to the root directory ) or None if not set in the
+            path to the dataset directory ( relative to the root directory ) or None if not set in the
         """
-        self.task_datasets = (
-            self.task_datasets or (self.root_dir / "datasets").as_posix()
-        )
-        return Path(self.task_datasets).absolute()
+        path_ = self.task_dir / self.dirnames.datasets
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def model_dir(self) -> Path:
@@ -102,10 +99,11 @@ class TaskPathConfig(BaseConfig):
 
 
         Returns:
-            Absolute path to the models directory on the task's filesystem ( relative to the root_dir )
+            path to the models directory on the task's filesystem ( relative to the root_dir )
         """
-        self.task_models = self.task_models or (self.root_dir / "models").as_posix()
-        return Path(self.task_models).absolute()
+        path_ = self.task_dir / self.dirnames.models
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def cache_dir(self) -> Path:
@@ -116,32 +114,30 @@ class TaskPathConfig(BaseConfig):
         Returns:
             A path to the cache directory for this task or None if it is not set in the config
         """
-        self.task_cache = self.task_cache or (self.root_dir / "cache").as_posix()
-        Path(self.task_cache).mkdir(parents=True, exist_ok=True)
-        return Path(self.task_cache).absolute()
+        path_ = self.task_dir / self.dirnames.cache
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def tmp_dir(self) -> Path:
         """
         Returns the path to the temporary directory.
 
-
         Returns:
-            absolute path to the temporary directory of the task ( relative to the root_dir ).
+            path to the temporary directory of the task ( relative to the root_dir ).
         """
-        self.task_tmp = self.task_tmp or (self.root_dir / "tmp").as_posix()
-        return Path(self.task_tmp).absolute()
+        path_ = self.task_dir / self.dirnames.tmp
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def log_dir(self) -> Path:
         """
         Get the path to the log directory.
 
-
         Returns:
-            absolute path to the log directory of the task ( relative to the root_dir ).
+            path to the log directory of the task ( relative to the root_dir ).
         """
-        self.task_log = self.task_log or (self.root_dir / "logs").as_posix()
-        log_dir = Path(self.task_log).absolute()
-        log_dir.mkdir(parents=True, exist_ok=True)
-        return log_dir
+        path_ = self.task_dir / self.dirnames.logs
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_

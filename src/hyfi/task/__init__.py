@@ -1,8 +1,6 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from pydantic import model_validator
-
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.batch import BatchPathConfig
@@ -34,11 +32,6 @@ class TaskConfig(BaseConfig):
         "task_root": "set_task_root",
         # "project": "set_project",
     }
-
-    @model_validator(mode="after")  # type: ignore
-    def validate_model_config_after(cls, model: "TaskConfig"):
-        logger.info("TaskConfig - validate_model_config_after")
-        return model
 
     def set_task_root(self, val: Union[str, Path]):
         if (not self.task_root or self.task_root != val) and self.path:

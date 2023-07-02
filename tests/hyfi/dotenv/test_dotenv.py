@@ -7,7 +7,7 @@ from pprint import pprint
 def test_dotenv_config():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi"
     os.environ["HYFI_GLOBAL_ROOT"] = ENVs.expand_posix_vars("$WORKSPACE_ROOT")
-    os.environ["HYFI_VERBOSE"] = True
+    os.environ["HYFI_VERBOSE"] = "True"
     config = DotEnvConfig()
     print(type(config))
     pprint(config.model_dump())

@@ -9,6 +9,7 @@ def test_batch_task_config():
     config = BatchTaskConfig(
         task_name="demo2",
         batch_name="batch11",
+        verbose=True,
     )
     pprint(config.batch.model_dump())
     # Test that the default values are set correctly

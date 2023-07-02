@@ -13,4 +13,4 @@ num_workers: ${oc.select:..project.num_workers,1}
 config_yaml: config.yaml
 config_json: config.json
 config_dirname: configs
-verbose: ${oc.select:..project.verbose,false}
+verbose: ${oc.select:..verbose,false}

@@ -10,5 +10,6 @@ task_name: demo-task
 task_root: ${oc.select:project.path.project_workspace_root,workspace/tasks}
 autoload: false
 version: "0.0.0"
+verbose: ${oc.select:project.verbose,false}
 pipelines:
   - pipeline

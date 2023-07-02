@@ -6,6 +6,7 @@ from pprint import pprint
 def test_task_config():
     config = TaskConfig(
         task_name="demo2",
+        verbose=True,
     )
     pprint(config.model_dump())
     # Test that the default values are set correctly

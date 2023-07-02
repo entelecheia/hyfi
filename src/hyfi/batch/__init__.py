@@ -1,8 +1,8 @@
 import random
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
-from pydantic import validator
+from pydantic import FieldValidationInfo, field_validator
 
 from hyfi.composer import BaseConfig
 from hyfi.utils.logging import LOGGING
@@ -26,19 +26,22 @@ class BatchConfig(BaseConfig):
     device: str = "cpu"
     num_devices: int = 1
     num_workers: int = 1
-    config_yaml = "config.yaml"
-    config_json = "config.json"
-    config_dirname = "configs"
-    verbose: bool = False
+    config_yaml: str = "config.yaml"
+    config_json: str = "config.json"
+    config_dirname: str = "configs"
 
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
-        self.init_batch_num()
+    _property_set_methods_ = {
+        "batch_num": "set_batch_num",
+    }
 
-    def init_batch_num(self):
-        if self.batch_num is None:
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.set_batch_num(self.batch_num)
+
+    def set_batch_num(self, val):
+        if val is None:
             self.batch_num = -1
-        if self.batch_num < 0:
+        if val < 0:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
             self.batch_num = (
                 num_files - 1 if self.resume_latest and num_files > 0 else num_files
@@ -50,25 +53,25 @@ class BatchConfig(BaseConfig):
                 self.batch_num,
             )
 
-    @validator("seed")
-    def _validate_seed(cls, v, values):
-        if values["random_seed"] or v is None or v < 0:
+    @field_validator("batch_num", mode="before")
+    def _validate_batch_num(cls, v):
+        return v if v is not None else -1
+
+    @field_validator("seed")
+    def _validate_seed(cls, v, info: FieldValidationInfo):
+        if info.data["random_seed"] or v is None or v < 0:
             random.seed()
             seed = random.randint(0, 2**32 - 1)
-            if values.get("verbose"):
+            if info.data.get("verbose"):
                 logger.info(f"Setting seed to {seed}")
             return seed
         return v
 
-    @validator("batch_num", pre=True, always=True)
-    def _validate_batch_num(cls, v):
-        return v if v is not None else -1
-
-    @validator("output_suffix", pre=True, always=True)
+    @field_validator("output_suffix", mode="before")
     def _validate_output_suffix(cls, v):
         return v or ""
 
-    @validator("output_extention", pre=True, always=True)
+    @field_validator("output_extention", mode="before")
     def _validate_output_extention(cls, v):
         return v.strip(".") if v else ""
 

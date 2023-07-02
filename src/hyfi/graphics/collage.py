@@ -3,12 +3,12 @@ import io
 import logging
 import os
 import textwrap
-from typing import List
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from hyfi.graphics.utils import get_image_font, load_image, load_images, scale_image
 
@@ -23,10 +23,9 @@ class Collage(BaseModel):
     height: int
     ncols: int
     nrows: int
-    filepath: str = None
+    filepath: Optional[str] = None
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def collage(

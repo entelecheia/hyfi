@@ -1,6 +1,9 @@
 ---
 # This file defines the path variables used in the project.
 # internal paths for hyfi
+defaults:
+  - dirnames: __init__
+
 home: ${__home_path__:}
 hyfi: ${__hyfi_path__:}
 resources: ${alt:${oc.env:HYFI_RESOURCE_DIR,null},${.hyfi}/resources}
@@ -8,25 +11,6 @@ runtime: ${get_original_cwd:}
 # global paths
 global_hyfi_root: ${oc.select:..global_hyfi_root,${alt:${oc.env:HYFI_GLOBAL_ROOT,null},${__home_path__:}/.hyfi}}
 global_workspace_name: ${oc.select:..global_workspace_name,${alt:${oc.env:HYFI_GLOBAL_WORKSPACE_NAME,null},workspace}}
-global_workspace_root: ${.global_hyfi_root}/${.global_workspace_name}
-global_archive: ${.global_workspace_root}/archive
-global_datasets: ${.global_workspace_root}/datasets
-global_models: ${.global_workspace_root}/models
-global_modules: ${.global_workspace_root}/modules
-global_library: ${.global_workspace_root}/libs
-global_logs: ${.global_workspace_root}/logs
-global_cache: ${.global_workspace_root}/.cache
-global_tmp: ${.global_workspace_root}/.tmp
 # project specific paths
 project_root: ${oc.select:..project_root,${alt:${oc.env:HYFI_PROJECT_ROOT,null},${get_original_cwd:}}}
 project_workspace_name: ${oc.select:..project_workspace_name,${alt:${oc.env:HYFI_PROJECT_WORKSPACE_NAME,null},${.global_workspace_name}}}
-project_workspace_root: ${.project_root}/${.project_workspace_name}
-project_archive: ${.project_workspace_root}/archive
-project_datasets: ${.project_workspace_root}/datasets
-project_models: ${.project_workspace_root}/models
-project_modules: ${.project_workspace_root}/modules
-project_outputs: ${.project_workspace_root}/outputs
-project_logs: ${.project_workspace_root}/logs
-project_library: ${.project_workspace_root}/libs
-project_cache: ${.project_workspace_root}/.cache
-project_tmp: ${.project_workspace_root}/.tmp

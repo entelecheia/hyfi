@@ -17,16 +17,19 @@ class WorkflowConfig(BaseConfig):
     project: Optional[ProjectConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []
 
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
-        if "project" in self.__dict__ and self.__dict__["project"]:
-            self.project = ProjectConfig.parse_obj(self.__dict__["project"])
+    # def initialize_configs(self, **config_kwargs):
+    #     super().initialize_configs(**config_kwargs)
+    #     subconfigs = {
+    #         "project": ProjectConfig,
+    #     }
+    #     self.initialize_subconfigs(subconfigs, **config_kwargs)
 
-    def get_tasks(self) -> TaskConfig:
+    def get_tasks(self) -> Tasks:
         self.tasks = self.tasks or []
-        tasks: TaskConfig = [
-            TaskConfig(**self.__dict__[name])
+        config = self.__dict__
+        tasks: Tasks = [
+            TaskConfig(**config[name])
             for name in self.tasks
-            if name in self.__dict__ and isinstance(self.__dict__[name], dict)
+            if name in config and isinstance(config[name], dict)
         ]
         return tasks

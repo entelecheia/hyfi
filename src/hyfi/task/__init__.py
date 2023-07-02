@@ -88,9 +88,7 @@ class TaskConfig(BaseConfig):
 
     @property
     def workspace_dir(self) -> Path:
-        return (
-            Path(self.project.project_workspace_dir) if self.project else self.task_dir
-        )
+        return Path(self.project.workspace_dir) if self.project else self.task_dir
 
     @property
     def model_dir(self) -> Path:

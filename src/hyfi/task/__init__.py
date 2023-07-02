@@ -50,7 +50,7 @@ class TaskConfig(BaseConfig):
 
     def set_project(self, val):
         if isinstance(val, ProjectConfig):
-            self.task_root = str(val.project_workspace_dir / self.task_name)
+            self.task_root = str(val.workspace_dir / self.task_name)
 
     # def initialize_configs(self, **config_kwargs):
     #     super().initialize_configs(**config_kwargs)

@@ -52,10 +52,12 @@ class XC(Composer):
             config = {SpecialKeys.TARGET.value: config}
         else:
             config = XC.to_dict(config)
+        if not isinstance(config, dict):
+            raise ValueError("config must be a dict or a str")
         config[SpecialKeys.PARTIAL.value] = True
         rc_kwargs_ = config.pop(SpecialKeys.KWARGS, {})
         if rc_kwargs_ and kwargs:
-            kwargs = kwargs.update(rc_kwargs_)
+            kwargs.update(rc_kwargs_)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from hyfi.utils.logging import LOGGING
 
@@ -18,9 +18,7 @@ class AboutConfig(BaseModel):
     license: str = "MIT"
     version: str = "0.0.0"
 
-    class Config:
-        extra = "allow"
-        underscore_attrs_are_private = False
+    model_config = ConfigDict(extra="allow")  # type: ignore
 
     @property
     def config_module(self) -> str:

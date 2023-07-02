@@ -1,8 +1,12 @@
 import os
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Type, Union
 
-from pydantic import BaseSettings, Field, SecretStr, root_validator
-from pydantic.env_settings import SettingsSourceCallable
+from pydantic import Field, SecretStr, model_validator
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
@@ -42,37 +46,44 @@ class DotEnvConfig(BaseSettings):
     KMP_DUPLICATE_LIB_OK: Optional[str] = "True"
     TOKENIZERS_PARALLELISM: Optional[Union[bool, str]] = False
     # API Keys and Tokens
-    WANDB_API_KEY: Optional[SecretStr] = Field(exclude=True)
-    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr] = Field(exclude=True)
-    OPENAI_API_KEY: Optional[SecretStr] = Field(exclude=True)
-    ECOS_API_KEY: Optional[SecretStr] = Field(exclude=True)
-    FRED_API_KEY: Optional[SecretStr] = Field(exclude=True)
-    NASDAQ_API_KEY: Optional[SecretStr] = Field(exclude=True)
-    HF_USER_ACCESS_TOKEN: Optional[SecretStr] = Field(exclude=True)
-    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = Field(exclude=True)
+    WANDB_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
+    HUGGING_FACE_HUB_TOKEN: Optional[SecretStr] = Field(exclude=True, default="")
+    OPENAI_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
+    ECOS_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
+    FRED_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
+    NASDAQ_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
+    HF_USER_ACCESS_TOKEN: Optional[SecretStr] = Field(exclude=True, default="")
+    LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = Field(exclude=True, default="")
 
-    class Config:
-        env_prefix = ""
-        env_nested_delimiter = "__"
-        case_sentive = False
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        validate_assignment = True
-        extra = "allow"
+    model_config = SettingsConfigDict(
+        env_prefix="",
+        env_nested_delimiter="__",
+        case_sentive=False,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        validate_assignment=True,
+        extra="allow",
+    )  # type: ignore
 
-        @classmethod
-        def customise_sources(
-            cls,
-            init_settings: SettingsSourceCallable,
-            env_settings: SettingsSourceCallable,
-            file_secret_settings: SettingsSourceCallable,
-        ) -> Tuple[SettingsSourceCallable, ...]:
-            ENVs.load_dotenv()
-            return env_settings, file_secret_settings, init_settings
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        ENVs.load_dotenv()
+        return (
+            env_settings,
+            file_secret_settings,
+            init_settings,
+        )
 
-    @root_validator()
-    def check_and_set_values(cls, values):
-        return ENVs.check_and_set_osenv_vars(values)
+    @model_validator(mode="after")
+    def check_and_set_values(cls, m: "DotEnvConfig"):
+        return ENVs.check_and_set_osenv_vars(m.__dict__)
 
     @property
     def os(self):

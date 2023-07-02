@@ -48,15 +48,6 @@ class JobLibConfig(BaseConfig):
     def initialize(self):
         self.init_backend()
 
-    # def initialize_configs(self, **config_kwargs):
-    #     super().initialize_configs(**config_kwargs)
-    #     subconfigs = {
-    #         "batcher": BatcherConfig,
-    #         "distributed_framework": DistFramworkConfig,
-    #     }
-    #     self.initialize_subconfigs(subconfigs, **config_kwargs)
-    #     self.init_backend()
-
     def init_backend(
         self,
     ):

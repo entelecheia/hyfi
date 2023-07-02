@@ -58,13 +58,6 @@ class ProjectConfig(BaseConfig):
         self.initialize()
 
     def initialize(self):
-        # super().initialize_configs(**config_kwargs)
-
-        # subconfigs = {
-        #     "path": PathConfig,
-        #     "joblib": JobLibConfig,
-        # }
-        # self.initialize_subconfigs(subconfigs, **config_kwargs)
         self.dotenv = DotEnvConfig()
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name

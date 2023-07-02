@@ -17,13 +17,6 @@ class WorkflowConfig(BaseConfig):
     project: Optional[ProjectConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []
 
-    # def initialize_configs(self, **config_kwargs):
-    #     super().initialize_configs(**config_kwargs)
-    #     subconfigs = {
-    #         "project": ProjectConfig,
-    #     }
-    #     self.initialize_subconfigs(subconfigs, **config_kwargs)
-
     def get_tasks(self) -> Tasks:
         self.tasks = self.tasks or []
         config = self.__dict__

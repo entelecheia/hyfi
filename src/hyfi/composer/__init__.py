@@ -793,7 +793,6 @@ class BaseConfig(BaseModel):
     def __init__(self, **config_kwargs):
         logger.debug("init %s with %s", self.__class__.__name__, config_kwargs)
         super().__init__(**config_kwargs)
-        # self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
         """
@@ -838,71 +837,6 @@ class BaseConfig(BaseModel):
     def validate_model_config_after(cls, model):
         logger.debug("validate_model_config_after")
         return model
-
-    # def initialize_configs(
-    #     self,
-    #     **config_kwargs,
-    # ):
-    #     """
-    #     Initializes the config with the given config_name.
-    #     If there is no config group specified, the function returns without doing anything.
-    #     The function updates the object's dictionary with the given config data,
-    #     after excluding any attributes specified in the object's `exclude` list.
-
-    #     Args:
-    #         self: The object to update with the given config data.
-    #         **config_kwargs: The config data to update the object with.
-
-    #     Returns:
-    #         None
-    #     """
-    #     if not self._config_group_:
-    #         logger.debug("There is no config group specified.")
-    #         return
-    #     # Initialize the config with the given config_name.
-    #     logger.info(
-    #         "Initializing `%s` class with `%s` config in `%s` group.",
-    #         self.__class__.__name__,
-    #         self._config_name_,
-    #         self._config_group_,
-    #     )
-    #     config_kwargs = Composer(
-    #         config_group=f"{self._config_group_}={self._config_name_}",
-    #         config_data=config_kwargs,
-    #     ).config_as_dict
-    #     for name in self._exclude_:
-    #         if name in self.__dict__ and self.__dict__[name] is not None:
-    #             logger.info("Removing %s from config", name)
-    #             config_kwargs.pop(name, None)
-    #     self.__dict__.update(config_kwargs)
-
-    # def initialize_subconfigs(
-    #     self,
-    #     subconfigs: Dict[str, Any],
-    #     **config_kwargs,
-    # ):
-    #     """
-    #     Initializes subconfigs with the given config data.
-    #     The function updates the object's dictionary with the given config data,
-    #     after excluding any attributes specified in the object's `exclude` list.
-
-    #     Args:
-    #         subconfigs: A dictionary of subconfigs to initialize.
-    #         **config_kwargs: The config data to update the object with.
-
-    #     Returns:
-    #         None
-    #     """
-    #     for name, config in subconfigs.items():
-    #         if name in self.__dict__ and self.__dict__[name]:
-    #             cfg = self.__dict__[name]
-    #             if (
-    #                 name in config_kwargs
-    #                 and isinstance(config_kwargs[name], dict)
-    #                 and isinstance(cfg, dict)
-    #             ):
-    #                 cfg.update(config_kwargs[name])
-    #             setattr(self, name, config.model_validate(cfg))
 
     def export_config(
         self,

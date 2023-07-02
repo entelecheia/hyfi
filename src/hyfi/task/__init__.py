@@ -52,14 +52,6 @@ class TaskConfig(BaseConfig):
         if isinstance(val, ProjectConfig):
             self.task_root = str(val.workspace_dir / self.task_name)
 
-    # def initialize_configs(self, **config_kwargs):
-    #     super().initialize_configs(**config_kwargs)
-    #     subconfigs = {
-    #         "module": ModuleConfig,
-    #         "path": BatchPathConfig,
-    #     }
-    #     self.initialize_subconfigs(subconfigs, **config_kwargs)
-
     @property
     def config(self):
         return self.model_dump()

@@ -173,7 +173,7 @@ class BatchTaskConfig(TaskConfig):
             logger.info("Updating config with config_kwargs: %s", config_kwargs)
         cfg = XC.update(XC.to_dict(cfg), config_kwargs)
 
-        # self.initialize_configs(**cfg)
+        # TODO: initialize self with the config
 
         return self.model_dump()
 

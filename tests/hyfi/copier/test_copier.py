@@ -24,7 +24,7 @@ def test_files_are_copied(tmp_path):
     assert src_path.exists()
     dst_path = tmp_path / "output"
 
-    with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
+    with Copier(src_path=src_path, dst_path=dst_path, verbose=True) as worker:
         worker.run_copy()
 
     assert process_yaml_files(src_path, dst_path)
@@ -36,7 +36,7 @@ def test_cleanup_on_error(tmp_path):
     dst_path = tmp_path / "output"
 
     with pytest.raises(Exception):
-        with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
+        with Copier(src_path=src_path, dst_path=dst_path, verbose=True) as worker:
             worker.run_copy()
             raise RuntimeError("Simulated error")
 
@@ -50,7 +50,7 @@ def test_no_cleanup_on_error_if_dst_existed(tmp_path):
     dst_path.mkdir(parents=True, exist_ok=True)
 
     with pytest.raises(Exception):
-        with Copier(src_path=src_path, dst_path=dst_path, verbose=False) as worker:
+        with Copier(src_path=src_path, dst_path=dst_path, verbose=True) as worker:
             worker.run_copy()
             raise RuntimeError("Simulated error")
 

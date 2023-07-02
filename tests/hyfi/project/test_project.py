@@ -5,14 +5,17 @@ from pprint import pprint
 
 
 def test_project_config():
-    os.environ["HYFI_PROJECT_NAME"] = "hyfi"
-    config = ProjectConfig(project_name="test", project_root="./workspace/tmp", num_workers=2)
+    os.environ["HYFI_PROJECT_NAME"] = "hyfi-test"
+    config = ProjectConfig(
+        project_root="./workspace/tmp", num_workers=2
+    )
     # config.init_project()
-    pprint(config.dict())
-    assert config.project_name == "test"
-    assert Path(config.project_root).absolute() == (Path.cwd() / "workspace/tmp").absolute()
+    pprint(config.model_dump())
+    assert config.project_name == "hyfi-test"
+    print(config.workspace_dir)
+    assert config.workspace_dir == Path("workspace/tmp/workspace")
     assert config.num_workers == 2
-    # pprint(config.path.dict())
+    # pprint(config.path.model_dump())
 
 
 if __name__ == "__main__":

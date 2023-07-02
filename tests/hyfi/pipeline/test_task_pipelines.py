@@ -9,9 +9,9 @@ def test_task_config():
     )
 
     task = TaskConfig(_config_name_="__test__")
-    HyFI.print(task.dict())
+    HyFI.print(task.model_dump())
     HyFI.run_task(task, project=project)
-    HyFI.print(task.dict())
+    HyFI.print(task.model_dump())
 
 
 if __name__ == "__main__":

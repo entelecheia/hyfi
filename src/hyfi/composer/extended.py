@@ -94,7 +94,7 @@ class XC(Composer):
             if _target_ is a callable: the return value of the call
         """
         verbose = config.get("verbose", False)
-        if not __global_config__.__initilized__:
+        if not __global_config__._initilized_:
             __global_config__.initialize()
         if not XC.is_instantiatable(config):
             if verbose:

@@ -26,7 +26,7 @@ import os
 from dataclasses import field
 from pathlib import Path
 from shutil import copy2, rmtree
-from typing import List
+from typing import List, Optional, Union
 
 from pathspec import PathSpec
 from pydantic.dataclasses import dataclass
@@ -77,8 +77,8 @@ class Copier:
 
     src_path: Path = field(default=Path("conf"))
     dst_path: Path = field(default=Path("."))
-    filetypes: List = field(default_factory=list)
-    exclude: List = field(default_factory=list)
+    filetypes: Optional[Union[List, str]] = field(default=None)
+    exclude: Optional[Union[List, str]] = field(default=None)
     skip_if_exists: bool = False
     cleanup_on_error: bool = True
     overwrite: bool = False

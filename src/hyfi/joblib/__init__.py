@@ -1,7 +1,7 @@
 from typing import Callable, Mapping, Optional, Sequence, Union
 
 import pandas as pd
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 from tqdm.auto import tqdm
 
 from hyfi import __global__
@@ -42,20 +42,20 @@ class JobLibConfig(BaseConfig):
     num_workers: int = 1
     distributed_framework: DistFramworkConfig = DistFramworkConfig()
     batcher: BatcherConfig = BatcherConfig()
-    __initilized__: bool = False
-    __batcher_instance__: Batcher = None
+    _initilized_: bool = PrivateAttr(False)
+    _batcher_instance_: Optional[Batcher] = PrivateAttr(None)
 
-    class Config:
-        extra = "allow"
-        underscore_attrs_are_private = True
-
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
-        self.batcher = BatcherConfig.parse_obj(self.__dict__["batcher"])
-        self.distributed_framework = DistFramworkConfig.parse_obj(
-            self.__dict__["distributed_framework"]
-        )
+    def initialize(self):
         self.init_backend()
+
+    # def initialize_configs(self, **config_kwargs):
+    #     super().initialize_configs(**config_kwargs)
+    #     subconfigs = {
+    #         "batcher": BatcherConfig,
+    #         "distributed_framework": DistFramworkConfig,
+    #     }
+    #     self.initialize_subconfigs(subconfigs, **config_kwargs)
+    #     self.init_backend()
 
     def init_backend(
         self,
@@ -81,19 +81,19 @@ class JobLibConfig(BaseConfig):
                 ray.init(**ray_cfg)
                 backend_handle = ray
 
-            __global__.__batcher_instance__ = batcher.Batcher(
-                backend_handle=backend_handle, **self.batcher.dict()
+            __global__._batcher_instance_ = batcher.Batcher(
+                backend_handle=backend_handle, **self.batcher.model_dump()
             )
-            self.__batcher_instance__ = __global__.__batcher_instance__
-            logger.debug("initialized batcher with %s", __global__.__batcher_instance__)
-        self.__initilized__ = True
+            self._batcher_instance_ = __global__._batcher_instance_
+            logger.debug("initialized batcher with %s", __global__._batcher_instance_)
+        self._initilized_ = True
 
     def stop_backend(self):
         """Stop the backend for joblib"""
         backend = self.distributed_framework.backend
-        if __global__.__batcher_instance__:
+        if __global__._batcher_instance_:
             logger.debug("stopping batcher")
-            del __global__.__batcher_instance__
+            del __global__._batcher_instance_
 
         logger.debug("stopping distributed framework")
         if self.distributed_framework.initialize:
@@ -133,7 +133,7 @@ class BATCHER:
         num_workers: Optional[int] = None,
         **kwargs,
     ):
-        batcher_instance = JobLibConfig().__batcher_instance__
+        batcher_instance = JobLibConfig()._batcher_instance_
         if use_batcher and batcher_instance is not None:
             batcher_minibatch_size = batcher_instance.minibatch_size
             if minibatch_size is None:

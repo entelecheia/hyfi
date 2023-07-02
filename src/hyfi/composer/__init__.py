@@ -833,10 +833,10 @@ class BaseConfig(BaseModel):
         ).config_as_dict
         return data
 
-    @model_validator(mode="after")  # type: ignore
-    def validate_model_config_after(cls, model):
-        logger.debug("validate_model_config_after")
-        return model
+    # @model_validator(mode="after")  # type: ignore
+    # def validate_model_config_after(cls, model):
+    #     logger.debug("validate_model_config_after")
+    #     return model
 
     def export_config(
         self,

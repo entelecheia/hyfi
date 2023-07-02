@@ -1,0 +1,11 @@
+# directory names
+inputs: inputs
+outputs: outputs
+archive: archive
+datasets: datasets
+models: models
+modules: modules
+library: libs
+logs: logs
+cache: .cache
+tmp: tmp

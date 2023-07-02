@@ -120,12 +120,13 @@ class XC(Composer):
 
         """
         try:
+            target_string = ""
             if XC.is_config(obj):
                 if SpecialKeys.TARGET in obj:
                     target_string = obj[SpecialKeys.TARGET]
             elif isinstance(obj, str):
                 target_string = obj
-            return PKGs.getsource(target_string)
+            return PKGs.getsource(target_string) if target_string else ""
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""

@@ -17,35 +17,35 @@ class BatchConfig(BaseConfig):
 
     Attributes:
     -----------
-    batch_name : str
+    batch_name: str
         Name of the batch.
-    batch_num : Optional[int]
+    batch_num: Optional[int]
         Number of the batch. If None, it will be set to -1.
-    batch_root : str
+    batch_root: str
         Root directory for the batch.
-    output_suffix : str
+    output_suffix: str
         Suffix to be added to the output file name.
-    output_extention : str
+    output_extention: str
         Extension of the output file.
-    random_seed : bool
+    random_seed: bool
         Whether to use a random seed for the batch.
-    seed : int
+    seed: int
         Seed to be used for the batch. If random_seed is True or seed is None or negative, a random seed will be generated.
-    resume_run : bool
+    resume_run: bool
         Whether to resume a previous run of the batch.
-    resume_latest : bool
+    resume_latest: bool
         Whether to resume the latest run of the batch.
-    device : str
+    device: str
         Device to be used for the batch.
-    num_devices : int
+    num_devices: int
         Number of devices to be used for the batch.
-    num_workers : int
+    num_workers: int
         Number of workers to be used for the batch.
-    config_yaml : str
+    config_yaml: str
         Name of the YAML configuration file.
-    config_json : str
+    config_json: str
         Name of the JSON configuration file.
-    config_dirname : str
+    config_dirname: str
         Name of the directory for the configuration files.
     """
 
@@ -78,7 +78,7 @@ class BatchConfig(BaseConfig):
 
         Parameters:
         -----------
-        **data : dict
+        **data: dict
             Dictionary containing the configuration data.
         """
         super().__init__(**data)
@@ -90,7 +90,7 @@ class BatchConfig(BaseConfig):
 
         Parameters:
         -----------
-        val : int
+        val: int
             Batch number.
         """
         if val is None:
@@ -114,7 +114,7 @@ class BatchConfig(BaseConfig):
 
         Parameters:
         -----------
-        v : int
+        v: int
             Batch number.
 
         Returns:
@@ -131,9 +131,9 @@ class BatchConfig(BaseConfig):
 
         Parameters:
         -----------
-        v : int
+        v: int
             Seed.
-        info : FieldValidationInfo
+        info: FieldValidationInfo
             Validation information.
 
         Returns:
@@ -156,7 +156,7 @@ class BatchConfig(BaseConfig):
 
         Parameters:
         -----------
-        v : str
+        v: str
             Output suffix.
 
         Returns:

@@ -68,6 +68,12 @@ optional = true
 [tool.poetry.group.p_tqdm.dependencies]
 p-tqdm = "^1.4.0"
 
+[tool.poetry.group.numba]
+optional = true
+
+[tool.poetry.group.numba.dependencies]
+numba = "^0.57.1"
+
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "ipywidgets"]
 

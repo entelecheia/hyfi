@@ -157,8 +157,8 @@ class PKGs:
         try:
             mod_name, object_name = obj.rsplit(".", 1)
             mod = importlib.import_module(mod_name)
-            obj = getattr(mod, object_name)
-            return inspect.getsource(obj)
+            obj_ = getattr(mod, object_name)
+            return inspect.getsource(obj_)
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""

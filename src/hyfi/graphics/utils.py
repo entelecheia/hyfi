@@ -3,7 +3,7 @@ import io
 import os
 import platform
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,11 +18,11 @@ logger = LOGGING.getLogger(__name__)
 
 def scale_image(
     image: Image.Image,
-    max_width: int = 0,
-    max_height: int = 0,
-    max_pixels: int = 0,
-    scale: float = 1.0,
-    resize_to_multiple_of: int = 8,
+    max_width: Optional[int] = 0,
+    max_height: Optional[int] = 0,
+    max_pixels: Optional[int] = 0,
+    scale: Optional[float] = 1.0,
+    resize_to_multiple_of: Optional[int] = 0,
     resample: int = Image.LANCZOS,
 ) -> Image.Image:
     """Scale image to have at most `max_pixels` pixels."""
@@ -31,6 +31,9 @@ def scale_image(
 
     w, h = image.size
 
+    max_width = max_width or 0
+    max_height = max_height or 0
+    max_pixels = max_pixels or 0
     if max_width <= 0 and max_height > 0:
         max_width = int(w * max_height / h)
     elif max_height <= 0 and max_width > 0:
@@ -38,9 +41,8 @@ def scale_image(
 
     if max_width > 0 and max_height > 0:
         max_pixels = max_width * max_height
-    if max_pixels > 0:
-        scale = np.sqrt(max_pixels / (w * h))
 
+    scale = np.sqrt(max_pixels / (w * h)) if max_pixels > 0 else scale or 1.0
     max_width = int(w * scale)
     max_height = int(h * scale)
     if resize_to_multiple_of > 0:
@@ -53,12 +55,12 @@ def scale_image(
 
 
 def load_image(
-    image_or_uri,
-    max_width: int = 0,
-    max_height: int = 0,
-    max_pixels: int = 0,
-    scale: float = 1.0,
-    resize_to_multiple_of: int = 0,
+    image_or_uri: Union[str, Image.Image],
+    max_width: Optional[int] = 0,
+    max_height: Optional[int] = 0,
+    max_pixels: Optional[int] = 0,
+    scale: Optional[float] = 1.0,
+    resize_to_multiple_of: Optional[int] = 0,
     crop_box=None,
     mode="RGB",
     **kwargs,
@@ -92,12 +94,12 @@ def load_image(
 
 
 def load_images(
-    images_or_uris: List[str],
-    max_width: int = 0,
-    max_height: int = 0,
-    max_pixels: int = 0,
-    scale: float = 1.0,
-    resize_to_multiple_of: int = 0,
+    images_or_uris: List[Union[str, Image.Image]],
+    max_width: Optional[int] = 0,
+    max_height: Optional[int] = 0,
+    max_pixels: Optional[int] = 0,
+    scale: Optional[float] = 1.0,
+    resize_to_multiple_of: Optional[int] = 0,
     crop_to_min_size: bool = False,
     mode: str = "RGB",
     **kwargs,
@@ -127,15 +129,19 @@ def load_images(
     return imgs
 
 
-def get_image_font(fontname: str = "", fontsize: int = 12, lang: str = "en"):
+def get_image_font(
+    fontname: Optional[str] = None,
+    fontsize: int = 12,
+    lang: str = "en",
+):
     """Get font for PIL image."""
     fontname, fontpath = get_plot_font(set_font_for_matplot=False, fontname=fontname)
     return ImageFont.truetype(fontpath, fontsize) if fontpath else None
 
 
 def get_default_system_font(
-    fontname: str = "",
-    fontpath: str = "",
+    fontname: Optional[str] = None,
+    fontpath: Optional[str] = None,
     lang: str = "ko",
     verbose: bool = False,
 ):
@@ -164,8 +170,8 @@ def get_default_system_font(
 
 def get_plot_font(
     set_font_for_matplot: bool = True,
-    fontpath: str = "",
-    fontname: str = "",
+    fontpath: Optional[str] = None,
+    fontname: Optional[str] = None,
     lang: str = "en",
     verbose: bool = False,
 ):

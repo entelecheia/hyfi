@@ -1,9 +1,9 @@
 """Batcher class for handling parallel jobs on minibatches"""
 import contextlib
 import multiprocessing
-import random
 from contextlib import closing
 from math import ceil
+from typing import Any, Callable, List, Optional
 
 import pandas as pd
 import scipy.sparse as ssp
@@ -38,10 +38,6 @@ class Batcher(object):
 
                     - 'joblib' Joblib fork of multiprocessing library
 
-                    - 'spark' PySpark local or distributed execution
-
-                    - 'dask' Dask Distributed local or distributed execution
-
                     - 'ray' Ray local or distributed execution
 
     task_num_cpus: int
@@ -60,16 +56,14 @@ class Batcher(object):
 
     def __init__(
         self,
-        procs=0,
-        minibatch_size=20000,
-        backend_handle=None,
-        backend="multiprocessing",
-        task_num_cpus=1,
-        task_num_gpus=0,
-        verbose=0,
+        procs: Optional[int] = 0,
+        minibatch_size: int = 20000,
+        backend_handle: Any = None,
+        backend: str = "multiprocessing",
+        task_num_cpus: int = 1,
+        task_num_gpus: int = 0,
+        verbose: int = 0,
     ):
-        if isinstance(procs, str):
-            procs = int(procs)
         if procs == 0 or procs is None:
             procs = multiprocessing.cpu_count()
         self.procs = procs
@@ -80,32 +74,18 @@ class Batcher(object):
         self.task_num_cpus = task_num_cpus
         self.task_num_gpus = task_num_gpus
 
-    def list2indexedrdd(self, lst, minibatch_size=0):
-        if minibatch_size == 0:
-            minibatch_size = self.minibatch_size
-        start = 0
-        len_data = len(lst)
-        batch_count = 0
-        batches = []
-        while start < len_data:
-            batches.append([batch_count] + [lst[start : start + minibatch_size]])
-            start += minibatch_size
-            batch_count += 1
-        return self.backend_handle.parallelize(batches)
-
-    def indexedrdd2list(self, indexedrdd, sort=True):
-        batches = indexedrdd.collect()
-        if sort:
-            batches = sorted(batches)
-        return [batch[1] for batch in batches]
-
-    def split_batches(self, data, minibatch_size=None, backend=None):
+    def split_batches(
+        self,
+        data: Any,
+        minibatch_size: Optional[int] = None,
+        backend: Any = None,
+    ):
         """Split data into minibatches with a specified size
 
         Parameters
         ----------
         data: iterable and indexable
-                List-like data to be split into batches. Includes backend_handleipy matrices and Pandas DataFrames.
+                List-like data to be split into batches. Includes numpy matrices and Pandas DataFrames.
 
         minibatch_size: int
                 Expected sizes of minibatches split from the data.
@@ -126,8 +106,7 @@ class Batcher(object):
             len_data = len(data)
         else:
             len_data = data.shape[0]
-        if backend == "spark":
-            return self.list2indexedrdd(data, minibatch_size)
+
         if isinstance(data, pd.DataFrame):
             data = [
                 data.iloc[x * minibatch_size : (x + 1) * minibatch_size]
@@ -147,19 +126,14 @@ class Batcher(object):
                 data[x * minibatch_size : min(len_data, (x + 1) * minibatch_size)]
                 for x in range(int(ceil(len_data / minibatch_size)))
             ]
-        # if backend=="dask":  return self.backend_handle.scatter(data)
         return data
 
-    def collect_batches(self, data, backend=None, sort=True):
+    def collect_batches(self, data: Any, backend: Any = None):
         if backend is None:
             backend = self.backend
-        if backend == "spark":
-            data = self.indexedrdd2list(data, sort)
-        if backend == "dask":
-            data = self.backend_handle.gather(data)
         return data
 
-    def merge_batches(self, data):
+    def merge_batches(self, data: Any):
         """Merge a list of data minibatches into one single instance representing the data
 
         Parameters
@@ -172,27 +146,27 @@ class Batcher(object):
         (anonymous): sparse matrix | pd.DataFrame | list
                 Single complete list-like data merged from given batches
         """
-        if isinstance(data[0], ssp.csr_matrix):
-            return ssp.vstack(data)
+        if isinstance(data[0], ssp.csr_matrix):  # type: ignore
+            return ssp.vstack(data)  # type: ignore
         if isinstance(data[0], (pd.DataFrame, pd.Series)):
             return pd.concat(data)
         return [item for sublist in data for item in sublist]
 
     def process_batches(
         self,
-        task,
-        data,
-        args,
-        backend=None,
-        backend_handle=None,
-        input_split=False,
-        merge_output=True,
-        minibatch_size=None,
-        procs=None,
-        task_num_cpus=None,
-        task_num_gpus=None,
-        verbose=None,
-        description="batch_apply",
+        task: Callable,
+        data: Any,
+        args: List[Any],
+        backend: Optional[str] = None,
+        backend_handle: Any = None,
+        input_split: bool = False,
+        merge_output: bool = True,
+        minibatch_size: Optional[int] = None,
+        procs: Optional[int] = None,
+        task_num_cpus: Optional[int] = None,
+        task_num_gpus: Optional[int] = None,
+        verbose: Optional[int] = None,
+        description: str = "batch_apply",
     ):
         """
 
@@ -233,10 +207,6 @@ class Batcher(object):
 
                         - 'joblib' Joblib fork of multiprocessing library
 
-                        - 'spark' PySpark local or distributed execution
-
-                        - 'dask' Dask Distributed local or distributed execution
-
                         - 'ray' Ray local or distributed execution
 
         backend_handle: object
@@ -271,31 +241,37 @@ class Batcher(object):
             task_num_gpus = self.task_num_gpus
         if verbose is None:
             verbose = self.verbose
-        if verbose > 1:
-            logger.info(
-                f" backend: {backend}  minibatch_size: {self.minibatch_size}  procs: {procs}  input_split: {input_split}  merge_output: {merge_output}  len(data): {len(data)} len(args): {len(args)}"
-            )
+        # if verbose > 1:
+        logger.debug(
+            " backend: %s  minibatch_size: %s  procs: %s  input_split: %s  merge_output: %s  len(data): %s len(args): %s",
+            backend,
+            self.minibatch_size,
+            procs,
+            input_split,
+            merge_output,
+            len(data),
+            len(args),
+        )
 
-        if verbose > 10:
-            logger.info(
-                f" len(data): {len(data)} len(args): {len(args)} [type(x) for x in data]: {[type(x) for x in data]} [type(x) for x in args]: {[type(x) for x in args]}"
-            )
+        # if verbose > 10:
+        logger.debug(
+            " len(data): %s len(args): %s [type(x) for x in data]: %s [type(x) for x in args]: %s",
+            len(data),
+            len(args),
+            [type(x) for x in data],
+            [type(x) for x in args],
+        )
 
         if not (input_split):
-            if backend == "spark":
-                paral_params = self.split_batches(data, minibatch_size, backend="spark")
-            else:
-                paral_params = [
-                    [data_batch] + args
-                    for data_batch in self.split_batches(data, minibatch_size)
-                ]
+            paral_params = [
+                [data_batch] + args
+                for data_batch in self.split_batches(data, minibatch_size)
+            ]
         else:
-            if backend != "spark":
-                paral_params = [[data_batch] + args for data_batch in data]
-            else:
-                paral_params = data
-        if verbose > 10:
-            print(" Start task, len(paral_params)", len(paral_params))
+            paral_params = [[data_batch] + args for data_batch in data]
+        if verbose > 1:
+            logger.debug("Start task, len(paral_params): %s", len(paral_params))
+        results = []
         if backend == "serial":
             results = [
                 task(minibatch) for minibatch in tqdm(paral_params, desc=description)
@@ -310,7 +286,7 @@ class Batcher(object):
                     pool.join()
                     results = results.get()
             elif backend == "threading":
-                with closing(multiprocessing.dummy.Pool(max(1, procs))) as pool:
+                with closing(multiprocessing.Pool(max(1, procs))) as pool:
                     results = pool.map(task, paral_params)
                     pool.close()
                     pool.join()
@@ -338,12 +314,6 @@ class Batcher(object):
                     self.backend_handle.submit(task, params)
                     for params in tqdm(paral_params, desc=description)
                 ]
-            elif backend == "spark":
-
-                def apply_func_to_indexedrdd(batch):
-                    return [batch[0]] + [task([batch[1]] + args)]
-
-                results = paral_params.map(apply_func_to_indexedrdd)
             elif backend == "ray":
 
                 @self.backend_handle.remote(
@@ -359,7 +329,7 @@ class Batcher(object):
                 ]
                 uncompleted = results
                 pbar.update(len(results))
-                while len(paral_params) > 0:
+                while paral_params:
                     # More tasks than available processors. Queue the task calls
                     done, remaining = self.backend_handle.wait(
                         uncompleted, timeout=60, fetch_local=False
@@ -377,56 +347,21 @@ class Batcher(object):
                 results = [self.backend_handle.get(x) for x in results]
                 pbar.update(1)
                 pbar.close()
-            # ppft currently not supported. Supporting arbitrary tasks requires modifications to passed arguments
-            # elif backend == "ppft":
-            #   jobs = [self.backend_handle.submit(task, (x,), (), ()) for x in paral_params]
-            # 	results = [x() for x in jobs]
 
         if merge_output:
             return self.merge_batches(self.collect_batches(results, backend=backend))
-        if verbose > 2:
-            logger.info(
-                f" Task: {task}  backend: {backend}  backend_handle: {backend_handle}  completed"
-            )
+        logger.debug(
+            "Task: %s  backend: %s  backend_handle: %s completed",
+            task,
+            backend,
+            backend_handle,
+        )
         return results
-
-    def shuffle_batch(self, texts, labels=None, seed=None):
-        """Shuffle a list of samples, as well as the labels if specified
-
-        Parameters
-        ----------
-        texts: list-like
-                List of samples to shuffle
-
-        labels: list-like (optional)
-                List of labels to shuffle, should be correspondent to the samples given
-
-        seed: int
-                The seed of the pseudo random number generator to use for shuffling
-
-        Returns
-        -------
-        texts: list
-                List of shuffled samples (texts parameters)
-
-        labels: list (optional)
-                List of shuffled labels. This will only be returned when non-None
-                labels is passed
-        """
-        if seed is not None:
-            random.seed(seed)
-        index_shuf = list(range(len(texts)))
-        random.shuffle(index_shuf)
-        texts = [texts[x] for x in index_shuf]
-        if labels is None:
-            return texts
-        labels = [labels[x] for x in index_shuf]
-        return texts, labels
 
     def __getstate__(self):
         return dict(self.__dict__.items())
 
-    def __setstate__(self, params):
+    def __setstate__(self, params: dict):
         for key in params:
             setattr(self, key, params[key])
 

@@ -56,15 +56,7 @@ class JobLibConfig(BaseConfig):
             backend_handle = None
             backend = self.distributed_framework.backend
 
-            if backend == "dask":
-                from dask.distributed import Client  # type: ignore
-
-                dask_cfg = {"n_workers": self.distributed_framework.num_workers}
-                logger.debug(f"initializing dask client with {dask_cfg}")
-                client = Client(**dask_cfg)
-                logger.debug(client)
-
-            elif backend == "ray":
+            if backend == "ray":
                 import ray  # type: ignore
 
                 ray_cfg = {"num_cpus": self.distributed_framework.num_workers}
@@ -87,26 +79,15 @@ class JobLibConfig(BaseConfig):
             del __global__._batcher_instance_
 
         logger.debug("stopping distributed framework")
-        if self.distributed_framework.initialize:
-            if backend == "ray":
-                try:
-                    import ray  # type: ignore
+        if self.distributed_framework.initialize and backend == "ray":
+            try:
+                import ray  # type: ignore
 
-                    if ray.is_initialized():
-                        ray.shutdown()
-                        logger.debug("shutting down ray")
-                except ImportError:
-                    logger.warning("ray is not installed")
-
-            elif backend == "dask":
-                try:
-                    from dask.distributed import Client  # type: ignore
-
-                    if Client.initialized():
-                        Client.close()
-                        logger.debug("shutting down dask client")
-                except ImportError:
-                    logger.warning("dask is not installed")
+                if ray.is_initialized():
+                    ray.shutdown()
+                    logger.debug("shutting down ray")
+            except ImportError:
+                logger.warning("ray is not installed")
 
 
 class BATCHER:

@@ -1,16 +1,34 @@
 #!python
 from __future__ import absolute_import, division, print_function, with_statement
 
+from typing import Any, Callable, Mapping, Optional, Sequence
+
 import pandas as pd
 
 from .batcher import Batcher
 
-# from tqdm.auto import tqdm
-
 
 def decorator_apply(
-    func, batcher=None, cache=None, vectorize=None, description="batch_apply"
+    func: Callable,
+    batcher: Optional[Batcher] = None,
+    cache: Optional[int] = None,
+    vectorize: Optional[Callable] = None,
+    description: str = "batch_apply",
 ):
+    """
+    Decorator that applies a function to each row of a minibatch.
+
+    Args:
+        func: The function to apply.
+        batcher: The batcher to use for processing the minibatches.
+        cache: The maximum size of the LRU cache for the function.
+        vectorize: The function to use for vectorization.
+        description: The description of the apply operation.
+
+    Returns:
+        The wrapper function.
+    """
+
     def wrapper_func(*args, **kwargs):
         return Apply(
             func,
@@ -26,36 +44,75 @@ def decorator_apply(
 
 
 def batch_transform(args):
-    f = args[1]
-    f_args = args[2]
-    f_kwargs = args[3]
-    if args[5] is not None:
+    """
+    Applies a function to each row of a minibatch.
+
+    Args:
+        args: A tuple containing the following elements:
+            - data: The data to apply the function to.
+            - func: The function to apply.
+            - func_args: The arguments to pass to the function.
+            - func_kwargs: The keyword arguments to pass to the function.
+            - cache_maxsize: The maximum size of the LRU cache for the function.
+            - vectorize_func: The function to use for vectorization.
+
+    Returns:
+        The result of applying the function to the data.
+    """
+    data = args[0]
+    func = args[1]
+    func_args = args[2]
+    func_kwargs = args[3]
+    cache_maxsize = args[4]
+    vectorize_func = args[5]
+    if vectorize_func is not None:
         from numba import vectorize
 
-        return vectorize(args[5], fastmath=True)(f)(*zip(*args[0]))
-    if args[4] is not None:
+        return vectorize(vectorize_func, fastmath=True)(func)(*zip(*data))
+    if cache_maxsize is not None:
         from functools import lru_cache
 
-        f = lru_cache(maxsize=args[4])(f)
+        func = lru_cache(maxsize=cache_maxsize)(func)
     # Applying per DataFrame row is very slow, use ApplyBatch instead
-    if isinstance(args[0], pd.DataFrame):
-        return args[0].apply(lambda x: f(x, *f_args, **f_kwargs), axis=1)
-    elif isinstance(args[0], pd.Series):
-        return args[0].apply(lambda x: f(x, *f_args, **f_kwargs))
-    return [f(row, *f_args, **f_kwargs) for row in args[0]]
+    if isinstance(data, pd.DataFrame):
+        return data.apply(lambda x: func(x, *func_args, **func_kwargs), axis=1)
+    elif isinstance(data, pd.Series):
+        return data.apply(lambda x: func(x, *func_args, **func_kwargs))
+    return [func(row, *func_args, **func_kwargs) for row in data]
 
 
 class Apply(object):
-    # Applies a function to each row of a minibatch
+    """
+    Applies a function to each row of a minibatch.
+
+    Args:
+        function: The function to apply.
+        batcher: The batcher to use for processing the minibatches.
+        args: The arguments to pass to the function.
+        kwargs: The keyword arguments to pass to the function.
+        cache: The maximum size of the LRU cache for the function.
+        vectorize: The function to use for vectorization.
+        description: The description of the apply operation.
+
+    Attributes:
+        batcher: The batcher to use for processing the minibatches.
+        function: The function to apply.
+        args: The arguments to pass to the function.
+        kwargs: The keyword arguments to pass to the function.
+        cache: The maximum size of the LRU cache for the function.
+        vectorize: The function to use for vectorization.
+        description: The description of the apply operation.
+    """
+
     def __init__(
         self,
-        function,
-        batcher=None,
-        args=None,
-        kwargs=None,
-        cache=None,
-        vectorize=None,
-        description="batch_apply",
+        function: Callable,
+        batcher: Optional[Batcher] = None,
+        args: Optional[Sequence] = None,
+        kwargs: Optional[Mapping] = None,
+        cache: Optional[int] = None,
+        vectorize: Optional[Callable] = None,
+        description: str = "batch_apply",
     ):
         if args is None:
             args = []
@@ -69,27 +126,62 @@ class Apply(object):
         self.vectorize = [vectorize]
         self.description = description
 
-    def fit(self, data, input_split=False, batcher=None):
+    def fit(self, **kwargs):
+        """
+        Fit the apply operation.
+
+        Args:
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            The apply operation.
+        """
         return self
 
     def fit_transform(
         self,
-        data,
-        input_split=False,
-        merge_output=True,
-        minibatch_size=None,
-        batcher=None,
+        data: Any,
+        input_split: bool = False,
+        merge_output: bool = True,
+        minibatch_size: Optional[int] = None,
+        batcher: Optional[Batcher] = None,
     ):
+        """
+        Fit and transform the apply operation.
+
+        Args:
+            data: The data to apply the function to.
+            input_split: Whether to split the input data into minibatches.
+            merge_output: Whether to merge the output of the minibatches.
+            minibatch_size: The size of the minibatches.
+            batcher: The batcher to use for processing the minibatches.
+
+        Returns:
+            The result of applying the function to the data.
+        """
         return self.transform(data, input_split, merge_output, minibatch_size, batcher)
 
     def transform(
         self,
-        data,
-        input_split=False,
-        merge_output=True,
-        minibatch_size=None,
-        batcher=None,
+        data: Any,
+        input_split: bool = False,
+        merge_output: bool = True,
+        minibatch_size: Optional[int] = None,
+        batcher: Optional[Batcher] = None,
     ):
+        """
+        Transform the apply operation.
+
+        Args:
+            data: The data to apply the function to.
+            input_split: Whether to split the input data into minibatches.
+            merge_output: Whether to merge the output of the minibatches.
+            minibatch_size: The size of the minibatches.
+            batcher: The batcher to use for processing the minibatches.
+
+        Returns:
+            The result of applying the function to the data.
+        """
         if batcher is None:
             batcher = self.batcher
         return batcher.process_batches(
@@ -101,10 +193,3 @@ class Apply(object):
             minibatch_size=minibatch_size,
             description=self.description,
         )
-
-
-# import wordbatch.batcher as batcher
-# b= batcher.Batcher(minibatch_size=2)#, method="serial")
-# import numpy as np
-# a= Apply(np.power, b, [2],{})
-# print(a.transform([1, 2, 3, 4]))

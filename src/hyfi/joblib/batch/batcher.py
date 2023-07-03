@@ -308,12 +308,6 @@ class Batcher(object):
                 from p_tqdm import p_map
 
                 results = p_map(task, paral_params, num_cpus=procs)
-            elif backend == "dask":
-                # if not (input_split):  data= self.scatter(data)
-                results = [
-                    self.backend_handle.submit(task, params)
-                    for params in tqdm(paral_params, desc=description)
-                ]
             elif backend == "ray":
 
                 @self.backend_handle.remote(

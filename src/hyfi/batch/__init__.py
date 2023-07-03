@@ -1,4 +1,23 @@
-""" Batch configuration class. """
+"""This module contains the BatchConfig class, which is used to configure batch processing jobs.
+
+The BatchConfig class inherits from the BaseConfig class and defines a set of configuration options
+that can be used to customize batch processing jobs. These options include the batch name, batch number,
+batch root directory, output suffix, output extension, random seed, device, number of devices, number of
+workers, and configuration file names and directories.
+
+The BatchConfig class also defines a set of methods for setting and validating configuration options,
+including set_batch_num() and _validate_batch_num() for the batch number, and _validate_seed() for the
+random seed.
+
+Example usage:
+
+    from hyfi.batch import BatchConfig
+
+    config = BatchConfig(batch_name="my_batch", batch_num=1, batch_root="data", output_suffix="_out",
+                         output_extension=".txt", random_seed=True, seed=42, resume_run=False,
+                         resume_latest=False, device="cuda", num_devices=2, num_workers=4,
+                         config_yaml="config.yaml", config_json="config.json", config_dirname="configs")
+"""
 import random
 from pathlib import Path
 from typing import Optional
@@ -17,35 +36,35 @@ class BatchConfig(BaseConfig):
 
     Attributes:
     -----------
-    batch_name: str
+    batch_name (str):
         Name of the batch.
-    batch_num: Optional[int]
+    batch_num (Optional[int]):
         Number of the batch. If None, it will be set to -1.
-    batch_root: str
+    batch_root (str):
         Root directory for the batch.
-    output_suffix: str
+    output_suffix (str):
         Suffix to be added to the output file name.
-    output_extention: str
+    output_extention (str):
         Extension of the output file.
-    random_seed: bool
+    random_seed (bool):
         Whether to use a random seed for the batch.
-    seed: int
+    seed (int):
         Seed to be used for the batch. If random_seed is True or seed is None or negative, a random seed will be generated.
-    resume_run: bool
+    resume_run (bool):
         Whether to resume a previous run of the batch.
-    resume_latest: bool
+    resume_latest (bool):
         Whether to resume the latest run of the batch.
-    device: str
+    device (str):
         Device to be used for the batch.
-    num_devices: int
+    num_devices (int):
         Number of devices to be used for the batch.
-    num_workers: int
+    num_workers (int):
         Number of workers to be used for the batch.
-    config_yaml: str
+    config_yaml (str):
         Name of the YAML configuration file.
-    config_json: str
+    config_json (str):
         Name of the JSON configuration file.
-    config_dirname: str
+    config_dirname (str):
         Name of the directory for the configuration files.
     """
 
@@ -76,10 +95,9 @@ class BatchConfig(BaseConfig):
         """
         Initializes the BatchConfig object.
 
-        Parameters:
-        -----------
-        **data: dict
-            Dictionary containing the configuration data.
+        Args:
+            **data (dict):
+                Dictionary containing the configuration data.
         """
         super().__init__(**data)
         self.set_batch_num(self.batch_num)
@@ -88,10 +106,9 @@ class BatchConfig(BaseConfig):
         """
         Sets the batch number.
 
-        Parameters:
-        -----------
-        val: int
-            Batch number.
+        Args:
+            val (int):
+                Batch number.
         """
         if val is None:
             self.batch_num = -1
@@ -112,15 +129,13 @@ class BatchConfig(BaseConfig):
         """
         Validates the batch number.
 
-        Parameters:
-        -----------
-        v: int
-            Batch number.
+        Args:
+            v (int):
+                Batch number.
 
         Returns:
-        --------
-        int
-            Validated batch number.
+            int:
+                Validated batch number.
         """
         return v if v is not None else -1
 
@@ -129,17 +144,15 @@ class BatchConfig(BaseConfig):
         """
         Validates the seed.
 
-        Parameters:
-        -----------
-        v: int
-            Seed.
-        info: FieldValidationInfo
-            Validation information.
+        Args:
+            v (int):
+                Seed.
+            info (FieldValidationInfo):
+                Validation information.
 
         Returns:
-        --------
-        int
-            Validated seed.
+            int:
+                Validated seed.
         """
         if info.data["random_seed"] or v is None or v < 0:
             random.seed()
@@ -154,15 +167,13 @@ class BatchConfig(BaseConfig):
         """
         Validates the output suffix.
 
-        Parameters:
-        -----------
-        v: str
-            Output suffix.
+        Args:
+            v (str):
+                Output suffix.
 
         Returns:
-        --------
-        str
-            Validated output suffix.
+            str:
+                Validated output suffix.
         """
         return v or ""
 
@@ -176,9 +187,8 @@ class BatchConfig(BaseConfig):
         Root directory for the batch.
 
         Returns:
-        --------
-        Path
-            Root directory for the batch.
+            Path:
+                Root directory for the batch.
         """
         return Path(self.batch_root)
 
@@ -188,9 +198,8 @@ class BatchConfig(BaseConfig):
         Directory for the batch.
 
         Returns:
-        --------
-        Path
-            Directory for the batch.
+            Path:
+                Directory for the batch.
         """
         self.root_dir.mkdir(parents=True, exist_ok=True)
         return self.root_dir
@@ -201,9 +210,8 @@ class BatchConfig(BaseConfig):
         Directory for the configuration files.
 
         Returns:
-        --------
-        Path
-            Directory for the configuration files.
+            Path:
+                Directory for the configuration files.
         """
         config_dir = self.batch_dir / self.config_dirname
         config_dir.mkdir(parents=True, exist_ok=True)
@@ -215,9 +223,8 @@ class BatchConfig(BaseConfig):
         Prefix for the output file name.
 
         Returns:
-        --------
-        str
-            Prefix for the output file name.
+            str:
+                Prefix for the output file name.
         """
         return f"{self.batch_name}({self.batch_num})"
 
@@ -227,9 +234,8 @@ class BatchConfig(BaseConfig):
         Output file name.
 
         Returns:
-        --------
-        str
-            Output file name.
+            str:
+                Output file name.
         """
         if self.output_suffix:
             return f"{self.file_prefix}_{self.output_suffix}.{self.output_extention}"
@@ -242,9 +248,8 @@ class BatchConfig(BaseConfig):
         Name of the YAML configuration file.
 
         Returns:
-        --------
-        str
-            Name of the YAML configuration file.
+            str:
+                Name of the YAML configuration file.
         """
         return f"{self.file_prefix}_{self.config_yaml}"
 
@@ -254,9 +259,8 @@ class BatchConfig(BaseConfig):
         Name of the JSON configuration file.
 
         Returns:
-        --------
-        str
-            Name of the JSON configuration file.
+            str
+                Name of the JSON configuration file.
         """
         return f"{self.file_prefix}_{self.config_json}"
 
@@ -266,9 +270,8 @@ class BatchConfig(BaseConfig):
         File pattern for the configuration files.
 
         Returns:
-        --------
-        str
-            File pattern for the configuration files.
+            str:
+                File pattern for the configuration files.
         """
         return f"{self.batch_name}(*)_{self.config_yaml}"
 
@@ -278,9 +281,8 @@ class BatchConfig(BaseConfig):
         Path to the YAML configuration file.
 
         Returns:
-        --------
-        Path
-            Path to the YAML configuration file.
+            Path:
+                Path to the YAML configuration file.
         """
         return self.config_dir / self.config_filename
 
@@ -290,8 +292,7 @@ class BatchConfig(BaseConfig):
         Path to the JSON configuration file.
 
         Returns:
-        --------
-        Path
-            Path to the JSON configuration file.
+            Path:
+                Path to the JSON configuration file.
         """
         return self.config_dir / self.config_jsonfile

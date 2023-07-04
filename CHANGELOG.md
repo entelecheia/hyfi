@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.0.1 (2023-07-04)
+
+### Fix
+
+* **workflow:** Fix task configuration parsing ([`20a582c`](https://github.com/entelecheia/hyfi/commit/20a582c1d77ac63a630b1dd8c43697ce5d491d6b))
+* **pipeline:** Improve pipeline configuration handling ([`af30e4d`](https://github.com/entelecheia/hyfi/commit/af30e4d6603db4951d124a9481037abea25462e2))
+* **dotenv:** Update check_and_set_values method ([`7a94d24`](https://github.com/entelecheia/hyfi/commit/7a94d2487c5fabc8b22efdeae99edda29819b37d))
+
 ## v1.0.0 (2023-07-04)
 
 ### Feature

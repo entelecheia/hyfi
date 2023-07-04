@@ -2,6 +2,7 @@ from pathlib import Path
 
 from hyfi.__global__ import __about__
 from hyfi.composer import BaseConfig
+from hyfi.path.dirnames import DirnamesConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -19,56 +20,259 @@ class PathConfig(BaseConfig):
     # global paths
     global_hyfi_root: str = ""
     global_workspace_name: str = "workspace"
-    global_workspace_root: str = ""
-    global_archive: str = ""
-    global_datasets: str = ""
-    global_models: str = ""
-    global_modules: str = ""
-    global_library: str = ""
-    global_cache: str = ""
-    global_tmp: str = ""
     # project specific paths
     project_root: str = ""
     project_workspace_name: str = "workspace"
-    project_workspace_root: str = ""
-    project_archive: str = ""
-    project_datasets: str = ""
-    project_models: str = ""
-    project_modules: str = ""
-    project_outputs: str = ""
-    project_logs: str = ""
-    project_library: str = ""
-    project_cache: str = ""
-    project_tmp: str = ""
+    dirnames: DirnamesConfig = DirnamesConfig()
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
+    @property
+    def global_root_dir(self) -> Path:
+        """
+        Create and return the path to the hyfi directory.
 
-    def initialize_configs(self, **config_kwargs):
-        # Initialize the config with the given config_name.
-        super().initialize_configs(**config_kwargs)
+        Returns:
+            path to the hyfi directory
+        """
+        path_ = Path(self.global_hyfi_root)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_workspace_dir(self) -> Path:
+        """
+        Create and return the path to the glboal workspace directory.
+
+        Returns:
+            path to the global workspace directory
+        """
+        path_ = self.global_root_dir / self.global_workspace_name
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_archive_dir(self) -> Path:
+        """
+        Create and return the path to the global archive directory.
+
+        Returns:
+            path to the global archive directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.archive
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def glboal_dataset_dir(self) -> Path:
+        """
+        Create and return the path to the global datasets directory.
+
+        Returns:
+            path to the global datasets directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.datasets
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_model_dir(self) -> Path:
+        """
+        Create and return the path to the global models directory.
+
+        Returns:
+            path to the global models directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.models
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def glboal_module_dir(self) -> Path:
+        """
+        Create and return the path to the global modules directory.
+
+        Returns:
+            path to the global modules directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.modules
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_library_dir(self) -> Path:
+        """
+        Create and return the path to the global library directory.
+
+        Returns:
+            path to the global library directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.library
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def glboal_log_dir(self) -> Path:
+        """
+        Create and return the path to the global log directory.
+
+        Returns:
+            path to the global log directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.logs
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_cache_dir(self) -> Path:
+        """
+        Create and return the path to the global cache directory.
+
+        Returns:
+            path to the global cache directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.cache
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def global_tmp_dir(self) -> Path:
+        """
+        Create and return the path to the global tmp directory.
+
+        Returns:
+            path to the global tmp directory
+        """
+        path_ = self.global_workspace_dir / self.dirnames.tmp
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def root_dir(self) -> Path:
+        """
+        Create and return the path to the project directory.
+
+        Returns:
+            path to the project directory
+        """
+        path_ = Path(self.project_root)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def workspace_dir(self) -> Path:
+        """
+        Create and return the path to the project workspace directory.
+
+        Returns:
+            path to the project workspace directory
+        """
+        path_ = self.root_dir / self.project_workspace_name
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def output_dir(self) -> Path:
+        """
+        Create and return the path to the project output directory.
+
+        Returns:
+            path to the project output directory
+        """
+        path_ = self.workspace_dir / self.dirnames.outputs
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def archive_dir(self) -> Path:
+        """
+        Create and return the path to the project archive directory.
+
+        Returns:
+            path to the project archive directory
+        """
+        path_ = self.workspace_dir / self.dirnames.archive
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def dataset_dir(self) -> Path:
+        """
+        Create and return the path to the project dataset directory.
+
+        Returns:
+            path to the project dataset directory
+        """
+        path_ = self.workspace_dir / self.dirnames.datasets
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def model_dir(self) -> Path:
+        """
+        Create and return the path to the project model directory.
+
+        Returns:
+            path to the project model directory
+        """
+        path_ = self.workspace_dir / self.dirnames.models
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def module_dir(self) -> Path:
+        """
+        Create and return the path to the project module directory.
+
+        Returns:
+            path to the project module directory
+        """
+        path_ = self.workspace_dir / self.dirnames.modules
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def library_dir(self) -> Path:
+        """
+        Create and return the path to the project library directory.
+
+        Returns:
+            path to the project library directory
+        """
+        path_ = self.workspace_dir / self.dirnames.library
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def log_dir(self):
         """
-        Create and return the path to the log directory. This is a convenience method for use in unit tests that want to ensure that the log directory exists and is accessible to the user.
-
+        Create and return the path to the log directory.
 
         Returns:
-                absolute path to the log directory for the project ( including parent directories
+            path to the log directory for the project
         """
-        Path(self.project_logs).mkdir(parents=True, exist_ok=True)
-        return Path(self.project_logs).absolute()
+        path_ = self.workspace_dir / self.dirnames.logs
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def cache_dir(self):
         """
-        Create and return the directory where cache files are stored. This is useful for debugging and to ensure that we don't accidentally delete the cache files when there are too many files in the cache.
-
+        Create and return the directory where cache files are stored.
 
         Returns:
-                absolute path to the cache directory for this test run
+            path to the cache directory
         """
-        Path(self.global_cache).mkdir(parents=True, exist_ok=True)
-        return Path(self.global_cache).absolute()
+        path_ = self.workspace_dir / self.dirnames.cache
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def tmp_dir(self):
+        """
+        Create and return the directory where temporary files are stored.
+
+        Returns:
+            path to the tmp directory
+        """
+        path_ = self.workspace_dir / self.dirnames.tmp
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_

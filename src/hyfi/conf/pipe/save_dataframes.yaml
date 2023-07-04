@@ -1,8 +1,8 @@
 defaults:
   - __dataframe_external_funcs__
 
-_run_: hyfi.main.HyFI.save_dataframes
-_with_:
+run: hyfi.main.HyFI.save_dataframes
+run_with:
   data:
   data_file:
   data_dir:

@@ -14,8 +14,18 @@ logger = LOGGING.getLogger(__name__)
 
 
 def general_instance_methods(obj: Any, config: PipeConfig):
+    """
+    Applies a general instance method to an object.
+
+    Args:
+        obj (Any): The object to apply the method to.
+        config (PipeConfig): The configuration for the pipeline.
+
+    Returns:
+        Any: The object with the method applied.
+    """
     with elapsed_timer(format_time=True) as elapsed:
-        obj = getattr(obj, config._run_)(**config.kwargs)
+        obj = getattr(obj, config.run)(**config.kwargs)
 
         if config.verbose:
             logger.info(" >> elapsed time: %s", elapsed())
@@ -23,6 +33,16 @@ def general_instance_methods(obj: Any, config: PipeConfig):
 
 
 def general_external_funcs(obj: Any, config: PipeConfig):
+    """
+    Applies a general external function to an object.
+
+    Args:
+        obj (Any): The object to apply the function to.
+        config (PipeConfig): The configuration for the pipeline.
+
+    Returns:
+        Any: The object with the function applied.
+    """
     _fn = config.get_run_func()
     if _fn is None:
         logger.warning("No function found for %s", config)
@@ -48,14 +68,24 @@ def general_external_funcs(obj: Any, config: PipeConfig):
 
 
 def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
-    config = DataframePipeConfig(**config.dict())
+    """
+    Applies a dataframe instance method to a dataframe.
+
+    Args:
+        data (pd.DataFrame): The dataframe to apply the method to.
+        config (DataframePipeConfig): The configuration for the pipeline.
+
+    Returns:
+        pd.DataFrame: The dataframe with the method applied.
+    """
+    config = DataframePipeConfig(**config.model_dump())
     with elapsed_timer(format_time=True) as elapsed:
         if config.columns:
             for col_name in config.columns:
                 logger.info("processing column: %s", col_name)
-                data[col_name] = getattr(data[col_name], config._run_)(**config.kwargs)
+                data[col_name] = getattr(data[col_name], config.run)(**config.kwargs)
         else:
-            data = getattr(data, config._run_)(**config.kwargs)
+            data = getattr(data, config.run)(**config.kwargs)
 
         if config.verbose:
             logger.info(" >> elapsed time: %s", elapsed())
@@ -64,7 +94,17 @@ def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
 
 
 def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipeConfig):
-    config = DataframePipeConfig(**config.dict())
+    """
+    Applies a dataframe external function to a dataframe.
+
+    Args:
+        data (pd.DataFrame): The dataframe to apply the function to.
+        config (DataframePipeConfig): The configuration for the pipeline.
+
+    Returns:
+        pd.DataFrame: The dataframe with the function applied.
+    """
+    config = DataframePipeConfig(**config.model_dump())
     _fn = config.get_run_func()
     if _fn is None:
         logger.warning("No function found for %s", config)

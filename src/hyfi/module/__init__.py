@@ -1,3 +1,5 @@
+from typing import Any, List, Optional
+
 from pydantic import BaseModel
 
 from hyfi.utils.logging import LOGGING
@@ -9,4 +11,4 @@ class ModuleConfig(BaseModel):
     """Module Configuration"""
 
     library_dir: str = ""
-    modules: list = None
+    modules: Optional[List[Any]] = None

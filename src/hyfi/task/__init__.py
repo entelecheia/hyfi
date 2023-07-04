@@ -16,7 +16,7 @@ class TaskConfig(BaseConfig):
     _config_group_: str = "task"
 
     task_name: str = "demo-task"
-    task_root: str = "tmp/task"
+    task_root: str = "workspace/tasks"
     autoload: bool = False
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None
@@ -24,48 +24,42 @@ class TaskConfig(BaseConfig):
     project: Optional[ProjectConfig] = None
     pipelines: Optional[List[Union[str, Dict]]] = []
 
-    class Config:
-        exclude = {
-            "__data__",
-            "project",
-        }
-        property_set_methods = {
-            "task_name": "set_task_name",
-            "task_root": "set_task_root",
-            "project": "set_project",
-        }
+    _exclude_ = {
+        "project",
+    }
+    _property_set_methods_ = {
+        "task_name": "set_task_name",
+        "task_root": "set_task_root",
+        # "project": "set_project",
+    }
 
     def set_task_root(self, val: Union[str, Path]):
-        if not self.task_root or self.task_root != val:
-            self.initialize_configs(task_root=val)
+        if (not self.task_root or self.task_root != val) and self.path:
+            self.path.task_root = str(val)
 
     def set_task_name(self, val):
-        if not self.task_name or self.task_name != val:
-            self.initialize_configs(task_name=val)
+        if (not self.task_name or self.task_name != val) and self.path:
+            self.path.task_name = val
 
     def set_project(self, val):
         if isinstance(val, ProjectConfig):
-            self.task_root = str(val.project_workspace_dir / self.task_name)
-
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
-        subconfigs = {
-            "module": ModuleConfig,
-            "path": BatchPathConfig,
-        }
-        self.initialize_subconfigs(subconfigs, **config_kwargs)
+            self.task_root = str(val.workspace_dir / self.task_name)
 
     @property
     def config(self):
-        return self.dict()
+        return self.model_dump()
 
     @property
     def root_dir(self) -> Path:
         return self.path.root_dir if self.path else Path(self.task_root)
 
     @property
+    def task_dir(self) -> Path:
+        return self.path.task_dir if self.path else self.root_dir / self.task_name
+
+    @property
     def output_dir(self) -> Path:
-        return self.path.output_dir if self.path else self.root_dir / "outputs"
+        return self.path.output_dir if self.path else self.task_dir / "outputs"
 
     @property
     def project_name(self) -> str:
@@ -75,17 +69,15 @@ class TaskConfig(BaseConfig):
 
     @property
     def project_dir(self) -> Path:
-        return Path(self.project.project_root) if self.project else self.root_dir
+        return Path(self.project.project_root) if self.project else self.task_dir
 
     @property
     def workspace_dir(self) -> Path:
-        return (
-            Path(self.project.project_workspace_dir) if self.project else self.root_dir
-        )
+        return Path(self.project.workspace_dir) if self.project else self.task_dir
 
     @property
     def model_dir(self) -> Path:
-        return self.path.model_dir if self.path else self.root_dir / "models"
+        return self.path.model_dir if self.path else self.task_dir / "models"
 
     @property
     def log_dir(self) -> Path:
@@ -94,7 +86,7 @@ class TaskConfig(BaseConfig):
             if self.project
             else self.path.log_dir
             if self.path
-            else self.root_dir / "logs"
+            else self.task_dir / "logs"
         )
 
     @property
@@ -104,20 +96,16 @@ class TaskConfig(BaseConfig):
             if self.project
             else self.path.cache_dir
             if self.path
-            else self.root_dir / "cache"
+            else self.task_dir / "cache"
         )
 
     @property
     def library_dir(self) -> Path:
-        return self.path.library_dir if self.path else self.root_dir / "library"
+        return self.path.library_dir if self.path else self.task_dir / "library"
 
     @property
     def dataset_dir(self):
-        return self.path.dataset_dir if self.path else self.root_dir / "datasets"
-
-    @property
-    def verbose(self) -> bool:
-        return bool(self.project.verbose) if self.project else False
+        return self.path.dataset_dir if self.path else self.task_dir / "datasets"
 
     def print_config(self):
         Composer.print(self.config)

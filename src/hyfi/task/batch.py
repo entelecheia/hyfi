@@ -1,3 +1,6 @@
+"""
+Configuration class for batch tasks. Inherits from TaskConfig.
+"""
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
@@ -10,32 +13,57 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
+    """
+    Configuration class for batch tasks. Inherits from TaskConfig.
+
+    Attributes:
+        _config_name_ (str): The name of the configuration.
+        _config_group_ (str): The configuration group.
+        batch_name (str): The name of the batch.
+        batch (BatchConfig): The batch configuration.
+        _property_set_methods_ (Dict[str, str]): A dictionary of property set methods.
+    """
+
     _config_name_: str = "__batch__"
     _config_group_: str = "task"
 
     batch_name: str = "demo"
     batch: BatchConfig = None  # type: ignore
 
-    class Config:
-        property_set_methods = {
-            "task_name": "set_task_name",
-            "task_root": "set_task_root",
-            "batch_name": "set_batch_name",
-            "batch_num": "set_batch_num",
-        }
+    _property_set_methods_ = {
+        "task_name": "set_task_name",
+        "task_root": "set_task_root",
+        "batch_name": "set_batch_name",
+        "batch_num": "set_batch_num",
+    }
 
     def set_batch_name(self, val):
-        self.initialize_configs(batch_name=val)
+        if not self.batch_name or self.batch_name != val:
+            if self.path:
+                self.path.batch_name = val
+            if self.batch:
+                self.batch.batch_name = val
 
     def set_batch_num(self, val):
-        self.batch.batch_num = val
+        if self.batch:
+            self.batch.batch_num = val
 
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
-        subconfigs = {
-            "batch": BatchConfig,
-        }
-        self.initialize_subconfigs(subconfigs, **config_kwargs)
+    def set_task_name(self, val):
+        if not self.task_name or self.task_name != val:
+            if self.path:
+                self.path.task_name = val
+            if self.batch:
+                self.batch.batch_root = str(self.output_dir)
+
+    def set_task_root(self, val: Union[str, Path]):
+        if not self.task_root or self.task_root != val:
+            if self.path:
+                self.path.task_root = str(val)
+            if self.batch:
+                self.batch.batch_root = str(self.output_dir)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         logger.info(
             "Initalized batch: %s(%s) in %s",
             self.batch_name,
@@ -159,9 +187,9 @@ class BatchTaskConfig(TaskConfig):
             logger.info("Updating config with config_kwargs: %s", config_kwargs)
         cfg = XC.update(XC.to_dict(cfg), config_kwargs)
 
-        self.initialize_configs(**cfg)
+        # TODO: initialize self with the config
 
-        return self.__dict__
+        return self.model_dump()
 
     def print_config(
         self,
@@ -169,4 +197,4 @@ class BatchTaskConfig(TaskConfig):
         batch_num: Optional[int] = None,
     ):
         self.load_config(batch_name, batch_num)
-        XC.print(self.dict())
+        XC.print(self.model_dump())

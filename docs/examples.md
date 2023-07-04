@@ -44,8 +44,8 @@ ws = HyFI.init_project(
     verbose=True,
 )
 
-print("project_dir:", ws.project_dir)
-print("project_workspace_dir:", ws.project_workspace_dir)
+print("Project directory:", prj.root_dir)
+print("Workspace directory:", prj.workspace_dir)
 ```
 
 ## Compose Configuration

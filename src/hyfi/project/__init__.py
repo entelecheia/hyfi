@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Union
 
-from pydantic import validator
+from pydantic import field_validator
 
 from hyfi.__global__ import __about__
 from hyfi.composer import BaseConfig
@@ -36,17 +36,13 @@ class ProjectConfig(BaseConfig):
     joblib: JobLibConfig = None  # type: ignore
     path: PathConfig = None  # type: ignore
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
-
-    @validator("project_name", allow_reuse=True)
+    @field_validator("project_name")
     def _validate_project_name(cls, v):
         if v is None:
             raise ValueError("Project name must be specified.")
         return v
 
-    @validator("verbose", allow_reuse=True)
+    @field_validator("verbose")
     def _validate_verbose(cls, v):
         if isinstance(v, str):
             if v.lower() in {"true", "1"}:
@@ -57,12 +53,12 @@ class ProjectConfig(BaseConfig):
                 raise ValueError("verbose must be a boolean or a string of 0 or 1")
         return v
 
-    def initialize_configs(self, **config_kwargs):
-        super().initialize_configs(**config_kwargs)
+    def __init__(self, **config_kwargs):
+        super().__init__(**config_kwargs)
+        self.initialize()
 
+    def initialize(self):
         self.dotenv = DotEnvConfig()
-        self.path = PathConfig.parse_obj(self.__dict__["path"])
-        self.joblib = JobLibConfig.parse_obj(self.__dict__["joblib"])
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
         self.dotenv.HYFI_PROJECT_DESC = self.project_description
@@ -133,17 +129,25 @@ class ProjectConfig(BaseConfig):
         return os.environ
 
     @property
-    def project_workspace_dir(self):
-        if self.path is None:
-            raise ValueError("Path object not initialized")
-        _p = Path(self.path.project_workspace_root)
-        _p.mkdir(parents=True, exist_ok=True)
-        return _p.absolute()
+    def root_dir(self) -> Path:
+        return self.path.root_dir if self.path else Path(self.project_root)
 
     @property
-    def project_dir(self):
-        if self.path is None:
-            raise ValueError("Path object not initialized")
-        _p = Path(self.path.project_root)
-        _p.mkdir(parents=True, exist_ok=True)
-        return _p.absolute()
+    def workspace_dir(self):
+        return (
+            self.path.workspace_dir
+            if self.path
+            else self.root_dir / self.project_workspace_name
+        )
+
+    @property
+    def global_root_dir(self):
+        return self.path.global_root_dir if self.path else Path(self.global_hyfi_root)
+
+    @property
+    def global_workspace_dir(self):
+        return (
+            self.path.global_workspace_dir
+            if self.path
+            else self.global_root_dir / self.global_workspace_name
+        )

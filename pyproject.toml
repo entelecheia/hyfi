@@ -17,7 +17,7 @@ hyfi-run = 'hyfi.__click__:cli'
 python = "^3.8.1, <3.12"
 hydra-core = "^1.3.2"
 hydra-colorlog = "^1.2.0"
-pydantic = "^1.10.7"
+pydantic = "^2.0"
 chardet = "<=5.1.0"
 pandas = ">=1.5.3,<=2.0.2"
 scipy = "^1.10.1"
@@ -38,6 +38,7 @@ click = "<=8.1.3"
 pyarrow = "<=12.0.1"
 datasets = "<=2.13.1"
 joblib = "<=1.3.0"
+pydantic-settings = "^2.0.0"
 
 [tool.poetry.group.ipython]
 optional = true
@@ -48,6 +49,30 @@ optional = true
 ipython = "<=8.12.2"
 ipython-autotime = "^0.3.1"
 ipywidgets = "^8.0.6"
+
+[tool.poetry.group.loky]
+optional = true
+
+[tool.poetry.group.loky.dependencies]
+loky = "^3.4.1"
+
+[tool.poetry.group.ray]
+optional = true
+
+[tool.poetry.group.ray.dependencies]
+ray = "^2.5.1"
+
+[tool.poetry.group.p_tqdm]
+optional = true
+
+[tool.poetry.group.p_tqdm.dependencies]
+p-tqdm = "^1.4.0"
+
+[tool.poetry.group.numba]
+optional = true
+
+[tool.poetry.group.numba.dependencies]
+numba = "^0.57.1"
 
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "ipywidgets"]
@@ -65,6 +90,8 @@ flake8-pyproject = "^1.2.2"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 ipykernel = "^6.22.0"
+flaky = "^3.7.0"
+responses = "^0.23.1"
 
 [tool.poe]
 include = [".tasks.toml", ".tasks-extra.toml"]

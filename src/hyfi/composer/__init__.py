@@ -4,13 +4,14 @@
 import collections.abc
 import json
 import os
+import re
 from enum import Enum
 from pathlib import Path
 from typing import IO, Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 import hydra
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, PrivateAttr, model_validator
 
 from hyfi.__global__ import (
     __about__,
@@ -62,16 +63,16 @@ class Composer(BaseModel):
     global_package: bool = False
     verbose: bool = False
 
-    __cfg__: DictConfig = None  # type: ignore
+    _cfg_: DictConfig = PrivateAttr({})
 
-    class Config:
-        arbitrary_types_allowed = True
-        validate_assignment = True
-        underscore_attrs_are_private = True
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+    )  # type: ignore
 
     def __init__(self, **args):
         super().__init__(**args)
-        self.__cfg__ = self.compose(
+        self._cfg_ = self.compose(
             config_group=self.config_group,
             overrides=self.overrides,
             config_data=self.config_data,
@@ -113,7 +114,7 @@ class Composer(BaseModel):
         Returns:
             A config object or a dictionary with the composed config
         """
-        self.__cfg__ = Composer._compose(
+        self._cfg_ = Composer._compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
@@ -124,21 +125,21 @@ class Composer(BaseModel):
             global_package=global_package,
             verbose=verbose,
         )
-        return self.__cfg__
+        return self._cfg_
 
     @property
     def config(self) -> DictConfig:
         """
         Returns the composed configuration.
         """
-        return self.__cfg__
+        return self._cfg_
 
     @property
     def config_as_dict(self) -> Dict:
         """
         Return the configuration as a dictionary.
         """
-        return Composer.to_dict(self.__cfg__)
+        return Composer.to_dict(self._cfg_)
 
     def __call__(
         self,
@@ -165,40 +166,31 @@ class Composer(BaseModel):
         )
 
     def __getitem__(self, key):
-        return self.__cfg__[key]
-
-    def __getattr__(self, key):
-        return getattr(self.__cfg__, key)
-
-    def __repr__(self):
-        return repr(self.__cfg__)
-
-    def __str__(self):
-        return str(self.__cfg__)
+        return self._cfg_[key]
 
     def __iter__(self):
-        return iter(self.__cfg__)
+        return iter(self._cfg_)
 
     def __len__(self):
-        return len(self.__cfg__)
+        return len(self._cfg_)
 
     def __contains__(self, key):
-        return key in self.__cfg__
+        return key in self._cfg_
 
     def __eq__(self, other):
-        return self.__cfg__ == other
+        return self._cfg_ == other
 
     def __ne__(self, other):
-        return self.__cfg__ != other
+        return self._cfg_ != other
 
     def __bool__(self):
-        return bool(self.__cfg__)
+        return bool(self._cfg_)
 
     def __hash__(self):
-        return hash(self.__cfg__)
+        return hash(self._cfg_)
 
     def __getstate__(self):
-        return self.__cfg__
+        return self._cfg_
 
     @staticmethod
     def select(
@@ -607,6 +599,26 @@ class Composer(BaseModel):
         return _new_dict
 
     @staticmethod
+    def replace_special_keys(_dict: Mapping[str, Any]) -> Mapping:
+        """
+        Replace special keys in a dictionary.
+
+        Args:
+            _dict (Mapping[str, Any]): The dictionary to update.
+
+        Returns:
+            Mapping: The updated dictionary.
+        """
+        _new_dict = {}
+        for k, v in _dict.items():
+            key = Composer.generate_alias_for_special_keys(k)
+            if isinstance(v, collections.abc.Mapping):
+                _new_dict[key] = Composer.replace_special_keys(v)
+            else:
+                _new_dict[key] = v
+        return _new_dict
+
+    @staticmethod
     def merge(
         *configs: Union[
             DictConfig,
@@ -736,6 +748,28 @@ class Composer(BaseModel):
             return {k: v for k, v in _kwargs.items() if k in args}
         return _kwargs
 
+    @staticmethod
+    def generate_alias_for_special_keys(key: str) -> str:
+        """
+        Generate an alias for special keys.
+        _with_ -> run_with
+        _pipe_ -> run_pipe
+        _run_ -> run
+
+        Args:
+            key (str): The special key to generate an alias for.
+
+        Returns:
+            str: The alias for the special key.
+        """
+        # replace the exact `with`, `pipe` with `run_with`, `run_pipe`
+        key_ = re.sub(r"^with$", "run_with", key)
+        # replace the prefix `_` with `run_`
+        key_ = re.sub(r"^_with_$", "run_with", key_)
+        key_ = re.sub(r"^_pipe_$", "pipe_target", key_)
+        key_ = re.sub(r"^_run_$", "run", key_)
+        return key_
+
 
 class BaseConfig(BaseModel):
     """
@@ -746,18 +780,19 @@ class BaseConfig(BaseModel):
     _config_group_: str = ""
     verbose: bool = False
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
-        validate_assignment = True
-        underscore_attrs_are_private = False
-        exclude: Set[str] = set()
-        property_set_methods: Dict[str, str] = {}
+    _init_args_: Dict[str, Any] = {}
+    _exclude_: Set[str] = set()
+    _property_set_methods_: Dict[str, str] = {}
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        extra="allow",
+        validate_assignment=False,
+    )  # type: ignore
 
     def __init__(self, **config_kwargs):
-        config_kwargs = Composer.to_dict(config_kwargs)
+        logger.debug("init %s with %s", self.__class__.__name__, config_kwargs)
         super().__init__(**config_kwargs)
-        self.initialize_configs(**config_kwargs)
 
     def __setattr__(self, key, val):
         """
@@ -767,77 +802,41 @@ class BaseConfig(BaseModel):
             key (str): The name of the attribute to set.
             val (Any): The value to set the attribute to.
         """
-        if method := self.__config__.property_set_methods.get(key):  # type: ignore
+        if method := self._property_set_methods_.get(key):  # type: ignore
             logger.info(
-                "Setting %s to %s", key, val if isinstance(val, str) else type(val)
+                "Setting %s to %s",
+                key,
+                val if isinstance(val, (str, int)) else type(val),
             )
             getattr(self, method)(val)
         super().__setattr__(key, val)
 
-    def initialize_configs(
-        self,
-        **config_kwargs,
-    ):
-        """
-        Initializes the config with the given config_name.
-        If there is no config group specified, the function returns without doing anything.
-        The function updates the object's dictionary with the given config data,
-        after excluding any attributes specified in the object's `exclude` list.
-
-        Args:
-            self: The object to update with the given config data.
-            **config_kwargs: The config data to update the object with.
-
-        Returns:
-            None
-        """
-        if not self._config_group_:
+    @model_validator(mode="before")
+    def validate_model_config_before(cls, data):
+        logger.debug("validate_model_config_before: %s", data)
+        _config_name_ = data.get("_config_name_", getattr(cls._config_name_, "default", "__init__"))  # type: ignore
+        _config_group_ = data.get("_config_group_", getattr(cls._config_group_, "default"))  # type: ignore
+        _class_name_ = cls.__name__  # type: ignore
+        if not _config_group_:
             logger.debug("There is no config group specified.")
-            return
+            return data
         # Initialize the config with the given config_name.
-        logger.debug(
-            "Initializing `%s` class with `%s` config in `%s` group.",
-            self.__class__.__name__,
-            self._config_name_,
-            self._config_group_,
+        logger.info(
+            "Composing `%s` class with `%s` config in `%s` group.",
+            _class_name_,
+            _config_name_,
+            _config_group_,
         )
-        config_kwargs = Composer(
-            config_group=f"{self._config_group_}={self._config_name_}",
-            config_data=config_kwargs,
+        data = Composer(
+            config_group=f"{_config_group_}={_config_name_}",
+            config_data=data,
         ).config_as_dict
-        for name in self.__config__.exclude:  # type: ignore
-            if name in self.__dict__ and self.__dict__[name] is not None:
-                logger.info("Removing %s from config", name)
-                config_kwargs.pop(name, None)
-        self.__dict__.update(config_kwargs)
+        return data
 
-    def initialize_subconfigs(
-        self,
-        subconfigs: Dict[str, Any],
-        **config_kwargs,
-    ):
-        """
-        Initializes subconfigs with the given config data.
-        The function updates the object's dictionary with the given config data,
-        after excluding any attributes specified in the object's `exclude` list.
-
-        Args:
-            subconfigs: A dictionary of subconfigs to initialize.
-            **config_kwargs: The config data to update the object with.
-
-        Returns:
-            None
-        """
-        for name, config in subconfigs.items():
-            if name in self.__dict__ and self.__dict__[name]:
-                cfg = self.__dict__[name]
-                if (
-                    name in config_kwargs
-                    and isinstance(config_kwargs[name], dict)
-                    and isinstance(cfg, dict)
-                ):
-                    cfg.update(config_kwargs[name])
-                setattr(self, name, config.parse_obj(cfg))
+    # @model_validator(mode="after")  # type: ignore
+    # def validate_model_config_after(cls, model):
+    #     logger.debug("validate_model_config_after")
+    #     return model
 
     def export_config(
         self,
@@ -859,7 +858,7 @@ class BaseConfig(BaseModel):
             Dict[str, Any]: The configuration dictionary.
         """
         if not exclude:
-            exclude = self.__config__.exclude  # type: ignore
+            exclude = self._exclude_  # type: ignore
         if isinstance(exclude, str):
             exclude = [exclude]
         if exclude is None:
@@ -869,7 +868,7 @@ class BaseConfig(BaseModel):
         if only_include is None:
             only_include = []
 
-        config = self.dict(exclude=exclude, exclude_none=exclude_none)  # type: ignore
+        config = self.model_dump(exclude=exclude, exclude_none=exclude_none)  # type: ignore
         if only_include:
             config = {key: config[key] for key in only_include if key in config}
 

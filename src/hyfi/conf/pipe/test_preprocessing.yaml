@@ -1,4 +1,4 @@
 defaults:
   - __dataframe_external_funcs__
 
-_run_: hyfi.pipe.test.preprocessing_esg_ratings
+run: hyfi.pipe.test.preprocessing_esg_ratings

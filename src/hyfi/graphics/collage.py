@@ -3,12 +3,12 @@ import io
 import logging
 import os
 import textwrap
-from typing import List
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from hyfi.graphics.utils import get_image_font, load_image, load_images, scale_image
 
@@ -23,10 +23,9 @@ class Collage(BaseModel):
     height: int
     ncols: int
     nrows: int
-    filepath: str = None
+    filepath: Optional[str] = None
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def collage(
@@ -44,7 +43,7 @@ def collage(
     fontsize=12,
     fontcolor="#000",
     **kwargs,
-) -> Collage:
+) -> Optional[Collage]:
     """
     Create a collage of images.
     """
@@ -99,7 +98,6 @@ def collage(
             fontname=fontname,
             fontsize=fontsize,
             fontcolor=fontcolor,
-            return_as_array=False,
         )
         for image, filename in zip(images, filenames)
     ]
@@ -130,7 +128,7 @@ def label_collage(
     bg_color="black",
     caption=None,
     **kwargs,
-) -> str:
+) -> Collage:
     """
     Create a collage of images.
     """
@@ -138,7 +136,7 @@ def label_collage(
     ncols, nrows = collage.ncols, collage.nrows
 
     fig = plt.figure(figsize=figsize, dpi=dpi)
-    fig.patch.set_facecolor(bg_color)
+    fig.patch.set_facecolor(bg_color)  # type: ignore
     plt.imshow(np.array(collage.image))
     ax = plt.gca()
     plt.grid(False)
@@ -250,14 +248,13 @@ def fig2img(fig, dpi=300):
 
 def convert_image(
     image_or_uri,
-    show_filename=False,
-    filename=None,
-    filename_offset=(5, 5),
-    fontname=None,
-    fontsize=12,
-    fontcolor=None,
-    return_as_array=False,
-):
+    show_filename: bool = False,
+    filename: Optional[str] = None,
+    filename_offset: Tuple[float, float] = (5, 5),
+    fontname: Optional[str] = None,
+    fontsize: int = 12,
+    fontcolor: Optional[str] = None,
+) -> Image.Image:
     """
     Convert an image to a PIL Image.
     """
@@ -270,12 +267,11 @@ def convert_image(
         draw.text(filename_offset, filename, font=font, fill=fontcolor)
 
     # img = img.convert("RGB")
-    if return_as_array:
-        img = np.array(img)
+    # img = np.array(img)
     return img
 
 
-def gallery(array, ncols=7):
+def gallery(array: np.ndarray, ncols: int = 7):
     """
     Create a gallery of images from a numpy array.
     """

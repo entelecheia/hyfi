@@ -48,7 +48,7 @@ def _about(cfg):
     pkg_name = cfg.about.__package_name__
     name = cfg.about.name
     print()
-    for k, v in cfg.about.dict().items():
+    for k, v in cfg.about.model_dump().items():
         if k.startswith("_"):
             continue
         print(f"{k:11} : {v}")
@@ -61,7 +61,7 @@ class HyFI:
 
     config = __global_config__
     SpeicialKeys = SpecialKeys
-    __version__ = __global_config__.__version__
+    __version__ = __global_config__._version_
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()
 
@@ -127,7 +127,7 @@ class HyFI:
             raise ValueError("Project not initialized.")
 
     @staticmethod
-    def initialize(force: bool = False) -> bool:
+    def initialize(force: bool = False) -> None:
         """
         Initialize the global config.
 
@@ -137,17 +137,17 @@ class HyFI:
         Returns:
             bool: True if initialization was successful, False otherwise.
         """
-        return __global_config__.initialize(force=force)
+        __global_config__.initialize(force=force)
 
     @staticmethod
-    def terminate() -> bool:
+    def terminate() -> None:
         """
         Terminate the global config.
 
         Returns:
             bool: True if termination was successful, False otherwise.
         """
-        return __global_config__.terminate()
+        __global_config__.terminate()
 
     @staticmethod
     def joblib(**kwargs) -> JobLibConfig:

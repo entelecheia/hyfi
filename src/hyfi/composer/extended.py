@@ -52,10 +52,12 @@ class XC(Composer):
             config = {SpecialKeys.TARGET.value: config}
         else:
             config = XC.to_dict(config)
+        if not isinstance(config, dict):
+            raise ValueError("config must be a dict or a str")
         config[SpecialKeys.PARTIAL.value] = True
         rc_kwargs_ = config.pop(SpecialKeys.KWARGS, {})
         if rc_kwargs_ and kwargs:
-            kwargs = kwargs.update(rc_kwargs_)
+            kwargs.update(rc_kwargs_)
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod
@@ -94,7 +96,7 @@ class XC(Composer):
             if _target_ is a callable: the return value of the call
         """
         verbose = config.get("verbose", False)
-        if not __global_config__.__initilized__:
+        if not __global_config__._initilized_:
             __global_config__.initialize()
         if not XC.is_instantiatable(config):
             if verbose:
@@ -120,12 +122,13 @@ class XC(Composer):
 
         """
         try:
+            target_string = ""
             if XC.is_config(obj):
                 if SpecialKeys.TARGET in obj:
                     target_string = obj[SpecialKeys.TARGET]
             elif isinstance(obj, str):
                 target_string = obj
-            return PKGs.getsource(target_string)
+            return PKGs.getsource(target_string) if target_string else ""
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""

@@ -4,7 +4,7 @@ A class to run a pipeline.
 from functools import reduce
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import validator
+from pydantic import field_validator
 
 from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer
@@ -25,7 +25,7 @@ class PipelineConfig(BaseRunConfig):
     initial_object: Optional[Any] = None
     use_task_as_initial_object: bool = False
 
-    @validator("steps", pre=True)
+    @field_validator("steps", mode="before")
     def steps_to_list(cls, v):
         """
         Convert a list of steps to a list
@@ -66,12 +66,13 @@ class PipelineConfig(BaseRunConfig):
             A list of : class : `PipeConfig` objects
         """
         pipes: Pipes = []
+        self.steps = self.steps or []
         # Add pipes to the pipeline.
         for rc in PIPELINEs.get_RCs(self.steps):
             # Add a pipe to the pipeline.
-            if rc.uses in self.__dict__ and isinstance(self.__dict__[rc.uses], dict):
-                config = self.__dict__[rc.uses]
-                pipe = PipeConfig(**Composer.update(config, rc.dict()))
+            config = getattr(self, rc.uses, None)
+            if isinstance(config, dict):
+                pipe = PipeConfig(**Composer.update(config, rc.model_dump()))
                 # Set the task to be used for the pipe.
                 if task is not None:
                     pipe.task = task
@@ -230,7 +231,7 @@ class PIPELINEs:
         # Run all pipelines in the pipeline.
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
-                logger.info("Running pipeline: %s", pipeline.dict())
+                logger.info("Running pipeline: %s", pipeline.model_dump())
             initial_object = task if pipeline.use_task_as_initial_object else None
             PIPELINEs.run_pipeline(pipeline, initial_object, task)
 

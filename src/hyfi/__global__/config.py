@@ -5,7 +5,14 @@ import os
 from typing import Any, Optional, Union
 
 from omegaconf import DictConfig
-from pydantic import BaseModel, root_validator, validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    FieldValidationInfo,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 
 from hyfi.__global__ import __about__, __hydra_config__
 from hyfi.about import AboutConfig
@@ -52,37 +59,41 @@ class HyfiConfig(BaseModel):
     project: Optional[ProjectConfig] = None
     task: Optional[TaskConfig] = None
 
-    __version__: str = __version__()
-    __initilized__: bool = False
+    _version_: str = PrivateAttr(__version__())
+    _initilized_: bool = PrivateAttr(False)
 
-    class Config:
-        arbitrary_types_allowed = True
-        underscore_attrs_are_private = True
-        validate_assignment = True
-        extra = "allow"
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra="allow",
+    )  # type: ignore
 
-    @root_validator()
-    def _check_and_set_values(cls, values):
+    @model_validator(mode="before")
+    def _validate_model_data(cls, data):
         """
-        Validate and set values for the config file.
+        Validate and set the model data.
 
         Args:
-                cls: Class to use for config lookup
-                values: Dictionary of values to check and set
+            cls: Class to use for config lookup
+            data: Dictionary of values to check and set
 
         Returns:
-                Same dictionary with hyfi_config
+            Validated dictionary of values
         """
         key = "hyfi_config_path"
-        val = ENVs.check_and_set_osenv_var(key, values.get(key))
-        values[key] = val
+        val = ENVs.check_and_set_osenv_var(key, data.get(key))
         # Set the hyfi_config_module value in the configuration file.
         if val is not None:
+            data[key] = val
             key = "hyfi_config_module"
-            values[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
-        return values
+            data[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
+        key = "hyfi_user_config_path"
+        val = data.get(key)
+        if val is None:
+            data[key] = ENVs.get_osenv(key, ".")
+        return data
 
-    @validator("hyfi_user_config_path")
+    @field_validator("hyfi_user_config_path")
     def _validate_hyfi_user_config_path(cls, v):
         """
         Validate and set hyfi_user_config_path.
@@ -96,20 +107,12 @@ class HyfiConfig(BaseModel):
         """
         return ENVs.check_and_set_osenv_var("hyfi_user_config_path", v)
 
-    @validator("logging_level")
-    def _validate_logging_level(cls, v, values):
+    @field_validator("logging_level")
+    def _validate_logging_level(cls, v, info: FieldValidationInfo):
         """
         Validate and set the logging level
-
-        Args:
-                cls: The class to operate on
-                v: The value to set the logging level to
-                values: The values from the config file
-
-        Returns:
-                The value that was set
         """
-        verbose = values.get("verbose", False)
+        verbose = info.data.get("verbose", False)
         # Set verbose to INFO.
         if verbose and v == "WARNING":
             v = "INFO"
@@ -157,7 +160,7 @@ class HyfiConfig(BaseModel):
                 retina: Whether to use retina or not.
                 verbose: Enables or disables logging
         """
-        envs = DotEnvConfig(HYFI_VERBOSE=verbose)
+        envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
             envs.HYFI_PROJECT_NAME = ENVs.expand_posix_vars(project_name)
@@ -198,16 +201,16 @@ class HyfiConfig(BaseModel):
         self.initialize(force=reinit)
         self.project = ProjectConfig()
 
-    def initialize(self, force: bool = False) -> bool:
+    def initialize(self, force: bool = False) -> None:
         """
         Initialize hyfi.
 
         Returns:
             A boolean indicating whether initialization was successful
         """
-        # Returns the current value of the __initilized__ attribute.
-        if self.__initilized__ and not force:
-            return True
+        # Returns the current value of the _initilized_ attribute.
+        if self._initilized_ and not force:
+            return
         __hydra_config__.hyfi_config_module = __about__.config_module
         __hydra_config__.hyfi_config_path = __about__.config_path
         __hydra_config__.hyfi_user_config_path = self.hyfi_user_config_path
@@ -218,10 +221,9 @@ class HyfiConfig(BaseModel):
             __hydra_config__.hyfi_user_config_path,
         )
 
-        self.__initilized__ = True
-        return True
+        self._initilized_ = True
 
-    def terminate(self) -> bool:
+    def terminate(self) -> None:
         """
         Terminate hyfi config by stopping joblib
 
@@ -229,13 +231,12 @@ class HyfiConfig(BaseModel):
             True if successful False
         """
         # If the module is not initialized yet.
-        if not self.__initilized__:
+        if not self._initilized_:
             return
         # Stop the backend if the joblib is running.
         if self.project and self.project.joblib:
             self.project.joblib.stop_backend()
-        self.__initilized__ = False
-        return True
+        self._initilized_ = False
 
     def __repr__(self):
         """
@@ -268,7 +269,7 @@ class HyfiConfig(BaseModel):
 
     @property
     def dotenv(self):
-        return DotEnvConfig()
+        return DotEnvConfig()  # type: ignore
 
     @property
     def osenv(self):

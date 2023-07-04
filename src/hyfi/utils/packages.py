@@ -1,4 +1,4 @@
-"""Utilities for loading library packages and dependencies."""
+"""This module provides utilities for loading library packages and dependencies."""
 import importlib
 import inspect
 import os
@@ -19,6 +19,14 @@ class PKGs:
         targetdir: str = "",
         verbose: bool = False,
     ) -> None:
+        """
+        Clone a git repository from the specified URL.
+
+        Args:
+            url (str): The URL of the git repository to clone.
+            targetdir (str, optional): The directory to clone the repository into. Defaults to "".
+            verbose (bool, optional): Whether to print the output of the git command. Defaults to False.
+        """
         if targetdir:
             res = subprocess.run(
                 ["git", "clone", url, targetdir], stdout=subprocess.PIPE
@@ -45,7 +53,24 @@ class PKGs:
         verbose: bool = False,
         **kwargs,
     ) -> None:
-        """Install a package using pip."""
+        """
+        Install a package using pip.
+
+        Args:
+            name (str): The name of the package to install.
+            upgrade (bool, optional): Whether to upgrade the package if it is already installed. Defaults to False.
+            prelease (bool, optional): Whether to include pre-release versions. Defaults to False.
+            editable (bool, optional): Whether to install the package in editable mode. Defaults to False.
+            quiet (bool, optional): Whether to suppress output. Defaults to True.
+            find_links (str, optional): URL to look for packages at. Defaults to "".
+            requirement (bool, optional): Whether to install from the given requirements file. Defaults to False.
+            force_reinstall (bool, optional): Whether to force a reinstall of the package. Defaults to False.
+            verbose (bool, optional): Whether to print the output of the pip command. Defaults to False.
+            **kwargs: Additional keyword arguments to pass to pip.
+
+        Returns:
+            None
+        """
         _cmd = ["pip", "install"]
         if upgrade:
             _cmd.append("--upgrade")
@@ -153,12 +178,21 @@ class PKGs:
 
     @staticmethod
     def getsource(obj: str) -> str:
-        """Return the source code of the object."""
+        """
+        Return the source code of the object.
+
+        Args:
+            obj (str): The object to get the source code from.
+
+        Returns:
+            str: The source code of the object.
+
+        """
         try:
             mod_name, object_name = obj.rsplit(".", 1)
             mod = importlib.import_module(mod_name)
-            obj = getattr(mod, object_name)
-            return inspect.getsource(obj)
+            obj_ = getattr(mod, object_name)
+            return inspect.getsource(obj_)
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""

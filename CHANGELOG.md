@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.0.2 (2023-07-04)
+
+### Fix
+
+* **joblib:** Optimize test_batcher.py ([`d15c426`](https://github.com/entelecheia/hyfi/commit/d15c42663ae75a6adc660831e1457b80c8fa5e69))
+* **batcher:** Fix logging formatting ([`484c06b`](https://github.com/entelecheia/hyfi/commit/484c06b30c51fc150b480adb342da9345c63cbfa))
+* **config:** Remove unnecessary configuration options in JobLibConfig ([`48050a7`](https://github.com/entelecheia/hyfi/commit/48050a7fc57fe5fb954db955b8c0b023175c7e52))
+* **joblib:** Update configuration settings ([`5c4a6a1`](https://github.com/entelecheia/hyfi/commit/5c4a6a120e7adff41926b43057bf0e8a53e7db63))
+
 ## v1.0.1 (2023-07-04)
 
 ### Fix

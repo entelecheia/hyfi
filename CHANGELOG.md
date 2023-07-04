@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.0.4 (2023-07-04)
+
+### Fix
+
+* **config:** Update set_project_root and set_project_name methods ([`7b3849d`](https://github.com/entelecheia/hyfi/commit/7b3849dd42a18b36057a7d9d4f9bbd49124f3503))
+* **task:** Refactor TaskPathConfig class implementation ([`a5b97a3`](https://github.com/entelecheia/hyfi/commit/a5b97a3a410e8a93f4651f1d6655aa0a98c22eb3))
+* **dirnames:** Add config file options ([`fc11db7`](https://github.com/entelecheia/hyfi/commit/fc11db78893373b1fe0f4333f259b755713e65c0))
+* **path:** Refactor base path configuration ([`ee4d39f`](https://github.com/entelecheia/hyfi/commit/ee4d39f8f6bd33fb60fdce4b3d2084b065e2ac02))
+* **path:** Add project_name property ([`dc7162f`](https://github.com/entelecheia/hyfi/commit/dc7162fa099f0be771efcbbecc0e7a3c74a72546))
+* **config:** Add reusable config file ([`205cffa`](https://github.com/entelecheia/hyfi/commit/205cffa5871a95a97129991c6f37b09311e4cbbb))
+* **batch:** Move config_dir to the correct position ([`76e5001`](https://github.com/entelecheia/hyfi/commit/76e500104286b9a99f7562039b85bbc1d1a61fb6))
+* **dependencies:** Upgrade joblib to ^1.3.1 ([`ee8bfbb`](https://github.com/entelecheia/hyfi/commit/ee8bfbb662e13ccf254ab7e178579a9f4f06df40))
+
 ## v1.0.3 (2023-07-04)
 
 ### Fix

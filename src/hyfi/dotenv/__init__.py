@@ -126,7 +126,7 @@ class DotEnvConfig(BaseSettings):
 
     @model_validator(mode="after")  # type: ignore
     def check_and_set_values(cls, m: "DotEnvConfig"):
-        return ENVs.check_and_set_osenv_vars(m.__dict__)
+        return ENVs.check_and_set_osenv_vars(m.model_dump())
 
     @property
     def os(self):

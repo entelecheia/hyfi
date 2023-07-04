@@ -21,6 +21,8 @@ def test_batch_task_config():
     config.save_config()
     cfg = config.load_config(batch_num=1)
     pprint(cfg)
+    pprint(config.batch.model_dump())
+    assert cfg["batch"]["batch_num"] == 1
 
 
 if __name__ == "__main__":

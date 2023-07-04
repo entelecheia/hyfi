@@ -840,14 +840,14 @@ class BaseConfig(BaseModel):
     #     logger.debug("validate_model_config_after")
     #     return model
 
-    def initialize_subconfigs(self, config_kwargs):
+    def initialize_subconfigs(self, config_kwargs: Dict[str, Any]):
         """
         Initializes subconfigs with the given config data.
         The function updates the object's dictionary with the given config data,
         after excluding any attributes specified in the object's `exclude` list.
 
         Args:
-            **config_kwargs: The config data to update the object with.
+            config_kwargs (Dict[str, Any]): The config data to initialize the subconfigs with.
 
         Returns:
             None
@@ -941,3 +941,8 @@ class BaseConfig(BaseModel):
         logger.info("Saving config to %s", filepath)
         Composer.save_json(config_to_save, filepath, default=dumper)
         return str(filepath)
+
+    def print_config(
+        self,
+    ):
+        Composer.print(self.model_dump())

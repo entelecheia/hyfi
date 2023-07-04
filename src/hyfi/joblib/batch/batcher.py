@@ -141,6 +141,7 @@ class Batcher(object):
             data (list, numpy.ndarray, scipy.sparse.csr_matrix, pandas.DataFrame):
                 Single complete list-like data merged from given batches
         """
+        print(data)
         if isinstance(data[0], ssp.csr_matrix):  # type: ignore
             return ssp.vstack(data)  # type: ignore
         if isinstance(data[0], (pd.DataFrame, pd.Series)):
@@ -236,7 +237,7 @@ class Batcher(object):
             verbose = self.verbose
         # if verbose > 1:
         logger.debug(
-            " backend: %s  minibatch_size: %s  procs: %s  input_split: %s  merge_output: %s  len(data): %s len(args): %s",
+            "backend: %s, minibatch_size: %s, procs: %s, input_split: %s, merge_output: %s, len(data): %s, len(args): %s",
             backend,
             self.minibatch_size,
             procs,
@@ -262,8 +263,7 @@ class Batcher(object):
             ]
         else:
             paral_params = [[data_batch] + args for data_batch in data]
-        if verbose > 1:
-            logger.debug("Start task, len(paral_params): %s", len(paral_params))
+        logger.debug("Start task, len(paral_params): %s", len(paral_params))
         results = []
         if backend == "serial":
             results = [

@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.0.3 (2023-07-04)
+
+### Fix
+
+* **tests:** Fix batch task configuration ([`16acf17`](https://github.com/entelecheia/hyfi/commit/16acf173f75200170b49ba17739c77d3b00f2331))
+* **batch:** Improve config handling ([`ec03733`](https://github.com/entelecheia/hyfi/commit/ec037333789dab1bbd7a59f807a0b5ebbbf4a6c2))
+* **BaseConfig:** Add subconfig initialization ([`6e84c4e`](https://github.com/entelecheia/hyfi/commit/6e84c4e69acea6fa8cf04dc65eac2bfa554515e5))
+
 ## v1.0.2 (2023-07-04)
 
 ### Fix

@@ -57,7 +57,7 @@ class Meta:
         cached_path: PathOrStr,
         *,
         etag: Optional[str] = None,
-        extraction_dir: bool = False
+        extraction_dir: bool = False,
     ) -> "Meta":
         return cls(
             resource=str(resource),
@@ -88,7 +88,7 @@ class Meta:
                 data["cached_path"] = path[:-5]
             if "size" not in data:
                 data["size"] = cls.get_resource_size(data["cached_path"])
-        return cls(**config_kwargs)
+        return cls(**data)
 
     @staticmethod
     def get_resource_size(path: PathOrStr) -> int:

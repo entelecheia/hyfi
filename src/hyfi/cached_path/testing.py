@@ -13,11 +13,10 @@ class BaseTestClass:
     logging and that creates and destroys a temp directory as a test fixture.
     """
 
-    PROJECT_ROOT = (Path(__file__).parent / "..").resolve()
-    MODULE_ROOT = PROJECT_ROOT / "cached_path"
-    TOOLS_ROOT = MODULE_ROOT / "tools"
+    PROJECT_ROOT = (Path(__file__).parent / "../../../").resolve()
+    MODULE_ROOT = PROJECT_ROOT / "src/hyfi/cached_path"
     TESTS_ROOT = PROJECT_ROOT / "tests"
-    FIXTURES_ROOT = PROJECT_ROOT / "test_fixtures"
+    FIXTURES_ROOT = PROJECT_ROOT / "tests/fixtures"
 
     def setup_method(self):
         logging.basicConfig(

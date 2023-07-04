@@ -104,6 +104,8 @@ class Copier:
         if self.filetypes is None or len(self.filetypes) == 0:
             self.filetypes = ["yaml", "yml", "py"]
 
+        if self.exclude is None or len(self.exclude) == 0:
+            self.exclude = []
         if not self.dst_path.is_absolute():
             self.dst_path = ENVs.getcwd() / self.dst_path
         self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)

@@ -10,6 +10,6 @@ run_with:
   index: false
   filetype: parquet
   suffix:
-  verbose: false
+  verbose: true
 pipe_obj_arg_name: data
 return_pipe_obj: true

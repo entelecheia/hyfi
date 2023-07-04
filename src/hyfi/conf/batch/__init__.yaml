@@ -10,7 +10,7 @@ resume_latest: false
 device: cpu
 num_devices: 1
 num_workers: ${oc.select:..project.num_workers,1}
-config_yaml: config.yaml
-config_json: config.json
-config_dirname: configs
+config_dirname: ${oc.select:..path.dirnames.config_dirname,configs}
+config_yaml: ${oc.select:..path.dirnames.config_yaml,config.yaml}
+config_json: ${oc.select:..path.dirnames.config_json,config.json}
 verbose: ${oc.select:..verbose,false}

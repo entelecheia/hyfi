@@ -783,6 +783,7 @@ class BaseConfig(BaseModel):
     _init_args_: Dict[str, Any] = {}
     _exclude_: Set[str] = set()
     _property_set_methods_: Dict[str, str] = {}
+    _subconfigs_: Dict[str, Any] = {}
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
@@ -793,6 +794,7 @@ class BaseConfig(BaseModel):
     def __init__(self, **config_kwargs):
         logger.debug("init %s with %s", self.__class__.__name__, config_kwargs)
         super().__init__(**config_kwargs)
+        self.initialize_subconfigs(config_kwargs)
 
     def __setattr__(self, key, val):
         """
@@ -813,7 +815,7 @@ class BaseConfig(BaseModel):
 
     @model_validator(mode="before")
     def validate_model_config_before(cls, data):
-        logger.debug("validate_model_config_before: %s", data)
+        # logger.debug("Validating model config before validating each field.")
         _config_name_ = data.get("_config_name_", getattr(cls._config_name_, "default", "__init__"))  # type: ignore
         _config_group_ = data.get("_config_group_", getattr(cls._config_group_, "default"))  # type: ignore
         _class_name_ = cls.__name__  # type: ignore
@@ -837,6 +839,25 @@ class BaseConfig(BaseModel):
     # def validate_model_config_after(cls, model):
     #     logger.debug("validate_model_config_after")
     #     return model
+
+    def initialize_subconfigs(self, config_kwargs):
+        """
+        Initializes subconfigs with the given config data.
+        The function updates the object's dictionary with the given config data,
+        after excluding any attributes specified in the object's `exclude` list.
+
+        Args:
+            **config_kwargs: The config data to update the object with.
+
+        Returns:
+            None
+        """
+        self._subconfigs_ = self._subconfigs_ or {}
+        for name, config in self._subconfigs_.items():
+            if name in config_kwargs and isinstance(config_kwargs[name], dict):
+                cfg = config_kwargs[name]
+                logger.debug("Initializing subconfig %s with %s", name, cfg)
+                setattr(self, name, config.model_validate(cfg))
 
     def export_config(
         self,

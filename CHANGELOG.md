@@ -1,5 +1,46 @@
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-07-04)
+
+### Feature
+
+* **task:** Add task dirnames config ([`7c486e4`](https://github.com/entelecheia/hyfi/commit/7c486e4be2108d0c0ce64cc0a4e94a446a128358))
+* **path:** Add DirnamesConfig class and default directory names ([`59b312f`](https://github.com/entelecheia/hyfi/commit/59b312f72212963b750fca4da9f23d3eae12d233))
+* **path:** Add directory names configuration file ([`274e841`](https://github.com/entelecheia/hyfi/commit/274e84173f030c2ec02ac65b40d4cc7ccf88c989))
+* **dependencies:** Update pydantic to version 2.0.0 ([`964c2ef`](https://github.com/entelecheia/hyfi/commit/964c2ef729090985e4441a13545967ba2a50d42f))
+
+### Fix
+
+* **joblib:** Fix stopping distributed framework ([`8825996`](https://github.com/entelecheia/hyfi/commit/882599651a486bd88c7a526e99fc04a8a0e8d00c))
+* **config:** Improve model data validation ([`b774d25`](https://github.com/entelecheia/hyfi/commit/b774d25253b928e715ec7939eefaf06b3340e29e))
+* **composer:** Update XC.instantiate method ([`3a08f99`](https://github.com/entelecheia/hyfi/commit/3a08f9984ec1843853198f564f813e8feaea168e))
+* **hyfi-composer:** Fix retrieving package source ([`33b5037`](https://github.com/entelecheia/hyfi/commit/33b5037315300f179c7a16ccf4c193c28d6c5854))
+* **docs:** Update variable names in examples ([`43d04eb`](https://github.com/entelecheia/hyfi/commit/43d04eb8dbdcd26219a8f7ce7c9450d5786b8df5))
+
+### Breaking
+
+* support pydantic v2 ([`964c2ef`](https://github.com/entelecheia/hyfi/commit/964c2ef729090985e4441a13545967ba2a50d42f))
+
+### Documentation
+
+* **task:** Add batch functionality ([`d687528`](https://github.com/entelecheia/hyfi/commit/d687528426682bbb2a34ac5c831fada4c472508d))
+* **task:** Add hyfi.task documentation ([`5c435fe`](https://github.com/entelecheia/hyfi/commit/5c435fee0ea0726510335c5f175c324d75263c79))
+* **task:** Add batch documentation ([`cf613c9`](https://github.com/entelecheia/hyfi/commit/cf613c9e20294fcdd5f1ae44900470f985d6c509))
+* **docs:** Add project reference page ([`cb1487f`](https://github.com/entelecheia/hyfi/commit/cb1487fdc589dd311e694e9d4a0a17fe7388c9e2))
+* **pipeline:** Add configs ([`0944da5`](https://github.com/entelecheia/hyfi/commit/0944da503e45a48187c8447da043bdca40cd2dac))
+* **module:** Add hyfi.module documentation ([`fb3d6b2`](https://github.com/entelecheia/hyfi/commit/fb3d6b2c04b3d4d82dc766bef863784b29f76272))
+* **graphics:** Add hyfi.graphics documentation ([`4e8b54d`](https://github.com/entelecheia/hyfi/commit/4e8b54d13315b980c83792680943ef8ed3e883ce))
+* **pipeline:** Add config documentation ([`ca0653b`](https://github.com/entelecheia/hyfi/commit/ca0653bf8a1d1ef587c2ec3c0795636ac02d86c4))
+* Create `hyfi.pipe` reference documentation ([`71575c3`](https://github.com/entelecheia/hyfi/commit/71575c3c8d634c8c2e9deff643a2f421bcca4a46))
+* **dotenv:** Add configuration class for environment variables in HyFI ([`f5493ba`](https://github.com/entelecheia/hyfi/commit/f5493ba01d1767002608ec59c3a40d64ee05b707))
+* **copier:** Add copier documentation ([`0bca38d`](https://github.com/entelecheia/hyfi/commit/0bca38d24590cf50fe37ba50453723e14e11c552))
+* **batch:** Add hyfi.batch documentation ([`b75dd3f`](https://github.com/entelecheia/hyfi/commit/b75dd3f0786ea8a46767c9e85381318bb8bb50a5))
+* **utils:** Update docstrings ([`cac53f8`](https://github.com/entelecheia/hyfi/commit/cac53f83410443ca21f5dd0dea56e263321c6c46))
+* **joblib:** Add batcher documentation ([`8d74675`](https://github.com/entelecheia/hyfi/commit/8d74675daab763a11f3df8a95036994656e5cdcf))
+* **joblib.batch:** Add apply function ([`9c29ef6`](https://github.com/entelecheia/hyfi/commit/9c29ef60ecadc512d80684e28f5ed43ea261b028))
+* **hyfi.joblib.batch:** Add apply_batch method ([`6f17119`](https://github.com/entelecheia/hyfi/commit/6f17119de614b049f36316bef7c81f971ebd3681))
+* **joblib:** Add documentation for hyfi.joblib ([`d955315`](https://github.com/entelecheia/hyfi/commit/d955315378bcb963b91ff65ceff8db0c4af8c6f5))
+
 ## v0.16.3 (2023-07-01)
 
 ### Fix

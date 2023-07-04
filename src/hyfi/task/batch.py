@@ -74,23 +74,23 @@ class BatchTaskConfig(TaskConfig):
 
     @property
     def batch_num(self):
-        return self.batch.batch_num
+        return self.batch.batch_num if self.batch else None
 
     @property
     def seed(self):
-        return self.batch.seed
+        return self.batch.seed if self.batch else None
 
     @property
     def batch_dir(self):
-        return self.batch.batch_dir
+        return self.batch.batch_dir if self.batch else None
 
     @property
     def device(self):
-        return self.batch.device
+        return self.batch.device if self.batch else None
 
     @property
     def num_devices(self):
-        return self.batch.num_devices
+        return self.batch.num_devices if self.batch else None
 
     def save_config(
         self,
@@ -115,6 +115,8 @@ class BatchTaskConfig(TaskConfig):
         Returns:
             str: The filename of the saved configuration.
         """
+        if not self.batch:
+            raise ValueError("No batch configuration to save")
         if not filepath:
             filepath = self.batch.config_filepath
 
@@ -138,6 +140,8 @@ class BatchTaskConfig(TaskConfig):
         exclude_none: bool = True,
         only_include: Optional[Union[str, List[str], Set[str], None]] = None,
     ) -> str:
+        if not self.batch:
+            raise ValueError("No batch configuration to save")
         if not filepath:
             filepath = self.batch.config_jsonpath
         return super().save_config_as_json(
@@ -155,6 +159,8 @@ class BatchTaskConfig(TaskConfig):
         **config_kwargs,
     ) -> Dict:
         """Load the config from the batch config file"""
+        if not self.batch:
+            raise ValueError("No batch configuration to load")
         if not batch_name:
             batch_name = self.batch_name
         if batch_num is None:

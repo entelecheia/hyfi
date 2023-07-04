@@ -22,9 +22,10 @@ def test_task_config():
     print(config.task_dir)
     assert config.task_dir == Path("workspace/tasks/demo3")
     config.task_root = "workspace/tmp"
-    pprint(config.model_dump())
+    config.print_config()
     print(config.root_dir)
     assert config.task_dir == Path("workspace/tmp/demo3")
+    config.save_config(filepath=config.path.config_filepath)
 
 
 if __name__ == "__main__":

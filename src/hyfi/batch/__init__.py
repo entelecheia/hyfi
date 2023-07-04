@@ -172,15 +172,6 @@ class BatchConfig(BaseConfig):
         return self.root_dir
 
     @property
-    def config_dir(self):
-        """
-        Directory for the configuration files.
-        """
-        config_dir = self.batch_dir / self.config_dirname
-        config_dir.mkdir(parents=True, exist_ok=True)
-        return config_dir
-
-    @property
     def file_prefix(self):
         """
         Prefix for the output file name.
@@ -217,6 +208,15 @@ class BatchConfig(BaseConfig):
         File pattern for the configuration files.
         """
         return f"{self.batch_name}(*)_{self.config_yaml}"
+
+    @property
+    def config_dir(self):
+        """
+        Directory for the configuration files.
+        """
+        config_dir = self.batch_dir / self.config_dirname
+        config_dir.mkdir(parents=True, exist_ok=True)
+        return config_dir
 
     @property
     def config_filepath(self):

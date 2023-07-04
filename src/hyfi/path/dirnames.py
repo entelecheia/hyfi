@@ -15,3 +15,7 @@ class DirnamesConfig(BaseModel):
     logs: str = "logs"
     cache: str = ".cache"
     tmp: str = "tmp"
+    # to reuse the same config file for different runs
+    config_dirname: str = "configs"
+    config_yaml: str = "config.yaml"
+    config_json: str = "config.json"

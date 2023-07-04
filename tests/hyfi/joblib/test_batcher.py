@@ -18,7 +18,7 @@ def batcher_test(backend):
 
 
 def test_bacher_backends():
-    backends = ["serial", "threading", "multiprocessing"]
+    backends = ["serial", "threading", "multiprocessing", "joblib"]
     # sourcery skip: no-loop-in-tests
     for backend in backends:
         batcher_test(backend)

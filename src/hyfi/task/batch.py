@@ -1,3 +1,6 @@
+"""
+Configuration class for batch tasks. Inherits from TaskConfig.
+"""
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
@@ -10,6 +13,17 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BatchTaskConfig(TaskConfig):
+    """
+    Configuration class for batch tasks. Inherits from TaskConfig.
+
+    Attributes:
+        _config_name_ (str): The name of the configuration.
+        _config_group_ (str): The configuration group.
+        batch_name (str): The name of the batch.
+        batch (BatchConfig): The batch configuration.
+        _property_set_methods_ (Dict[str, str]): A dictionary of property set methods.
+    """
+
     _config_name_: str = "__batch__"
     _config_group_: str = "task"
 

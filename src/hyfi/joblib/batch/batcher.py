@@ -17,41 +17,40 @@ logger = LOGGING.getLogger(__name__)
 class Batcher(object):
     """Scheduler to handle parallel jobs on minibatches
 
-    Parameters
-    ----------
-    procs: int
-            Number of process(es)/thread(s) for executing task in parallel. Used for multiprocessing, threading and Loky
+    Attributes:
+        procs (int):
+                Number of process(es)/thread(s) for executing task in parallel. Used for multiprocessing, threading and Loky
 
-    minibatch_size: int
-            Expected size of each minibatch
+        minibatch_size (int):
+                Expected size of each minibatch
 
-    backend: {'serial', 'multiprocessing', 'threading', 'loky', 'spark', 'dask', 'ray'}
-            Backend for computing the tasks
+        backend (str): {'serial', 'multiprocessing', 'threading', 'loky', 'spark', 'dask', 'ray'}
+                Backend for computing the tasks
 
-                    - 'serial' sequential execution without a backend scheduler
+                        - 'serial' sequential execution without a backend scheduler
 
-                    - 'multiprocessing' Python standard multiprocessing library
+                        - 'multiprocessing' Python standard multiprocessing library
 
-                    - 'threading' Python standard threading library
+                        - 'threading' Python standard threading library
 
-                    - 'loky' Loky fork of multiprocessing library
+                        - 'loky' Loky fork of multiprocessing library
 
-                    - 'joblib' Joblib fork of multiprocessing library
+                        - 'joblib' Joblib fork of multiprocessing library
 
-                    - 'ray' Ray local or distributed execution
+                        - 'ray' Ray local or distributed execution
 
-    task_num_cpus: int
-            Number of CPUs to reserve per minibatch task for Ray
+        task_num_cpus (int):
+                Number of CPUs to reserve per minibatch task for Ray
 
-    task_num_gpus: int
-            Number of GPUs to reserve per minibatch task for Ray
+        task_num_gpus (int):
+                Number of GPUs to reserve per minibatch task for Ray
 
-    backend_handle: object
-            Backend handle for sending tasks
+        backend_handle (object):
+                Backend handle for sending tasks
 
-    verbose: int
-            Verbosity level.
-            Setting verbose > 0 will display additional information depending on the specific level set.
+        verbose (int):
+                Verbosity level.
+                Setting verbose > 0 will display additional information depending on the specific level set.
     """
 
     def __init__(
@@ -82,20 +81,18 @@ class Batcher(object):
     ):
         """Split data into minibatches with a specified size
 
-        Parameters
-        ----------
-        data: iterable and indexable
+        Arguments:
+            data (list, tuple, dict, numpy.ndarray, scipy.sparse.csr_matrix, pandas.DataFrame):
                 List-like data to be split into batches. Includes numpy matrices and Pandas DataFrames.
 
-        minibatch_size: int
+            minibatch_size (int):
                 Expected sizes of minibatches split from the data.
 
-        backend: object
+            backend (str):
                 Backend to use, instead of the Batcher backend attribute
 
-        Returns
-        -------
-        data_split: list
+        Returns:
+            data_split (list):
                 List of minibatches, each entry is a list-like object representing the data subset in a batch.
         """
         if minibatch_size is None:
@@ -136,14 +133,12 @@ class Batcher(object):
     def merge_batches(self, data: Any):
         """Merge a list of data minibatches into one single instance representing the data
 
-        Parameters
-        ----------
-        data: list
+        Arguments:
+            data (list):
                 List of minibatches to merge
 
-        Returns
-        -------
-        (anonymous): sparse matrix | pd.DataFrame | list
+        Returns:
+            data (list, numpy.ndarray, scipy.sparse.csr_matrix, pandas.DataFrame):
                 Single complete list-like data merged from given batches
         """
         if isinstance(data[0], ssp.csr_matrix):  # type: ignore
@@ -169,32 +164,31 @@ class Batcher(object):
         description: str = "batch_apply",
     ):
         """
+        Apply a function on minibatches of data in parallel
 
-        Parameters
-        ----------
-        task: function
+        Arguments:
+            task (callable):
                 Function to apply on each minibatch with other specified arguments
 
-        data: list-like
+            data (list, tuple, dict, numpy.ndarray, scipy.sparse.csr_matrix, pandas.DataFrame):
                 Samples to split into minibatches and apply the specified function on
 
-        args: list
+            args (list):
                 Arguments to pass to the specified function following the mini-batch
 
-        input_split: boolean, default False
+            input_split (bool):
                 If True, input data is already mapped into minibatches, otherwise data will be split on call.
 
-        merge_output: boolean, default True
+            merge_output (bool):
                 If True, results from minibatches will be reduced into one single instance before return.
 
-        procs: int
-                Number of process(es)/thread(s) for executing task in parallel. Used for multiprocessing, threading,
-                Loky and Ray
+            procs (int):
+                Number of process(es)/thread(s) for executing task in parallel. Used for multiprocessing, threading, Loky and Ray
 
-        minibatch_size: int
+            minibatch_size (int):
                 Expected size of each minibatch
 
-        backend: {'serial', 'multiprocessing', 'threading', 'loky', 'spark', 'dask', 'ray'}
+            backend (str): {'serial', 'multiprocessing', 'threading', 'loky', 'spark', 'dask', 'ray'}
                 Backend for computing the tasks
 
                         - 'serial' sequential execution without a backend scheduler
@@ -209,22 +203,21 @@ class Batcher(object):
 
                         - 'ray' Ray local or distributed execution
 
-        backend_handle: object
+            backend_handle (object):
                 Backend handle for sending tasks
 
-        task_num_cpus: int
+            task_num_cpus (int):
                 Number of CPUs to reserve per minibatch task for Ray
 
-        task_num_gpus: int
+            task_num_gpus (int):
                 Number of GPUs to reserve per minibatch task for Ray
 
-        verbose: int
+            verbose (int):
                 Verbosity level.
                 Setting verbose > 0 will display additional information depending on the specific level set.
 
-        Returns
-        -------
-        results: list-like | list of list-like
+        Returns:
+            data (list):
                 If merge_output is specified as True, this will be a list-like object representing
                 the dataset, with each entry as a sample. Otherwise this will be a list of list-like
                 objects, with each entry representing the results from a minibatch.

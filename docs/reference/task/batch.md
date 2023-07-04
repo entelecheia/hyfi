@@ -1,3 +1,3 @@
-# `hyfi.task`
+# `hyfi.task.batch`
 
-::: hyfi.task
+::: hyfi.task.batch

@@ -36,6 +36,19 @@ class ProjectConfig(BaseConfig):
     joblib: JobLibConfig = None  # type: ignore
     path: PathConfig = None  # type: ignore
 
+    _property_set_methods_ = {
+        "project_name": "set_project_name",
+        "project_root": "set_project_root",
+    }
+
+    def set_project_root(self, val: Union[str, Path]):
+        if (not self.project_root or self.project_root != val) and self.path:
+            self.path.project_root = str(val)
+
+    def set_project_name(self, val):
+        if (not self.project_name or self.project_name != val) and self.path:
+            self.path.project_name = val
+
     @field_validator("project_name")
     def _validate_project_name(cls, v):
         if v is None:

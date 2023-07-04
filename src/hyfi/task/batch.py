@@ -28,7 +28,7 @@ class BatchTaskConfig(TaskConfig):
     _config_group_: str = "task"
 
     batch_name: str = "demo"
-    batch: BatchConfig = None  # type: ignore
+    batch: Optional[BatchConfig] = None
 
     _property_set_methods_ = {
         "task_name": "set_task_name",
@@ -36,6 +36,7 @@ class BatchTaskConfig(TaskConfig):
         "batch_name": "set_batch_name",
         "batch_num": "set_batch_num",
     }
+    _subconfigs_ = {"batch": BatchConfig}
 
     def set_batch_name(self, val):
         if not self.batch_name or self.batch_name != val:
@@ -187,7 +188,8 @@ class BatchTaskConfig(TaskConfig):
             logger.info("Updating config with config_kwargs: %s", config_kwargs)
         cfg = XC.update(XC.to_dict(cfg), config_kwargs)
 
-        # TODO: initialize self with the config
+        # initialize self with the config
+        self.__init__(**cfg)
 
         return self.model_dump()
 

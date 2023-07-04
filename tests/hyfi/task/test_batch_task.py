@@ -19,6 +19,8 @@ def test_batch_task_config():
     assert Path(config.log_dir).is_dir()
     assert Path(config.cache_dir).is_dir()
     config.save_config()
+    config.batch_num = 1
+    config.save_config()
     cfg = config.load_config(batch_num=1)
     config.print_config()
     pprint(config.batch.model_dump())

@@ -210,9 +210,9 @@ class PIPELINEs:
         """
         task.pipelines = task.pipelines or []
         pipelines: Pipelines = [
-            PipelineConfig(**task.__dict__[name])
+            PipelineConfig(**getattr(task, name))
             for name in task.pipelines
-            if name in task.__dict__ and isinstance(task.__dict__[name], dict)
+            if isinstance(name, str) and isinstance(getattr(task, name), dict)
         ]
         return pipelines
 
@@ -229,6 +229,8 @@ class PIPELINEs:
         if project:
             task.project = project
         # Run all pipelines in the pipeline.
+        if task.verbose:
+            logger.info("Running %s pipelines", len(task.pipelines or []))
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
                 logger.info("Running pipeline: %s", pipeline.model_dump())

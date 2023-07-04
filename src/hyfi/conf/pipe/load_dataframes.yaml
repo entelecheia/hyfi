@@ -10,5 +10,5 @@ run_with:
   concatenate: false
   ignore_index: false
   use_cached: false
-  verbose: false
+  verbose: true
 use_pipe_obj: false

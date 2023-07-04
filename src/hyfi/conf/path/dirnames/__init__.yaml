@@ -10,6 +10,6 @@ logs: logs
 cache: .cache
 tmp: tmp
 # to reuse the same config file for different runs
+config_dirname: configs
 config_yaml: config.yaml
 config_json: config.json
-config_dirname: configs

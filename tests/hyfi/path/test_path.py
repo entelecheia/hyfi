@@ -24,6 +24,12 @@ def test_path_config():
     # Test that the log_dir and cache_dir properties return the correct values
     assert Path(config.log_dir).is_dir()
     assert Path(config.cache_dir).is_dir()
+    config.project_name = "newproject"
+    config.print_config()
+    print(config.config_jsonpath)
+    assert config.config_filepath == Path(
+        "workspace/tmp/testspace/configs/newproject_config.yaml"
+    )
 
 
 if __name__ == "__main__":

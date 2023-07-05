@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.0.5 (2023-07-05)
+
+### Fix
+
+* **test-batch-task:** Update batch_num in config ([`fc2eae0`](https://github.com/entelecheia/hyfi/commit/fc2eae011dcf21bc4c3a33b87e0ee179ad80c2ce))
+* **task:** Update task version ([`973afad`](https://github.com/entelecheia/hyfi/commit/973afad72ec55f4f6008b46fc280c2ffc79c985c))
+* **composer:** Register new resolvers for version ([`d4df71d`](https://github.com/entelecheia/hyfi/commit/d4df71dd225ce0ff28fa0347f527b53a986b8d61))
+
 ## v1.0.4 (2023-07-04)
 
 ### Fix

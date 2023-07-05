@@ -34,7 +34,6 @@ class BatchTaskConfig(TaskConfig):
         "task_name": "set_task_name",
         "task_root": "set_task_root",
         "batch_name": "set_batch_name",
-        "batch_num": "set_batch_num",
     }
     _subconfigs_ = {"batch": BatchConfig}
 
@@ -75,6 +74,10 @@ class BatchTaskConfig(TaskConfig):
     @property
     def batch_num(self):
         return self.batch.batch_num if self.batch else None
+
+    @batch_num.setter
+    def batch_num(self, val):
+        self.set_batch_num(val)
 
     @property
     def seed(self):

@@ -61,7 +61,7 @@ class XC(Composer):
         config[SpecialKeys.PARTIAL.value] = True
         rc_kwargs_ = config.pop(SpecialKeys.KWARGS, {})
         if rc_kwargs_ and kwargs:
-            kwargs.update(rc_kwargs_)
+            kwargs |= rc_kwargs_
         return XC.instantiate(config, *args, **kwargs)
 
     @staticmethod

@@ -1,7 +1,7 @@
 import inspect
 from typing import Any, Callable, TypeVar, cast
 
-from pydantic import validate_call, ConfigDict
+from pydantic import ConfigDict, validate_call
 
 _T = TypeVar("_T", bound=Callable[..., Any])
 

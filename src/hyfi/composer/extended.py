@@ -6,11 +6,8 @@ import hydra
 from omegaconf import OmegaConf
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
-from hyfi.__global__.config import (
-    __global_config__,
-    __search_package_path__,
-    __version__,
-)
+from hyfi.__global__.config import __global_config__, __search_package_path__
+from hyfi.about import __version__
 from hyfi.cached_path import cached_path
 from hyfi.composer import Composer, SpecialKeys
 from hyfi.utils.envs import ENVs

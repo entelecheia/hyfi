@@ -22,6 +22,7 @@ from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
+from hyfi.about import AboutConfig
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
 from hyfi.dotenv import DotEnvConfig
@@ -45,10 +46,11 @@ logger = LOGGING.getLogger(__name__)
 
 
 def _about(cfg):
-    pkg_name = cfg.about.__package_name__
-    name = cfg.about.name
+    about = AboutConfig() if cfg.about is None else cfg.about
+    pkg_name = about.__package_name__
+    name = about.name
     print()
-    for k, v in cfg.about.model_dump().items():
+    for k, v in about.model_dump().items():
         if k.startswith("_"):
             continue
         print(f"{k:11} : {v}")

@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.1.0 (2023-07-08)
+
+### Feature
+
+* **composer:** Add pydantic validation ([`ab42fe1`](https://github.com/entelecheia/hyfi/commit/ab42fe1a2bc9a834d4d1fc81493f368be4bea34d))
+* **dependencies:** Add hydra-zen ([`55094ae`](https://github.com/entelecheia/hyfi/commit/55094aec15b5255fd57664b1cd458b7cb1514497))
+
+### Fix
+
+* **cli:** Remove unnecessary comments and conditional statement ([`58add0f`](https://github.com/entelecheia/hyfi/commit/58add0f24c3bb9b2b274e32d2e7f33351322c34e))
+* **about:** Handle NoneType for cfg.about ([`92e6207`](https://github.com/entelecheia/hyfi/commit/92e62072be6c1b6833bd95b582567304cd6ae037))
+
 ## v1.0.5 (2023-07-05)
 
 ### Fix

@@ -15,7 +15,7 @@ from pydantic import (
 )
 
 from hyfi.__global__ import __about__, __hydra_config__
-from hyfi.about import AboutConfig
+from hyfi.about import AboutConfig, __app_name__, __version__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
@@ -24,19 +24,6 @@ from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
 logger = LOGGING.getLogger(__name__)
-
-
-def __version__():
-    """
-    Returns the version of Hyfi. It is used to determine the version of Hyfi.
-
-
-    Returns:
-        string containing the version of
-    """
-    from hyfi._version import __version__
-
-    return __version__
 
 
 class HyfiConfig(BaseModel):
@@ -54,7 +41,7 @@ class HyfiConfig(BaseModel):
 
     hydra: Optional[DictConfig] = None
 
-    about: AboutConfig = AboutConfig()
+    about: Optional[AboutConfig] = None
     copier: Optional[DictConfig] = None
     project: Optional[ProjectConfig] = None
     task: Optional[TaskConfig] = None
@@ -211,6 +198,8 @@ class HyfiConfig(BaseModel):
         # Returns the current value of the _initilized_ attribute.
         if self._initilized_ and not force:
             return
+        if self.about is None:
+            self.about = AboutConfig()
         __hydra_config__.hyfi_config_module = __about__.config_module
         __hydra_config__.hyfi_config_path = __about__.config_path
         __hydra_config__.hyfi_user_config_path = self.hyfi_user_config_path
@@ -265,7 +254,17 @@ class HyfiConfig(BaseModel):
         Returns:
             The version of the application
         """
-        return self.about.version
+        return self.about.version if self.about else __version__()
+
+    @property
+    def app_name(self):
+        """
+        Get the name of the application.
+
+        Returns:
+            The name of the application
+        """
+        return self.about.name if self.about else __app_name__
 
     @property
     def dotenv(self):
@@ -277,7 +276,8 @@ class HyfiConfig(BaseModel):
 
 
 __global_config__ = HyfiConfig()
-__global_config__.about.version = __version__()
+if __global_config__.about:
+    __global_config__.about.version = __version__()
 
 
 def __search_package_path__():

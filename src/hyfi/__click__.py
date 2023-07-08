@@ -73,7 +73,6 @@ def about():
     Print the about information for Hyfi.
     """
     cfg = HyfiConfig()
-    cfg.about.version = __version__
     _about(cfg)
 
 

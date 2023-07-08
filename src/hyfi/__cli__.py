@@ -125,15 +125,10 @@ def hydra_main(
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
     # Returns the path to the config file.
-    if config_path is None:
-        config_path = __about__.config_path
+    # if config_path is None:
+    config_path = __about__.config_path
     hydra.main(
         config_path=config_path,
         config_name=config_name,
         version_base=__hydra_version_base__,
     )(cli_main)()
-
-
-# Run the command line interface
-if __name__ == "__main__":
-    hydra_main()

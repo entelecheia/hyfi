@@ -45,19 +45,6 @@ from hyfi.workflow import WorkflowConfig
 logger = LOGGING.getLogger(__name__)
 
 
-def _about(cfg):
-    about = AboutConfig() if cfg.about is None else cfg.about
-    pkg_name = about.__package_name__
-    name = about.name
-    print()
-    for k, v in about.model_dump().items():
-        if k.startswith("_"):
-            continue
-        print(f"{k:11} : {v}")
-    if pkg_name:
-        print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
-
-
 class HyFI:
     """Primary class for the hyfi config package"""
 
@@ -73,8 +60,7 @@ class HyFI:
     @staticmethod
     def about() -> None:
         """Print the about information"""
-        cfg = __global_config__
-        _about(cfg)
+        __global_config__.print_about()
 
     @staticmethod
     def init_project(

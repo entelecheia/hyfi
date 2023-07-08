@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 from hyfi.__global__ import __about__, __hydra_version_base__
 from hyfi.__global__.config import HyfiConfig
 from hyfi.copier import Copier
-from hyfi.main import HyFI, _about
+from hyfi.main import HyFI
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -23,8 +23,7 @@ def about(**args):
     Print the about information for Hyfi.
     This is a wrapper around _about which takes a HyfiConfig as an argument
     """
-    cfg = HyfiConfig(**args)
-    _about(cfg)
+    HyfiConfig(**args).print_about()
 
 
 def run_copy(**args):

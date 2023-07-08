@@ -49,7 +49,9 @@ class AboutConfig(BaseModel):
             options to be added to the AboutConfig instance.
     """
 
+    _config_group_: str = "about"
     __package_name__: str = __package_name__
+
     name: str = __app_name__
     authors: str = __authors__
     description: str = __description__

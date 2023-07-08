@@ -77,8 +77,9 @@ def cli_main(cfg: DictConfig) -> None:
         to indicate the reason for the failure
     """
     hyfi = HyfiConfig(**cfg)  # type: ignore
+    hyfi.initialize()
     verbose = hyfi.verbose
-    app_name = hyfi.about.name
+    app_name = hyfi.app_name
     print_config = hyfi.print_config
     resolve = hyfi.resolve
 

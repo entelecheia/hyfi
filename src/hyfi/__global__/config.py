@@ -274,6 +274,18 @@ class HyfiConfig(BaseModel):
     def osenv(self):
         return os.environ
 
+    def print_about(self):
+        about = AboutConfig() if self.about is None else self.about
+        pkg_name = about.__package_name__
+        name = about.name
+        print()
+        for k, v in about.model_dump().items():
+            if k.startswith("_"):
+                continue
+            print(f"{k:11} : {v}")
+        if pkg_name:
+            print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
+
 
 __global_config__ = HyfiConfig()
 if __global_config__.about:

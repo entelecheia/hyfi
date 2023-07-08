@@ -11,6 +11,28 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
+__package_name__: str = "hyfi"
+__app_name__: str = "HyFI"
+__authors__: str = "Young Joon Lee <entelecheia@hotmail.com>"
+__description__: str = (
+    "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
+)
+__homepage__: str = "https://hyfi.entelecheia.ai"
+__license__: str = "MIT"
+
+
+def __version__() -> str:
+    """
+    Returns the version of Hyfi. It is used to determine the version of Hyfi.
+
+
+    Returns:
+        string containing the version of
+    """
+    from hyfi._version import __version__
+
+    return __version__
+
 
 class AboutConfig(BaseModel):
     """A Pydantic BaseModel that contains metadata about the package.
@@ -27,15 +49,13 @@ class AboutConfig(BaseModel):
             options to be added to the AboutConfig instance.
     """
 
-    __package_name__: str = "hyfi"
-    name: str = "HyFI"
-    authors: str = "Young Joon Lee <entelecheia@hotmail.com>"
-    description: str = (
-        "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
-    )
-    homepage: str = "https://hyfi.entelecheia.ai"
-    license: str = "MIT"
-    version: str = "0.0.0"
+    __package_name__: str = __package_name__
+    name: str = __app_name__
+    authors: str = __authors__
+    description: str = __description__
+    homepage: str = __homepage__
+    license: str = __license__
+    version: str = __version__()
 
     model_config = ConfigDict(extra="allow")  # type: ignore
 

@@ -99,11 +99,11 @@ class HyfiConfig(BaseModel):
         Validate and set hyfi_user_config_path.
 
         Args:
-                cls: Class to use for validation.
-                v: Value to set if valid.
+            cls: Class to use for validation.
+            v: Value to set if valid.
 
         Returns:
-                True if valid False otherwise
+            True if valid False otherwise
         """
         return ENVs.check_and_set_osenv_var("hyfi_user_config_path", v)
 
@@ -148,17 +148,17 @@ class HyfiConfig(BaseModel):
         Initialize and start hyfi.
 
         Args:
-                project_name: Name of the project to use.
-                project_description: Description of the project that will be used.
-                project_root: Root directory of the project.
-                project_workspace_name: Name of the project's workspace directory.
-                global_hyfi_root: Root directory of the global hyfi.
-                global_workspace_name: Name of the global hierachical workspace directory.
-                num_workers: Number of workers to run.
-                log_level: Log level for the log.
-                autotime: Whether to automatically set time and / or keep track of run times.
-                retina: Whether to use retina or not.
-                verbose: Enables or disables logging
+            project_name: Name of the project to use.
+            project_description: Description of the project that will be used.
+            project_root: Root directory of the project.
+            project_workspace_name: Name of the project's workspace directory.
+            global_hyfi_root: Root directory of the global hyfi.
+            global_workspace_name: Name of the global hierachical workspace directory.
+            num_workers: Number of workers to run.
+            log_level: Log level for the log.
+            autotime: Whether to automatically set time and / or keep track of run times.
+            retina: Whether to use retina or not.
+            verbose: Enables or disables logging
         """
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
@@ -243,7 +243,7 @@ class HyfiConfig(BaseModel):
         Returns a string representation of HyFIConfig.
 
         Returns:
-                The string representation of HyFI
+            The string representation of HyFI
         """
         return f"HyFIConfig(project={self.project})"
 
@@ -263,7 +263,7 @@ class HyfiConfig(BaseModel):
 
 
         Returns:
-                The version of the application
+            The version of the application
         """
         return self.about.version
 

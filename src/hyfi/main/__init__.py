@@ -202,7 +202,7 @@ class HyFI(
         return os.environ
 
     @staticmethod
-    def pipe_config(**kwargs) -> PipeConfig:
+    def pipe(**kwargs) -> PipeConfig:
         """
         Return the PipeConfig.
 
@@ -215,7 +215,7 @@ class HyFI(
         return PipeConfig(**kwargs)
 
     @staticmethod
-    def task_config(**kwargs) -> TaskConfig:
+    def task(**kwargs) -> TaskConfig:
         """
         Return the TaskConfig.
 
@@ -228,7 +228,7 @@ class HyFI(
         return TaskConfig(**kwargs)
 
     @staticmethod
-    def workflow_config(**kwargs) -> WorkflowConfig:
+    def workflow(**kwargs) -> WorkflowConfig:
         """
         Return the WorkflowConfig.
 
@@ -356,11 +356,11 @@ class HyFI(
         if target and target not in cfg:
             raise ValueError(f"No {target} configuration found")
         if "workflow" in cfg and (target is None or target == "workflow"):
-            workflow = HyFI.workflow_config(**cfg["workflow"])
+            workflow = HyFI.workflow(**cfg["workflow"])
             HyFI.run_workflow(workflow)
         elif "task" in cfg and (target is None or target == "task"):
             project = HyFI.init_project(**cfg["project"]) if "project" in cfg else None
-            task = HyFI.task_config(**cfg["task"])
+            task = HyFI.task(**cfg["task"])
             HyFI.run_task(task, project=project)
         elif "copier" in cfg and (target is None or target == "copier"):
             cfg = HyFI.to_dict(cfg["copier"])

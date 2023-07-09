@@ -1,6 +1,5 @@
 # @package _global_
 debug_mode: false
-print_config: false
 resolve: true
 verbose: false
 ignore_warnings: true

@@ -5,4 +5,5 @@ _config_name_: __test__
 project_name: hyfi-test
 project_description: A test project for HyFI
 global_hyfi_root: ${get_original_cwd:}
+num_workers: 2
 verbose: true

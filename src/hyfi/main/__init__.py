@@ -3,6 +3,7 @@
     as well as various utility functions and imports.
 """
 import os
+import random
 from pathlib import Path, PosixPath, WindowsPath
 from typing import (
     IO,
@@ -17,13 +18,15 @@ from typing import (
     Union,
 )
 
+import hydra
 import pandas as pd
-from omegaconf import DictConfig, ListConfig, SCMode
+from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
-from hyfi.__global__.config import __global_config__
+from hyfi.__global__.config import __global_config__, __search_package_path__
+from hyfi.about import __version__
+from hyfi.cached_path import cached_path
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
-from hyfi.composer.extended import XC
 from hyfi.copier import Copier
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import BATCHER, JobLibConfig
@@ -43,6 +46,30 @@ from hyfi.utils.types import PathLikeType
 from hyfi.workflow import WorkflowConfig
 
 logger = LOGGING.getLogger(__name__)
+
+
+OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
+OmegaConf.register_new_resolver("__version__", __version__)
+OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
+OmegaConf.register_new_resolver("__home_path__", __home_path__)
+OmegaConf.register_new_resolver("today", FUNCs.today)
+OmegaConf.register_new_resolver("to_datetime", FUNCs.strptime)
+OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
+OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
+OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
+OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
+OmegaConf.register_new_resolver("get_original_cwd", ENVs.getcwd)
+OmegaConf.register_new_resolver("exists", IOLIBs.exists)
+OmegaConf.register_new_resolver("join_path", IOLIBs.join_path)
+OmegaConf.register_new_resolver("mkdir", IOLIBs.mkdir)
+OmegaConf.register_new_resolver("dirname", os.path.dirname)
+OmegaConf.register_new_resolver("basename", os.path.basename)
+OmegaConf.register_new_resolver("check_path", IOLIBs.check_path)
+OmegaConf.register_new_resolver("cached_path", cached_path)
+OmegaConf.register_new_resolver(
+    "lower_case_with_underscores", FUNCs.lower_case_with_underscores
+)
+OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)
 
 
 class HyFI:
@@ -406,11 +433,11 @@ class HyFI:
         *args: Any,
         **kwargs: Any,
     ) -> Callable:
-        return XC.partial(config, *args, **kwargs)
+        return Composer.partial(config, *args, **kwargs)
 
     @staticmethod
     def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-        return XC.instantiate(config, *args, **kwargs)
+        return Composer.instantiate(config, *args, **kwargs)
 
     @staticmethod
     def is_config(
@@ -499,11 +526,11 @@ class HyFI:
 
     @staticmethod
     def getsource(obj):
-        return XC.getsource(obj)
+        return Composer.getsource(obj)
 
     @staticmethod
     def viewsource(obj):
-        return XC.viewsource(obj)
+        return Composer.viewsource(obj)
 
     ###############################
     # Logging related functions

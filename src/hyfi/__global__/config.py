@@ -34,7 +34,6 @@ class HyfiConfig(BaseModel):
     hyfi_user_config_path: str = ""
 
     debug_mode: bool = False
-    print_config: bool = False
     resolve: bool = False
     verbose: bool = False
     logging_level: str = "WARNING"

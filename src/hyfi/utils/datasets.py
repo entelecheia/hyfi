@@ -26,7 +26,7 @@ DatasetType = Union[Dataset, IterableDataset]
 DatasetLikeType = Union[Dataset, IterableDataset, DatasetDict, IterableDatasetDict]
 
 
-class Datasets:
+class DATASETs:
     @staticmethod
     def is_dataframe(data: Any) -> bool:
         """Check if data is a pandas dataframe"""
@@ -46,14 +46,14 @@ class Datasets:
     ) -> Union[pd.DataFrame, DatasetType]:
         # if data is a list of datasets, concatenate them
         if isinstance(data, list) and isinstance(data[0], Dataset):
-            return Datasets.concatenate_datasets(
+            return DATASETs.concatenate_datasets(
                 data,
                 axis=axis,
                 split=split,
                 **kwargs,
             )
         else:
-            return Datasets.concatenate_dataframes(
+            return DATASETs.concatenate_dataframes(
                 data,
                 columns=columns,
                 add_split_key_column=add_split_key_column,
@@ -106,7 +106,7 @@ class Datasets:
         name: Optional[str] = None,
         data_dir: Optional[str] = "",
         data_files: Optional[Union[str, Sequence[str]]] = None,
-        split: Optional[str] = None,
+        split: Optional[str] = "train",
         filetype: Optional[str] = "",
         concatenate: Optional[bool] = False,
         use_cached: bool = False,
@@ -115,7 +115,7 @@ class Datasets:
     ) -> Union[Dict[str, pd.DataFrame], Dict[str, DatasetType]]:
         """Load data from a file or a list of files"""
         if path in ["dataframe", "df", "pandas"]:
-            if data := Datasets.load_dataframes(
+            data = DATASETs.load_dataframes(
                 data_files,
                 data_dir=data_dir,
                 filetype=filetype,
@@ -124,12 +124,13 @@ class Datasets:
                 use_cached=use_cached,
                 verbose=verbose,
                 **kwargs,
-            ):
+            )
+            if data is not None:
                 return data if isinstance(data, dict) else {split: data}
             else:
                 return {}
         else:
-            dset = Datasets.load_dataset(
+            dset = DATASETs.load_dataset(
                 path,
                 name=name,
                 data_dir=data_dir,
@@ -141,7 +142,7 @@ class Datasets:
             if isinstance(dset, (Dataset, IterableDataset)):
                 return {split: dset}
             if concatenate:
-                return {split: Datasets.concatenate_datasets(dset.values())}
+                return {split: DATASETs.concatenate_datasets(dset.values())}
             else:
                 return {k: v for k, v in dset.items() if v is not None}
 
@@ -196,7 +197,7 @@ class Datasets:
             logger.warning("No data_files provided")
             return {}
 
-        filepaths = Datasets.get_data_files(
+        filepaths = DATASETs.get_data_files(
             data_files,
             data_dir,
             split=split,
@@ -209,7 +210,7 @@ class Datasets:
             data = {
                 name: pd.concat(
                     [
-                        Datasets.load_dataframe(
+                        DATASETs.load_dataframe(
                             f, verbose=verbose, filetype=filetype, **kwargs
                         )
                         for f in files
@@ -222,7 +223,7 @@ class Datasets:
             return data
         else:
             data = {
-                os.path.basename(f): Datasets.load_dataframe(
+                os.path.basename(f): DATASETs.load_dataframe(
                     f, verbose=verbose, filetype=filetype, **kwargs
                 )
                 for f in filepaths
@@ -325,7 +326,7 @@ class Datasets:
 
         if isinstance(data, dict):
             for k, v in data.items():
-                Datasets.save_dataframes(
+                DATASETs.save_dataframes(
                     v,
                     data_file,
                     data_dir=data_dir,
@@ -336,7 +337,7 @@ class Datasets:
                     verbose=verbose,
                     **kwargs,
                 )
-        elif Datasets.is_dataframe(data):
+        elif DATASETs.is_dataframe(data):
             logger.info("Saving dataframe to %s", filepath)
             if isinstance(columns, list):
                 columns = [c for c in columns if c in data.columns]

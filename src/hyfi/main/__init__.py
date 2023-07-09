@@ -342,6 +342,8 @@ class HyFI(
     @staticmethod
     def run(cfg: Union[Dict, DictConfig], target: Optional[str] = None):
         """Run the config"""
+        if target and target not in cfg:
+            raise ValueError(f"No {target} configuration found")
         if "workflow" in cfg and (target is None or target == "workflow"):
             workflow = HyFI.workflow_config(**cfg["workflow"])
             HyFI.run_workflow(workflow)

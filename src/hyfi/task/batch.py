@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
 from hyfi.batch import BatchConfig
-from hyfi.composer.extended import XC
+from hyfi.composer import Composer
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING
 
@@ -188,14 +188,14 @@ class BatchTaskConfig(TaskConfig):
         if filepath:
             if filepath.is_file():
                 logger.info("Loading config from %s", filepath)
-                batch_cfg = XC.load(filepath)
+                batch_cfg = Composer.load(filepath)
                 logger.info("Merging config with the loaded config")
-                cfg = XC.merge(cfg, batch_cfg)
+                cfg = Composer.merge(cfg, batch_cfg)
             else:
                 logger.info("No config file found at %s", filepath)
         if self.verbose:
             logger.info("Updating config with config_kwargs: %s", config_kwargs)
-        cfg = XC.update(XC.to_dict(cfg), config_kwargs)
+        cfg = Composer.update(Composer.to_dict(cfg), config_kwargs)
 
         # initialize self with the config
         self.__init__(**cfg)
@@ -208,4 +208,4 @@ class BatchTaskConfig(TaskConfig):
         batch_num: Optional[int] = None,
     ):
         self.load_config(batch_name, batch_num)
-        XC.print(self.model_dump())
+        Composer.print(self.model_dump())

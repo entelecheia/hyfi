@@ -22,9 +22,9 @@ from omegaconf import DictConfig, ListConfig, SCMode
 
 from hyfi.__global__ import __home_path__, __hyfi_path__
 from hyfi.__global__.config import __global_config__
-from hyfi.about import AboutConfig
 from hyfi.composer import Composer, DictKeyType, SpecialKeys
 from hyfi.composer.extended import XC
+from hyfi.copier import Copier
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PipelineConfig, PIPELINEs
@@ -522,6 +522,23 @@ class HyFI:
     ###############################
     # Pipeline related functions
     ###############################
+    @staticmethod
+    def run(cfg: Union[Dict, DictConfig], target: Optional[str] = None):
+        """Run the config"""
+        if "workflow" in cfg and (target is None or target == "workflow"):
+            workflow = HyFI.workflow_config(**cfg["workflow"])
+            HyFI.run_workflow(workflow)
+        elif "task" in cfg and (target is None or target == "task"):
+            project = HyFI.init_project(**cfg["project"]) if "project" in cfg else None
+            task = HyFI.task_config(**cfg["task"])
+            HyFI.run_task(task, project=project)
+        elif "copier" in cfg and (target is None or target == "copier"):
+            cfg = HyFI.to_dict(cfg["copier"])
+            with Copier(**cfg) as worker:
+                worker.run_copy()
+        else:
+            HyFI.about()
+
     @staticmethod
     def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
         """Run the pipelines specified in the task"""

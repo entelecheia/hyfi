@@ -71,6 +71,7 @@ class ProjectConfig(BaseConfig):
         self.initialize()
 
     def initialize(self):
+        logger.debug("Initializing Project Config: %s", self.project_name)
         self.dotenv = DotEnvConfig()
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
@@ -82,6 +83,12 @@ class ProjectConfig(BaseConfig):
         self.dotenv.HYFI_NUM_WORKERS = self.num_workers
         self.dotenv.HYFI_VERBOSE = self.verbose
         self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
+
+        if self.joblib:
+            self.joblib.init_backend()
+        else:
+            logger.warning("JoblibConfig not initialized")
+
         self.init_wandb()
         if self.use_huggingface_hub:
             self.init_huggingface_hub()

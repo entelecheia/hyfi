@@ -5,16 +5,16 @@ from typing import Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.core import __about__, __hydra_version_base__
+from hyfi.core import (
+    __about__,
+    __config_name__,
+    __config_path__,
+    __hydra_version_base__,
+)
 from hyfi.core.config import HyfiConfig
 from hyfi.main import HyFI
-from hyfi.utils.logging import LOGGING
 
-logger = LOGGING.getLogger(__name__)
-
-
-__config_path__ = "conf"
-__config_name__ = "config"
+logger = HyFI.getLogger(__name__)
 
 
 def about(**args):
@@ -60,6 +60,7 @@ def cli_main(cfg: DictConfig) -> None:
         None if everything went fine otherwise an error is raised
         to indicate the reason for the failure
     """
+    HyFI.initialize()
     hyfi = HyfiConfig(**cfg)  # type: ignore
     verbose = hyfi.verbose
     # Print out the command line interface for the application.

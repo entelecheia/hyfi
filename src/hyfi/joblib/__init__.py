@@ -36,7 +36,7 @@ class JobLibConfig(BaseConfig):
         self,
     ):
         """Initialize the backend for joblib"""
-        if self.initialize_backend:
+        if self.initialize_backend and not self._initilized_:
             backend_handle = None
             backend = self.backend
 
@@ -58,7 +58,7 @@ class JobLibConfig(BaseConfig):
                 verbose=self.verbose,
             )
             self._batcher_instance_ = core._batcher_instance_
-            logger.debug("initialized batcher with %s", core._batcher_instance_)
+            logger.info("initialized batcher with %s", core._batcher_instance_)
         self._initilized_ = True
 
     def stop_backend(self):
@@ -119,6 +119,6 @@ class BATCHER:
                 return results
 
         if batcher_instance is None:
-            logger.info("Warning: batcher not initialized")
+            logger.warning("batcher is not initialized")
         tqdm.pandas(desc=description)
         return series.progress_apply(func)  # type: ignore

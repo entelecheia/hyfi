@@ -3,5 +3,6 @@ defaults:
   - /task@task: __test__
 
 _config_name_: __test__
+verbose: true
 tasks:
   - task

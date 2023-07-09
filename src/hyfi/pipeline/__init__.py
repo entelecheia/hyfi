@@ -226,10 +226,11 @@ class PIPELINEs:
         """
         # Set project to the project.
         if project:
+            project.initialize()
             task.project = project
         # Run all pipelines in the pipeline.
         if task.verbose:
-            logger.info("Running %s pipelines", len(task.pipelines or []))
+            logger.info("Running %s pipeline(s)", len(task.pipelines or []))
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
                 logger.info("Running pipeline: %s", pipeline.model_dump())
@@ -244,6 +245,8 @@ class PIPELINEs:
         Args:
             workflow: WorkflowConfig object to run
         """
+        if workflow.verbose:
+            logger.info("Running %s task(s)", len(workflow.tasks or []))
         # Run all tasks in the workflow.
         for task in workflow.get_tasks():
             # Run the task if verbose is true.

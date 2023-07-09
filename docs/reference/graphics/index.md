@@ -1,0 +1,3 @@
+# `hyfi.graphics`
+
+::: hyfi.graphics

@@ -9,6 +9,8 @@ logger = LOGGING.getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "default"
+__config_path__ = "conf"
+__config_name__ = "config"
 
 __about__ = AboutConfig()
 _batcher_instance_ = None

@@ -9,3 +9,7 @@ help = "install mkdocs dependencies"
 [tool.poe.tasks.build-docs]
 cmd = "mkdocs build"
 help = "build documentation"
+
+[tool.poe.tasks.generate-config-docs]
+cmd = "python scripts/generate_config_docs.py"
+help = "generate configuration documentation"

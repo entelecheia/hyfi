@@ -6,7 +6,6 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from hyfi.composer import Composer
-from hyfi.composer.extended import XC
 from hyfi.task import TaskConfig
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
@@ -70,7 +69,7 @@ class PipeConfig(BaseRunConfig):
         if self.pipe_target.startswith("lambda"):
             return eval(self.pipe_target)
         elif self.pipe_target:
-            return XC.partial(self.pipe_target)
+            return Composer.partial(self.pipe_target)
         else:
             return None
 
@@ -81,7 +80,7 @@ class PipeConfig(BaseRunConfig):
             kwargs = self.run_with or {}
             if self.pipe_obj_arg_name:
                 kwargs.pop(self.pipe_obj_arg_name)
-            return XC.partial(self.run, **kwargs)
+            return Composer.partial(self.run, **kwargs)
         else:
             return None
 

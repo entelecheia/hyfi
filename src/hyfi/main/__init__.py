@@ -61,7 +61,18 @@ OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)
 
 
 class HyFI(
-    BATCHER, CONFs, DATASETs, ENVs, FUNCs, GPUs, GRAPHICs, IOLIBs, NBs, PIPELINEs, PKGs
+    BATCHER,
+    CONFs,
+    DATASETs,
+    ENVs,
+    FUNCs,
+    GPUs,
+    GRAPHICs,
+    IOLIBs,
+    LOGGING,
+    NBs,
+    PIPELINEs,
+    PKGs,
 ):
     """Primary class for the hyfi config package"""
 

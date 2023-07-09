@@ -544,7 +544,7 @@ class BaseConfig(BaseModel):
     )  # type: ignore
 
     def __init__(self, **config_kwargs):
-        logger.debug("init %s with %s", self.__class__.__name__, config_kwargs)
+        logger.debug("init %s with %s args", self.__class__.__name__, len(config_kwargs))
         super().__init__(**config_kwargs)
         self.initialize_subconfigs(config_kwargs)
 

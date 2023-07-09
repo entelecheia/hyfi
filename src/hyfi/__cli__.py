@@ -5,16 +5,16 @@ from typing import Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.core import __about__, __hydra_version_base__
+from hyfi.core import (
+    __about__,
+    __config_name__,
+    __config_path__,
+    __hydra_version_base__,
+)
 from hyfi.core.config import HyfiConfig
 from hyfi.main import HyFI
-from hyfi.utils.logging import LOGGING
 
-logger = LOGGING.getLogger(__name__)
-
-
-__config_path__ = "conf"
-__config_name__ = "config"
+logger = HyFI.getLogger(__name__)
 
 
 def about(**args):

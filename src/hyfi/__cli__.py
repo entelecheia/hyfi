@@ -30,8 +30,6 @@ def run_copy(**args):
     Copy all config files to the current working directory.
     This is a wrapper around HyfiConfig to allow us to pass arguments to it.
     """
-    if "copier" not in args:
-        raise ValueError("No copier configuration found")
     HyFI.run(args, "copier")
 
 
@@ -39,9 +37,6 @@ def run_task(**args):
     """
     Run a task. This is a wrapper around HyFI
     """
-    # Check if task is not in args
-    if "task" not in args:
-        raise ValueError("No task configuration found")
     HyFI.run(args, "task")
 
 
@@ -49,9 +44,6 @@ def run_workflow(**args):
     """
     Run a workflow. This is a wrapper around HyFI. run_workflow
     """
-    # Raised if no workflow configuration is specified.
-    if "workflow" not in args:
-        raise ValueError("No workflow configuration found")
     HyFI.run(args, "workflow")
 
 
@@ -89,7 +81,7 @@ def cli_main(cfg: DictConfig) -> None:
     if HyFI.is_instantiatable(cfg):
         HyFI.instantiate(cfg)
     else:
-        HyFI.run(cfg)
+        hyfi.run()
 
     HyFI.terminate()
 

@@ -1,7 +1,6 @@
 import collections.abc
 import json
 import os
-import re
 from enum import Enum
 from pathlib import Path
 from typing import IO, Any, Dict, List, Mapping, Tuple, Union
@@ -15,7 +14,7 @@ logger = LOGGING.getLogger(__name__)
 DictKeyType = Union[str, int, Enum, float, bool]
 
 
-class CONF:
+class CONFs:
     @staticmethod
     def select(
         cfg: Any,
@@ -61,7 +60,7 @@ class CONF:
         """
         # Convert a config object to a config object.
         if isinstance(cfg, dict):
-            cfg = CONF.to_config(cfg)
+            cfg = CONFs.to_config(cfg)
         # Returns a container for the given config.
         if isinstance(cfg, (DictConfig, ListConfig)):
             return OmegaConf.to_container(
@@ -100,9 +99,9 @@ class CONF:
         """
         import pprint
 
-        if CONF.is_config(cfg):
+        if CONFs.is_config(cfg):
             if resolve:
-                pprint.pprint(CONF.to_dict(cfg), **kwargs)
+                pprint.pprint(CONFs.to_dict(cfg), **kwargs)
             else:
                 pprint.pprint(cfg, **kwargs)
         else:
@@ -225,7 +224,7 @@ class CONF:
         """
         for k, v in _overrides.items():
             if isinstance(v, collections.abc.Mapping):
-                _dict[k] = CONF.update((_dict.get(k) or {}), v)  # type: ignore
+                _dict[k] = CONFs.update((_dict.get(k) or {}), v)  # type: ignore
             else:
                 _dict[k] = v  # type: ignore
         return _dict
@@ -247,27 +246,7 @@ class CONF:
         for k, v in _dict.items():
             key = new_key if k == old_key else k
             if isinstance(v, collections.abc.Mapping):
-                _new_dict[key] = CONF.replace_keys(v, old_key, new_key)
-            else:
-                _new_dict[key] = v
-        return _new_dict
-
-    @staticmethod
-    def replace_special_keys(_dict: Mapping[str, Any]) -> Mapping:
-        """
-        Replace special keys in a dictionary.
-
-        Args:
-            _dict (Mapping[str, Any]): The dictionary to update.
-
-        Returns:
-            Mapping: The updated dictionary.
-        """
-        _new_dict = {}
-        for k, v in _dict.items():
-            key = CONF.generate_alias_for_special_keys(k)
-            if isinstance(v, collections.abc.Mapping):
-                _new_dict[key] = CONF.replace_special_keys(v)
+                _new_dict[key] = CONFs.replace_keys(v, old_key, new_key)
             else:
                 _new_dict[key] = v
         return _new_dict
@@ -314,7 +293,7 @@ class CONF:
         Returns:
             Union[ListConfig, DictConfig]: The merged config object as a dictionary.
         """
-        return CONF.to_dict(OmegaConf.merge(*configs))
+        return CONFs.to_dict(OmegaConf.merge(*configs))
 
     @staticmethod
     def to_yaml(cfg: Any, resolve: bool = False, sort_keys: bool = False) -> str:
@@ -330,7 +309,7 @@ class CONF:
             str: The YAML string representation of the input config object.
         """
         if resolve:
-            cfg = CONF.to_dict(cfg)
+            cfg = CONFs.to_dict(cfg)
         return OmegaConf.to_yaml(cfg, resolve=resolve, sort_keys=sort_keys)
 
     @staticmethod
@@ -380,7 +359,7 @@ class CONF:
             return []
         elif isinstance(value, str):
             return [value]
-        return CONF.to_dict(value)
+        return CONFs.to_dict(value)
 
     @staticmethod
     def ensure_kwargs(_kwargs, _fn):
@@ -403,23 +382,5 @@ class CONF:
         return _kwargs
 
     @staticmethod
-    def generate_alias_for_special_keys(key: str) -> str:
-        """
-        Generate an alias for special keys.
-        _with_ -> run_with
-        _pipe_ -> run_pipe
-        _run_ -> run
-
-        Args:
-            key (str): The special key to generate an alias for.
-
-        Returns:
-            str: The alias for the special key.
-        """
-        # replace the exact `with`, `pipe` with `run_with`, `run_pipe`
-        key_ = re.sub(r"^with$", "run_with", key)
-        # replace the prefix `_` with `run_`
-        key_ = re.sub(r"^_with_$", "run_with", key_)
-        key_ = re.sub(r"^_pipe_$", "pipe_target", key_)
-        key_ = re.sub(r"^_run_$", "run", key_)
-        return key_
+    def pprint(cfg: Any, resolve: bool = True, **kwargs):
+        CONFs.print(cfg, resolve=resolve, **kwargs)

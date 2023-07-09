@@ -21,7 +21,7 @@ from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig, PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.conf import CONF
+from hyfi.utils.conf import CONFs
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
@@ -298,7 +298,7 @@ class HyfiConfig(BaseModel):
         elif self.task is not None and (target is None or target == "task"):
             PIPELINEs.run_task(self.task, project=self.project)
         elif self.copier is not None and (target is None or target == "copier"):
-            args = CONF.to_dict(self.copier)
+            args = CONFs.to_dict(self.copier)
             with Copier(**args) as worker:
                 worker.run_copy()
         else:

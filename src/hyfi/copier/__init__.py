@@ -77,8 +77,8 @@ class Copier:
 
     src_path: Path = field(default=Path("conf"))
     dst_path: Path = field(default=Path("."))
-    filetypes: Optional[Union[List, str]] = field(default=None)
-    exclude: Optional[Union[List, str]] = field(default=None)
+    filetypes: Optional[Union[List[str], str]] = field(default=None)
+    exclude: Optional[Union[List[str], str]] = field(default=None)
     skip_if_exists: bool = False
     cleanup_on_error: bool = True
     overwrite: bool = False

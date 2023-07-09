@@ -1,8 +1,6 @@
 defaults:
   - /path: __task__
   - /module: __init__
-  - /pipeline@pipeline:
-      - __init__
 
 _config_name_: __init__
 project: ${oc.select:project,null}
@@ -12,4 +10,3 @@ autoload: false
 version: ${__version__:}
 verbose: ${oc.select:project.verbose,false}
 pipelines:
-  - pipeline

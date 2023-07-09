@@ -3,7 +3,6 @@ defaults:
   - __init__
 
 debug_mode: true
-print_config: true
 verbose: true
 ignore_warnings: false
 logging_level: DEBUG

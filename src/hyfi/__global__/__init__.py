@@ -19,7 +19,7 @@ class HydraConfig(BaseModel):
 
     hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
-    hyfi_user_config_path: str = ""
+    hyfi_user_config_path: str = "conf"
 
 
 __hydra_config__ = HydraConfig()

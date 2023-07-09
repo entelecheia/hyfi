@@ -6,7 +6,6 @@ from hyfi.__global__ import __hyfi_path__
 from hyfi.__global__.config import HyfiConfig
 from hyfi._version import __version__
 from hyfi.copier import Copier
-from hyfi.main import _about
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -72,9 +71,7 @@ def about():
     """
     Print the about information for Hyfi.
     """
-    cfg = HyfiConfig()
-    cfg.about.version = __version__
-    _about(cfg)
+    HyfiConfig().print_about()
 
 
 @cli.command()

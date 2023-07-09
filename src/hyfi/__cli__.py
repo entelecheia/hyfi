@@ -7,8 +7,7 @@ from omegaconf import DictConfig
 
 from hyfi.__global__ import __about__, __hydra_version_base__
 from hyfi.__global__.config import HyfiConfig
-from hyfi.copier import Copier
-from hyfi.main import HyFI, _about
+from hyfi.main import HyFI
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -23,8 +22,7 @@ def about(**args):
     Print the about information for Hyfi.
     This is a wrapper around _about which takes a HyfiConfig as an argument
     """
-    cfg = HyfiConfig(**args)
-    _about(cfg)
+    HyFI.run(args)
 
 
 def run_copy(**args):
@@ -32,35 +30,21 @@ def run_copy(**args):
     Copy all config files to the current working directory.
     This is a wrapper around HyfiConfig to allow us to pass arguments to it.
     """
-    if "copier" not in args:
-        raise ValueError("No copier configuration found")
-    cfg = HyFI.to_dict(args["copier"])
-    print(type(cfg), cfg)
-    with Copier(**cfg) as worker:
-        worker.run_copy()
+    HyFI.run(args, "copier")
 
 
 def run_task(**args):
     """
     Run a task. This is a wrapper around HyFI
     """
-    # Check if task is not in args
-    if "task" not in args:
-        raise ValueError("No task configuration found")
-    project = HyFI.init_project(**args["project"]) if "project" in args else None
-    task = HyFI.task_config(**args["task"])
-    HyFI.run_task(task, project=project)
+    HyFI.run(args, "task")
 
 
 def run_workflow(**args):
     """
     Run a workflow. This is a wrapper around HyFI. run_workflow
     """
-    # Raised if no workflow configuration is specified.
-    if "workflow" not in args:
-        raise ValueError("No workflow configuration found")
-    workflow = HyFI.workflow_config(**args["workflow"])
-    HyFI.run_workflow(workflow)
+    HyFI.run(args, "workflow")
 
 
 def cli_main(cfg: DictConfig) -> None:
@@ -77,33 +61,27 @@ def cli_main(cfg: DictConfig) -> None:
         to indicate the reason for the failure
     """
     hyfi = HyfiConfig(**cfg)  # type: ignore
-    hyfi.initialize()
     verbose = hyfi.verbose
-    app_name = hyfi.app_name
-    print_config = hyfi.print_config
-    resolve = hyfi.resolve
-
     # Print out the command line interface for the application.
     if verbose:
+        app_name = hyfi.app_name
         print(f"## Command Line Interface for {app_name} ##")
-    HyFI.initialize()
 
-    # Print the configuration to the console.
-    if print_config:
         # Prints the configuration to the console.
-        if resolve:
+        if hyfi.resolve:
             logger.info("## hydra configuration resolved ##")
-            HyFI.pprint(cfg)
+            HyFI.print(cfg)
         else:
             logger.info("## hydra configuration ##")
             print(HyFI.to_yaml(cfg))
 
-    # Prints out the working directory and original working directory.
-    if verbose:
         logger.info("Hydra working directory : %s", {os.getcwd()})
         logger.info("Orig working directory  : %s", {hydra.utils.get_original_cwd()})
 
-    HyFI.instantiate(cfg)
+    if HyFI.is_instantiatable(cfg):
+        HyFI.instantiate(cfg)
+    else:
+        hyfi.run()
 
     HyFI.terminate()
 
@@ -125,8 +103,8 @@ def hydra_main(
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
     # Returns the path to the config file.
-    # if config_path is None:
-    config_path = __about__.config_path
+    if config_path is None:
+        config_path = __about__.config_path
     hydra.main(
         config_path=config_path,
         config_name=config_name,

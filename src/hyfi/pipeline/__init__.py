@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import field_validator
 
-from hyfi.__global__.config import __global_config__
 from hyfi.composer import Composer
 from hyfi.pipeline.configs import BaseRunConfig, PipeConfig, Pipes, RunningConfig
 from hyfi.project import ProjectConfig

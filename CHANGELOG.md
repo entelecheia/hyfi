@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.2.1 (2023-07-09)
+
+### Fix
+
+* **core:** Rename __global__ to core ([`2e0b418`](https://github.com/entelecheia/hyfi/commit/2e0b41875ad983f917ebdd0c0b34684d13b6a9c2))
+
+### Documentation
+
+* **core:** Rename __global__ to core ([`5aa726b`](https://github.com/entelecheia/hyfi/commit/5aa726b1db9fcef7976f93cc5d9b287882b0b750))
+
 ## v1.2.0 (2023-07-09)
 
 ### Feature

@@ -2,10 +2,10 @@
 
 import click
 
-from hyfi.__global__ import __hyfi_path__
-from hyfi.__global__.config import HyfiConfig
 from hyfi._version import __version__
 from hyfi.copier import Copier
+from hyfi.core import __hyfi_path__
+from hyfi.core.config import HyfiConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

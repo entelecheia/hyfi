@@ -4,7 +4,7 @@ import pandas as pd
 from pydantic import PrivateAttr
 from tqdm.auto import tqdm
 
-from hyfi import __global__
+from hyfi import core
 from hyfi.composer import BaseConfig
 from hyfi.joblib.batch import batcher
 from hyfi.joblib.batch.apply import decorator_apply
@@ -48,7 +48,7 @@ class JobLibConfig(BaseConfig):
                 ray.init(**ray_cfg)
                 backend_handle = ray
 
-            __global__._batcher_instance_ = batcher.Batcher(
+            core._batcher_instance_ = batcher.Batcher(
                 backend_handle=backend_handle,
                 backend=self.backend,
                 procs=self.num_workers,
@@ -57,16 +57,16 @@ class JobLibConfig(BaseConfig):
                 task_num_gpus=self.task_num_gpus,
                 verbose=self.verbose,
             )
-            self._batcher_instance_ = __global__._batcher_instance_
-            logger.debug("initialized batcher with %s", __global__._batcher_instance_)
+            self._batcher_instance_ = core._batcher_instance_
+            logger.debug("initialized batcher with %s", core._batcher_instance_)
         self._initilized_ = True
 
     def stop_backend(self):
         """Stop the backend for joblib"""
         backend = self.backend
-        if __global__._batcher_instance_:
+        if core._batcher_instance_:
             logger.debug("stopping batcher")
-            del __global__._batcher_instance_
+            del core._batcher_instance_
 
         logger.debug("stopping distributed framework")
         if self.initialize_backend and backend == "ray":

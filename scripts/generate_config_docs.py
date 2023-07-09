@@ -24,6 +24,7 @@ config_folder = "src/hyfi/conf"
 output_docs_folder = "docs/configs"
 
 """
+
 import os
 import yaml
 from jinja2 import Template
@@ -41,7 +42,8 @@ for folder in os.listdir(config_folder):
         with open(output_file, "w") as f:
             f.write(f"# {folder}\n\n")
             f.write(f"Config location: `conf/{folder}`\n\n")
-            for file in os.listdir(folder_path):
+            files = sorted(os.listdir(folder_path))
+            for file in files:
                 if file.endswith(".yaml"):
                     file_path = os.path.join(folder_path, file)
                     with open(file_path) as yaml_file:

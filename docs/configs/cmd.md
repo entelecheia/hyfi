@@ -2,22 +2,10 @@
 
 Config location: `conf/cmd`
 
-## `run_workflow.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/cmd/run_workflow.yaml' %}
-```
-
 ## `__init__.yaml`
 
 ```yaml
 {% include '../../src/hyfi/conf/cmd/__init__.yaml' %}
-```
-
-## `run_task.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/cmd/run_task.yaml' %}
 ```
 
 ## `about.yaml`
@@ -30,5 +18,17 @@ Config location: `conf/cmd`
 
 ```yaml
 {% include '../../src/hyfi/conf/cmd/copy_conf.yaml' %}
+```
+
+## `run_task.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/cmd/run_task.yaml' %}
+```
+
+## `run_workflow.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/cmd/run_workflow.yaml' %}
 ```
 

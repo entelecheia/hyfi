@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v1.2.0 (2023-07-09)
+
+### Feature
+
+* **config:** Add run method ([`2d5115e`](https://github.com/entelecheia/hyfi/commit/2d5115e2281dbda6572ee37186dfe91c98955501))
+
+### Fix
+
+* **hyfi:** Add target validation in run function ([`f3be797`](https://github.com/entelecheia/hyfi/commit/f3be797665d133e3e389a0505f78c92d3f589124))
+* **graphics:** Add GPUs class for static funcs ([`6162b21`](https://github.com/entelecheia/hyfi/commit/6162b2184df569d7997f4ac1a2822a98d5c625a4))
+* **configs:** Fix import of XC ([`37024f3`](https://github.com/entelecheia/hyfi/commit/37024f31e0e3d822f4329b0c2dfe84c19e72c67d))
+* **cli:** Handle None config_path correctly ([`81b7f7e`](https://github.com/entelecheia/hyfi/commit/81b7f7e91780aecfaa98afc038daafc51a098edf))
+* **main:** Add run function in HyFI class ([`f36da0f`](https://github.com/entelecheia/hyfi/commit/f36da0fd9d579490dd165f89aabf90cd07608afb))
+* **config:** Remove print_config option ([`8a2c643`](https://github.com/entelecheia/hyfi/commit/8a2c643ebf125d29b4e7b139f80dec06816c3bd8))
+* **config:** Remove print_config flag ([`48fe3ad`](https://github.com/entelecheia/hyfi/commit/48fe3ad4f1a34990e28f921cb37b67aa0785861c))
+* **config:** Add print_about method ([`7760ac1`](https://github.com/entelecheia/hyfi/commit/7760ac195b38b215e9b81b7b87877c5c7d8e2620))
+* **cli:** Remove unused import and method ([`150d9d5`](https://github.com/entelecheia/hyfi/commit/150d9d580f6796580cf85cf331c23fa5f6277082))
+
 ## v1.1.0 (2023-07-08)
 
 ### Feature

@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.2.2 (2023-07-09)
+
+### Fix
+
+* **project-config:** Add joblib backend initialization and logger debug and warning messages ([`6e699ca`](https://github.com/entelecheia/hyfi/commit/6e699cac9b00e6f280bdfce1184dbbcbc7a68c07))
+* **pipeline:** Initialize project before task assignment ([`18b63b6`](https://github.com/entelecheia/hyfi/commit/18b63b6c92a99317a9abdc20869c215460ff90b6))
+* **hyfi:** Initialize HyFI in cli_main function ([`8181021`](https://github.com/entelecheia/hyfi/commit/81810212140c5470d9f949d2beecf695e45c751f))
+
+### Documentation
+
+* Add new reference files for various utilities and graphics ([`ca32b9c`](https://github.com/entelecheia/hyfi/commit/ca32b9c88184f22318a5eb13bc62760f47e0e05c))
+
 ## v1.2.1 (2023-07-09)
 
 ### Fix

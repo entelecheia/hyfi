@@ -12,7 +12,7 @@ import hydra
 from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict, PrivateAttr, model_validator
 
-from hyfi.__global__ import (
+from hyfi.core import (
     __about__,
     __hydra_config__,
     __hydra_default_config_group_value__,

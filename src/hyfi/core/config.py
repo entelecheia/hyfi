@@ -14,9 +14,9 @@ from pydantic import (
     model_validator,
 )
 
-from hyfi.__global__ import __about__, __hydra_config__
 from hyfi.about import AboutConfig, __app_name__, __version__
 from hyfi.copier import Copier
+from hyfi.core import __about__, __hydra_config__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig, PIPELINEs
 from hyfi.project import ProjectConfig

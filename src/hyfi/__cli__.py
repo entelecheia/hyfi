@@ -5,8 +5,8 @@ from typing import Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.__global__ import __about__, __hydra_version_base__
-from hyfi.__global__.config import HyfiConfig
+from hyfi.core import __about__, __hydra_version_base__
+from hyfi.core.config import HyfiConfig
 from hyfi.main import HyFI
 from hyfi.utils.logging import LOGGING
 

@@ -1,3 +1,3 @@
-# `hyfi.__global__`
+# `hyfi.core`
 
-::: hyfi.__global__
+::: hyfi.core

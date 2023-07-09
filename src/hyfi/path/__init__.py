@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from hyfi.__global__ import __about__
 from hyfi.composer import BaseConfig
+from hyfi.core import __about__
 from hyfi.path.base import BasePathConfig
 from hyfi.utils.logging import LOGGING
 

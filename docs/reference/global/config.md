@@ -1,3 +1,3 @@
-# `hyfi.__global__.config`
+# `hyfi.core.config`
 
-::: hyfi.__global__.config
+::: hyfi.core.config

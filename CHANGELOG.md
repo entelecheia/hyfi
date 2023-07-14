@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.2.4 (2023-07-14)
+
+### Fix
+
+* **iolibs:** Ensure _path is an instance of Path before calling methods ([`e86407e`](https://github.com/entelecheia/hyfi/commit/e86407e21b2291c47dcb77d0eb46cce3af955cc9))
+* **utils/envs:** Enhance find_dotenv function ([`01bd53d`](https://github.com/entelecheia/hyfi/commit/01bd53db20fcec9a84dbbf056fb6e0d683b9ab32))
+
 ## v1.2.3 (2023-07-14)
 
 ### Fix

@@ -1,5 +1,6 @@
 """Environment variable utilities"""
 import os
+import sys
 from collections import defaultdict
 from pathlib import Path
 from string import Template
@@ -146,6 +147,12 @@ class ENVs:
                     logger.debug("No .env file found in %s", dotenv_dir)
 
     @staticmethod
+    def is_interactive():
+        """Decide whether this is running in a REPL or IPython notebook"""
+        main = __import__("__main__", None, None, fromlist=["__file__"])
+        return not hasattr(main, "__file__")
+
+    @staticmethod
     def find_dotenv(
         filename: str = ".env",
         raise_error_if_not_found: bool = False,
@@ -156,11 +163,31 @@ class ENVs:
 
         Returns path to the file if found, or an empty string otherwise
         """
-        return dotenv.find_dotenv(
-            filename=filename,
-            raise_error_if_not_found=raise_error_if_not_found,
-            usecwd=usecwd,
-        )
+
+        if usecwd or ENVs.is_interactive() or getattr(sys, "frozen", False):
+            # Should work without __file__, e.g. in REPL or IPython notebook.
+            path = os.getcwd()
+        else:
+            # will work for .py files
+            frame = sys._getframe()
+            current_file = __file__
+
+            while frame.f_code.co_filename == current_file:
+                assert frame.f_back is not None
+                frame = frame.f_back
+            frame_filename = frame.f_code.co_filename
+            path = os.path.dirname(os.path.abspath(frame_filename))
+
+        logger.debug("Trying to find %s in %s", filename, path)
+        for dirname in IOLIBs.walk_to_root(path):
+            check_path = os.path.join(dirname, filename)
+            if os.path.isfile(check_path):
+                return check_path
+
+        if raise_error_if_not_found:
+            raise IOError("File not found")
+
+        return ""
 
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:

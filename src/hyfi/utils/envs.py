@@ -190,6 +190,25 @@ class ENVs:
         return ""
 
     @staticmethod
+    def find_dotenv_dir(
+        filename: str = ".env",
+        raise_error_if_not_found: bool = False,
+        usecwd: bool = False,
+    ) -> str:
+        """
+        Search in increasingly higher folders for the given file
+
+        Returns path to the file if found, or an empty string otherwise
+        """
+        if dotenv_path := ENVs.find_dotenv(
+            filename=filename,
+            raise_error_if_not_found=raise_error_if_not_found,
+            usecwd=usecwd,
+        ):
+            return os.path.dirname(dotenv_path)
+        return ""
+
+    @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
         ENVs.load_dotenv()

@@ -7,8 +7,7 @@ def test_getcwd():
 
 
 def test_find_dotenv():
-    print(ENVs.find_dotenv())
-    print(os.path.join(os.getcwd(), ".env"))
+    print(ENVs.find_dotenv_dir())
     assert os.path.exists(ENVs.find_dotenv())
 
 

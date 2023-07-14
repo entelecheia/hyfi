@@ -99,6 +99,16 @@ class ProjectConfig(BaseConfig):
         if self.dotenv is None:
             raise ValueError("DotEnv object not initialized")
 
+        if not self.use_wandb:
+            return
+        try:
+            self._init_wandb()
+        except ImportError:
+            logger.warning("wandb is not installed, please install it to use wandb.")
+
+    def _init_wandb(self):
+        import wandb  # type: ignore
+
         self.dotenv.WANDB_DIR = str(self.path.log_dir)
         project_name = self.project_name.replace("/", "-").replace("\\", "-")
         self.dotenv.WANDB_PROJECT = project_name
@@ -106,15 +116,8 @@ class ProjectConfig(BaseConfig):
         notebook_name.mkdir(parents=True, exist_ok=True)
         self.dotenv.WANDB_NOTEBOOK_NAME = str(notebook_name)
         self.dotenv.WANDB_SILENT = str(not self.verbose)
-        if self.use_wandb:
-            try:
-                import wandb  # type: ignore
 
-                wandb.init(project=self.project_name)
-            except ImportError:
-                logger.warning(
-                    "wandb is not installed, please install it to use wandb."
-                )
+        wandb.init(project=project_name)
 
     def init_huggingface_hub(self):
         """Initialize huggingface_hub"""

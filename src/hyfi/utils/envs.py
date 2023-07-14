@@ -80,6 +80,8 @@ class ENVs:
         override: bool = False,
         dotenv_dir: str = "",
         dotenv_filename: str = ".env",
+        raise_error_if_not_found: bool = False,
+        usecwd: bool = False,
         verbose: bool = False,
     ) -> None:
         """
@@ -119,7 +121,11 @@ class ENVs:
                     "No .env file found in %s, finding .env in parent dirs", dotenv_path
                 )
             # Load dotenv. env from dotenv.
-            if dotenv_path := dotenv.find_dotenv():
+            if dotenv_path := ENVs.find_dotenv(
+                filename=dotenv_filename,
+                raise_error_if_not_found=raise_error_if_not_found,
+                usecwd=usecwd,
+            ):
                 dotenv.load_dotenv(
                     dotenv_path=dotenv_path, verbose=verbose, override=override
                 )
@@ -135,9 +141,26 @@ class ENVs:
                 os.environ["DOTENV_DIR"] = ""
                 # Print out the. env file if verbose is true.
                 if verbose:
-                    logger.info("No .env file found in %s", dotenv_path)
+                    logger.info("No .env file found in %s", dotenv_dir)
                 else:
-                    logger.debug("No .env file found in %s", dotenv_path)
+                    logger.debug("No .env file found in %s", dotenv_dir)
+
+    @staticmethod
+    def find_dotenv(
+        filename: str = ".env",
+        raise_error_if_not_found: bool = False,
+        usecwd: bool = False,
+    ) -> str:
+        """
+        Search in increasingly higher folders for the given file
+
+        Returns path to the file if found, or an empty string otherwise
+        """
+        return dotenv.find_dotenv(
+            filename=filename,
+            raise_error_if_not_found=raise_error_if_not_found,
+            usecwd=usecwd,
+        )
 
     @staticmethod
     def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:

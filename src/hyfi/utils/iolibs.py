@@ -11,7 +11,7 @@ import warnings
 from glob import glob
 from pathlib import Path, PosixPath, WindowsPath
 from types import TracebackType
-from typing import Callable, List, Tuple, Union
+from typing import Callable, Iterator, List, Tuple, Union
 
 import gdown
 
@@ -92,7 +92,7 @@ class IOLIBs:
                     filepath = IOLIBs.cached_path(f_pattern, **kwargs)
                 else:
                     filepath = os.path.join(base_dir, f_pattern)
-                if os.path.exists(filepath):
+                if isinstance(filepath, str) and os.path.exists(filepath):
                     if Path(filepath).is_file():
                         filepaths.append(filepath)
                 else:
@@ -177,6 +177,24 @@ class IOLIBs:
                 if mode == "r" and head is not None and isinstance(head, int):
                     return f.read(head)
                 return f.read()
+
+    @staticmethod
+    def walk_to_root(path: str) -> Iterator[str]:
+        """
+        Yield directories starting from the given directory up to the root
+        """
+        if not os.path.exists(path):
+            raise IOError("Starting path not found")
+
+        if os.path.isfile(path):
+            path = os.path.dirname(path)
+
+        last_dir = None
+        current_dir = os.path.abspath(path)
+        while last_dir != current_dir:
+            yield current_dir
+            parent_dir = os.path.abspath(os.path.join(current_dir, os.path.pardir))
+            last_dir, current_dir = current_dir, parent_dir
 
     @staticmethod
     def is_file(a, *p) -> bool:
@@ -429,6 +447,7 @@ class IOLIBs:
                     force_extract=force_extract,
                     cache_dir=cache_dir,
                 )
+                _path = Path(_path) if isinstance(_path, str) else None
             else:
                 if _cached_path is None:
                     raise ImportError(
@@ -446,13 +465,13 @@ class IOLIBs:
                     extract_archive=extract_archive,
                     force_extract=force_extract,
                     cache_dir=cache_dir,
-                ).as_posix()
+                )
 
             logger.debug("cached path: %s", _path)
 
-            if Path(_path).is_file():
+            if _path and _path.is_file():
                 _parent_dir = Path(_path).parent
-            elif Path(_path).is_dir():
+            elif _path and _path.is_dir():
                 _parent_dir = Path(_path)
             else:
                 logger.warning("Unknown path: %s", _path)

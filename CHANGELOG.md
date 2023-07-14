@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.2.3 (2023-07-14)
+
+### Fix
+
+* **project:** Add conditional wandb initialization check ([`35103d5`](https://github.com/entelecheia/hyfi/commit/35103d573258a9a290d25376e1f138d157998eb2))
+
+### Documentation
+
+* Add new configurations for various components ([`770348a`](https://github.com/entelecheia/hyfi/commit/770348a901eaf8c8073b46be1074a2d9c29931aa))
+
 ## v1.2.2 (2023-07-09)
 
 ### Fix

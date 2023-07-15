@@ -16,7 +16,7 @@ class TaskConfig(BaseConfig):
     _config_group_: str = "task"
 
     task_name: str = "demo-task"
-    task_root: str = "workspace/tasks"
+    task_root: str = "workspace"
     autoload: bool = False
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None

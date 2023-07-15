@@ -12,7 +12,7 @@ class TaskPathConfig(BaseConfig, BasePathConfig):
     _config_group_: str = "path"
 
     task_name: str = "demo-task"
-    task_root: str = "workspace/tasks"
+    task_root: str = "workspace"
 
     @property
     def name(self) -> str:

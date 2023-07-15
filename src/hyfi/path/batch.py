@@ -15,10 +15,7 @@ class BatchPathConfig(TaskPathConfig):
     @property
     def batch_dir(self) -> Path:
         """
-        The directory where the batch is stored. It is used to determine where the results are stored for a batch of data to be processed.
-
-        Returns:
-                The directory where the batch output is stored for a batch of data to be processed ( relative to the task output directory )
+        Returns the path to the batch directory.
         """
         path_ = self.output_dir / self.batch_name
         path_.mkdir(parents=True, exist_ok=True)

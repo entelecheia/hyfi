@@ -57,7 +57,7 @@ class BatchConfig(BaseConfig):
 
     batch_name: str
     batch_num: Optional[int] = None
-    batch_root: str = "outputs"
+    batch_root: str = "workspace/outputs"
     output_suffix: str = ""
     output_extention: str = ""
     random_seed: bool = True
@@ -166,10 +166,11 @@ class BatchConfig(BaseConfig):
     @property
     def batch_dir(self):
         """
-        Directory for the batch.
+        Returns the path to the batch directory.
         """
-        self.root_dir.mkdir(parents=True, exist_ok=True)
-        return self.root_dir
+        path_ = self.root_dir / self.batch_name
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
 
     @property
     def file_prefix(self):

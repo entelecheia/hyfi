@@ -1,7 +1,7 @@
 _config_name_: __init__
 batch_name: ${oc.select:..batch_name,__init__}
 batch_num:
-batch_root: ${oc.select:..path.batch_outputs,tmp/batch-outputs/${.batch_name}}
+batch_root: ${oc.select:..task_root,workspace}/${oc.select:..path.dirnames.outputs,outputs}
 output_suffix:
 output_extention:
 random_seed: true

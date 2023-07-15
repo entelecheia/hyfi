@@ -1,8 +1,7 @@
 defaults:
   - __init__
 
-_config_name_: __test__
-project_name: hyfi-test
+project_name: __test__
 project_description: A test project for HyFI
 global_hyfi_root: ${get_original_cwd:}
 num_workers: 2

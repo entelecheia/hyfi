@@ -20,7 +20,7 @@ def test_task_config():
     pprint(config.model_dump())
     # Test that the default values are set correctly
     print(config.task_dir)
-    assert config.task_dir == Path("workspace/tasks/demo3")
+    assert config.task_dir == Path("workspace/demo3")
     config.task_root = "workspace/tmp"
     config.print_config()
     print(config.root_dir)

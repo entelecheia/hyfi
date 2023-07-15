@@ -37,7 +37,7 @@ def test_compose():
     os.environ["HYFI_PROJECT_ROOT"] = "."
     cfg = HyFI.compose("path=__task__")
     print(cfg["task_root"])
-    assert cfg["task_root"] == "workspace/tasks"
+    assert cfg["task_root"] == "workspace"
 
 
 if __name__ == "__main__":

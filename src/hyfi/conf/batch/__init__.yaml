@@ -1,4 +1,5 @@
-batch_name: ${oc.select:..batch_name,demo-batch}
+_config_name_: __init__
+batch_name: ${oc.select:..batch_name,__init__}
 batch_num:
 batch_root: ${oc.select:..path.batch_outputs,tmp/batch-outputs/${.batch_name}}
 output_suffix:

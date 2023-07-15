@@ -4,6 +4,5 @@ defaults:
   - override /path: __batch__
 
 _config_name_: __batch__
-task_name: batch-task
-batch_name: demo-batch
-autoload: false
+task_name: __batch__
+batch_name: __init__

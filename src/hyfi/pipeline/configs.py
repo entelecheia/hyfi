@@ -75,13 +75,16 @@ class PipeConfig(BaseRunConfig):
 
     def get_run_func(self) -> Optional[Callable]:
         if self.run.startswith("lambda"):
+            logger.info("Returning lambda function: %s", self.run)
             return eval(self.run)
         elif self.run:
             kwargs = self.run_with or {}
             if self.pipe_obj_arg_name:
                 kwargs.pop(self.pipe_obj_arg_name)
+            logger.info("Returning partial function: %s with kwargs: %s", self.run, kwargs)
             return Composer.partial(self.run, **kwargs)
         else:
+            logger.warning("No function found for %s", self)
             return None
 
 

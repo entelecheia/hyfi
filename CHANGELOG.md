@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.2.7 (2023-07-15)
+
+### Fix
+
+* **pipeline/configs:** Add logging information for functions ([`9f7ae60`](https://github.com/entelecheia/hyfi/commit/9f7ae60702cc8ad98437251223dc74bdeafa180c))
+* **hyfi:** Change hydra_log_dir in mode/__init__.yaml ([`380a31f`](https://github.com/entelecheia/hyfi/commit/380a31f0cf82bc37c4ea3afdbc4d3cedaa394c28))
+
 ## v1.2.6 (2023-07-15)
 
 ### Fix

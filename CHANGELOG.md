@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.2.6 (2023-07-15)
+
+### Fix
+
+* **task:** Change task_root path to 'workspace' ([`5eb8f75`](https://github.com/entelecheia/hyfi/commit/5eb8f757d8fecd5057dce37d23a08a643120ca33))
+* **task:** Change default task_root path ([`6cb8e36`](https://github.com/entelecheia/hyfi/commit/6cb8e36afb0e7cfabcdaabb4eb2d2980bdac624e))
+* **batch:** Simplify batch_dir method comments ([`03418c6`](https://github.com/entelecheia/hyfi/commit/03418c689ef68e1416c1c55f555c5b68e69b61a6))
+* **task:** Change task_root path in config ([`58a89f0`](https://github.com/entelecheia/hyfi/commit/58a89f05057d214f9166d4fef9b16ab1e4faddda))
+* **hyfi:** Modify task_root in path configuration ([`b38d8f8`](https://github.com/entelecheia/hyfi/commit/b38d8f8661cae4ddfb187cc2e5b43ac8ca3b7368))
+* **batch:** Update batch_root in configuration ([`51c0c3a`](https://github.com/entelecheia/hyfi/commit/51c0c3ab2a97e469d14f80a4721e259110121971))
+* **batch:** Update default batch_root value and improve batch directory creation ([`baa816a`](https://github.com/entelecheia/hyfi/commit/baa816aa7a00918403fa79fe3cd0e0a5e29d1a70))
+
 ## v1.2.5 (2023-07-15)
 
 ### Fix

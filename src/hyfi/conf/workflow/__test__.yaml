@@ -1,8 +1,9 @@
 defaults:
-  - /project: __test__
-  - /task@task: __test__
+  - __init__
+  - /task@task1: __test__
+  - override /project: __test__
 
-_config_name_: __test__
+name: __test__
 verbose: true
 tasks:
-  - task
+  - task1

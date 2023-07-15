@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.2.5 (2023-07-15)
+
+### Fix
+
+* **workflow:** Modify task configuration in __init__.yaml ([`88366e6`](https://github.com/entelecheia/hyfi/commit/88366e679ae227869444343db2a15411b9ab2006))
+* **task:** Change task_name from demo-task to __init__ ([`50fcbc8`](https://github.com/entelecheia/hyfi/commit/50fcbc85c00e00fa41926bd56f3ce8d86f69ca96))
+* **hyfi/conf/task:** Rename task and batch name settings ([`f15a5c4`](https://github.com/entelecheia/hyfi/commit/f15a5c49d464bcf9e55344c148c0c3b45d8a98cf))
+* **hyfi:** Change task name in path configuration ([`42c62bc`](https://github.com/entelecheia/hyfi/commit/42c62bc45ff10a15f9c5e8d3856a9df8bbd878c8))
+* **hyfi/path:** Change batch_name default value ([`bf00d0f`](https://github.com/entelecheia/hyfi/commit/bf00d0f31d713ae43b1fa20dc55f387edfb70fb7))
+* **dependencies:** Upgrade pydantic to 2.0.3 ([`36b51bd`](https://github.com/entelecheia/hyfi/commit/36b51bdb2652483f9b53bb2fbe8befda4df4d110))
+
 ## v1.2.4 (2023-07-14)
 
 ### Fix

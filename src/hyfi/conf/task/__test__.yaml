@@ -3,8 +3,7 @@ defaults:
   - /pipeline@pipeline1: __test_general__
   - /pipeline@pipeline2: __test_dataframe__
 
-_config_name_: __test__
-task_name: test-task
+task_name: __test__
 verbose: true
 pipelines:
   - pipeline1

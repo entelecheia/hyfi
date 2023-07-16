@@ -280,7 +280,7 @@ class HyfiConfig(BaseModel):
 
     def print_about(self, **kwargs):
         about = AboutConfig(**kwargs)
-        pkg_name = about.__package_name__
+        pkg_name = kwargs.get("__package_name__", about.__package_name__)
         name = about.name
         print()
         for k, v in about.model_dump().items():

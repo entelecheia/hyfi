@@ -353,10 +353,8 @@ class HyFI(
     @staticmethod
     def run(cfg: Union[Dict, DictConfig], target: Optional[str] = None):
         """Run the config"""
-        if target and target not in cfg:
-            raise ValueError(f"No {target} configuration found")
-        if "workflow" in cfg and (target is None or target == "workflow"):
-            workflow = HyFI.workflow(**cfg["workflow"])
+        if "tasks" in cfg:
+            workflow = HyFI.workflow(**cfg)
             HyFI.run_workflow(workflow)
         elif "task" in cfg and (target is None or target == "task"):
             project = HyFI.init_project(**cfg["project"]) if "project" in cfg else None
@@ -367,4 +365,6 @@ class HyFI(
             with Copier(**cfg) as worker:
                 worker.run_copy()
         else:
+            if target and target not in cfg:
+                logger.warning("Target %s not found in config", target)
             HyFI.about()

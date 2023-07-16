@@ -86,9 +86,9 @@ class HyFI(
         raise NotImplementedError("Use one of the static construction functions")
 
     @staticmethod
-    def about() -> None:
+    def about(**args) -> None:
         """Print the about information"""
-        __global_config__.print_about()
+        __global_config__.print_about(**args)
 
     @staticmethod
     def init_project(
@@ -367,4 +367,4 @@ class HyFI(
         else:
             if target and target not in cfg:
                 logger.warning("Target %s not found in config", target)
-            HyFI.about()
+            HyFI.about(**cfg.get("about", {}))

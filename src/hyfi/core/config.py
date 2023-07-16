@@ -278,8 +278,8 @@ class HyfiConfig(BaseModel):
     def osenv(self):
         return os.environ
 
-    def print_about(self):
-        about = AboutConfig() if self.about is None else self.about
+    def print_about(self, **kwargs):
+        about = AboutConfig(**kwargs)
         pkg_name = about.__package_name__
         name = about.name
         print()

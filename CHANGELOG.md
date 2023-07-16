@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.2.10 (2023-07-16)
+
+### Fix
+
+* **hyfi/core:** Improve package name retrieval in print_about function ([`cd8322e`](https://github.com/entelecheia/hyfi/commit/cd8322e81092828897325b5a43a610b9c012399a))
+
 ## v1.2.9 (2023-07-16)
 
 ### Fix

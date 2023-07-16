@@ -26,13 +26,14 @@ class BaseRunConfig(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         extra="allow",
-        validate_assignment=True,
+        validate_assignment=False,
         alias_generator=Composer.generate_alias_for_special_keys,
     )  # type: ignore
 
-    def __init__(self, **config_kwargs):
-        config_kwargs = Composer.replace_special_keys(config_kwargs)
-        super().__init__(**config_kwargs)
+    @model_validator(mode="before")
+    def validate_model_config_before(cls, data):
+        # logger.debug("Validating model config before validating each field.")
+        return Composer.replace_special_keys(Composer.to_dict(data))
 
     @property
     def kwargs(self):
@@ -81,7 +82,9 @@ class PipeConfig(BaseRunConfig):
             kwargs = self.run_with or {}
             if self.pipe_obj_arg_name:
                 kwargs.pop(self.pipe_obj_arg_name)
-            logger.info("Returning partial function: %s with kwargs: %s", self.run, kwargs)
+            logger.info(
+                "Returning partial function: %s with kwargs: %s", self.run, kwargs
+            )
             return Composer.partial(self.run, **kwargs)
         else:
             logger.warning("No function found for %s", self)

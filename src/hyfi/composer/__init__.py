@@ -544,7 +544,9 @@ class BaseConfig(BaseModel):
     )  # type: ignore
 
     def __init__(self, **config_kwargs):
-        logger.debug("init %s with %s args", self.__class__.__name__, len(config_kwargs))
+        logger.debug(
+            "init %s with %s args", self.__class__.__name__, len(config_kwargs)
+        )
         super().__init__(**config_kwargs)
         self.initialize_subconfigs(config_kwargs)
 
@@ -581,10 +583,16 @@ class BaseConfig(BaseModel):
             _config_name_,
             _config_group_,
         )
-        data = Composer(
+        cfg = Composer(
             config_group=f"{_config_group_}={_config_name_}",
             config_data=data,
         ).config_as_dict
+        data = Composer.update(cfg, data)
+        # Exclude any attributes specified in the class's `exclude` list.
+        exclude = getattr(cls._exclude_, "default", set())  # type: ignore
+        for name in exclude:
+            if name in data:
+                del data[name]
         return data
 
     # @model_validator(mode="after")  # type: ignore

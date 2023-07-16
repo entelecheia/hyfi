@@ -76,13 +76,15 @@ def cli_main(cfg: DictConfig) -> None:
             logger.info("## hydra configuration ##")
             print(HyFI.to_yaml(cfg))
 
-        logger.info("Hydra working directory : %s", {os.getcwd()})
-        logger.info("Orig working directory  : %s", {hydra.utils.get_original_cwd()})
+        logger.info("Hydra working directory : %s", os.getcwd())
+        logger.info("Orig working directory  : %s", hydra.utils.get_original_cwd())
 
     if HyFI.is_instantiatable(cfg):
+        logger.info("Instantiating HyFI")
         HyFI.instantiate(cfg)
     else:
-        hyfi.run()
+        logger.info("HyFI is not instantiatable, running HyFI directly")
+        HyFI.run(cfg)
 
     HyFI.terminate()
 

@@ -1,9 +1,9 @@
+# @package _global_
 defaults:
   - /project: __init__
-  - /task: __init__
+  # - /task: __init__
 
-_config_name_: __init__
 name: __init__
 verbose: false
 tasks:
-  - task
+  # - task

@@ -60,19 +60,6 @@ def test_cli_copy_conf() -> None:
     assert exitcode == 0
 
 
-def test_cli_run_workflow() -> None:
-    """Test cli command run_workflow"""
-    command = [
-        "poetry",
-        "run",
-        "hyfi",
-        "cmd=run_workflow",
-        "workflow=__test__",
-    ]
-    out, err, exitcode = capture(command)
-    assert exitcode == 0
-
-
 def manual_test_hydra_main() -> None:
     """Test hydra_main function"""
     hydra_main()

@@ -2,7 +2,7 @@
 Hyfi configuration file.
 """
 import os
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 
 from omegaconf import DictConfig
 from pydantic import (
@@ -15,13 +15,11 @@ from pydantic import (
 )
 
 from hyfi.about import AboutConfig, __app_name__, __version__
-from hyfi.copier import Copier
 from hyfi.core import __about__, __hydra_config__
 from hyfi.dotenv import DotEnvConfig
-from hyfi.pipeline import PipelineConfig, PIPELINEs
+from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.conf import CONFs
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
@@ -50,6 +48,7 @@ class HyfiConfig(BaseModel):
     pipeline: Optional[PipelineConfig] = None
     task: Optional[TaskConfig] = None
     workflow: Optional[WorkflowConfig] = None
+    tasks: Optional[List[str]] = None
 
     _version_: str = PrivateAttr(__version__())
     _initilized_: bool = PrivateAttr(False)
@@ -290,19 +289,6 @@ class HyfiConfig(BaseModel):
             print(f"{k:11} : {v}")
         if pkg_name:
             print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
-
-    def run(self, target: Optional[str] = None):
-        """Run the config"""
-        if self.workflow is not None and (target is None or target == "workflow"):
-            PIPELINEs.run_workflow(self.workflow)
-        elif self.task is not None and (target is None or target == "task"):
-            PIPELINEs.run_task(self.task, project=self.project)
-        elif self.copier is not None and (target is None or target == "copier"):
-            args = CONFs.to_dict(self.copier)
-            with Copier(**args) as worker:
-                worker.run_copy()
-        else:
-            self.print_about()
 
 
 __global_config__ = HyfiConfig()

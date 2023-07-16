@@ -1,3 +1,4 @@
+# @package _global_
 defaults:
   - __init__
   - /task@task1: __test__

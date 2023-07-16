@@ -1,5 +1,19 @@
 <!--next-version-placeholder-->
 
+## v1.2.8 (2023-07-16)
+
+### Fix
+
+* **task:** Replace BatchPathConfig with TaskPathConfig in TaskConfig ([`fdae4f5`](https://github.com/entelecheia/hyfi/commit/fdae4f5335c983e13770d12e57cc7c81ea760645))
+* **pipeline:** Change model validation and logging format ([`e00492b`](https://github.com/entelecheia/hyfi/commit/e00492b4bdf7d782d5ad5c47ba0e90918cea6d43))
+* **composer:** Enhance data initialization and exclusion in BaseConfig ([`544b58c`](https://github.com/entelecheia/hyfi/commit/544b58cb14a20daa4a0dd3fbf4d013019fd93aa8))
+* **workflow:** Replace BaseConfig with BaseModel and add verbose attribute in WorkflowConfig class ([`5fb37fa`](https://github.com/entelecheia/hyfi/commit/5fb37fac9085bdf6a6724f062582246607ab2d97))
+* **hyfi:** Update condition checks in run method ([`1ef744a`](https://github.com/entelecheia/hyfi/commit/1ef744a9acc1eec85b1fc1737398b3c3ac399110))
+* **hyfi/core/config:** Remove run method from HyfiConfig class ([`d43866b`](https://github.com/entelecheia/hyfi/commit/d43866b359cff7fc6e62e15b2a51b877e70ae0bf))
+* **hyfi/conf/workflow:** Add global package in test yaml ([`66c14b3`](https://github.com/entelecheia/hyfi/commit/66c14b3fae3888a910dd19cab9e8ada2b05497bb))
+* **workflow:** Remove unused config name ([`d19bed4`](https://github.com/entelecheia/hyfi/commit/d19bed4b7e5ca807690cefa1a9fd12275e9333ea))
+* **hyfi:** Improve logging and handling of hyfi instantiation ([`a5698f9`](https://github.com/entelecheia/hyfi/commit/a5698f9ab75befec251067b3e2e94f54d4a97da4))
+
 ## v1.2.7 (2023-07-15)
 
 ### Fix

@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.2.9 (2023-07-16)
+
+### Fix
+
+* **hyfi:** Add support for additional arguments in about method ([`56a2b05`](https://github.com/entelecheia/hyfi/commit/56a2b05c3270d072b2c26d939be556bf4fd8217e))
+* **hyfi/core:** Modify print_about arguments to accept kwargs ([`99c3e1b`](https://github.com/entelecheia/hyfi/commit/99c3e1bef50ec8e19bae1cd4b4adbbf084bb9416))
+
 ## v1.2.8 (2023-07-16)
 
 ### Fix

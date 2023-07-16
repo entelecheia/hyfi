@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
-from hyfi.path.batch import BatchPathConfig
+from hyfi.path.task import TaskPathConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
@@ -20,7 +20,7 @@ class TaskConfig(BaseConfig):
     autoload: bool = False
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None
-    path: Optional[BatchPathConfig] = None
+    path: Optional[TaskPathConfig] = None
     project: Optional[ProjectConfig] = None
     pipelines: Optional[List[Union[str, Dict]]] = []
 

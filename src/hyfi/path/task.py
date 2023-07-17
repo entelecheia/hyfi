@@ -1,16 +1,12 @@
 from pathlib import Path
 
-from hyfi.composer import BaseConfig
 from hyfi.path.base import BasePathConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class TaskPathConfig(BaseConfig, BasePathConfig):
-    _config_name_: str = "__task__"
-    _config_group_: str = "path"
-
+class TaskPathConfig(BasePathConfig):
     task_name: str = "demo-task"
     task_root: str = "workspace"
 
@@ -55,4 +51,4 @@ class TaskPathConfig(BaseConfig, BasePathConfig):
         Returns:
             an path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
-        return self.task_dir
+        return self.root_dir

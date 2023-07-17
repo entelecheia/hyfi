@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.2.11 (2023-07-17)
+
+### Fix
+
+* **hyfi/utils/envs:** Add functionality to delete environment variables ([`4cf286b`](https://github.com/entelecheia/hyfi/commit/4cf286b84c43fa5ae8af7ee4aed0878fc100eeb1))
+* **project:** Rename project name and global workspace name ([`da22cbc`](https://github.com/entelecheia/hyfi/commit/da22cbc729d95716cc4fb452091b844d0b5cb0b4))
+* **dotenv:** Change default value of HYFI_GLOBAL_WORKSPACE_NAME ([`6e31dd2`](https://github.com/entelecheia/hyfi/commit/6e31dd2b14ec089f9bf88a0153d52030f9832309))
+* **core:** Add .env file support in HyfiConfig ([`23e8ff2`](https://github.com/entelecheia/hyfi/commit/23e8ff2cc8057932f158bad74328ae976cc679bc))
+* **hyfi/conf/project:** Add global_workspace_name to __test__.yaml ([`73b1303`](https://github.com/entelecheia/hyfi/commit/73b1303773f3cf31860c17891e59a740ed0a10ec))
+* **project:** Update project configuration parameters in __init__.yaml ([`536aa6d`](https://github.com/entelecheia/hyfi/commit/536aa6d5034d12a629e7c8839e875002f0309e44))
+* **path:** Modify path configurations in __init__.yaml ([`69c13fe`](https://github.com/entelecheia/hyfi/commit/69c13febe3fd20aa4dd9140d55e7c547a79ce030))
+
 ## v1.2.10 (2023-07-16)
 
 ### Fix

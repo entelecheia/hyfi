@@ -293,7 +293,7 @@ class HyfiConfig(BaseModel):
 
     def get_project_path(self, path_name: str) -> str:
         if self.project and self.project.path:
-            return self.project.path.get_path(path_name)
+            return str(self.project.path.get_path(path_name))
         return ""
 
 

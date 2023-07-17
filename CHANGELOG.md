@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.2.12 (2023-07-17)
+
+### Fix
+
+* **task:** Change task_root path in init.yaml ([`79e710c`](https://github.com/entelecheia/hyfi/commit/79e710ce18cc6a3e6fa766cbb353ef6c44e1d433))
+* **main:** Simplify and enhance config handling ([`a69c704`](https://github.com/entelecheia/hyfi/commit/a69c704a9e9728cd700a6702cf7817950696ddf3))
+* **core:** Add method to get project path in HyfiConfig ([`38b4288`](https://github.com/entelecheia/hyfi/commit/38b42882d9540b516f12e4e834e2b46782ab2e49))
+* **path:** Add repr, str methods and get path helper function to BasePathConfig class. ([`7037d29`](https://github.com/entelecheia/hyfi/commit/7037d2923b04886ae6532c50fcee2b24d354b300))
+
 ## v1.2.11 (2023-07-17)
 
 ### Fix

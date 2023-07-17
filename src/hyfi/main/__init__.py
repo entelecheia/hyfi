@@ -143,6 +143,17 @@ class HyFI(
             raise ValueError("Project not initialized.")
 
     @staticmethod
+    def set_project(project: ProjectConfig) -> None:
+        """
+        Set the project.
+
+        Args:
+            project: Project to set.
+        """
+        logger.info(f"Setting the global project to {project.project_name}")
+        __global_config__.project = project
+
+    @staticmethod
     def initialize(force: bool = False) -> None:
         """
         Initialize the global config.

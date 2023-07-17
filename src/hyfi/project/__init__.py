@@ -21,12 +21,12 @@ class ProjectConfig(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "project"
     # Project Config
-    project_name: str = "hyfi-project"
+    project_name: str = "hyfi"
     project_description: str = ""
     project_root: str = ""
     project_workspace_name: str = "workspace"
     global_hyfi_root: str = ""
-    global_workspace_name: str = "workspace"
+    global_workspace_name: str = ".hyfi"
     num_workers: int = 1
     use_huggingface_hub: bool = False
     use_wandb: bool = False

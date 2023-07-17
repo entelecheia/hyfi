@@ -7,7 +7,7 @@ class DirnamesConfig(BaseModel):
     # directory names
     inputs: str = "inputs"
     outputs: str = "outputs"
-    archive: str = "archive"
+    archives: str = "archives"
     datasets: str = "datasets"
     models: str = "models"
     modules: str = "modules"
@@ -16,6 +16,6 @@ class DirnamesConfig(BaseModel):
     cache: str = ".cache"
     tmp: str = "tmp"
     # to reuse the same config file for different runs
-    config_dirname: str = "configs"
+    configs: str = "configs"
     config_yaml: str = "config.yaml"
     config_json: str = "config.json"

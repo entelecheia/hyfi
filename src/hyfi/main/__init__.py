@@ -249,6 +249,13 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
+        if _config_name_ := kwargs.get("_config_name_"):
+            cfg = HyFI.compose_as_dict(
+                config_group=f"workflow={_config_name_}",
+                config_data=kwargs,
+                global_package=True,
+            )
+            return WorkflowConfig(**cfg)
         return WorkflowConfig(**kwargs)
 
     @staticmethod

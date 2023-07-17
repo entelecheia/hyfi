@@ -15,7 +15,7 @@ def test_path_config():
     print(config.batch_dir)
     assert (
         config.batch_dir
-        == Path("workspace/tasks/test-task/outputs/test-batch")
+        == Path("workspace/tasks/outputs/test-batch")
     )
 
     # Test that the log_dir is created

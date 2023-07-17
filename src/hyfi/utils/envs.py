@@ -234,6 +234,9 @@ class ENVs:
             if str(old_value).lower() != str(value).lower():
                 os.environ[env_key] = str(value)
                 logger.debug("Set environment variable %s=%s", env_key, str(value))
+        elif env_key in os.environ and os.environ[env_key]:
+            del os.environ[env_key]
+            logger.debug("Deleted environment variable %s", env_key)
         return value
 
     @staticmethod

@@ -213,6 +213,7 @@ class HyfiConfig(BaseModel):
             __hydra_config__.hyfi_config_path,
             __hydra_config__.hyfi_user_config_path,
         )
+        ENVs.load_dotenv()
 
         self._initilized_ = True
 

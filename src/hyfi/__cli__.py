@@ -62,6 +62,9 @@ def cli_main(cfg: DictConfig) -> None:
     """
     HyFI.initialize()
     hyfi = HyfiConfig(**cfg)  # type: ignore
+    if hyfi.project:
+        HyFI.set_project(hyfi.project)
+
     verbose = hyfi.verbose
     # Print out the command line interface for the application.
     if verbose:

@@ -5,7 +5,7 @@ defaults:
 _config_name_: __init__
 project: ${oc.select:project,null}
 task_name: __init__
-task_root: ${oc.select:project.path.project_workspace_root,workspace}
+task_root: ${oc.select:project.project_root,.}/${oc.select:project.project_workspace_name,workspace}
 autoload: false
 version: ${__version__:}
 verbose: ${oc.select:project.verbose,false}

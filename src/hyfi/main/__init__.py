@@ -353,6 +353,7 @@ class HyFI(
     @staticmethod
     def run(cfg: Union[Dict, DictConfig], target: Optional[str] = None):
         """Run the config"""
+        cfg = HyFI.to_dict(cfg)
         if "tasks" in cfg:
             workflow = HyFI.workflow(**cfg)
             HyFI.run_workflow(workflow)
@@ -361,8 +362,7 @@ class HyFI(
             task = HyFI.task(**cfg["task"])
             HyFI.run_task(task, project=project)
         elif "copier" in cfg and (target is None or target == "copier"):
-            cfg = HyFI.to_dict(cfg["copier"])
-            with Copier(**cfg) as worker:
+            with Copier(**cfg["copier"]) as worker:
                 worker.run_copy()
         else:
             if target and target not in cfg:

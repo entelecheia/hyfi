@@ -236,7 +236,12 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        return TaskConfig(**kwargs)
+        if __global_config__.project and "project" in kwargs:
+            del kwargs["project"]
+        task = TaskConfig(**kwargs)
+        if __global_config__.project:
+            task.project = __global_config__.project
+        return task
 
     @staticmethod
     def workflow(**kwargs) -> WorkflowConfig:
@@ -255,8 +260,14 @@ class HyFI(
                 config_data=kwargs,
                 global_package=True,
             )
-            return WorkflowConfig(**cfg)
-        return WorkflowConfig(**kwargs)
+        else:
+            cfg = kwargs
+        if __global_config__.project and "project" in cfg:
+            del cfg["project"]
+        wf = WorkflowConfig(**cfg)
+        if __global_config__.project:
+            wf.project = __global_config__.project
+        return wf
 
     @staticmethod
     def compose_as_dict(

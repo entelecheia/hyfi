@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.2.13 (2023-07-17)
+
+### Fix
+
+* **hyfi:** Improve handling of global project configuration ([`3e1d7ca`](https://github.com/entelecheia/hyfi/commit/3e1d7ca39863e718a977143ba745cafe6b6ffda1))
+* **hyfi/main:** Add specific configuration name handling ([`f8ad8dc`](https://github.com/entelecheia/hyfi/commit/f8ad8dc5288a2273014ebc0d056797ed33ceed89))
+* **batch:** Add BatchPathConfig to BatchTaskConfig ([`27fb4d6`](https://github.com/entelecheia/hyfi/commit/27fb4d60a9ed355415f4766a4321c76a253a2551))
+* **pipeline:** Change task loading logic ([`f75703c`](https://github.com/entelecheia/hyfi/commit/f75703ca2270c83bef1548607c4866bb94e00ce5))
+* **hyfi:** Add project setting in cli_main function ([`a1aa5f9`](https://github.com/entelecheia/hyfi/commit/a1aa5f94706225dc77a8f11896418ca5e706b6d5))
+
 ## v1.2.12 (2023-07-17)
 
 ### Fix

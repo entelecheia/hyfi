@@ -156,7 +156,7 @@ class ProjectConfig(BaseConfig):
         return self.path.root_dir if self.path else Path(self.project_root)
 
     @property
-    def workspace_dir(self):
+    def workspace_dir(self) -> Path:
         return (
             self.path.workspace_dir
             if self.path
@@ -164,11 +164,11 @@ class ProjectConfig(BaseConfig):
         )
 
     @property
-    def global_root_dir(self):
+    def global_root_dir(self) -> Path:
         return self.path.global_root_dir if self.path else Path(self.global_hyfi_root)
 
     @property
-    def global_workspace_dir(self):
+    def global_workspace_dir(self) -> Path:
         return (
             self.path.global_workspace_dir
             if self.path

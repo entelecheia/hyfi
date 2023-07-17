@@ -1,7 +1,7 @@
 # directory names
 inputs: inputs
 outputs: outputs
-archive: archive
+archives: archives
 datasets: datasets
 models: models
 modules: modules
@@ -10,6 +10,6 @@ logs: logs
 cache: .cache
 tmp: tmp
 # to reuse the same config file for different runs
-config_dirname: configs
+configs: configs
 config_yaml: config.yaml
 config_json: config.json

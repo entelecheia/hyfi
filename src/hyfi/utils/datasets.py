@@ -1,5 +1,6 @@
 import os
 from os import PathLike
+from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
 import datasets as hfds
@@ -338,7 +339,7 @@ class DATASETs:
                     **kwargs,
                 )
         elif DATASETs.is_dataframe(data):
-            logger.info("Saving dataframe to %s", filepath)
+            logger.info("Saving dataframe to %s", Path(filepath).absolute())
             if isinstance(columns, list):
                 columns = [c for c in columns if c in data.columns]
                 data = data[columns]

@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Set, Union
 
 from hyfi.batch import BatchConfig
 from hyfi.composer import Composer
+from hyfi.path.batch import BatchPathConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING
 
@@ -29,6 +30,7 @@ class BatchTaskConfig(TaskConfig):
 
     batch_name: str = "demo"
     batch: Optional[BatchConfig] = None
+    path: BatchPathConfig = BatchPathConfig()
 
     _property_set_methods_ = {
         "task_name": "set_task_name",

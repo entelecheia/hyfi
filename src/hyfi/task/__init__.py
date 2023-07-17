@@ -20,7 +20,7 @@ class TaskConfig(BaseConfig):
     autoload: bool = False
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None
-    path: Optional[TaskPathConfig] = None
+    path: TaskPathConfig = TaskPathConfig()
     project: Optional[ProjectConfig] = None
     pipelines: Optional[List[Union[str, Dict]]] = []
 
@@ -34,11 +34,11 @@ class TaskConfig(BaseConfig):
     }
 
     def set_task_root(self, val: Union[str, Path]):
-        if (not self.task_root or self.task_root != val) and self.path:
+        if not self.task_root or self.task_root != val:
             self.path.task_root = str(val)
 
     def set_task_name(self, val):
-        if (not self.task_name or self.task_name != val) and self.path:
+        if not self.task_name or self.task_name != val:
             self.path.task_name = val
 
     def set_project(self, val):
@@ -51,15 +51,11 @@ class TaskConfig(BaseConfig):
 
     @property
     def root_dir(self) -> Path:
-        return self.path.root_dir if self.path else Path(self.task_root)
+        return self.path.root_dir
 
     @property
     def task_dir(self) -> Path:
-        return self.path.task_dir if self.path else self.root_dir / self.task_name
-
-    @property
-    def output_dir(self) -> Path:
-        return self.path.output_dir if self.path else self.task_dir / "outputs"
+        return self.path.task_dir
 
     @property
     def project_name(self) -> str:
@@ -69,43 +65,35 @@ class TaskConfig(BaseConfig):
 
     @property
     def project_dir(self) -> Path:
-        return Path(self.project.project_root) if self.project else self.task_dir
+        return self.project.root_dir if self.project else self.root_dir
 
     @property
     def workspace_dir(self) -> Path:
-        return Path(self.project.workspace_dir) if self.project else self.task_dir
+        return self.project.workspace_dir if self.project else self.root_dir
+
+    @property
+    def output_dir(self) -> Path:
+        return self.path.output_dir
 
     @property
     def model_dir(self) -> Path:
-        return self.path.model_dir if self.path else self.task_dir / "models"
+        return self.path.model_dir
 
     @property
     def log_dir(self) -> Path:
-        return (
-            self.project.path.log_dir
-            if self.project
-            else self.path.log_dir
-            if self.path
-            else self.task_dir / "logs"
-        )
+        return self.path.log_dir
 
     @property
     def cache_dir(self) -> Path:
-        return (
-            self.project.path.cache_dir
-            if self.project
-            else self.path.cache_dir
-            if self.path
-            else self.task_dir / "cache"
-        )
+        return self.path.cache_dir
 
     @property
     def library_dir(self) -> Path:
-        return self.path.library_dir if self.path else self.task_dir / "library"
+        return self.path.library_dir
 
     @property
     def dataset_dir(self):
-        return self.path.dataset_dir if self.path else self.task_dir / "datasets"
+        return self.path.dataset_dir
 
     def print_config(self):
         Composer.print(self.config)

@@ -143,6 +143,17 @@ class HyFI(
             raise ValueError("Project not initialized.")
 
     @staticmethod
+    def set_project(project: ProjectConfig) -> None:
+        """
+        Set the project.
+
+        Args:
+            project: Project to set.
+        """
+        logger.info(f"Setting the global project to {project.project_name}")
+        __global_config__.project = project
+
+    @staticmethod
     def initialize(force: bool = False) -> None:
         """
         Initialize the global config.
@@ -225,7 +236,12 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        return TaskConfig(**kwargs)
+        if __global_config__.project and "project" in kwargs:
+            del kwargs["project"]
+        task = TaskConfig(**kwargs)
+        if __global_config__.project:
+            task.project = __global_config__.project
+        return task
 
     @staticmethod
     def workflow(**kwargs) -> WorkflowConfig:
@@ -238,7 +254,20 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        return WorkflowConfig(**kwargs)
+        if _config_name_ := kwargs.get("_config_name_"):
+            cfg = HyFI.compose_as_dict(
+                config_group=f"workflow={_config_name_}",
+                config_data=kwargs,
+                global_package=True,
+            )
+        else:
+            cfg = kwargs
+        if __global_config__.project and "project" in cfg:
+            del cfg["project"]
+        wf = WorkflowConfig(**cfg)
+        if __global_config__.project:
+            wf.project = __global_config__.project
+        return wf
 
     @staticmethod
     def compose_as_dict(

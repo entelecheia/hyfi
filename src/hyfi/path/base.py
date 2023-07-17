@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -38,95 +39,93 @@ class BasePathConfig(BaseModel):
         path_.mkdir(parents=True, exist_ok=True)
         return path_
 
+    def get_path(self, path_name: str, base_dir: Optional[Path] = None) -> Path:
+        """
+        Get the path to a directory or file.
+        """
+        if not hasattr(self.dirnames, path_name):
+            raise AttributeError(f"Path '{path_name}' does not exist.")
+        base_dir = base_dir or self.workspace_dir
+        path_ = base_dir / getattr(self.dirnames, path_name)
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    @property
+    def archive_dir(self) -> Path:
+        """
+        Returns the directory where the archives are stored.
+        """
+        return self.get_path("archives")
+
     @property
     def input_dir(self) -> Path:
         """
         Returns the directory where the inputs are stored.
         """
-        path_ = self.workspace_dir / self.dirnames.inputs
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("inputs")
 
     @property
     def output_dir(self) -> Path:
         """
         Returns the directory where the outputs are stored.
         """
-        path_ = self.workspace_dir / self.dirnames.outputs
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("outputs")
 
     @property
     def dataset_dir(self) -> Path:
         """
         Get the path to the dataset directory.
         """
-        path_ = self.workspace_dir / self.dirnames.datasets
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("datasets")
 
     @property
     def model_dir(self) -> Path:
         """
         Get the directory where models are stored.
         """
-        path_ = self.workspace_dir / self.dirnames.models
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("models")
 
     @property
     def module_dir(self) -> Path:
         """
         Create and return the path to the module directory.
         """
-        path_ = self.workspace_dir / self.dirnames.modules
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("modules")
 
     @property
     def library_dir(self) -> Path:
         """
         Create and return the path to the library directory.
         """
-        path_ = self.workspace_dir / self.dirnames.library
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("library")
 
     @property
     def log_dir(self):
         """
         Create and return the path to the log directory.
         """
-        path_ = self.workspace_dir / self.dirnames.logs
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("logs")
 
     @property
     def cache_dir(self):
         """
         Create and return the directory where cache files are stored.
         """
-        path_ = self.workspace_dir / self.dirnames.cache
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("cache")
 
     @property
     def tmp_dir(self):
         """
         Create and return the directory where temporary files are stored.
         """
-        path_ = self.workspace_dir / self.dirnames.tmp
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("tmp")
 
     @property
     def config_dir(self):
         """
         Directory for the configuration files.
         """
-        config_dir = self.workspace_dir / self.dirnames.config_dirname
-        config_dir.mkdir(parents=True, exist_ok=True)
-        return config_dir
+        return self.get_path("configs")
 
     @property
     def config_filename(self):
@@ -161,14 +160,3 @@ class BasePathConfig(BaseModel):
 
     def __str__(self):
         return f"{self.__class__.__name__}({self.name})"
-
-    def get_path(self, path_name: str) -> str:
-        """
-        Get the path to a directory or file.
-        """
-        if hasattr(self, path_name):
-            return str(getattr(self, path_name))
-        elif hasattr(self.dirnames, path_name) and "config" not in path_name:
-            return str(self.workspace_dir / getattr(self.dirnames, path_name))
-        else:
-            raise AttributeError(f"Path '{path_name}' does not exist.")

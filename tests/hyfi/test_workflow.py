@@ -3,6 +3,7 @@ test workflow
 """
 import subprocess
 from typing import List, Tuple
+from hyfi.main import HyFI
 
 
 def capture(command: List[str]) -> Tuple[bytes, bytes, int]:
@@ -28,5 +29,12 @@ def test_cli_run_workflow() -> None:
     assert exitcode == 0
 
 
+def test_worflow() -> None:
+    """Test workflow"""
+    wf = HyFI.workflow(_config_name_="__test__")
+    HyFI.print(wf.model_dump())
+    HyFI.run_workflow(wf)
+
+
 if __name__ == "__main__":
-    test_cli_run_workflow()
+    test_worflow()

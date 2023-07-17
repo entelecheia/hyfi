@@ -68,7 +68,7 @@ class DotEnvConfig(BaseSettings):
     # Internal
     HYFI_RESOURCE_DIR: Optional[str] = ""
     HYFI_GLOBAL_ROOT: Optional[str] = ""
-    HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = "workspace"
+    HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = ".hyfi"
     HYFI_PROJECT_NAME: Optional[str] = ""
     HYFI_PROJECT_DESC: Optional[str] = ""
     HYFI_PROJECT_ROOT: Optional[str] = ""

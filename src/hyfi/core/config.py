@@ -291,6 +291,11 @@ class HyfiConfig(BaseModel):
         if pkg_name:
             print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
 
+    def get_project_path(self, path_name: str) -> str:
+        if self.project and self.project.path:
+            return self.project.path.get_path(path_name)
+        return ""
+
 
 __global_config__ = HyfiConfig()
 if __global_config__.about:

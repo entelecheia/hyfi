@@ -117,10 +117,10 @@ class PIPELINEs:
 
         logger.info("Applying %s pipes", len(pipes))
         # Run the task in the current directory.
-        if task is not None:
-            with change_directory(task.root_dir):
-                return reduce(PIPELINEs.run_pipe, pipes, initial_object)
-        return reduce(PIPELINEs.run_pipe, pipes, initial_object)
+        if task is None:
+            task = TaskConfig()
+        with change_directory(task.workspace_dir):
+            return reduce(PIPELINEs.run_pipe, pipes, initial_object)
 
     @staticmethod
     def run_pipe(

@@ -19,7 +19,7 @@ class PathConfig(BaseConfig, BasePathConfig):
     runtime: str = ""
     # global paths
     global_hyfi_root: str = ""
-    global_workspace_name: str = "workspace"
+    global_workspace_name: str = ".hyfi"
     # project specific paths
     project_name: str = ""
     project_root: str = ""
@@ -57,9 +57,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global archive directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.archive
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("archives", self.global_workspace_dir)
 
     @property
     def glboal_dataset_dir(self) -> Path:
@@ -69,9 +67,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global datasets directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.datasets
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("datasets", self.global_workspace_dir)
 
     @property
     def global_model_dir(self) -> Path:
@@ -81,9 +77,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global models directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.models
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("models", self.global_workspace_dir)
 
     @property
     def glboal_module_dir(self) -> Path:
@@ -93,9 +87,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global modules directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.modules
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("modules", self.global_workspace_dir)
 
     @property
     def global_library_dir(self) -> Path:
@@ -105,9 +97,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global library directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.library
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("library", self.global_workspace_dir)
 
     @property
     def glboal_log_dir(self) -> Path:
@@ -117,9 +107,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global log directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.logs
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("logs", self.global_workspace_dir)
 
     @property
     def global_cache_dir(self) -> Path:
@@ -129,9 +117,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global cache directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.cache
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("cache", self.global_workspace_dir)
 
     @property
     def global_tmp_dir(self) -> Path:
@@ -141,9 +127,7 @@ class PathConfig(BaseConfig, BasePathConfig):
         Returns:
             path to the global tmp directory
         """
-        path_ = self.global_workspace_dir / self.dirnames.tmp
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.get_path("tmp", self.global_workspace_dir)
 
     @property
     def name(self) -> str:

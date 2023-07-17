@@ -12,5 +12,5 @@ steps:
     verbose: true
   - uses: pipe3
     with:
-      data_file: ${oc.select:project.project_root,.}/${oc.select:project_workspace_name,workspace}/${oc.select:project.path.dirnames.datasets,datasets}/processed/ESG_ratings_raw.parquet
+      data_file: datasets/processed/ESG_ratings_raw.parquet
     verbose: true

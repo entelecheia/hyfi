@@ -155,3 +155,20 @@ class BasePathConfig(BaseModel):
         Path to the JSON configuration file.
         """
         return self.config_dir / self.config_jsonfile
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.name})"
+
+    def __str__(self):
+        return f"{self.__class__.__name__}({self.name})"
+
+    def get_path(self, path_name: str) -> str:
+        """
+        Get the path to a directory or file.
+        """
+        if hasattr(self, path_name):
+            return str(getattr(self, path_name))
+        elif hasattr(self.dirnames, path_name) and "config" not in path_name:
+            return str(self.workspace_dir / getattr(self.dirnames, path_name))
+        else:
+            raise AttributeError(f"Path '{path_name}' does not exist.")

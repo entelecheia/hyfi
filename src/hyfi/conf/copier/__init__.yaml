@@ -9,7 +9,9 @@ filetypes:
   - py
 # User-chosen additional file exclusion patterns.
 exclude:
-# User-chosen additional file skip patterns.
+# If `True`, exclude files that match the patterns for testing. (default: True)
+exclude_test_files: true
+# Skip files that already exist?
 skip_if_exists: false
 # Delete `dst_path` if there's an error?
 cleanup_on_error: false

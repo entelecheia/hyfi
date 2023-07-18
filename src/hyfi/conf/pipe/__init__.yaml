@@ -4,7 +4,7 @@ run_with:
 name:
 desc:
 env:
-use_pipe_obj: true
-pipe_obj_arg_name:
-return_pipe_obj: false
+use_pipe_obj: true # if true, the pipe target function will be called with the pipe object as the first argument
+pipe_obj_arg_name: # if use_pipe_obj is true, the pipe object will be passed to the pipe target function with this argument name
+return_pipe_obj: false # if true, the pipe target function will return the pipe object instead of the return value
 verbose: false

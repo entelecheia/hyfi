@@ -2,9 +2,9 @@
 
 Config location: `conf/copier`
 
-## `conf.yaml`
+## `__init__.yaml`
 
 ```yaml
-{% include '../../src/hyfi/conf/copier/conf.yaml' %}
+{% include '../../src/hyfi/conf/copier/__init__.yaml' %}
 ```
 

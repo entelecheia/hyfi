@@ -59,8 +59,11 @@ class Copier:
         exclude:
             User-chosen additional file exclusion patterns.
 
+        exclude_test_files:
+            If `True`, exclude files that match the patterns for testing. (default: True)
+
         skip_if_exists:
-            User-chosen additional file skip patterns.
+            If `True`, skip files that already exist in the destination. (default: False)
 
         cleanup_on_error:
             Delete `dst_path` if there's an error?
@@ -79,6 +82,7 @@ class Copier:
     dst_path: Path = field(default=Path("."))
     filetypes: Optional[Union[List[str], str]] = field(default=None)
     exclude: Optional[Union[List[str], str]] = field(default=None)
+    exclude_test_files: bool = True
     skip_if_exists: bool = False
     cleanup_on_error: bool = True
     overwrite: bool = False
@@ -104,11 +108,20 @@ class Copier:
         if self.filetypes is None or len(self.filetypes) == 0:
             self.filetypes = ["yaml", "yml", "py"]
 
-        if self.exclude is None or len(self.exclude) == 0:
-            self.exclude = []
+        exclude = (
+            []
+            if self.exclude is None or len(self.exclude) == 0
+            else [self.exclude]
+            if isinstance(self.exclude, str)
+            else self.exclude
+        )
+
+        test_files = ["_test_*", "__test_*"]
+        if self.exclude_test_files:
+            exclude += test_files
         if not self.dst_path.is_absolute():
             self.dst_path = ENVs.getcwd() / self.dst_path
-        self.path_spec = PathSpec.from_lines("gitwildmatch", self.exclude)
+        self.path_spec = PathSpec.from_lines("gitwildmatch", exclude)
         self.dst_path_existed = self.dst_path.exists()
 
     def __enter__(self):

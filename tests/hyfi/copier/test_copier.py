@@ -13,7 +13,7 @@ def process_yaml_files(src_path, dst_path) -> bool:
             if filename.endswith(".yaml"):
                 src_file = Path(root, filename)
                 dst_file = dst_path / src_file.relative_to(src_path)
-                if not dst_file.exists():
+                if not dst_file.exists() and "_test_" not in str(dst_file):
                     return False
     return True
 

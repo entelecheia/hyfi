@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.2.14 (2023-07-18)
+
+### Fix
+
+* **hyfi:** Change default copier, add exclude_test_files option, modify path_spec with exclude options, rename conf.yaml to __init__.yaml ([`37f8a14`](https://github.com/entelecheia/hyfi/commit/37f8a147a429be8f4d8b1731e2766893a726bd50))
+
 ## v1.2.13 (2023-07-17)
 
 ### Fix

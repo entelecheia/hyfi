@@ -90,10 +90,6 @@ def create_config_search_path(
     if search_path_dir is not None and os.path.isdir(search_path_dir):
         search_path.append("hyfi", f"file://{search_path_dir}")
 
-    if _path := os.environ.get("HYFI_USER_CONFIG_PATH"):
-        if os.path.isdir(_path) and _path != search_path_dir:
-            search_path.append("environ", f"file://{_path}")
-
     search_path_plugins = Plugins.instance().discover(SearchPathPlugin)
     for spp in search_path_plugins:
         plugin = spp()

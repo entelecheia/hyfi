@@ -41,6 +41,7 @@ class AboutConfig(BaseModel):
 
     Attributes:
         __package_name__ (str): The name of the package.
+        __user_config_path__ (str): The path to the user configuration directory.
         name (str): The display name of the package.
         authors (str): The author(s) of the package.
         description (str): A brief description of the package.

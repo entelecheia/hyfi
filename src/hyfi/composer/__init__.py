@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 import hydra
+from hydra.core.global_hydra import GlobalHydra
 from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict, PrivateAttr, model_validator
 
@@ -18,6 +19,7 @@ from hyfi.core import (
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
+from hyfi.core import hydra as hyfi_hydra
 from hyfi.utils.conf import CONFs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
@@ -197,7 +199,7 @@ class Composer(BaseModel, CONFs):
         config_module: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
     ):
-        is_initialized = hydra.core.global_hydra.GlobalHydra.instance().is_initialized()  # type: ignore
+        is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
         config_module = config_module or __hydra_config__.hyfi_config_module
         logger.debug("config_module: %s", config_module)
         if is_initialized:
@@ -205,15 +207,10 @@ class Composer(BaseModel, CONFs):
             logger.debug("Hydra is already initialized")
             cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         else:
-            with hydra.initialize_config_module(
-                config_module=config_module, version_base=__hydra_version_base__
-            ):
-                cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
-        if is_initialized:
-            cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
-        else:
-            with hydra.initialize_config_module(
-                config_module=config_module, version_base=__hydra_version_base__
+            with hyfi_hydra.initialize_config(
+                config_module=config_module,
+                config_dir=__hydra_config__.hyfi_user_config_path,
+                version_base=__hydra_version_base__,
             ):
                 cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         return cfg
@@ -592,7 +589,7 @@ class BaseConfig(BaseModel):
         exclude = getattr(cls._exclude_, "default", set())  # type: ignore
         for name in exclude:
             if name in data:
-                del data[name]
+                del data[name]  # type: ignore
         return data
 
     # @model_validator(mode="after")  # type: ignore

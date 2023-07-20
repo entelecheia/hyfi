@@ -116,11 +116,8 @@ def hydra_main(
         logger.debug("Adding '%s' to search path", __about__.user_config_path)
     if _path := os.environ.get("HYFI_USER_CONFIG_PATH"):
         if os.path.isdir(_path) and _path not in searchpath:
-            searchpath.append(os.environ.get("HYFI_USER_CONFIG_PATH"))
-            logger.debug(
-                "Adding '%s' to search path",
-                os.environ.get("HYFI_USER_CONFIG_PATH"),
-            )
+            searchpath.append(_path)
+            logger.debug("Adding '%s' to search path", _path)
     if searchpath:
         logger.debug("Adding %s to Hydra's config search path", searchpath)
         sys.argv.append(f"hydra.searchpath=[{','.join(searchpath)}]")

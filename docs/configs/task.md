@@ -14,9 +14,3 @@ Config location: `conf/task`
 {% include '../../src/hyfi/conf/task/__init__.yaml' %}
 ```
 
-## `__test__.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/task/__test__.yaml' %}
-```
-

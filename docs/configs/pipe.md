@@ -38,21 +38,3 @@ Config location: `conf/pipe`
 {% include '../../src/hyfi/conf/pipe/__init__.yaml' %}
 ```
 
-## `_test_dataframes_load.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/pipe/_test_dataframes_load.yaml' %}
-```
-
-## `_test_dataframes_save.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/pipe/_test_dataframes_save.yaml' %}
-```
-
-## `_test_preprocessing.yaml`
-
-```yaml
-{% include '../../src/hyfi/conf/pipe/_test_preprocessing.yaml' %}
-```
-

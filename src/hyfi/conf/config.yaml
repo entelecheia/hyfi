@@ -8,8 +8,3 @@ defaults:
   - override hydra/help: help
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
-
-hyfi_user_config_path: ${oc.env:HYFI_USER_CONFIG_PATH,./conf}
-hydra:
-  searchpath:
-    - ${hyfi_user_config_path}

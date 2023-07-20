@@ -5,6 +5,8 @@ metadata about the package, such as its name, version, authors, and license.
 It also defines the model_config attribute, which is a ConfigDict that allows
 extra configuration options to be added to the AboutConfig instance.
 """
+import os
+
 from pydantic import BaseModel, ConfigDict
 
 from hyfi.utils.logging import LOGGING
@@ -39,6 +41,7 @@ class AboutConfig(BaseModel):
 
     Attributes:
         __package_name__ (str): The name of the package.
+        __user_config_path__ (str): The path to the user configuration directory.
         name (str): The display name of the package.
         authors (str): The author(s) of the package.
         description (str): A brief description of the package.
@@ -51,6 +54,7 @@ class AboutConfig(BaseModel):
 
     _config_group_: str = "about"
     __package_name__: str = __package_name__
+    __user_config_path__: str = "config"
 
     name: str = __app_name__
     authors: str = __authors__
@@ -70,3 +74,13 @@ class AboutConfig(BaseModel):
     def config_path(self) -> str:
         """Returns the path to the configuration module."""
         return f"pkg://{self.config_module}"
+
+    @property
+    def user_config_path(self) -> str:
+        """Returns the path to the user configuration directory."""
+        # if user_config_path is not an absolute path, make it absolute
+        if not os.path.isabs(self.__user_config_path__):
+            self.__user_config_path__ = os.path.join(
+                os.getcwd(), self.__user_config_path__
+            )
+        return self.__user_config_path__

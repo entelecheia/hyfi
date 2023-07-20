@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.3.1 (2023-07-20)
+
+### Fix
+
+* **hyfi/about:** Improve handling of user configuration path ([`9c535fc`](https://github.com/entelecheia/hyfi/commit/9c535fc5302de27016a887b2efa8db4a10f11d44))
+* **__cli__:** Simplify config search path setup ([`2d2e6bd`](https://github.com/entelecheia/hyfi/commit/2d2e6bd0eb24650f07e638ca629b50ac6292c82e))
+
 ## v1.3.0 (2023-07-20)
 
 ### Feature

@@ -33,7 +33,7 @@ class HyfiConfig(BaseModel):
 
     hyfi_config_path: str = __about__.config_path
     hyfi_config_module: str = __about__.config_module
-    hyfi_user_config_path: str = "conf"
+    hyfi_user_config_path: str = __about__.user_config_path
 
     debug_mode: bool = False
     resolve: bool = False
@@ -78,10 +78,6 @@ class HyfiConfig(BaseModel):
             data[key] = val
             key = "hyfi_config_module"
             data[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
-        key = "hyfi_user_config_path"
-        val = data.get(key)
-        if val is None:
-            data[key] = ENVs.get_osenv(key, ".")
         return data
 
     @field_validator("hyfi_user_config_path")

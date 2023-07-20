@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v1.3.0 (2023-07-20)
+
+### Feature
+
+* **about:** Add path checker ([`552d1f0`](https://github.com/entelecheia/hyfi/commit/552d1f0649c412a7ddb6023c9ee47fbd6d988ca0))
+* **hyfi.core:** Add hydra configuration initialization class and related functions ([`223c133`](https://github.com/entelecheia/hyfi/commit/223c13360ee04a49eb89ac55255dc0a377967eaf))
+* **hyfi:** Add user_config_path to about config ([`9f087e9`](https://github.com/entelecheia/hyfi/commit/9f087e98c45d401aef37d461373245494280c7db))
+* **about-config:** Add user_config_path property ([`50ea40d`](https://github.com/entelecheia/hyfi/commit/50ea40dc064bcb1e87d0ee9768912df34f41af54))
+
+### Fix
+
+* **hyfi:** Fix searchpath support ([`1bc6323`](https://github.com/entelecheia/hyfi/commit/1bc6323d23bc6f28a5b11e1df40d1ad995d834c7))
+
+### Documentation
+
+* **hyfi/about:** Add user_config_path attribute ([`dca153b`](https://github.com/entelecheia/hyfi/commit/dca153b38f835fc91504659adf5d9900cc845613))
+* Rename files in copier and pipe configuration examples ([`3c83044`](https://github.com/entelecheia/hyfi/commit/3c8304417c91de8577cb64176f8241cf89654be9))
+
 ## v1.2.14 (2023-07-18)
 
 ### Fix

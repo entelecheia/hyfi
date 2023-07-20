@@ -79,8 +79,18 @@ class AboutConfig(BaseModel):
     def user_config_path(self) -> str:
         """Returns the path to the user configuration directory."""
         # if user_config_path is not an absolute path, make it absolute
-        if not os.path.isabs(self.__user_config_path__):
-            self.__user_config_path__ = os.path.join(
-                os.getcwd(), self.__user_config_path__
+        search_path = self.__user_config_path__
+        if not os.path.isdir(search_path):
+            search_path = os.environ.get("HYFI_USER_CONFIG_PATH", "")
+        if os.path.isdir(search_path):
+            self.__user_config_path__ = (
+                search_path
+                if os.path.isabs(search_path)
+                else os.path.join(os.getcwd(), search_path)
             )
+        else:
+            logger.info(
+                "The user configuration directory does not exist: %s", search_path
+            )
+            self.__user_config_path__ = ""
         return self.__user_config_path__

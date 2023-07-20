@@ -109,18 +109,9 @@ def hydra_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    # Returns the path to the config file.
-    searchpath = []
-    if __about__.user_config_path and os.path.isdir(__about__.user_config_path):
-        searchpath.append(__about__.user_config_path)
-        logger.debug("Adding '%s' to search path", __about__.user_config_path)
-    if _path := os.environ.get("HYFI_USER_CONFIG_PATH"):
-        if os.path.isdir(_path) and _path not in searchpath:
-            searchpath.append(_path)
-            logger.debug("Adding '%s' to search path", _path)
-    if searchpath:
-        logger.debug("Adding %s to Hydra's config search path", searchpath)
-        sys.argv.append(f"hydra.searchpath=[{','.join(searchpath)}]")
+    if search_path := __about__.user_config_path:
+        logger.debug("Adding %s to Hydra's config search path", search_path)
+        sys.argv.append(f"--config-dir={search_path}")
     if config_path is None:
         config_path = __about__.config_path
     hydra.main(

@@ -51,6 +51,7 @@ class AboutConfig(BaseModel):
 
     _config_group_: str = "about"
     __package_name__: str = __package_name__
+    __user_config_path__: str = "config"
 
     name: str = __app_name__
     authors: str = __authors__
@@ -70,3 +71,8 @@ class AboutConfig(BaseModel):
     def config_path(self) -> str:
         """Returns the path to the configuration module."""
         return f"pkg://{self.config_module}"
+
+    @property
+    def user_config_path(self) -> str:
+        """Returns the path to the user configuration module."""
+        return self.__user_config_path__

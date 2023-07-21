@@ -2,5 +2,5 @@ backend: joblib
 initialize_backend: true
 minibatch_size: 1_000
 num_workers: ${oc.select:..num_workers,1}
-task_num_gpus: 0
+num_gpus: 0
 verbose: false

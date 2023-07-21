@@ -24,7 +24,7 @@ class JobLibConfig(BaseConfig):
     initialize_backend: bool = False
     minibatch_size: int = 1_000
     num_workers: int = 1
-    task_num_gpus: int = 0
+    num_gpus: int = 0
 
     _initilized_: bool = PrivateAttr(False)
     _batcher_instance_: Optional[Batcher] = PrivateAttr(None)
@@ -54,7 +54,7 @@ class JobLibConfig(BaseConfig):
                 procs=self.num_workers,
                 minibatch_size=self.minibatch_size,
                 task_num_cpus=self.num_workers,
-                task_num_gpus=self.task_num_gpus,
+                task_num_gpus=self.num_gpus,
                 verbose=self.verbose,
             )
             self._batcher_instance_ = core._batcher_instance_

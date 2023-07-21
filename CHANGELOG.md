@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.5.4 (2023-07-21)
+
+### Fix
+
+* **utils:** Add get_caller_module_name method in PKGs class ([`a2e0c8f`](https://github.com/entelecheia/hyfi/commit/a2e0c8fdb667ab71cd527839a6fa213ab1809ffa))
+* **hyfi/core:** Add backup functionality and config search path modifications ([`92dc89a`](https://github.com/entelecheia/hyfi/commit/92dc89a83761253c9ed7088e30820eede1050024))
+
 ## v1.5.3 (2023-07-21)
 
 ### Fix

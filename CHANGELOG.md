@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.4.0 (2023-07-21)
+
+### Feature
+
+* **hyfi-run:** Enhance CLI with additional options and functionality ([`03229b5`](https://github.com/entelecheia/hyfi/commit/03229b525d5ac62b48175d8f67af6e39a8a66cc6))
+* **hyfi:** Refactor and expand functionality ([`5071d52`](https://github.com/entelecheia/hyfi/commit/5071d52256b11f683de3a2fdb55e9f6d85a0cabb))
+* **composer:** Add global package list support, add instantiate_config method, add print_config method ([`f98a679`](https://github.com/entelecheia/hyfi/commit/f98a679192756029887c148d585d24ead29f255c))
+
+### Fix
+
+* **hyfi:** Change command configurations ([`990ca36`](https://github.com/entelecheia/hyfi/commit/990ca36b146a7f289cb43a05c5edab1b48d6c295))
+* **workflow:** Change 'name' to 'workflow_name' ([`1d9c15a`](https://github.com/entelecheia/hyfi/commit/1d9c15afd8c20337454d5767fb2ce84b67a10565))
+
 ## v1.3.1 (2023-07-20)
 
 ### Fix

@@ -4,7 +4,7 @@ defaults:
   - /task@task1: __test__
   - override /project: __test__
 
-name: __test__
+worflow_name: __test__
 verbose: true
 tasks:
   - task1

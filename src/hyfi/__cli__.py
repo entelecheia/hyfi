@@ -18,36 +18,6 @@ from hyfi.main import HyFI
 logger = HyFI.getLogger(__name__)
 
 
-def about(**args):
-    """
-    Print the about information for Hyfi.
-    This is a wrapper around _about which takes a HyfiConfig as an argument
-    """
-    HyFI.run(args)
-
-
-def run_copy(**args):
-    """
-    Copy all config files to the current working directory.
-    This is a wrapper around HyfiConfig to allow us to pass arguments to it.
-    """
-    HyFI.run(args, "copier")
-
-
-def run_task(**args):
-    """
-    Run a task. This is a wrapper around HyFI
-    """
-    HyFI.run(args, "task")
-
-
-def run_workflow(**args):
-    """
-    Run a workflow. This is a wrapper around HyFI. run_workflow
-    """
-    HyFI.run(args, "workflow")
-
-
 def cli_main(cfg: DictConfig) -> None:
     """
     Main function for the command line interface.
@@ -83,12 +53,7 @@ def cli_main(cfg: DictConfig) -> None:
         logger.info("Hydra working directory : %s", os.getcwd())
         logger.info("Orig working directory  : %s", hydra.utils.get_original_cwd())
 
-    if HyFI.is_instantiatable(cfg):
-        logger.info("Instantiating HyFI")
-        HyFI.instantiate(cfg)
-    else:
-        logger.info("HyFI is not instantiatable, running HyFI directly")
-        HyFI.run(cfg)
+    HyFI.run_config(config=cfg)
 
     HyFI.terminate()
 

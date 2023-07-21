@@ -254,9 +254,9 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        if _config_name_ := kwargs.get("_config_name_"):
+        if config_name := kwargs.get("workflow_name"):
             cfg = HyFI.compose_as_dict(
-                config_group=f"workflow={_config_name_}",
+                config_group=f"workflow={config_name}",
                 config_data=kwargs,
                 global_package=True,
             )
@@ -353,6 +353,66 @@ class HyFI(
         )
 
     @staticmethod
+    def instantiate_config(
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        global_package: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        """
+        Instantiates an object using the provided config group and overrides
+
+        Args:
+            config_group: Name of the config group to compose (`config_group=name`)
+            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
+            global_package: If True, the config assumed to be a global package
+            args: Optional positional parameters pass-through
+            kwargs: Optional named parameters to override
+                    parameters in the config object. Parameters not present
+                    in the config objects are being passed as is to the target.
+                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                                and cannot be used as passthrough
+
+        Returns:
+            if _target_ is a class name: the instantiated object
+            if _target_ is a callable: the return value of the call
+        """
+        return Composer.instantiate_config(
+            config_group=config_group,
+            overrides=overrides,
+            config_data=config_data,
+            global_package=global_package,
+            *args,
+            **kwargs,
+        )
+
+    @staticmethod
+    def print_config(
+        config_group: Union[str, None] = None,
+        overrides: Union[List[str], None] = None,
+        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        global_package: bool = False,
+    ):
+        """
+        Print the configuration
+
+        Args:
+            config_group: Name of the config group to compose (`config_group=name`)
+            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
+            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
+            global_package: If True, the config assumed to be a global package
+        """
+        Composer.print_config(
+            config_group=config_group,
+            overrides=overrides,
+            config_data=config_data,
+            global_package=global_package,
+        )
+
+    @staticmethod
     def partial(
         config: Union[str, Dict],
         *args: Any,
@@ -380,20 +440,53 @@ class HyFI(
     # Pipeline related functions
     ###############################
     @staticmethod
-    def run(cfg: Union[Dict, DictConfig], target: Optional[str] = None):
-        """Run the config"""
-        cfg = HyFI.to_dict(cfg)
-        if "tasks" in cfg:
-            workflow = HyFI.workflow(**cfg)
-            HyFI.run_workflow(workflow)
-        elif "task" in cfg and (target is None or target == "task"):
-            project = HyFI.init_project(**cfg["project"]) if "project" in cfg else None
-            task = HyFI.task(**cfg["task"])
-            HyFI.run_task(task, project=project)
-        elif "copier" in cfg and (target is None or target == "copier"):
-            with Copier(**cfg["copier"]) as worker:
-                worker.run_copy()
+    def run(**cfg):
+        """Run the provided config"""
+        HyFI.run_config(config=cfg)
+
+    @staticmethod
+    def run_config(
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config: Optional[Union[Dict[str, Any], DictConfig]] = None,
+        global_package=False,
+        **kwargs,
+    ):
+        """Run the config by composing it and running it"""
+        if config_group:
+            logger.info("Composing the HyFI config from config group %s", config_group)
+            config = HyFI.compose_as_dict(
+                config_group=config_group,
+                overrides=overrides,
+                config_data=config,
+                global_package=global_package,
+            )
+        config = HyFI.to_dict(config) if config else {}
+        if not isinstance(config, dict):
+            raise ValueError("The config must be a dictionary")
+        cmd_name = config.get("cmd_name")
+        # Check if the config is instantiatable
+        if HyFI.is_instantiatable(config):
+            logger.info("Instantiating the HyFI config")
+            HyFI.instantiate(config)
         else:
-            if target and target not in cfg:
-                logger.warning("Target %s not found in config", target)
-            HyFI.about(**cfg.get("about", {}))
+            logger.info(
+                "The HyFI config is not instantiatable, running HyFI task with the config"
+            )
+            # Run the HyFI task
+            if "tasks" in config or cmd_name == "run_workflow":
+                workflow = HyFI.workflow(**config)
+                HyFI.run_workflow(workflow)
+            elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
+                project = (
+                    HyFI.init_project(**config["project"])
+                    if "project" in config
+                    else None
+                )
+                task = HyFI.task(**config["task"])
+                HyFI.run_task(task, project=project)
+            elif "copier" in config and (cmd_name is None or cmd_name == "copy_conf"):
+                with Copier(**config["copier"]) as worker:
+                    worker.run_copy()
+            else:
+                HyFI.about(**config.get("about", {}))

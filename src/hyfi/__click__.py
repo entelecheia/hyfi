@@ -6,15 +6,52 @@ from hyfi._version import __version__
 from hyfi.copier import Copier
 from hyfi.core import __hyfi_path__
 from hyfi.core.config import HyfiConfig
+from hyfi.main import HyFI
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
-@click.group()
+
+@click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
 @click.version_option(__version__)
-def cli():
-    pass
+@click.option(
+    "--config",
+    "-c",
+    show_default=True,
+    help="Config group to compose and run",
+)
+@click.option(
+    "--print",
+    "-p",
+    show_default=True,
+    is_flag=True,
+    default=False,
+    help="Print the configuration instead of running it",
+)
+@click.pass_context
+def cli(ctx, config: str, print: bool):
+    """This is the auxiliary command line interface for Hyfi. The main command line
+    interface is 'hyfi'.
+
+    It is used to help run HyFI applications. If no command is specified, it will
+    compose a configuration and run it.
+
+    It is also used to copy configuration files to the destination directory and
+    to install shell completion for Hyfi.
+    \f
+
+    :param click.core.Context ctx: Click context.
+    """
+    if ctx.invoked_subcommand is None:
+        if config:
+            if print:
+                HyFI.print_config(config)
+            else:
+                HyFI.run(config_group=config)
+        else:
+            click.echo(ctx.get_help())
 
 
 @cli.command()

@@ -3,7 +3,7 @@ defaults:
   - _self_
   - about: __init__
   - mode: __init__
-  - cmd: __init__
+  - cmd: null
 
   - override hydra/help: help
   - override hydra/hydra_logging: colorlog

@@ -91,6 +91,7 @@ class Composer(BaseModel, CONFs):
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
@@ -106,6 +107,7 @@ class Composer(BaseModel, CONFs):
             overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
             config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
             return_as_dict: Return the result as a dict
+            throw_on_compose_failure: If True throw an exception if composition fails
             throw_on_resolution_failure: If True throw an exception if resolution fails
             throw_on_missing: If True throw an exception if config_group doesn't exist
             root_config_name: Name of the root config to be used (e.g. `hconf`)
@@ -120,6 +122,7 @@ class Composer(BaseModel, CONFs):
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
+            throw_on_compose_failure=throw_on_compose_failure,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             root_config_name=root_config_name,
@@ -148,6 +151,7 @@ class Composer(BaseModel, CONFs):
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
@@ -159,6 +163,7 @@ class Composer(BaseModel, CONFs):
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
+            throw_on_compose_failure=throw_on_compose_failure,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             root_config_name=root_config_name,
@@ -217,32 +222,6 @@ class Composer(BaseModel, CONFs):
         return cfg
 
     @staticmethod
-    def is_composable(
-        config_group: str,
-        config_module: Optional[str] = None,
-    ) -> bool:
-        """
-        Determines whether the input configuration object is composable.
-
-        Args:
-            config_group (str): The name of the configuration group to check.
-            config_module (Optional[str], optional): The name of the configuration module to check. Defaults to None.
-
-        Returns:
-            bool: True if the configuration object is composable, False otherwise.
-        """
-        try:
-            cfg = Composer.hydra_compose(
-                root_config_name=config_group,
-                config_module=config_module,
-                overrides=[],
-            )
-            return cfg is not None
-        except Exception as e:
-            logger.error("Error composing config: %s", e)
-            return False
-
-    @staticmethod
     def split_config_group(
         config_group: Union[str, None] = None,
     ) -> Tuple[str, str, str]:
@@ -266,6 +245,7 @@ class Composer(BaseModel, CONFs):
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
@@ -278,6 +258,7 @@ class Composer(BaseModel, CONFs):
                 config_group=config_group,
                 overrides=overrides,
                 config_data=config_data,
+                throw_on_compose_failure=throw_on_compose_failure,
                 throw_on_resolution_failure=throw_on_resolution_failure,
                 throw_on_missing=throw_on_missing,
                 root_config_name=root_config_name,
@@ -289,18 +270,49 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def _compose(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
+        global_package: bool = False,
+        **kwargs,
+    ) -> DictConfig:
+        try:
+            return Composer._compose_internal(
+                config_group=config_group,
+                overrides=overrides,
+                config_data=config_data,
+                throw_on_resolution_failure=throw_on_resolution_failure,
+                throw_on_missing=throw_on_missing,
+                root_config_name=root_config_name,
+                config_module=config_module,
+                global_package=global_package,
+                **kwargs,
+            )
+        except Exception as e:
+            logger.error("Error composing config: %s", e)
+            if throw_on_compose_failure:
+                raise e
+            return DictConfig(config_data) if config_data else DictConfig({})
+
+    @staticmethod
+    def _compose_internal(
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
+        throw_on_resolution_failure: bool = True,
+        throw_on_missing: bool = False,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         **kwargs,
     ) -> DictConfig:
         if isinstance(config_data, DictConfig):
-            logger.debug("returning config_group_kwargs without composing")
+            logger.debug("returning config_data without composing")
             return config_data
         # Set overrides to the empty list if None
         if overrides is None:
@@ -331,7 +343,7 @@ class Composer(BaseModel, CONFs):
                     overrides.append(override)
                 else:
                     overrides = [override]
-        # if verbose:
+
         logger.debug(f"compose config with overrides: {overrides}")
         # Initialize hydra and return the configuration.
         cfg = Composer.hydra_compose(
@@ -371,8 +383,32 @@ class Composer(BaseModel, CONFs):
                 throw_on_missing=throw_on_missing,
                 throw_on_resolution_failure=throw_on_resolution_failure,
             )
-        # logger.debug("Composed config: %s", OmegaConf.to_yaml(_to_dict(cfg)))
         return cfg
+
+    @staticmethod
+    def is_composable(
+        config_group: str,
+        config_module: Optional[str] = None,
+    ) -> bool:
+        """
+        Determines whether the input configuration object is composable.
+
+        Args:
+            config_group (str): The name of the configuration group to check.
+            config_module (Optional[str], optional): The name of the configuration module to check. Defaults to None.
+
+        Returns:
+            bool: True if the configuration object is composable, False otherwise.
+        """
+        try:
+            cfg = Composer._compose(
+                config_group=config_group,
+                config_module=config_module,
+            )
+            return cfg is not None
+        except Exception as e:
+            logger.error("Error composing config: %s", e)
+            return False
 
     @staticmethod
     def is_instantiatable(cfg: Any):

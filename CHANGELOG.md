@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.5.1 (2023-07-21)
+
+### Fix
+
+* **composer:** Extract BaseConfig to a separate file ([`8a10dd3`](https://github.com/entelecheia/hyfi/commit/8a10dd3e7d7913ab12e114701483a4fac3e12942))
+
 ## v1.5.0 (2023-07-21)
 
 ### Feature

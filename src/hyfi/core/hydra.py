@@ -11,6 +11,8 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 
+from hyfi.core import __config_module__
+
 
 def get_gh_backup() -> Any:
     if GlobalHydra in Singleton._instances:
@@ -86,6 +88,9 @@ def create_config_search_path(
 
     if config_module is not None:
         search_path.append("main", f"pkg://{config_module}")
+
+    if config_module != __config_module__:
+        search_path.append("hyfi", f"pkg://{__config_module__}")
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
         search_path.append("hyfi", f"file://{search_path_dir}")

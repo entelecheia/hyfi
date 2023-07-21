@@ -201,3 +201,8 @@ class PKGs:
     def viewsource(obj: str) -> None:
         """Print the source code of the object."""
         print(PKGs.getsource(obj))
+
+    @staticmethod
+    def get_caller_module_name() -> str:
+        """Get the name of the module that called this function."""
+        return inspect.getmodule(inspect.stack()[2][0]).__name__  # type: ignore

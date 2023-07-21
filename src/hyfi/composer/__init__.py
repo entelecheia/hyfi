@@ -55,13 +55,13 @@ class Composer(BaseModel, CONFs):
     Compose a configuration by applying overrides
     """
 
-    config_group: Union[str, None] = None
-    overrides: Union[List[str], None] = None
-    config_data: Union[Dict[str, Any], DictConfig, None] = None
+    config_group: Optional[str] = None
+    overrides: Optional[List[str]] = None
+    config_data: Optional[Union[Dict[str, Any], DictConfig]] = None
     throw_on_resolution_failure: bool = True
     throw_on_missing: bool = False
-    config_name: Union[str, None] = None
-    config_module: Union[str, None] = None
+    config_name: Optional[str] = None
+    config_module: Optional[str] = None
     global_package: bool = False
     verbose: bool = False
 
@@ -88,14 +88,14 @@ class Composer(BaseModel, CONFs):
 
     def compose(
         self,
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         verbose: bool = False,
     ) -> DictConfig:
@@ -148,14 +148,14 @@ class Composer(BaseModel, CONFs):
 
     def __call__(
         self,
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         verbose: bool = False,
     ) -> DictConfig:
@@ -201,9 +201,9 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def hydra_compose(
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
     ):
         is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
         config_module = config_module or __hydra_config__.hyfi_config_module
@@ -223,7 +223,7 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def split_config_group(
-        config_group: Union[str, None] = None,
+        config_group: Optional[str] = None,
     ) -> Tuple[str, str, str]:
         if config_group:
             group_ = config_group.split("=")
@@ -242,14 +242,14 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def _compose_as_dict(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         **kwargs,
     ) -> Dict:
@@ -586,9 +586,9 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def instantiate_config(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         global_package: bool = False,
         *args: Any,
         **kwargs: Any,
@@ -622,9 +622,9 @@ class Composer(BaseModel, CONFs):
 
     @staticmethod
     def print_config(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         global_package: bool = False,
     ):
         """

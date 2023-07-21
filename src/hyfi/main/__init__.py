@@ -271,14 +271,14 @@ class HyFI(
 
     @staticmethod
     def compose_as_dict(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         verbose: bool = False,
     ) -> Dict:
@@ -286,14 +286,14 @@ class HyFI(
         Compose a configuration by applying overrides and return the result as a dict(
 
         Args:
-            config_group (Union[str, None], optional): Name of the config group to compose (`config_group=name`). Defaults to None.
+            config_group (Optional[str], optional): Name of the config group to compose (`config_group=name`). Defaults to None.
             overrides (Union[List[str], None], optional): List of config groups to apply overrides to (`overrides=["override_name"]`). Defaults to None.
             config_data (Union[Dict[str, Any], DictConfig, None], optional): Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`). Defaults to None.
             throw_on_compose_failure (bool, optional): If True throw an exception if composition fails. Defaults to True.
             throw_on_resolution_failure (bool, optional): If True throw an exception if resolution fails. Defaults to True.
             throw_on_missing (bool, optional): If True throw an exception if config_group doesn't exist. Defaults to False.
-            root_config_name (Union[str, None], optional): Name of the root config to be used (e.g. `hconf`). Defaults to None.
-            config_module (Union[str, None], optional): Name of the module containing the configuration. Defaults to None.
+            root_config_name (Optional[str], optional): Name of the root config to be used (e.g. `hconf`). Defaults to None.
+            config_module (Optional[str], optional): Name of the module containing the configuration. Defaults to None.
             global_package (bool, optional): If True, the configuration is loaded from the global package. Defaults to False.
             verbose (bool, optional): If True, print verbose output. Defaults to False.
 
@@ -315,14 +315,14 @@ class HyFI(
 
     @staticmethod
     def compose(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
-        root_config_name: Union[str, None] = None,
-        config_module: Union[str, None] = None,
+        root_config_name: Optional[str] = None,
+        config_module: Optional[str] = None,
         global_package: bool = False,
         verbose: bool = False,
     ) -> DictConfig:
@@ -360,9 +360,9 @@ class HyFI(
 
     @staticmethod
     def instantiate_config(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         global_package: bool = False,
         *args: Any,
         **kwargs: Any,
@@ -397,9 +397,9 @@ class HyFI(
 
     @staticmethod
     def print_config(
-        config_group: Union[str, None] = None,
-        overrides: Union[List[str], None] = None,
-        config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        config_group: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         global_package: bool = False,
     ):
         """

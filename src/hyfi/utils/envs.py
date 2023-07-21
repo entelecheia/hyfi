@@ -4,7 +4,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 from string import Template
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional
 
 import dotenv
 import hydra
@@ -209,7 +209,7 @@ class ENVs:
         return ""
 
     @staticmethod
-    def get_osenv(key: str = "", default: Union[str, None] = None) -> Any:
+    def get_osenv(key: str = "", default: Optional[str] = None) -> Any:
         """Get the value of an environment variable or return the default value"""
         ENVs.load_dotenv()
         return os.environ.get(key, default) if key else os.environ

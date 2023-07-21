@@ -11,7 +11,7 @@ import warnings
 from glob import glob
 from pathlib import Path, PosixPath, WindowsPath
 from types import TracebackType
-from typing import Callable, Iterator, List, Tuple, Union
+from typing import Callable, Iterator, List, Tuple, Union, Optional
 
 import gdown
 
@@ -555,6 +555,91 @@ class IOLIBs:
         else:
             logger.warning("Unknown url: %s", url)
             return None
+
+    @staticmethod
+    def save_wordlist(
+        words: List[str],
+        filepath: str,
+        sort: bool = True,
+        verbose: bool = True,
+        encoding="utf-8",
+        **kwargs,
+    ):
+        """Save the word list to the file."""
+        if sort:
+            words = sorted(words)
+        if verbose:
+            logger.info(
+                "Save the list to the file: %s, no. of words: %s", filepath, len(words)
+            )
+        with open(filepath, "w", encoding=encoding) as fo_:
+            for word in words:
+                fo_.write(word + "\n")
+
+    @staticmethod
+    def load_wordlist(
+        filepath: str,
+        sort: bool = True,
+        lowercase: bool = False,
+        remove_tag: bool = False,
+        remove_duplicate: bool = True,
+        max_ngram_to_include: Optional[int] = None,
+        ngram_delimiter: str = ";",
+        remove_delimiter: bool = False,
+        save_modified: bool = False,
+        verbose: bool = True,
+        encoding="utf-8",
+        **kwargs,
+    ) -> List[str]:
+        """Load the word list from the file."""
+        filepath = Path(filepath)
+        if filepath.is_file():
+            with open(filepath, encoding=encoding) as fo_:
+                words = [
+                    word.strip().split()[0] for word in fo_ if len(word.strip()) > 0
+                ]
+        else:
+            words = []
+            IOLIBs.save_wordlist(words, filepath, verbose=verbose)
+
+        if remove_delimiter:
+            words = [word.replace(ngram_delimiter, "") for word in words]
+        if sort and remove_duplicate:
+            words = sorted(set(words))
+        if max_ngram_to_include:
+            words = [
+                word
+                for word in words
+                if len(word.split(ngram_delimiter)) <= max_ngram_to_include
+            ]
+        if verbose:
+            logger.info("Loaded the file: %s, No. of words: %s", filepath, len(words))
+        if save_modified:
+            if sort:
+                words = sorted(words)
+            with open(filepath, "w", encoding=encoding) as fo_:
+                for word in words:
+                    fo_.write(word + "\n")
+            if verbose:
+                logger.info(
+                    "Rewrite the file: %s, No. of words: %s", filepath, len(words)
+                )
+
+        if remove_tag:
+            words = [word.split("/")[0] for word in words]
+        words = [
+            word.lower() if lowercase else word
+            for word in words
+            if not word.startswith("#")
+        ]
+        if remove_duplicate:
+            words = list(set(words))
+            if verbose:
+                logger.info(
+                    "Remove duplicate words, No. of words: %s",
+                    len(words),
+                )
+        return words
 
 
 # See https://github.com/copier-org/copier/issues/345

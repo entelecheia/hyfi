@@ -4,7 +4,7 @@ from typing import Union
 
 from pydantic import field_validator
 
-from hyfi.composer import BaseConfig
+from hyfi.composer.base import BaseConfig
 from hyfi.core import __about__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig

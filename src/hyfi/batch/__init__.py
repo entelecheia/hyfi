@@ -24,7 +24,7 @@ from typing import Optional
 
 from pydantic import FieldValidationInfo, field_validator
 
-from hyfi.composer import BaseConfig
+from hyfi.composer.base import BaseConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

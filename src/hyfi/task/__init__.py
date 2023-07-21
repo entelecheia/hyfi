@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from hyfi.composer import BaseConfig, Composer
+from hyfi.composer import Composer
+from hyfi.composer.base import BaseConfig
 from hyfi.module import ModuleConfig
 from hyfi.path.task import TaskPathConfig
 from hyfi.project import ProjectConfig

@@ -274,6 +274,7 @@ class HyFI(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
@@ -288,6 +289,7 @@ class HyFI(
             config_group (Union[str, None], optional): Name of the config group to compose (`config_group=name`). Defaults to None.
             overrides (Union[List[str], None], optional): List of config groups to apply overrides to (`overrides=["override_name"]`). Defaults to None.
             config_data (Union[Dict[str, Any], DictConfig, None], optional): Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`). Defaults to None.
+            throw_on_compose_failure (bool, optional): If True throw an exception if composition fails. Defaults to True.
             throw_on_resolution_failure (bool, optional): If True throw an exception if resolution fails. Defaults to True.
             throw_on_missing (bool, optional): If True throw an exception if config_group doesn't exist. Defaults to False.
             root_config_name (Union[str, None], optional): Name of the root config to be used (e.g. `hconf`). Defaults to None.
@@ -302,6 +304,7 @@ class HyFI(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
+            throw_on_compose_failure=throw_on_compose_failure,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             config_name=root_config_name,
@@ -315,6 +318,7 @@ class HyFI(
         config_group: Union[str, None] = None,
         overrides: Union[List[str], None] = None,
         config_data: Union[Dict[str, Any], DictConfig, None] = None,
+        throw_on_compose_failure: bool = True,
         throw_on_resolution_failure: bool = True,
         throw_on_missing: bool = False,
         root_config_name: Union[str, None] = None,
@@ -330,6 +334,7 @@ class HyFI(
             overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
             config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
             return_as_dict: Return the result as a dict
+            throw_on_compose_failure: If True throw an exception if composition fails
             throw_on_resolution_failure: If True throw an exception if resolution fails
             throw_on_missing: If True throw an exception if config_group doesn't exist
             root_config_name: Name of the root config to be used (e.g. `hconf`)
@@ -344,6 +349,7 @@ class HyFI(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
+            throw_on_compose_failure=throw_on_compose_failure,
             throw_on_resolution_failure=throw_on_resolution_failure,
             throw_on_missing=throw_on_missing,
             config_name=root_config_name,

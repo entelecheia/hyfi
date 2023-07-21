@@ -5,7 +5,7 @@ import collections.abc
 import os
 import re
 from enum import Enum
-from typing import Any, Callable, Dict, List, Mapping, Set, Tuple, Union, Optional
+from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Tuple, Union
 
 import hydra
 from hydra.core.global_hydra import GlobalHydra

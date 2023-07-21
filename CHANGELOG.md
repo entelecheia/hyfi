@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.5.3 (2023-07-21)
+
+### Fix
+
+* **core:** Change default config group value to __init__ ([`4a91f15`](https://github.com/entelecheia/hyfi/commit/4a91f15c7cacb89633af2b48bd587e8a50fd70ab))
+
 ## v1.5.2 (2023-07-21)
 
 ### Fix

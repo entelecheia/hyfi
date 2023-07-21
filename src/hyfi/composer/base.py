@@ -66,10 +66,6 @@ class BaseConfig(BaseModel):
         if not _config_group_:
             logger.debug("There is no config group specified.")
             return data
-        config_group = f"{_config_group_}={_config_name_}"
-        if not Composer.is_composable(config_group):
-            logger.debug("Config group `%s` is not composable.", config_group)
-            return data
         # Initialize the config with the given config_name.
         logger.info(
             "Composing `%s` class with `%s` config in `%s` group.",
@@ -77,7 +73,12 @@ class BaseConfig(BaseModel):
             _config_name_,
             _config_group_,
         )
-        cfg = Composer(config_group=config_group, config_data=data).config_as_dict
+        config_group = f"{_config_group_}={_config_name_}"
+        cfg = Composer(
+            config_group=config_group,
+            config_data=data,
+            throw_on_compose_failure=False,
+        ).config_as_dict
         data = Composer.update(cfg, data)
         # Exclude any attributes specified in the class's `exclude` list.
         exclude = getattr(cls._exclude_, "default", set())  # type: ignore

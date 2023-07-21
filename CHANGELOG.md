@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.5.0 (2023-07-21)
+
+### Feature
+
+* **utils:** Add functions to save and load wordlists ([`14f8bc5`](https://github.com/entelecheia/hyfi/commit/14f8bc5c744952ba7bc62910b403482550d661c9))
+
 ## v1.4.0 (2023-07-21)
 
 ### Feature

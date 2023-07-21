@@ -5,7 +5,7 @@ import collections.abc
 import os
 import re
 from enum import Enum
-from typing import Any, Callable, Dict, List, Mapping, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Mapping, Set, Tuple, Union, Optional
 
 import hydra
 from hydra.core.global_hydra import GlobalHydra
@@ -215,6 +215,32 @@ class Composer(BaseModel, CONFs):
             ):
                 cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         return cfg
+
+    @staticmethod
+    def is_composable(
+        config_group: str,
+        config_module: Optional[str] = None,
+    ) -> bool:
+        """
+        Determines whether the input configuration object is composable.
+
+        Args:
+            config_group (str): The name of the configuration group to check.
+            config_module (Optional[str], optional): The name of the configuration module to check. Defaults to None.
+
+        Returns:
+            bool: True if the configuration object is composable, False otherwise.
+        """
+        try:
+            cfg = Composer.hydra_compose(
+                root_config_name=config_group,
+                config_module=config_module,
+                overrides=[],
+            )
+            return cfg is not None
+        except Exception as e:
+            logger.error("Error composing config: %s", e)
+            return False
 
     @staticmethod
     def split_config_group(

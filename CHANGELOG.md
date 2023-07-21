@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.5.2 (2023-07-21)
+
+### Fix
+
+* **main:** Add 'throw_on_compose_failure' argument ([`f1f7e0f`](https://github.com/entelecheia/hyfi/commit/f1f7e0f66e49b6499bd3e2b640ddd7fe8d97f58c))
+* **composer/base:** Handle composable config groups more efficiently ([`5eacff2`](https://github.com/entelecheia/hyfi/commit/5eacff20f151f6321d140321824f5930dc7a8f7f))
+* **composer:** Add throw_on_compose_failure parameter, improve error handling in _compose method ([`caee9e5`](https://github.com/entelecheia/hyfi/commit/caee9e5a87925b125a8f42d4079e2c759b3ec822))
+* **composer:** Streamline config initialization and composition ([`eaddcf3`](https://github.com/entelecheia/hyfi/commit/eaddcf3c3d86eea8652a2ce563fa088bebcd4b40))
+* **composer:** Add method to check if  configuration is composable ([`f414c9f`](https://github.com/entelecheia/hyfi/commit/f414c9faf2b24c1c370b7196f94ecc28a02debf3))
+
 ## v1.5.1 (2023-07-21)
 
 ### Fix

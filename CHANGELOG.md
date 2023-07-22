@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.7.1 (2023-07-22)
+
+### Fix
+
+* **hyfi:** Introduce package name and path handling. ([`8aaddeb`](https://github.com/entelecheia/hyfi/commit/8aaddeb63d40d4f9f8c96c16afdf42c04d69503d))
+* **hyfi.core:** Change __config_module_path__ to __hyfi_config_module_path__ ([`bf25faa`](https://github.com/entelecheia/hyfi/commit/bf25faaa7b444f637868ca519833733f30693184))
+* **hyfi/core/config:** Consolidate import statements and add package_name property ([`f8b7e04`](https://github.com/entelecheia/hyfi/commit/f8b7e047efc8379880a7a8648e772c5192c36d5d))
+* **core:** Rename and add function in init file ([`4d865ac`](https://github.com/entelecheia/hyfi/commit/4d865ac0d22e8412af42b0f678925fc374cfd774))
+* **hyfi/conf:** Update project_name variable in __init__.yaml ([`88d29a2`](https://github.com/entelecheia/hyfi/commit/88d29a24cb5db193ffd2ebbc2747d2fe2fb57aa1))
+* **path:** Rename app to package in configuration ([`eeffda8`](https://github.com/entelecheia/hyfi/commit/eeffda88b4024fa5983dae6aa01256070df1ac1c))
+* **hyfi:** Rename attribute names with hyfi prefix ([`d4f1d39`](https://github.com/entelecheia/hyfi/commit/d4f1d39b0db64082422b25882b23b8670cdf4248))
+* **hyfi:** Change __package_name__ to __hyfi_package_name__ ([`a3921c3`](https://github.com/entelecheia/hyfi/commit/a3921c399abbbb655e08da742ea1841e61dcd455))
+
 ## v1.7.0 (2023-07-22)
 
 ### Feature

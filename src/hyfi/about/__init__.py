@@ -89,7 +89,7 @@ class AboutConfig(BaseModel):
                 else os.path.join(os.getcwd(), search_path)
             )
         else:
-            logger.info(
+            logger.debug(
                 "The user configuration directory does not exist: %s", search_path
             )
             self.__user_config_path__ = ""

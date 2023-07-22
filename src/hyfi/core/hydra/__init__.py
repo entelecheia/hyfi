@@ -101,6 +101,9 @@ class initialize_config:
 def append_search_path(
     provider: str, path: str, search_path: ConfigSearchPath
 ) -> ConfigSearchPath:
+    if not path:
+        logger.debug("Not adding empty path to Hydra's config search path")
+        return search_path
     for sp_item in search_path.get_path():
         if sp_item.path == path:
             logger.debug(
@@ -109,7 +112,7 @@ def append_search_path(
                 sp_item.provider,
             )
             return search_path
-    logger.debug("Adding %s to Hydra's config search path", path)
+    logger.debug("Adding %s from %s to Hydra's config search path", path, provider)
     search_path.append(provider, path)
     return search_path
 
@@ -128,14 +131,23 @@ def create_config_search_path(
         "hyfi", f"pkg://{__config_module_path__}", search_path
     )
     if config_module:
-        search_path = append_search_path("main", f"pkg://{config_module}", search_path)
+        path = (
+            config_module
+            if config_module.startswith("pkg://")
+            else f"pkg://{config_module}"
+            if "." in config_module
+            else ""
+        )
+        search_path = append_search_path("main", path, search_path)
     if caller_config_module := get_caller_config_module_path():
         search_path = append_search_path(
             "caller", f"pkg://{caller_config_module}", search_path
         )
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
-        search_path.append("user", f"file://{search_path_dir}")
+        search_path = append_search_path(
+            "user", f"file://{search_path_dir}", search_path
+        )
 
     search_path_plugins = Plugins.instance().discover(SearchPathPlugin)
     for spp in search_path_plugins:

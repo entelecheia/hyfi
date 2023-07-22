@@ -120,7 +120,7 @@ def create_config_search_path(
         search_path.append("hyfi", f"pkg://{__config_module_path__}")
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
-        search_path.append("hyfi", f"file://{search_path_dir}")
+        search_path.append("user", f"file://{search_path_dir}")
 
     search_path_plugins = Plugins.instance().discover(SearchPathPlugin)
     for spp in search_path_plugins:

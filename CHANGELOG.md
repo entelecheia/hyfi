@@ -1,5 +1,21 @@
 <!--next-version-placeholder-->
 
+## v1.7.0 (2023-07-22)
+
+### Feature
+
+* **hyfi:** Add app path and version resolvers ([`2352c56`](https://github.com/entelecheia/hyfi/commit/2352c564add16c90001089141c3b34e23954b293))
+* **hydra/main:** Add overrides parameter to main function ([`2288a25`](https://github.com/entelecheia/hyfi/commit/2288a2500100679aa272c1d5ca6820c9c0147044))
+* **core:** Add app version and path functions ([`62b8388`](https://github.com/entelecheia/hyfi/commit/62b8388718b26c00f0cd4bc65c4edfb89f5ab215))
+* **hyfi/conf/path:** Add app path in __init__.yaml ([`8b8e04a`](https://github.com/entelecheia/hyfi/commit/8b8e04a90a68443ed11c52bd329a866b1de55f1c))
+* **hyfi/conf:** Add version to configuration ([`417c260`](https://github.com/entelecheia/hyfi/commit/417c2609b5af4a0a9a186c93556d388296cde71c))
+* **hyfi/about:** Add package path and version to AboutConfig ([`483ba99`](https://github.com/entelecheia/hyfi/commit/483ba992cea502241761f4695f2a629d1cf3d38e))
+* **hyfi:** Add overrides option in hyfi main functions ([`d0649ce`](https://github.com/entelecheia/hyfi/commit/d0649ce0c9b44e4738be58f206490ba26c305ee4))
+
+### Fix
+
+* **hyfi:** Delete version specification ([`f829bcb`](https://github.com/entelecheia/hyfi/commit/f829bcb81ed9f86a1e9a269958f8e5c2c4c8d073))
+
 ## v1.6.4 (2023-07-22)
 
 ### Fix

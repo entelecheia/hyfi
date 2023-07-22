@@ -1,5 +1,20 @@
 <!--next-version-placeholder-->
 
+## v1.8.0 (2023-07-22)
+
+### Feature
+
+* **core:** Add initialize method to GlobalHyFIConfig ([`ab6474f`](https://github.com/entelecheia/hyfi/commit/ab6474f658b274cbda73f2d284e4d0c99d4cbbc2))
+* **hyfi:** Add initialize_global_hyfi function ([`9b41404`](https://github.com/entelecheia/hyfi/commit/9b4140451a2942e59a5d0932b0fae06b193e7284))
+
+### Fix
+
+* **hyfi/main:** Correct the location of __hyfi_version__ import in __init__.py ([`bcf0c14`](https://github.com/entelecheia/hyfi/commit/bcf0c14ec81adbafa8b2595d257497f77a5fcc3d))
+* **hyfi/core:** Replace __about__ with __global_hyfi__ and self.about ([`f2f6bf0`](https://github.com/entelecheia/hyfi/commit/f2f6bf0184bc29ba5ded7d0dde00d431f5fc9386))
+* **core:** Update configuration structure and methods ([`06f1b42`](https://github.com/entelecheia/hyfi/commit/06f1b42fdfa33f7a38650737ffad8857d6251ab4))
+* **hyfi:** Replace __hydra_config__ with __global_hyfi__ ([`17ffe6c`](https://github.com/entelecheia/hyfi/commit/17ffe6ca6b00f999b8175182de488c5a3d312401))
+* **hyfi:** Replace about with global_hyfi in module imports ([`d9beab0`](https://github.com/entelecheia/hyfi/commit/d9beab0f9b6b02bb7e774e20fda5b90ee1a9f163))
+
 ## v1.7.1 (2023-07-22)
 
 ### Fix

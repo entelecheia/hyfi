@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.6.0 (2023-07-22)
+
+### Feature
+
+* **hyfi:** Add hyfi configuration path to search path ([`eceb21f`](https://github.com/entelecheia/hyfi/commit/eceb21f8334ecd0d792d36c6411bf3493272422a))
+* **hyfi:** Add hyfi_main to imports and __all__ list ([`3bd4672`](https://github.com/entelecheia/hyfi/commit/3bd4672d6e5008c560c50ce641a304bec8048aea))
+* **hydra:** Add main.py and utils.py modules ([`d68c7a8`](https://github.com/entelecheia/hyfi/commit/d68c7a853282faedc1656d799dd94734d07feb7c))
+* **hyfi/core/hydra:** Add function get_caller_config_module_path ([`074c538`](https://github.com/entelecheia/hyfi/commit/074c538ab74c5f2680d9ec9a6f2e3be6950bc457))
+* **tests:** Add HyFI pipeline datasets tests ([`b2c17b5`](https://github.com/entelecheia/hyfi/commit/b2c17b5febbc5d1d2c25feb74c23a2380521e54a))
+* **hyfi/pipe:** Add save, load, and sample dataset functions ([`0f90410`](https://github.com/entelecheia/hyfi/commit/0f904103ec688735c31dc63427f0dd2d83457b4c))
+* **hyfi/conf/pipe:** Add load, sample, save dataset configurations ([`63684ed`](https://github.com/entelecheia/hyfi/commit/63684ed8ca89b1c26c30627a66694ac404f130af))
+
 ## v1.5.4 (2023-07-21)
 
 ### Fix

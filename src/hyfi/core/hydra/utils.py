@@ -48,10 +48,7 @@ def _run_hydra(
     task_name = detect_task_name(calling_file, calling_module)
 
     abs_config_dir = os.path.abspath(args.config_dir) if args.config_dir else None
-    calling_module_path = (
-        f"{calling_module.split('.')[0]}.{config_path}" if calling_module else None
-    )
-    search_path = create_config_search_path(calling_module_path, abs_config_dir)
+    search_path = create_config_search_path(config_path, abs_config_dir)
     # validate_config_path(config_path)
     # search_path = create_automatic_config_search_path(
     #     calling_file, calling_module, config_path

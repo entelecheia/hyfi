@@ -76,7 +76,7 @@ def hyfi_main(
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
     if search_path := __about__.user_config_path:
-        logger.debug("Adding %s to Hydra's config search path", search_path)
+        logger.debug("Adding `%s` to Hydra's config search path", search_path)
         sys.argv.append(f"--config-dir={search_path}")
     if config_path is None:
         config_path = __about__.config_path

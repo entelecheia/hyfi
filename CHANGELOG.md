@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.8.1 (2023-07-22)
+
+### Fix
+
+* **hyfi/core/config:** Rename hyfi_config_path to hyfi_config_module_path ([`13b170e`](https://github.com/entelecheia/hyfi/commit/13b170ee94acb172d0cda96baf72581673223026))
+* **core:** Rename config path methods ([`8cf724e`](https://github.com/entelecheia/hyfi/commit/8cf724e99495c2f8341d2088db4f7f775ff3a14d))
+* **hyfi:** Change config_path to config_module_path ([`cb61b92`](https://github.com/entelecheia/hyfi/commit/cb61b92706a933b0954aeda8657b77f24781997b))
+* **core:** Add __config_path__ field and modify config_module property ([`23fee24`](https://github.com/entelecheia/hyfi/commit/23fee24e08ef584ef09430e69ab6023cafaa3776))
+* **core:** Add config_name attribute to GlobalHyFIConfig class ([`c653008`](https://github.com/entelecheia/hyfi/commit/c65300878d39912a29921eb2e3defaded39bebee))
+* **hyfi:** Modify default parameter handling in hyfi_main and hydra_main functions ([`5a040a5`](https://github.com/entelecheia/hyfi/commit/5a040a5a6a0f6d8ea3ad6f8b52a487e1aac89482))
+
 ## v1.8.0 (2023-07-22)
 
 ### Feature

@@ -7,18 +7,13 @@ from typing import Optional
 
 from hydra._internal.utils import (
     _run_app,
-    create_automatic_config_search_path,
     detect_calling_file_or_module_from_stack_frame,
     detect_calling_file_or_module_from_task_function,
     detect_task_name,
     run_and_report,
 )
-from hydra.core.config_search_path import SearchPathQuery
-from hydra.core.utils import validate_config_path
-from hydra.errors import SearchPathException
 from hydra.types import TaskFunction
 
-from hyfi.core import __config_module_path__
 from hyfi.core.hydra import create_config_search_path
 
 log = logging.getLogger(__name__)
@@ -52,12 +47,10 @@ def _run_hydra(
         ) = detect_calling_file_or_module_from_stack_frame(caller_stack_depth + 1)
     task_name = detect_task_name(calling_file, calling_module)
 
-    abs_config_dir = None
-    calling_module_path = None
-    if args.config_dir:
-        abs_config_dir = os.path.abspath(args.config_dir)
-    if calling_module:
-        calling_module_path = f"{calling_module.split('.')[0]}.{config_path}"
+    abs_config_dir = os.path.abspath(args.config_dir) if args.config_dir else None
+    calling_module_path = (
+        f"{calling_module.split('.')[0]}.{config_path}" if calling_module else None
+    )
     search_path = create_config_search_path(calling_module_path, abs_config_dir)
     # validate_config_path(config_path)
     # search_path = create_automatic_config_search_path(

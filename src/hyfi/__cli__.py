@@ -6,12 +6,12 @@ from typing import List, Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.about import __hyfi_package_name__
 from hyfi.core import (
-    __about__,
-    __config_name__,
-    __config_path__,
+    __global_hyfi__,
     __hydra_version_base__,
+    __hyfi_config_name__,
+    __hyfi_config_path__,
+    __hyfi_package_name__,
 )
 from hyfi.core.config import HyfiConfig
 from hyfi.core.hydra.main import main as hyfi_hydra_main
@@ -61,8 +61,8 @@ def cli_main(cfg: DictConfig) -> None:
 
 
 def hyfi_main(
-    config_path: Optional[str] = __config_path__,
-    config_name: Optional[str] = __config_name__,
+    config_path: Optional[str] = __hyfi_config_path__,
+    config_name: Optional[str] = __hyfi_config_name__,
     overrides: Optional[List[str]] = None,
 ) -> None:
     """
@@ -77,18 +77,18 @@ def hyfi_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    if search_path := __about__.user_config_path:
+    if search_path := __global_hyfi__.user_config_path:
         sys.argv.append(f"--config-dir={search_path}")
     if config_path is None:
-        config_path = __about__.config_path
-    if __about__.__package_name__ != __hyfi_package_name__:
+        config_path = __global_hyfi__.config_path
+    if __global_hyfi__.__package_name__ != __hyfi_package_name__:
         overrides = overrides or []
-        override = f"about={__about__.__package_name__}"
+        override = f"about={__global_hyfi__.__package_name__}"
         if override not in overrides:
             overrides.append(override)
             logger.debug(
                 "Overriding `about` config group with `%s`",
-                __about__.__package_name__,
+                __global_hyfi__.__package_name__,
             )
     hyfi_hydra_main(
         config_path=config_path,
@@ -99,8 +99,8 @@ def hyfi_main(
 
 
 def hydra_main(
-    config_path: Optional[str] = __config_path__,
-    config_name: Optional[str] = __config_name__,
+    config_path: Optional[str] = __hyfi_config_path__,
+    config_name: Optional[str] = __hyfi_config_name__,
     overrides: Optional[List[str]] = None,
 ) -> None:
     """

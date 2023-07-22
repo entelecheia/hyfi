@@ -34,7 +34,7 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
 
 def get_caller_config_module_path(
     config_path: Optional[str] = __config_path__,
-) -> Optional[str]:
+) -> str:
     """Returns the path to the caller module's config folder"""
     caller_module_name = PKGs.get_caller_module_name()
     config_module = caller_module_name.split(".")[0]
@@ -47,7 +47,7 @@ def get_caller_config_module_path(
         return config_module_path
     except ImportError:
         logger.debug("Config module not found: %s", config_module_path)
-    return None
+    return ""
 
 
 _UNSPECIFIED_: Any = object()

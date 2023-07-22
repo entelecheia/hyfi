@@ -19,6 +19,7 @@ from hydra.errors import SearchPathException
 from hydra.types import TaskFunction
 
 from hyfi.core import __config_module_path__
+from hyfi.core.hydra import get_caller_config_module_path
 
 log = logging.getLogger(__name__)
 
@@ -57,23 +58,6 @@ def _run_hydra(
         calling_file, calling_module, config_path
     )
 
-    def add_hyfi_conf() -> None:
-        if (
-            calling_module
-            and calling_module.split(".")[0] == __config_module_path__.split(".")[0]
-        ):
-            log.debug("Calling module is hyfi")
-        else:
-            log.debug(
-                "Calling module is not hyfi, adding hyfi to the config search path"
-            )
-            search_path.prepend(
-                provider="hyfi",
-                path=f"pkg://{__config_module_path__}",
-            )
-
-    run_and_report(add_hyfi_conf)
-
     def add_conf_dir() -> None:
         if args.config_dir is not None:
             abs_config_dir = os.path.abspath(args.config_dir)
@@ -88,6 +72,36 @@ def _run_hydra(
             )
 
     run_and_report(add_conf_dir)
+
+    def add_hyfi_conf() -> None:
+        path = f"pkg://{__config_module_path__}"
+        for sp_item in search_path.get_path():
+            if sp_item.path == path:
+                log.debug("HyFI config path already in search path")
+                return
+        log.debug("Adding hyfi to the config search path")
+        search_path.prepend(
+            provider="hyfi",
+            path=path,
+        )
+
+    run_and_report(add_hyfi_conf)
+
+    def add_caller_conf() -> None:
+        caller_config_path = get_caller_config_module_path()
+        path = f"pkg://{caller_config_path}"
+        for sp_item in search_path.get_path():
+            if sp_item.path == path:
+                log.debug("Caller config path already in search path")
+                return
+        log.debug("Adding %s to the config search path", caller_config_path)
+        search_path.prepend(
+            provider="caller",
+            path=path,
+        )
+
+    run_and_report(add_caller_conf)
+
     hydra = run_and_report(
         lambda: Hydra.create_main_hydra2(
             task_name=task_name, config_search_path=search_path

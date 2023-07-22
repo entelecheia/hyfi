@@ -46,6 +46,17 @@ class GlobalHyFIConfig(BaseModel):
     __user_config_path__: str = "config"
     __version__: str = __hyfi_version__()
 
+    def initialize(
+        self,
+        package_name: str = __hyfi_name__,
+        version: str = __hyfi_version__(),
+    ) -> None:
+        """
+        Initializes the global HyFI instance.
+        """
+        self.__package_name__ = package_name
+        self.__version__ = version
+
     @property
     def version(self) -> str:
         """Returns the version number of the package."""

@@ -38,6 +38,7 @@ class GlobalHyFIConfig(BaseModel):
     __package_name__ (str): The name of the package.
     __package_path__ (str): The path to the package root folder.
     __config_name__ (str): The name of the configuration module.
+    __config_path__ (str): The path to the configuration module.
     __user_config_path__ (str): The path to the user configuration directory.
     __version__ (str): The version number of the package.
     """
@@ -45,6 +46,7 @@ class GlobalHyFIConfig(BaseModel):
     __package_name__: str = __hyfi_package_name__
     __package_path__: str = __hyfi_package_path__
     __config_name__: str = __hyfi_config_name__
+    __config_path__: str = __hyfi_config_path__
     __user_config_path__: str = "config"
     __version__: str = __hyfi_version__()
 
@@ -67,7 +69,7 @@ class GlobalHyFIConfig(BaseModel):
     @property
     def config_module(self) -> str:
         """Returns the name of the configuration module."""
-        return f"{self.__package_name__}.{self.__config_name__}"
+        return f"{self.__package_name__}.{self.__config_path__}"
 
     @property
     def config_path(self) -> str:

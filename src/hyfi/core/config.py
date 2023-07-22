@@ -15,13 +15,7 @@ from pydantic import (
 )
 
 from hyfi.about import AboutConfig
-from hyfi.core import (
-    __about__,
-    __app_name__,
-    __app_version__,
-    __hydra_config__,
-    __package_name__,
-)
+from hyfi.core import __app_version__, __global_hyfi__, __hyfi_name__, __package_name__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
@@ -37,9 +31,9 @@ logger = LOGGING.getLogger(__name__)
 class HyfiConfig(BaseModel):
     """HyFI root config class.  This class is used to store the configuration"""
 
-    hyfi_config_path: str = __about__.config_path
-    hyfi_config_module: str = __about__.config_module
-    hyfi_user_config_path: str = __about__.user_config_path
+    hyfi_config_path: str = __global_hyfi__.config_path
+    hyfi_config_module: str = __global_hyfi__.config_module
+    hyfi_user_config_path: str = __global_hyfi__.user_config_path
 
     debug_mode: bool = False
     resolve: bool = False
@@ -206,14 +200,11 @@ class HyfiConfig(BaseModel):
             return
         if self.about is None:
             self.about = AboutConfig()
-        __hydra_config__.hyfi_config_module = __about__.config_module
-        __hydra_config__.hyfi_config_path = __about__.config_path
-        __hydra_config__.hyfi_user_config_path = self.hyfi_user_config_path
         logger.debug(
             "HyFiConfig initialized with hyfi_config_module=%s, hyfi_config_path=%s, hyfi_user_config_path=%s",
-            __hydra_config__.hyfi_config_module,
-            __hydra_config__.hyfi_config_path,
-            __hydra_config__.hyfi_user_config_path,
+            __global_hyfi__.hyfi_config_module,
+            __global_hyfi__.hyfi_config_path,
+            __global_hyfi__.hyfi_user_config_path,
         )
         ENVs.load_dotenv()
 
@@ -271,7 +262,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the application
         """
-        return __app_name__()
+        return self.about.name if self.about else __hyfi_name__
 
     @property
     def package_name(self):
@@ -292,11 +283,11 @@ class HyfiConfig(BaseModel):
         return os.environ
 
     def print_about(self, **kwargs):
-        about = AboutConfig(**kwargs)
+        self.about = AboutConfig(**kwargs)
         pkg_name = self.package_name
         name = self.app_name
         print()
-        for k, v in about.model_dump().items():
+        for k, v in self.about.model_dump().items():
             if k.startswith("_") or k == "version":
                 continue
             print(f"{k:11} : {v}")

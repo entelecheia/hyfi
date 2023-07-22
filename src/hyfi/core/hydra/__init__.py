@@ -98,6 +98,22 @@ class initialize_config:
         return "hyfi.core.hydra.initialize_config()"
 
 
+def append_search_path(
+    provider: str, path: str, search_path: ConfigSearchPath
+) -> ConfigSearchPath:
+    for sp_item in search_path.get_path():
+        if sp_item.path == path:
+            logger.debug(
+                "Not adding %s to Hydra's config search path, it was already added by %s",
+                path,
+                sp_item.provider,
+            )
+            return search_path
+    logger.debug("Adding %s to Hydra's config search path", path)
+    search_path.append(provider, path)
+    return search_path
+
+
 def create_config_search_path(
     config_module: Optional[str],
     search_path_dir: Optional[str],
@@ -108,16 +124,15 @@ def create_config_search_path(
     search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
 
+    search_path = append_search_path(
+        "hyfi", f"pkg://{__config_module_path__}", search_path
+    )
     if config_module:
-        search_path.append("main", f"pkg://{config_module}")
-    caller_config_module = get_caller_config_module_path()
-    if caller_config_module:
-        search_path.append("caller", f"pkg://{caller_config_module}")
-    if (
-        config_module != __config_module_path__
-        and caller_config_module != __config_module_path__
-    ):
-        search_path.append("hyfi", f"pkg://{__config_module_path__}")
+        search_path = append_search_path("main", f"pkg://{config_module}", search_path)
+    if caller_config_module := get_caller_config_module_path():
+        search_path = append_search_path(
+            "caller", f"pkg://{caller_config_module}", search_path
+        )
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
         search_path.append("user", f"file://{search_path_dir}")

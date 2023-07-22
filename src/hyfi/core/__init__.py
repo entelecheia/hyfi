@@ -72,7 +72,7 @@ class GlobalHyFIConfig(BaseModel):
         return f"{self.__package_name__}.{self.__config_path__}"
 
     @property
-    def config_path(self) -> str:
+    def config_module_path(self) -> str:
         """Returns the path to the configuration module."""
         return f"pkg://{self.config_module}"
 
@@ -102,9 +102,9 @@ class GlobalHyFIConfig(BaseModel):
         return self.__user_config_path__
 
     @property
-    def hyfi_config_path(self) -> str:
+    def hyfi_config_module_path(self) -> str:
         """Returns the path to the HyFI root folder"""
-        return self.config_path
+        return self.config_module_path
 
     @property
     def hyfi_config_module(self) -> str:

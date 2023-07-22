@@ -11,7 +11,7 @@ __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "__init__"
 __config_path__ = "conf"
 __config_name__ = "config"
-__config_module__ = f"{__package_name__}.{__config_path__}"
+__config_module_path__ = f"{__package_name__}.{__config_path__}"
 
 __about__ = AboutConfig()
 _batcher_instance_ = None

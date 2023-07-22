@@ -18,8 +18,8 @@ footer: |-
 #   $CONFIG : Generated config
 #
 template: |-
-  ${hydra.help.header} 
-  
+  ${hydra.help.header}
+
   authors: ${about.authors}
   description: ${about.description}
 
@@ -32,8 +32,6 @@ template: |-
   == Config ==
 
   This is the config generated for this run.
-  You can override everything, for example:
-  hyfi task=your_config_name
   --------------------------------------------------
   $CONFIG
   --------------------------------------------------

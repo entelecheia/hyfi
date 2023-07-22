@@ -6,13 +6,7 @@ from typing import List, Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.core import (
-    __global_hyfi__,
-    __hydra_version_base__,
-    __hyfi_config_name__,
-    __hyfi_config_path__,
-    __hyfi_package_name__,
-)
+from hyfi.core import __global_hyfi__, __hydra_version_base__, __hyfi_package_name__
 from hyfi.core.config import HyfiConfig
 from hyfi.core.hydra.main import main as hyfi_hydra_main
 from hyfi.main import HyFI
@@ -61,8 +55,8 @@ def cli_main(cfg: DictConfig) -> None:
 
 
 def hyfi_main(
-    config_path: Optional[str] = __hyfi_config_path__,
-    config_name: Optional[str] = __hyfi_config_name__,
+    config_path: Optional[str] = None,
+    config_name: Optional[str] = None,
     overrides: Optional[List[str]] = None,
 ) -> None:
     """
@@ -79,8 +73,10 @@ def hyfi_main(
     """
     if search_path := __global_hyfi__.user_config_path:
         sys.argv.append(f"--config-dir={search_path}")
-    if config_path is None:
-        config_path = __global_hyfi__.config_path
+    if not config_path:
+        config_path = __global_hyfi__.config_module_path
+    if not config_name:
+        config_name = __global_hyfi__.config_name
     if __global_hyfi__.__package_name__ != __hyfi_package_name__:
         overrides = overrides or []
         override = f"about={__global_hyfi__.__package_name__}"
@@ -99,8 +95,8 @@ def hyfi_main(
 
 
 def hydra_main(
-    config_path: Optional[str] = __hyfi_config_path__,
-    config_name: Optional[str] = __hyfi_config_name__,
+    config_path: Optional[str] = None,
+    config_name: Optional[str] = None,
     overrides: Optional[List[str]] = None,
 ) -> None:
     """

@@ -37,12 +37,16 @@ class GlobalHyFIConfig(BaseModel):
     Attributes:
     __package_name__ (str): The name of the package.
     __package_path__ (str): The path to the package root folder.
+    __config_name__ (str): The name of the configuration module.
+    __config_path__ (str): The path to the configuration module.
     __user_config_path__ (str): The path to the user configuration directory.
     __version__ (str): The version number of the package.
     """
 
     __package_name__: str = __hyfi_package_name__
     __package_path__: str = __hyfi_package_path__
+    __config_name__: str = __hyfi_config_name__
+    __config_path__: str = __hyfi_config_path__
     __user_config_path__: str = "config"
     __version__: str = __hyfi_version__()
 
@@ -65,12 +69,17 @@ class GlobalHyFIConfig(BaseModel):
     @property
     def config_module(self) -> str:
         """Returns the name of the configuration module."""
-        return f"{self.__package_name__}.conf"
+        return f"{self.__package_name__}.{self.__config_path__}"
 
     @property
-    def config_path(self) -> str:
+    def config_module_path(self) -> str:
         """Returns the path to the configuration module."""
         return f"pkg://{self.config_module}"
+
+    @property
+    def config_name(self) -> str:
+        """Returns the name of the configuration module."""
+        return self.__config_name__
 
     @property
     def user_config_path(self) -> str:
@@ -93,9 +102,9 @@ class GlobalHyFIConfig(BaseModel):
         return self.__user_config_path__
 
     @property
-    def hyfi_config_path(self) -> str:
+    def hyfi_config_module_path(self) -> str:
         """Returns the path to the HyFI root folder"""
-        return self.config_path
+        return self.config_module_path
 
     @property
     def hyfi_config_module(self) -> str:
@@ -106,6 +115,11 @@ class GlobalHyFIConfig(BaseModel):
     def hyfi_user_config_path(self) -> str:
         """Returns the path to the user configuration directory."""
         return self.user_config_path
+
+    @property
+    def hyfi_config_name(self) -> str:
+        """Returns the name of the configuration module."""
+        return self.config_name
 
 
 __global_hyfi__ = GlobalHyFIConfig()

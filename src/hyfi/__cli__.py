@@ -74,7 +74,7 @@ def hyfi_main(
     if search_path := __global_hyfi__.user_config_path:
         sys.argv.append(f"--config-dir={search_path}")
     if not config_path:
-        config_path = __global_hyfi__.config_path
+        config_path = __global_hyfi__.config_module_path
     if not config_name:
         config_name = __global_hyfi__.config_name
     if __global_hyfi__.__package_name__ != __hyfi_package_name__:

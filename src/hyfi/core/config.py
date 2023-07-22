@@ -31,7 +31,7 @@ logger = LOGGING.getLogger(__name__)
 class HyfiConfig(BaseModel):
     """HyFI root config class.  This class is used to store the configuration"""
 
-    hyfi_config_path: str = __global_hyfi__.config_path
+    hyfi_config_module_path: str = __global_hyfi__.config_module_path
     hyfi_config_module: str = __global_hyfi__.config_module
     hyfi_user_config_path: str = __global_hyfi__.user_config_path
 
@@ -203,7 +203,7 @@ class HyfiConfig(BaseModel):
         logger.debug(
             "HyFiConfig initialized with hyfi_config_module=%s, hyfi_config_path=%s, hyfi_user_config_path=%s",
             __global_hyfi__.hyfi_config_module,
-            __global_hyfi__.hyfi_config_path,
+            __global_hyfi__.hyfi_config_module_path,
             __global_hyfi__.hyfi_user_config_path,
         )
         ENVs.load_dotenv()
@@ -306,4 +306,4 @@ __global_config__ = HyfiConfig()
 
 def __search_package_path__():
     """Global HyFI config path for the package to search for."""
-    return __global_config__.hyfi_config_path
+    return __global_config__.hyfi_config_module_path

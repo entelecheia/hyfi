@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from hyfi.about import AboutConfig, __package_name__
+from hyfi.about import AboutConfig, __hyfi_package_name__
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -11,10 +11,21 @@ __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "__init__"
 __config_path__ = "conf"
 __config_name__ = "config"
-__config_module_path__ = f"{__package_name__}.{__config_path__}"
+__hyfi_config_module_path__ = f"{__hyfi_package_name__}.{__config_path__}"
 
 __about__ = AboutConfig()
 _batcher_instance_ = None
+
+
+def __app_name__() -> str:
+    """
+    Returns the name of the App
+
+    Returns:
+        string containing the name of the App
+    """
+
+    return __about__.name
 
 
 def __app_version__() -> str:
@@ -28,7 +39,18 @@ def __app_version__() -> str:
     return __about__.__version__
 
 
-def __app_path__() -> str:
+def __package_name__() -> str:
+    """
+    Returns the package name of the App
+
+    Returns:
+        string containing the package name of the App
+    """
+
+    return __about__.__package_name__
+
+
+def __package_path__() -> str:
     """
     Returns the path to the App root folder
 

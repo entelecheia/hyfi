@@ -6,7 +6,7 @@ from typing import List, Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.about import __package_name__
+from hyfi.about import __hyfi_package_name__
 from hyfi.core import (
     __about__,
     __config_name__,
@@ -81,13 +81,14 @@ def hyfi_main(
         sys.argv.append(f"--config-dir={search_path}")
     if config_path is None:
         config_path = __about__.config_path
-    if __about__.__package_name__ != __package_name__:
+    if __about__.__package_name__ != __hyfi_package_name__:
         overrides = overrides or []
         override = f"about={__about__.__package_name__}"
         if override not in overrides:
             overrides.append(override)
             logger.debug(
-                "Overriding `about` config group with `%s`", __about__.__package_name__
+                "Overriding `about` config group with `%s`",
+                __about__.__package_name__,
             )
     hyfi_hydra_main(
         config_path=config_path,

@@ -14,15 +14,15 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
-__package_name__: str = "hyfi"
-__package_path__: str = Path(__file__).parent.parent.as_posix()
-__app_name__: str = "HyFI"
-__authors__: str = "Young Joon Lee <entelecheia@hotmail.com>"
-__description__: str = (
+__hyfi_package_name__: str = "hyfi"
+__hyfi_package_path__: str = Path(__file__).parent.parent.as_posix()
+__hyfi_name__: str = "HyFI"
+__hyfi_authors__: str = "Young Joon Lee <entelecheia@hotmail.com>"
+__hyfi_description__: str = (
     "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
 )
-__homepage__: str = "https://hyfi.entelecheia.ai"
-__license__: str = "MIT"
+__hyfi_homepage__: str = "https://hyfi.entelecheia.ai"
+__hyfi_license__: str = "MIT"
 
 
 def __hyfi_version__() -> str:
@@ -54,16 +54,16 @@ class AboutConfig(BaseModel):
     """
 
     _config_group_: str = "about"
-    __package_name__: str = __package_name__
-    __package_path__: str = __package_path__
+    __package_name__: str = __hyfi_package_name__
+    __package_path__: str = __hyfi_package_path__
     __user_config_path__: str = "config"
     __version__: str = __hyfi_version__()
 
-    name: str = __app_name__
-    authors: str = __authors__
-    description: str = __description__
-    homepage: str = __homepage__
-    license: str = __license__
+    name: str = __hyfi_name__
+    authors: str = __hyfi_authors__
+    description: str = __hyfi_description__
+    homepage: str = __hyfi_homepage__
+    license: str = __hyfi_license__
     version: str = __hyfi_version__()
 
     model_config = ConfigDict(extra="allow")  # type: ignore

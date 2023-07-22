@@ -27,3 +27,15 @@ __all__ = [
     "LOGGING",
     "__hydra_version_base__",
 ]
+
+
+def initialize_global_hyfi(
+    package_name: str,
+    version: str,
+) -> None:
+    """
+    Initializes the global HyFI instance.
+
+    This function should be called before any other HyFI function.
+    """
+    global_hyfi.initialize(package_name=package_name, version=version)

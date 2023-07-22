@@ -1,0 +1,8 @@
+defaults:
+  - __general_external_funcs__
+
+run: hyfi.pipe.datasets.load_dataset_from_disk
+run_with:
+  dataset_path:
+  verbose: ${..verbose}
+use_pipe_obj: false

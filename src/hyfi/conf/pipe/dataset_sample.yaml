@@ -1,0 +1,11 @@
+defaults:
+  - __general_external_funcs__
+
+run: hyfi.pipe.datasets.sample_dataset
+run_with:
+  num_samples: 100
+  randomize: true
+  random_seed: 123
+  verbose: ${..verbose}
+use_pipe_obj: true
+return_pipe_obj: false

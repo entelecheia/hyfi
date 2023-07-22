@@ -1,11 +1,12 @@
 """Command line interface for HyFI"""
 import os
 import sys
-from typing import Optional
+from typing import List, Optional
 
 import hydra
 from omegaconf import DictConfig
 
+from hyfi.about import __package_name__
 from hyfi.core import (
     __about__,
     __config_name__,
@@ -62,6 +63,7 @@ def cli_main(cfg: DictConfig) -> None:
 def hyfi_main(
     config_path: Optional[str] = __config_path__,
     config_name: Optional[str] = __config_name__,
+    overrides: Optional[List[str]] = None,
 ) -> None:
     """
     Main function for the command line interface of Hydra
@@ -80,16 +82,26 @@ def hyfi_main(
         sys.argv.append(f"--config-dir={search_path}")
     if config_path is None:
         config_path = __about__.config_path
+    if __about__.__package_name__ != __package_name__:
+        overrides = overrides or []
+        override = f"about={__about__.__package_name__}"
+        if override not in overrides:
+            overrides.append(override)
+            logger.debug(
+                "Overriding `about` config group with `%s`", __about__.__package_name__
+            )
     hyfi_hydra_main(
         config_path=config_path,
         config_name=config_name,
         version_base=__hydra_version_base__,
+        overrides=overrides,
     )(cli_main)()
 
 
 def hydra_main(
     config_path: Optional[str] = __config_path__,
     config_name: Optional[str] = __config_name__,
+    overrides: Optional[List[str]] = None,
 ) -> None:
     """
     Main function for the command line interface of Hydra
@@ -103,4 +115,4 @@ def hydra_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    hyfi_main(config_path, config_name)
+    hyfi_main(config_path, config_name, overrides)

@@ -6,6 +6,7 @@ It also defines the model_config attribute, which is a ConfigDict that allows
 extra configuration options to be added to the AboutConfig instance.
 """
 import os
+from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict
 
@@ -14,6 +15,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 __package_name__: str = "hyfi"
+__package_path__: str = Path(__file__).parent.parent.as_posix()
 __app_name__: str = "HyFI"
 __authors__: str = "Young Joon Lee <entelecheia@hotmail.com>"
 __description__: str = (
@@ -23,13 +25,12 @@ __homepage__: str = "https://hyfi.entelecheia.ai"
 __license__: str = "MIT"
 
 
-def __version__() -> str:
+def __hyfi_version__() -> str:
     """
-    Returns the version of Hyfi. It is used to determine the version of Hyfi.
-
+    Returns the version of HyFI.
 
     Returns:
-        string containing the version of
+        string containing the version of HyFI
     """
     from hyfi._version import __version__
 
@@ -54,14 +55,16 @@ class AboutConfig(BaseModel):
 
     _config_group_: str = "about"
     __package_name__: str = __package_name__
+    __package_path__: str = __package_path__
     __user_config_path__: str = "config"
+    __version__: str = __hyfi_version__()
 
     name: str = __app_name__
     authors: str = __authors__
     description: str = __description__
     homepage: str = __homepage__
     license: str = __license__
-    version: str = __version__()
+    version: str = __hyfi_version__()
 
     model_config = ConfigDict(extra="allow")  # type: ignore
 

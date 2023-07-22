@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.6.4 (2023-07-22)
+
+### Fix
+
+* **hyfi:** Change append_search_path order ([`4c18e01`](https://github.com/entelecheia/hyfi/commit/4c18e0158f44279a354a2c14ff62ef83245fe64e))
+
 ## v1.6.3 (2023-07-22)
 
 ### Fix

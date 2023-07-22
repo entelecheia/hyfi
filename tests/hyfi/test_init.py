@@ -1,4 +1,4 @@
-from hyfi import about
+from hyfi import global_hyfi
 
 
 def test_get_version() -> None:
@@ -7,6 +7,6 @@ def test_get_version() -> None:
 
     version format: major.minor.patch[.devN+g<git hash>]
     """
-    version = about.version
+    version = global_hyfi.version
     # check version format
     assert version.count(".") in range(2, 5)

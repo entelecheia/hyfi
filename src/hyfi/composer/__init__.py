@@ -13,8 +13,7 @@ from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict, PrivateAttr
 
 from hyfi.core import (
-    __about__,
-    __hydra_config__,
+    __global_hyfi__,
     __hydra_default_config_group_value__,
     __hydra_version_base__,
 )
@@ -206,7 +205,7 @@ class Composer(BaseModel, CONFs):
         overrides: Optional[List[str]] = None,
     ):
         is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
-        config_module = config_module or __hydra_config__.hyfi_config_module
+        config_module = config_module or __global_hyfi__.hyfi_config_module
         logger.debug("config_module: %s", config_module)
         if is_initialized:
             # Hydra is already initialized.
@@ -215,7 +214,7 @@ class Composer(BaseModel, CONFs):
         else:
             with hyfi_hydra.initialize_config(
                 config_module=config_module,
-                config_dir=__hydra_config__.hyfi_user_config_path,
+                config_dir=__global_hyfi__.hyfi_user_config_path,
                 version_base=__hydra_version_base__,
             ):
                 cfg = hydra.compose(config_name=root_config_name, overrides=overrides)

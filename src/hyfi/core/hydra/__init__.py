@@ -11,7 +11,7 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 
-from hyfi.core import __config_path__, __hyfi_config_module_path__
+from hyfi.core import __hyfi_config_module_path__, __hyfi_config_path__
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
 
@@ -33,7 +33,7 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
 
 
 def get_caller_config_module_path(
-    config_path: Optional[str] = __config_path__,
+    config_path: Optional[str] = __hyfi_config_path__,
 ) -> str:
     """Returns the path to the caller module's config folder"""
     caller_module_name = PKGs.get_caller_module_name()
@@ -100,7 +100,9 @@ class initialize_config:
 
 def append_search_path(provider: str, path: str, search_path: ConfigSearchPath) -> None:
     if not path:
-        logger.debug("Not adding empty path to Hydra's config search path for `%s`", provider)
+        logger.debug(
+            "Not adding empty path to Hydra's config search path for `%s`", provider
+        )
         return
     for sp_item in search_path.get_path():
         if sp_item.path == path:

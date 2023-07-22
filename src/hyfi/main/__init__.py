@@ -9,7 +9,6 @@ from typing import Any, Callable, Dict, List, Optional, Union
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from hyfi.about import __hyfi_version__
 from hyfi.cached_path import cached_path
 from hyfi.composer import Composer, SpecialKeys
 from hyfi.copier import Copier
@@ -17,6 +16,7 @@ from hyfi.core import (
     __app_version__,
     __home_path__,
     __hyfi_path__,
+    __hyfi_version__,
     __package_name__,
     __package_path__,
 )

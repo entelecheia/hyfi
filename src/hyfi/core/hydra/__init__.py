@@ -124,7 +124,6 @@ def create_config_search_path(
     search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
 
-    append_search_path("hyfi", f"pkg://{__config_module_path__}", search_path)
     if config_module:
         path = (
             config_module
@@ -134,6 +133,9 @@ def create_config_search_path(
             else ""
         )
         append_search_path("main", path, search_path)
+
+    append_search_path("hyfi", f"pkg://{__config_module_path__}", search_path)
+
     if caller_config_module := get_caller_config_module_path():
         append_search_path("caller", f"pkg://{caller_config_module}", search_path)
 

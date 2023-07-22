@@ -14,8 +14,14 @@ from pydantic import (
     model_validator,
 )
 
-from hyfi.about import AboutConfig, __app_name__
-from hyfi.core import __about__, __app_version__, __hydra_config__
+from hyfi.about import AboutConfig
+from hyfi.core import (
+    __about__,
+    __app_name__,
+    __app_version__,
+    __hydra_config__,
+    __package_name__,
+)
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
@@ -265,7 +271,17 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the application
         """
-        return self.about.name if self.about else __app_name__
+        return __app_name__()
+
+    @property
+    def package_name(self):
+        """
+        Get the name of the package.
+
+        Returns:
+            The name of the package
+        """
+        return __package_name__()
 
     @property
     def dotenv(self):
@@ -277,8 +293,8 @@ class HyfiConfig(BaseModel):
 
     def print_about(self, **kwargs):
         about = AboutConfig(**kwargs)
-        pkg_name = kwargs.get("__package_name__", about.__package_name__)
-        name = about.name
+        pkg_name = self.package_name
+        name = self.app_name
         print()
         for k, v in about.model_dump().items():
             if k.startswith("_") or k == "version":

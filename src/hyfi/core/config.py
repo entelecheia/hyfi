@@ -14,8 +14,8 @@ from pydantic import (
     model_validator,
 )
 
-from hyfi.about import AboutConfig, __app_name__, __version__
-from hyfi.core import __about__, __hydra_config__
+from hyfi.about import AboutConfig, __app_name__
+from hyfi.core import __about__, __app_version__, __hydra_config__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
@@ -50,7 +50,7 @@ class HyfiConfig(BaseModel):
     workflow: Optional[WorkflowConfig] = None
     tasks: Optional[List[str]] = None
 
-    _version_: str = PrivateAttr(__version__())
+    _version_: str = PrivateAttr(__app_version__())
     _initilized_: bool = PrivateAttr(False)
 
     model_config = ConfigDict(
@@ -255,7 +255,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The version of the application
         """
-        return self.about.version if self.about else __version__()
+        return __app_version__()
 
     @property
     def app_name(self):
@@ -281,9 +281,10 @@ class HyfiConfig(BaseModel):
         name = about.name
         print()
         for k, v in about.model_dump().items():
-            if k.startswith("_"):
+            if k.startswith("_") or k == "version":
                 continue
             print(f"{k:11} : {v}")
+        print(f"{'version':11} : {self.app_version}")
         if pkg_name:
             print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
 
@@ -294,8 +295,6 @@ class HyfiConfig(BaseModel):
 
 
 __global_config__ = HyfiConfig()
-if __global_config__.about:
-    __global_config__.about.version = __version__()
 
 
 def __search_package_path__():

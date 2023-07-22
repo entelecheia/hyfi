@@ -1,0 +1,6 @@
+defaults:
+  - __general_external_funcs__
+
+run: hyfi.pipe.datasets.save_dataset_to_disk
+run_with:
+  dataset_path:

@@ -100,7 +100,7 @@ class initialize_config:
 
 def append_search_path(provider: str, path: str, search_path: ConfigSearchPath) -> None:
     if not path:
-        logger.debug("Not adding empty path to Hydra's config search path")
+        logger.debug("Not adding empty path to Hydra's config search path for `%s`", provider)
         return
     for sp_item in search_path.get_path():
         if sp_item.path == path:

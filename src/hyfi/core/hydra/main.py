@@ -5,11 +5,13 @@ from typing import Any, Callable, Optional
 
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
-from hydra._internal.utils import _run_hydra, get_args_parser
+from hydra._internal.utils import get_args_parser
 from hydra.core.utils import _flush_loggers
 from hydra.main import _get_rerun_conf
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
+
+from hyfi.core.hydra.utils import _run_hydra
 
 _UNSPECIFIED_: Any = object()
 

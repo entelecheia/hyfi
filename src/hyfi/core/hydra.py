@@ -46,7 +46,7 @@ def get_caller_config_module_path(
         __import__(config_module_path)
         return config_module_path
     except ImportError:
-        logger.info("Config module not found: %s", config_module_path)
+        logger.debug("Config module not found: %s", config_module_path)
     return None
 
 

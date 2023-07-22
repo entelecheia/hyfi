@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.6.1 (2023-07-22)
+
+### Fix
+
+* **hyfi/core:** Optimize search path modifications in _run_hydra function ([`38521fe`](https://github.com/entelecheia/hyfi/commit/38521fe16edecaded5515be4c00218cbc55c782a))
+
 ## v1.6.0 (2023-07-22)
 
 ### Feature

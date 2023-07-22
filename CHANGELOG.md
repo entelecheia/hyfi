@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.6.3 (2023-07-22)
+
+### Fix
+
+* **hydra/utils:** Simplify search_path creation ([`f4881a7`](https://github.com/entelecheia/hyfi/commit/f4881a7c678b314dca6feedc3ba026cca38812d7))
+* **hydra:** Enhance search path appending process ([`f681510`](https://github.com/entelecheia/hyfi/commit/f6815100da661444d39ef128596c8caefc302f0a))
+
 ## v1.6.2 (2023-07-22)
 
 ### Fix

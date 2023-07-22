@@ -6,6 +6,7 @@ defaults:
 
 home: ${__home_path__:}
 hyfi: ${__hyfi_path__:}
+app: ${__app_path__:}
 resources: ${alt:${oc.env:HYFI_RESOURCE_DIR,null},${.hyfi}/resources}
 runtime: ${get_original_cwd:}
 # global paths

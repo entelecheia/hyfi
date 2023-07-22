@@ -17,6 +17,28 @@ __about__ = AboutConfig()
 _batcher_instance_ = None
 
 
+def __app_version__() -> str:
+    """
+    Returns the version of App.
+
+    Returns:
+        string containing the version of App
+    """
+
+    return __about__.__version__
+
+
+def __app_path__() -> str:
+    """
+    Returns the path to the App root folder
+
+    Returns:
+        string containing the path to the App root folder
+    """
+
+    return __about__.__package_path__
+
+
 class HydraConfig(BaseModel):
     """Global configuration for Hydra"""
 

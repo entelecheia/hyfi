@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
 from textwrap import dedent
-from typing import Any, Callable, Optional
+from typing import Any, Callable, List, Optional
 
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
@@ -20,6 +20,7 @@ def main(
     config_path: Optional[str] = _UNSPECIFIED_,
     config_name: Optional[str] = None,
     version_base: Optional[str] = _UNSPECIFIED_,
+    overrides: Optional[List[str]] = None,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: The config path, a directory where Hydra will search for
@@ -57,6 +58,10 @@ def main(
                 return task_function(cfg_passthrough)
             args_parser = get_args_parser()
             args = args_parser.parse_args()
+            if overrides and not args.overrides:
+                args.overrides = overrides
+            elif overrides and args.overrides:
+                args.overrides.extend(overrides)
             if args.experimental_rerun is not None:
                 cfg = _get_rerun_conf(args.experimental_rerun, args.overrides)
                 task_function(cfg)

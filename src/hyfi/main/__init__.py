@@ -9,11 +9,11 @@ from typing import Any, Callable, Dict, List, Optional, Union
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from hyfi.about import __version__
+from hyfi.about import __hyfi_version__
 from hyfi.cached_path import cached_path
 from hyfi.composer import Composer, SpecialKeys
 from hyfi.copier import Copier
-from hyfi.core import __home_path__, __hyfi_path__
+from hyfi.core import __app_path__, __app_version__, __home_path__, __hyfi_path__
 from hyfi.core.config import __global_config__, __search_package_path__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
@@ -37,7 +37,10 @@ logger = LOGGING.getLogger(__name__)
 
 
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
-OmegaConf.register_new_resolver("__version__", __version__)
+OmegaConf.register_new_resolver("__hyfi_version__", __hyfi_version__)
+OmegaConf.register_new_resolver("__app_path__", __app_path__)
+OmegaConf.register_new_resolver("__app_version__", __app_version__)
+OmegaConf.register_new_resolver("__version__", __app_version__)
 OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
 OmegaConf.register_new_resolver("__home_path__", __home_path__)
 OmegaConf.register_new_resolver("today", FUNCs.today)

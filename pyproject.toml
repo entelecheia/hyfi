@@ -204,7 +204,6 @@ tag_regex = '^(?P<prefix>v)?(?P<version>[^\+]+)(?P<suffix>.*)?$'
 branch = "main"
 version_variable = "src/hyfi/_version.py:__version__"
 version_toml = "pyproject.toml:tool.poetry.version"
-version_pattern = 'src/hyfi/conf/about/__init__.yaml:version: "{version}"'
 version_source = "tag"
 commit_version_number = true                                               # required for version_source = "tag"
 commit_subject = "chore(release): :rocket: {version} [skip ci]"

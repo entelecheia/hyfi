@@ -11,7 +11,7 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 
-from hyfi.core import __config_module_path__, __config_path__
+from hyfi.core import __config_path__, __hyfi_config_module_path__
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
 
@@ -39,7 +39,7 @@ def get_caller_config_module_path(
     caller_module_name = PKGs.get_caller_module_name()
     config_module = caller_module_name.split(".")[0]
     config_module_path = f"{config_module}.{config_path}"
-    if config_module_path == __config_module_path__:
+    if config_module_path == __hyfi_config_module_path__:
         return config_module_path
     # check if the config module is importable
     try:
@@ -125,7 +125,7 @@ def create_config_search_path(
     search_path.append("hydra", "pkg://hydra.conf")
 
     # addiing hyfi's config module to the search path should come before the other modules
-    append_search_path("hyfi", f"pkg://{__config_module_path__}", search_path)
+    append_search_path("hyfi", f"pkg://{__hyfi_config_module_path__}", search_path)
 
     if config_module:
         path = (

@@ -115,7 +115,8 @@ class PIPELINEs:
             logger.warning("No pipes specified")
             return initial_object
 
-        logger.info("Applying %s pipes", len(pipes))
+        pipe_names = [pipe.run for pipe in pipes]
+        logger.info("Applying %s pipes: %s", len(pipe_names), pipe_names)
         # Run the task in the current directory.
         if task is None:
             task = TaskConfig()
@@ -147,7 +148,7 @@ class PIPELINEs:
             return obj
         # Run a pipe with the pipe_fn
         if config.verbose:
-            logger.info("Running a pipe with %s", pipe_fn)
+            logger.info("Running a pipe with %s", config.pipe_target)
         # Apply pipe function to each object.
         if isinstance(obj, dict):
             objs = {}
@@ -208,11 +209,13 @@ class PIPELINEs:
             A list of PipelineConfig objects
         """
         task.pipelines = task.pipelines or []
-        pipelines: Pipelines = [
-            PipelineConfig(**getattr(task, name))
-            for name in task.pipelines
-            if isinstance(name, str) and isinstance(getattr(task, name), dict)
-        ]
+        pipelines: Pipelines = []
+        for name in task.pipelines:
+            if isinstance(name, str) and isinstance(getattr(task, name), dict):
+                pipeline = PipelineConfig(**getattr(task, name))
+                if not pipeline.name:
+                    pipeline.name = name
+                pipelines.append(pipeline)
         return pipelines
 
     @staticmethod
@@ -233,7 +236,8 @@ class PIPELINEs:
             logger.info("Running %s pipeline(s)", len(task.pipelines or []))
         for pipeline in PIPELINEs.get_pipelines(task):
             if task.verbose:
-                logger.info("Running pipeline: %s", pipeline.model_dump())
+                logger.info("Running pipeline: %s", pipeline.name)
+                Composer.print(pipeline.model_dump())
             initial_object = task if pipeline.use_task_as_initial_object else None
             PIPELINEs.run_pipeline(pipeline, initial_object, task)
 

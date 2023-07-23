@@ -30,9 +30,10 @@ class WorkflowConfig(BaseModel):
 
     def get_tasks(self) -> Tasks:
         self.tasks = self.tasks or []
-        tasks: Tasks = [
-            TaskConfig(**getattr(self, name))
-            for name in self.tasks
-            if isinstance(name, str) and isinstance(getattr(self, name), dict)
-        ]
+        tasks: Tasks = []
+        for name in self.tasks:
+            if isinstance(name, str) and isinstance(getattr(self, name), dict):
+                task = TaskConfig(**getattr(self, name))
+                task.name = name
+                tasks.append(task)
         return tasks

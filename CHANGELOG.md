@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.8.3 (2023-07-23)
+
+### Fix
+
+* **workflow:** Enhance tasks population in WorkflowConfig ([`6b1e43a`](https://github.com/entelecheia/hyfi/commit/6b1e43aeb5c001972d1453f5746d56bc1066d8c5))
+* **pipeline:** Enhance logger information and pipeline handling ([`8951d7d`](https://github.com/entelecheia/hyfi/commit/8951d7d3c02da8971d59cc1cab880cf2c3669bc5))
+* **task:** Change task_name to dynamic variable ([`f218cfc`](https://github.com/entelecheia/hyfi/commit/f218cfcc8381d678114eddc6dad147dca0db1cf8))
+
 ## v1.8.2 (2023-07-23)
 
 ### Fix

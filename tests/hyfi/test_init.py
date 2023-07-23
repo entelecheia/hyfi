@@ -1,4 +1,5 @@
 from hyfi import global_hyfi
+from hyfi import HyFI
 
 
 def test_get_version() -> None:
@@ -10,3 +11,13 @@ def test_get_version() -> None:
     version = global_hyfi.version
     # check version format
     assert version.count(".") in range(2, 5)
+
+
+def test_init():
+    HyFI.initialize_global_hyfi(package_name="hyfi", version="0.0.1")
+    global_hyfi.initialize(package_name="hyfi", version="0.0.1")
+
+
+if __name__ == "__main__":
+    test_get_version()
+    test_init()

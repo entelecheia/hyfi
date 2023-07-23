@@ -14,6 +14,7 @@ from hyfi.composer import Composer, SpecialKeys
 from hyfi.copier import Copier
 from hyfi.core import (
     __app_version__,
+    __global_hyfi__,
     __home_path__,
     __hyfi_path__,
     __hyfi_version__,
@@ -97,6 +98,18 @@ class HyFI(
 
     def __init__(self) -> None:
         raise NotImplementedError("Use one of the static construction functions")
+
+    @staticmethod
+    def initialize_global_hyfi(
+        package_name: str,
+        version: str,
+    ) -> None:
+        """
+        Initializes the global HyFI instance.
+
+        This function should be called before any other HyFI function.
+        """
+        __global_hyfi__.initialize(package_name=package_name, version=version)
 
     @staticmethod
     def about(**args) -> None:

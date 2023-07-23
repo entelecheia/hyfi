@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.8.2 (2023-07-23)
+
+### Fix
+
+* **hyfi:** Add global_hyfi initialization method to HyFI ([`81c8f6f`](https://github.com/entelecheia/hyfi/commit/81c8f6f046e2c3e69d4e832a57c9ebb387ef0239))
+
 ## v1.8.1 (2023-07-22)
 
 ### Fix

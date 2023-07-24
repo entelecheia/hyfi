@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from hydra import version
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -69,6 +69,7 @@ class initialize_config:
         self,
         config_module: str,
         config_dir: Optional[str] = None,
+        plugins: Optional[List[str]] = None,
         job_name: str = "app",
         version_base: Optional[str] = _UNSPECIFIED_,
     ) -> None:
@@ -84,7 +85,7 @@ class initialize_config:
                 "initialize_config_dir() requires an absolute config_dir as input"
             )
         csp = create_config_search_path(
-            config_module=config_module, search_path_dir=config_dir
+            config_module=config_module, search_path_dir=config_dir, plugins=plugins
         )
         Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
 
@@ -107,8 +108,9 @@ def append_search_path(provider: str, path: str, search_path: ConfigSearchPath) 
     for sp_item in search_path.get_path():
         if sp_item.path == path:
             logger.debug(
-                "Not adding `%s` to Hydra's config search path, it was already added by `%s`",
+                "Not adding `%s` to Hydra's config search path for `%s` because it is already there by `%s`",
                 path,
+                provider,
                 sp_item.provider,
             )
             return
@@ -119,6 +121,7 @@ def append_search_path(provider: str, path: str, search_path: ConfigSearchPath) 
 def create_config_search_path(
     config_module: Optional[str],
     search_path_dir: Optional[str],
+    plugins: Optional[List[str]],
 ) -> ConfigSearchPath:
     from hydra.core.plugins import Plugins
     from hydra.plugins.search_path_plugin import SearchPathPlugin
@@ -128,6 +131,10 @@ def create_config_search_path(
 
     # addiing hyfi's config module to the search path should come before the other modules
     append_search_path("hyfi", f"pkg://{__hyfi_config_module_path__}", search_path)
+
+    if plugins:
+        for plugin in plugins:
+            append_search_path("hyfi-plugin", f"pkg://{plugin}", search_path)
 
     if config_module:
         path = (

@@ -58,6 +58,7 @@ def hyfi_main(
     config_path: Optional[str] = None,
     config_name: Optional[str] = None,
     overrides: Optional[List[str]] = None,
+    plugins: Optional[List[str]] = None,
 ) -> None:
     """
     Main function for the command line interface of Hydra
@@ -77,6 +78,8 @@ def hyfi_main(
         config_path = __global_hyfi__.config_module_path
     if not config_name:
         config_name = __global_hyfi__.config_name
+    if not plugins:
+        plugins = __global_hyfi__.plugins
     if __global_hyfi__.__package_name__ != __hyfi_package_name__:
         overrides = overrides or []
         override = f"about={__global_hyfi__.__package_name__}"
@@ -91,6 +94,7 @@ def hyfi_main(
         config_name=config_name,
         version_base=__hydra_version_base__,
         overrides=overrides,
+        plugins=plugins,
     )(cli_main)()
 
 
@@ -98,6 +102,7 @@ def hydra_main(
     config_path: Optional[str] = None,
     config_name: Optional[str] = None,
     overrides: Optional[List[str]] = None,
+    plugins: Optional[List[str]] = None,
 ) -> None:
     """
     Main function for the command line interface of Hydra
@@ -111,4 +116,4 @@ def hydra_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    hyfi_main(config_path, config_name, overrides)
+    hyfi_main(config_path, config_name, overrides, plugins)

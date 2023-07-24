@@ -3,7 +3,7 @@ import argparse
 import logging.config
 import os
 import sys
-from typing import Optional
+from typing import List, Optional
 
 from hydra._internal.utils import (
     _run_app,
@@ -25,6 +25,7 @@ def _run_hydra(
     task_function: TaskFunction,
     config_path: Optional[str],
     config_name: Optional[str],
+    plugins: Optional[List[str]],
     caller_stack_depth: int = 2,
 ) -> None:
     from hydra._internal.hydra import Hydra
@@ -48,7 +49,7 @@ def _run_hydra(
     task_name = detect_task_name(calling_file, calling_module)
 
     abs_config_dir = os.path.abspath(args.config_dir) if args.config_dir else None
-    search_path = create_config_search_path(config_path, abs_config_dir)
+    search_path = create_config_search_path(config_path, abs_config_dir, plugins)
     # validate_config_path(config_path)
     # search_path = create_automatic_config_search_path(
     #     calling_file, calling_module, config_path

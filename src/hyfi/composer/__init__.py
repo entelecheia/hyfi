@@ -203,6 +203,7 @@ class Composer(BaseModel, CONFs):
         root_config_name: Optional[str] = None,
         config_module: Optional[str] = None,
         overrides: Optional[List[str]] = None,
+        plugins: Optional[List[str]] = None,
     ):
         is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
         config_module = config_module or __global_hyfi__.hyfi_config_module
@@ -215,6 +216,7 @@ class Composer(BaseModel, CONFs):
             with hyfi_hydra.initialize_config(
                 config_module=config_module,
                 config_dir=__global_hyfi__.hyfi_user_config_path,
+                plugins=__global_hyfi__.plugins,
                 version_base=__hydra_version_base__,
             ):
                 cfg = hydra.compose(config_name=root_config_name, overrides=overrides)

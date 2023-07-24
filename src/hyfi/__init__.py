@@ -26,6 +26,7 @@ __all__ = [
     "HI",
     "LOGGING",
     "__hydra_version_base__",
+    "initialize_global_hyfi",
 ]
 
 

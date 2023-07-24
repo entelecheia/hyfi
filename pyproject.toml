@@ -10,7 +10,7 @@ readme = "README.md"
 packages = [{ include = "hyfi", from = "src" }]
 
 [tool.poetry.scripts]
-hyfi = 'hyfi.__cli__:hydra_main'
+hyfi = 'hyfi.__cli__:hyfi_main'
 hyfi-run = 'hyfi.__click__:cli'
 
 [tool.poetry.dependencies]

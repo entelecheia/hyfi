@@ -1,5 +1,10 @@
+"""
+    HyFI Core Module
+"""
+import importlib
 import os
 from pathlib import Path
+from typing import Any, List, Optional
 
 from pydantic import BaseModel
 
@@ -40,6 +45,7 @@ class GlobalHyFIConfig(BaseModel):
     __config_name__ (str): The name of the configuration module.
     __config_path__ (str): The path to the configuration module.
     __user_config_path__ (str): The path to the user configuration directory.
+    __plugins__ (List[Any]): A list of plugins to load.
     __version__ (str): The version number of the package.
     """
 
@@ -48,18 +54,45 @@ class GlobalHyFIConfig(BaseModel):
     __config_name__: str = __hyfi_config_name__
     __config_path__: str = __hyfi_config_path__
     __user_config_path__: str = "config"
+    __plugins__: Optional[List[str]] = None
     __version__: str = __hyfi_version__()
 
     def initialize(
         self,
         package_name: str = __hyfi_name__,
         version: str = __hyfi_version__(),
+        plugins: Optional[List[str]] = None,
     ) -> None:
         """
         Initializes the global HyFI instance.
         """
         self.__package_name__ = package_name
         self.__version__ = version
+        if plugins:
+            self.__plugins__ = self.get_plugins(plugins)
+
+    @property
+    def plugins(self) -> Optional[List[str]]:
+        """Returns the list of plugins to load."""
+        return self.__plugins__
+
+    def get_plugins(self, plugins: List[str]) -> List[str]:
+        """Returns the list of plugins to load."""
+        _plugins = []
+        for plugin in plugins:
+            H = self._safe_import_module(plugin)
+            if H and getattr(H, "config_module", None):
+                _plugins.append(H.config_module)
+        return _plugins
+
+    @staticmethod
+    def _safe_import_module(module_name: str) -> Any:
+        """Safely imports a module."""
+        try:
+            return importlib.import_module(module_name).HyFI
+        except ImportError:
+            logger.debug("Failed to import module: %s", module_name)
+            return None
 
     @property
     def version(self) -> str:

@@ -15,7 +15,8 @@ def test_get_version() -> None:
 
 def test_init():
     HyFI.initialize_global_hyfi(package_name="hyfi", version="0.0.1")
-    global_hyfi.initialize(package_name="hyfi", version="0.0.1")
+    global_hyfi.initialize(package_name="hyfi", version="0.0.1", plugins=["hyfi"])
+    print(global_hyfi.plugins)
 
 
 if __name__ == "__main__":

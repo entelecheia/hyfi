@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.9.0 (2023-07-24)
+
+### Feature
+
+* **tests/hyfi:** Add plugins parameter to initialize function ([`97b0252`](https://github.com/entelecheia/hyfi/commit/97b0252385ec1593c910e01dd77d702c08b6a590))
+* **hydra-main:** Add plugins parameter ([`2b708ac`](https://github.com/entelecheia/hyfi/commit/2b708ac13602103ad630583dc3f99f4fcd6a9b9b))
+* **hydra:** Add support for plugins in initialize_config and create_config_search_path functions ([`1a4c833`](https://github.com/entelecheia/hyfi/commit/1a4c8336232103df4fd0f07876bb0f8ef14c4fc8))
+* **core:** Add plugin loading functionality ([`f680547`](https://github.com/entelecheia/hyfi/commit/f680547eb3cdb677ec629cb9cd603592aeab76fb))
+* **composer:** Add plugins support ([`61f04d4`](https://github.com/entelecheia/hyfi/commit/61f04d42c60b5deda31c8149c5a779b572eb8d62))
+* **hyfi:** Add initialize_global_hyfi function ([`1fd61f6`](https://github.com/entelecheia/hyfi/commit/1fd61f6af6c677e6624e4017f407d76e1399e830))
+* **hyfi:** Add plugins support in hyfi_main and hydra_main functions ([`61b62f6`](https://github.com/entelecheia/hyfi/commit/61b62f642e47d3db13922415332584d5dd5d9c08))
+
 ## v1.8.3 (2023-07-23)
 
 ### Fix

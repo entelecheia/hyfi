@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.9.3 (2023-07-24)
+
+### Fix
+
+* **HyFi:** Change 'package_name' parameter to 'package_path' ([`4edd36b`](https://github.com/entelecheia/hyfi/commit/4edd36b6ba32db319b356ac974f5c1dc5f2be0ac))
+* **core:** Replace 'config_path' with 'config_dirname', add properties, modify 'GlobalHyFIConfig' class ([`e6a3921`](https://github.com/entelecheia/hyfi/commit/e6a3921576324f9054d2ea088955e7df5bc4a2e1))
+* **hyfi:** Change package_name parameter to package_path in initialize_global_hyfi function ([`9c594a6`](https://github.com/entelecheia/hyfi/commit/9c594a6b570a7044c9bce000b2c108c72f5ea6ed))
+* **hyfi:** Replace __package_name__ with package_name ([`55f14e1`](https://github.com/entelecheia/hyfi/commit/55f14e1a8024be16bcd535c1affe83e6375ed303))
+* **hyfi:** Add plugins parameter to initialize_global_hyfi function ([`0a3affd`](https://github.com/entelecheia/hyfi/commit/0a3affdf917d5b2889ebf197e5649507fa146f5f))
+
 ## v1.9.2 (2023-07-24)
 
 ### Fix

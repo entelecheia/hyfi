@@ -203,6 +203,12 @@ class PKGs:
         print(PKGs.getsource(obj))
 
     @staticmethod
-    def get_caller_module_name() -> str:
+    def get_caller_module_name(caller_stack_depth: int = 2) -> str:
         """Get the name of the module that called this function."""
-        return inspect.getmodule(inspect.stack()[2][0]).__name__  # type: ignore
+        try:
+            return inspect.getmodule(inspect.stack()[caller_stack_depth + 1][0]).__name__  # type: ignore
+        except Exception as e:
+            logger.error(
+                f"Error getting caller module name at depth {caller_stack_depth}: {e}"
+            )
+            return ""

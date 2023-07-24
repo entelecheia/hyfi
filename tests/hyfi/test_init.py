@@ -14,9 +14,9 @@ def test_get_version() -> None:
 
 
 def test_init():
-    HyFI.initialize_global_hyfi(package_name="hyfi", version="0.0.1")
+    HyFI.initialize_global_hyfi(package_path="src/hyfi", version="0.0.1")
     global_hyfi.initialize(
-        package_name="hyfi", version="0.0.1", plugins=["hyfi", "lexikanon"]
+        package_path="src/hyfi", version="0.0.1", plugins=["hyfi", "lexikanon"]
     )
     print(global_hyfi.plugins)
 

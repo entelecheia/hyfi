@@ -9,6 +9,7 @@ from typing import Any, List, Optional
 from pydantic import BaseModel
 
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 
@@ -80,19 +81,11 @@ class GlobalHyFIConfig(BaseModel):
         """Returns the list of plugins to load."""
         _plugins = []
         for plugin in plugins:
-            H = self._safe_import_module(plugin)
-            if H and getattr(H, "config_module", None):
-                _plugins.append(H.config_module)
+            plugin = plugin.split(".")[0]
+            config_module = f"{plugin}.{self.__config_path__}"
+            if PKGs.is_importable(config_module):
+                _plugins.append(config_module)
         return _plugins
-
-    @staticmethod
-    def _safe_import_module(module_name: str) -> Any:
-        """Safely imports a module."""
-        try:
-            return importlib.import_module(module_name).HyFI
-        except ImportError:
-            logger.debug("Failed to import module: %s", module_name)
-            return None
 
     @property
     def version(self) -> str:

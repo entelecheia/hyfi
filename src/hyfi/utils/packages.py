@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 from hyfi.utils.iolibs import IOLIBs
 from hyfi.utils.logging import LOGGING
@@ -203,6 +204,26 @@ class PKGs:
         print(PKGs.getsource(obj))
 
     @staticmethod
-    def get_caller_module_name() -> str:
+    def get_caller_module_name(caller_stack_depth: int = 2) -> str:
         """Get the name of the module that called this function."""
-        return inspect.getmodule(inspect.stack()[2][0]).__name__  # type: ignore
+        try:
+            return inspect.getmodule(inspect.stack()[caller_stack_depth + 1][0]).__name__  # type: ignore
+        except Exception as e:
+            logger.error(
+                f"Error getting caller module name at depth {caller_stack_depth}: {e}"
+            )
+            return ""
+
+    @staticmethod
+    def is_importable(module_name: str) -> bool:
+        module_spec = importlib.util.find_spec(module_name)  # type: ignore
+        return module_spec is not None
+
+    @staticmethod
+    def safe_import_module(module_name: str) -> Any:
+        """Safely imports a module."""
+        try:
+            return importlib.import_module(module_name)
+        except ImportError:
+            logger.debug("Failed to import module: %s", module_name)
+            return None

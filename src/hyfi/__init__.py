@@ -33,7 +33,7 @@ __all__ = [
 
 
 def initialize_global_hyfi(
-    package_name: str,
+    package_path: str,
     version: str,
     plugins: Optional[List[str]] = None,
 ) -> None:
@@ -48,8 +48,8 @@ def initialize_global_hyfi(
     It does not check if the plugin is importable.
 
     Args:
-        package_name: Name of the package. e.g. `hyfi`
+        package_path: Path to the package root folder. e.g. `./src/hyfi`
         version: Version of the package. e.g. `0.1.0`
         plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
     """
-    global_hyfi.initialize(package_name=package_name, version=version, plugins=plugins)
+    global_hyfi.initialize(package_path=package_path, version=version, plugins=plugins)

@@ -11,7 +11,7 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 
-from hyfi.core import __hyfi_config_module_path__, __hyfi_config_path__
+from hyfi.core import __hyfi_config_module_path__
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
 
@@ -30,19 +30,6 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
         del Singleton._instances[GlobalHydra]
     else:
         Singleton._instances[GlobalHydra] = _gh_backup
-
-
-def get_caller_config_module_path(
-    config_path: Optional[str] = __hyfi_config_path__,
-) -> str:
-    """Returns the path to the caller module's config folder"""
-    caller_module_name = PKGs.get_caller_module_name()
-    config_module = caller_module_name.split(".")[0]
-    config_module_path = f"{config_module}.{config_path}"
-    if config_module_path == __hyfi_config_module_path__:
-        return config_module_path
-    # check if the config module is importable
-    return config_module_path if PKGs.is_importable(config_module_path) else ""
 
 
 _UNSPECIFIED_: Any = object()
@@ -140,9 +127,6 @@ def create_config_search_path(
             else ""
         )
         append_search_path("main", path, search_path)
-
-    # if caller_config_module := get_caller_config_module_path():
-    #     append_search_path("caller", f"pkg://{caller_config_module}", search_path)
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
         append_search_path("user", f"file://{search_path_dir}", search_path)

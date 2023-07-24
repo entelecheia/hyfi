@@ -103,7 +103,7 @@ class HyFI(
 
     @staticmethod
     def initialize_global_hyfi(
-        package_name: str,
+        package_path: str,
         version: str,
         plugins: Optional[List[str]] = None,
     ) -> None:
@@ -118,12 +118,12 @@ class HyFI(
         It does not check if the plugin is importable.
 
         Args:
-            package_name: Name of the package. e.g. `hyfi`
+            package_path: Path to the package root folder. e.g. `./src/hyfi`
             version: Version of the package. e.g. `0.1.0`
             plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
         """
         __global_hyfi__.initialize(
-            package_name=package_name, version=version, plugins=plugins
+            package_path=package_path, version=version, plugins=plugins
         )
 
     @staticmethod

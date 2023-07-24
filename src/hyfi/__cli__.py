@@ -80,14 +80,14 @@ def hyfi_main(
         config_name = __global_hyfi__.config_name
     if not plugins:
         plugins = __global_hyfi__.plugins
-    if __global_hyfi__.__package_name__ != __hyfi_package_name__:
+    if __global_hyfi__.package_name != __hyfi_package_name__:
         overrides = overrides or []
-        override = f"about={__global_hyfi__.__package_name__}"
+        override = f"about={__global_hyfi__.package_name}"
         if override not in overrides:
             overrides.append(override)
             logger.debug(
                 "Overriding `about` config group with `%s`",
-                __global_hyfi__.__package_name__,
+                __global_hyfi__.package_name,
             )
     hyfi_hydra_main(
         config_path=config_path,

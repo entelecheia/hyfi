@@ -66,6 +66,18 @@ class GlobalHyFIConfig(BaseModel):
     ) -> None:
         """
         Initializes the global HyFI instance.
+
+        This function should be called before any other HyFI function.
+
+        A plugin is a python module which contains a configuration module.
+
+        Be careful!
+        It does not check if the plugin is importable.
+
+        Args:
+            package_name: Name of the package. e.g. `hyfi`
+            version: Version of the package. e.g. `0.1.0`
+            plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
         """
         self.__package_name__ = package_name
         self.__version__ = version
@@ -78,13 +90,21 @@ class GlobalHyFIConfig(BaseModel):
         return self.__plugins__
 
     def get_plugins(self, plugins: List[str]) -> List[str]:
-        """Returns the list of plugins to load."""
+        """Returns the list of plugins to load.
+        A plugin is a python module which contains a configuration module.
+
+        Be careful!
+        It does not check if the plugin is importable.
+
+        Args:
+            plugins: List[str]: A list of plugins to load.
+        """
         _plugins = []
         for plugin in plugins:
             plugin = plugin.split(".")[0]
             config_module = f"{plugin}.{self.__config_path__}"
-            if PKGs.is_importable(config_module):
-                _plugins.append(config_module)
+            # if PKGs.is_importable(config_module):
+            _plugins.append(config_module)
         return _plugins
 
     @property

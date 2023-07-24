@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.9.1 (2023-07-24)
+
+### Fix
+
+* **core:** Change the way plugins are loaded ([`9a41ab7`](https://github.com/entelecheia/hyfi/commit/9a41ab7d94fc556bdd886b8e918a0dfb9ee2e194))
+* **utils:** Add is_importable method to PKGs class ([`65fbc33`](https://github.com/entelecheia/hyfi/commit/65fbc339b7b627b9d0d03370a5ad1640088758ec))
+* **hyfi:** Add plugins parameter to initialize_global_hyfi function ([`4ce5cf7`](https://github.com/entelecheia/hyfi/commit/4ce5cf7430f870213573ecf227052bba70380cae))
+* **utils/packages:** Add exception handling to get_caller_module_name function ([`75ddcef`](https://github.com/entelecheia/hyfi/commit/75ddcef7601ddf850d68769677e29cf116f8320f))
+
 ## v1.9.0 (2023-07-24)
 
 ### Feature

@@ -6,7 +6,7 @@ from pprint import pprint
 
 def test_about():
     print(HyFI.about())
-    assert HyFI.config._version_ == __version__
+    assert HyFI.global_config._version_ == __version__
 
 
 def test_version():

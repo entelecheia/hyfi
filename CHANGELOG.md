@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.9.2 (2023-07-24)
+
+### Fix
+
+* **hyfi:** Fix plugin loading functionality ([`eb5d14f`](https://github.com/entelecheia/hyfi/commit/eb5d14fa905fe35f076f65cd66f725ede5b96e82))
+* **hydra:** Comment out caller_config_module related code ([`4048e86`](https://github.com/entelecheia/hyfi/commit/4048e8655e308309016fa24add5c668d8fe8a974))
+* **core:** Improve docstrings and remove import check in get_plugins ([`24bded7`](https://github.com/entelecheia/hyfi/commit/24bded7af64ff0d44e725213c3fbf8a26f819f0a))
+* **hyfi:** Add plugin initialization details ([`dfc238a`](https://github.com/entelecheia/hyfi/commit/dfc238ab8d1ebd77be61129409d8ca392168ade8))
+
 ## v1.9.1 (2023-07-24)
 
 ### Fix

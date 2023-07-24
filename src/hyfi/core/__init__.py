@@ -1,26 +1,25 @@
 """
     HyFI Core Module
 """
-import importlib
 import os
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import List, Optional, Tuple
 
 from pydantic import BaseModel
 
 from hyfi.utils.logging import LOGGING
-from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 
 __hydra_version_base__ = "1.2"
 __hydra_default_config_group_value__ = "__init__"
 __hyfi_name__: str = "HyFI"
-__hyfi_config_path__ = "conf"
+__hyfi_config_dirname__ = "conf"
 __hyfi_config_name__ = "config"
-__hyfi_package_name__: str = "hyfi"
+__hyfi_user_config_path__ = "config"
 __hyfi_package_path__: str = Path(__file__).parent.parent.as_posix()
-__hyfi_config_module_path__ = f"{__hyfi_package_name__}.{__hyfi_config_path__}"
+__hyfi_package_name__: str = os.path.basename(__hyfi_package_path__)
+__hyfi_config_module_path__ = f"{__hyfi_package_name__}.{__hyfi_config_dirname__}"
 
 _batcher_instance_ = None
 
@@ -43,24 +42,27 @@ class GlobalHyFIConfig(BaseModel):
     Attributes:
     __package_name__ (str): The name of the package.
     __package_path__ (str): The path to the package root folder.
-    __config_name__ (str): The name of the configuration module.
-    __config_path__ (str): The path to the configuration module.
-    __user_config_path__ (str): The path to the user configuration directory.
-    __plugins__ (List[Any]): A list of plugins to load.
     __version__ (str): The version number of the package.
+    __plugins__ (List[Any]): A list of plugins to load.
+    __config_name__ (str): The name of the configuration module.
+    __config_dirname__ (str): The name of the configuration directory.
+    __user_config_path__ (str): The path to the user configuration directory.
     """
 
     __package_name__: str = __hyfi_package_name__
     __package_path__: str = __hyfi_package_path__
-    __config_name__: str = __hyfi_config_name__
-    __config_path__: str = __hyfi_config_path__
-    __user_config_path__: str = "config"
-    __plugins__: Optional[List[str]] = None
     __version__: str = __hyfi_version__()
+    __plugins__: Optional[List[str]] = None
+
+    __config_name__: str = __hyfi_config_name__
+    __config_dirname__: str = __hyfi_config_dirname__
+    __user_config_path__: str = __hyfi_user_config_path__
+
+    _packages_: List[Tuple[str, str]] = [(__hyfi_package_path__, __hyfi_version__())]
 
     def initialize(
         self,
-        package_name: str = __hyfi_name__,
+        package_path: str = __hyfi_name__,
         version: str = __hyfi_version__(),
         plugins: Optional[List[str]] = None,
     ) -> None:
@@ -75,12 +77,14 @@ class GlobalHyFIConfig(BaseModel):
         It does not check if the plugin is importable.
 
         Args:
-            package_name: Name of the package. e.g. `hyfi`
+            package_path: Path to the package root folder. e.g. `./src/hyfi`
             version: Version of the package. e.g. `0.1.0`
             plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
         """
-        self.__package_name__ = package_name
+        self.__package_path__ = package_path
         self.__version__ = version
+        if package_path not in self._packages_:
+            self._packages_.append((package_path, version))
         if plugins:
             self.__plugins__ = self.get_plugins(plugins)
 
@@ -102,20 +106,47 @@ class GlobalHyFIConfig(BaseModel):
         _plugins = []
         for plugin in plugins:
             plugin = plugin.split(".")[0]
-            config_module = f"{plugin}.{self.__config_path__}"
-            # if PKGs.is_importable(config_module):
+            config_module = f"{plugin}.{self.__config_dirname__}"
             _plugins.append(config_module)
         return _plugins
 
     @property
+    def package_name(self) -> str:
+        """Returns the name of the package."""
+        self.__package_name__ = os.path.basename(self.__package_path__)
+        return self.__package_name__
+
+    @property
+    def package_path(self) -> str:
+        """Returns the path to the package root folder.
+
+        If there are multiple packages, the second package is returned.
+        If there is only one package, the first package is returned. (default: hyfi)
+        """
+        if len(self._packages_) > 1:
+            self.__package_path__ = self._packages_[1][0]
+        else:
+            self.__package_path__ = self._packages_[0][0]
+        return self.__package_path__
+
+    @property
     def version(self) -> str:
         """Returns the version number of the package."""
+        if len(self._packages_) > 1:
+            self.__version__ = self._packages_[1][1]
+        else:
+            self.__version__ = self._packages_[0][1]
         return self.__version__
+
+    @property
+    def config_dirname(self) -> str:
+        """Returns the name of the configuration directory."""
+        return self.__config_dirname__
 
     @property
     def config_module(self) -> str:
         """Returns the name of the configuration module."""
-        return f"{self.__package_name__}.{self.__config_path__}"
+        return f"{self.package_name}.{self.config_dirname}"
 
     @property
     def config_module_path(self) -> str:
@@ -200,7 +231,7 @@ def __package_name__() -> str:
         string containing the package name of the App
     """
 
-    return __global_hyfi__.__package_name__
+    return __global_hyfi__.package_name
 
 
 def __package_path__() -> str:
@@ -211,4 +242,4 @@ def __package_path__() -> str:
         string containing the path to the App root folder
     """
 
-    return __global_hyfi__.__package_path__
+    return __global_hyfi__.package_path

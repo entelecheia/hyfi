@@ -105,13 +105,16 @@ class HyFI(
     def initialize_global_hyfi(
         package_name: str,
         version: str,
+        plugins: Optional[List[str]] = None,
     ) -> None:
         """
         Initializes the global HyFI instance.
 
         This function should be called before any other HyFI function.
         """
-        __global_hyfi__.initialize(package_name=package_name, version=version)
+        __global_hyfi__.initialize(
+            package_name=package_name, version=version, plugins=plugins
+        )
 
     @staticmethod
     def about(**args) -> None:

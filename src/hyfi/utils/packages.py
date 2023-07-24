@@ -212,3 +212,8 @@ class PKGs:
                 f"Error getting caller module name at depth {caller_stack_depth}: {e}"
             )
             return ""
+
+    @staticmethod
+    def is_importable(module_name: str) -> bool:
+        module_spec = importlib.util.find_spec(module_name)  # type: ignore
+        return module_spec is not None

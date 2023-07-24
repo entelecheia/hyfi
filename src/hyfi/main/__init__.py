@@ -111,6 +111,16 @@ class HyFI(
         Initializes the global HyFI instance.
 
         This function should be called before any other HyFI function.
+
+        A plugin is a python module which contains a configuration module.
+
+        Be careful!
+        It does not check if the plugin is importable.
+
+        Args:
+            package_name: Name of the package. e.g. `hyfi`
+            version: Version of the package. e.g. `0.1.0`
+            plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
         """
         __global_hyfi__.initialize(
             package_name=package_name, version=version, plugins=plugins

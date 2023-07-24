@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 from hyfi.utils.iolibs import IOLIBs
 from hyfi.utils.logging import LOGGING
@@ -217,3 +218,12 @@ class PKGs:
     def is_importable(module_name: str) -> bool:
         module_spec = importlib.util.find_spec(module_name)  # type: ignore
         return module_spec is not None
+
+    @staticmethod
+    def safe_import_module(module_name: str) -> Any:
+        """Safely imports a module."""
+        try:
+            return importlib.import_module(module_name)
+        except ImportError:
+            logger.debug("Failed to import module: %s", module_name)
+            return None

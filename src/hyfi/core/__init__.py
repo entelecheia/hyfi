@@ -87,15 +87,6 @@ class GlobalHyFIConfig(BaseModel):
                 _plugins.append(config_module)
         return _plugins
 
-    @staticmethod
-    def _safe_import_module(module_name: str) -> Any:
-        """Safely imports a module."""
-        try:
-            return importlib.import_module(module_name).HyFI
-        except ImportError:
-            logger.debug("Failed to import module: %s", module_name)
-            return None
-
     @property
     def version(self) -> str:
         """Returns the version number of the package."""

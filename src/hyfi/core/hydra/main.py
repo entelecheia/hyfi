@@ -21,6 +21,7 @@ def main(
     config_name: Optional[str] = None,
     version_base: Optional[str] = _UNSPECIFIED_,
     overrides: Optional[List[str]] = None,
+    plugins: Optional[List[str]] = None,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: The config path, a directory where Hydra will search for
@@ -75,6 +76,7 @@ def main(
                     task_function=task_function,
                     config_path=config_path,
                     config_name=config_name,
+                    plugins=plugins,
                 )
 
         return decorated_main

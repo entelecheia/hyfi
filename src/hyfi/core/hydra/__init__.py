@@ -42,12 +42,7 @@ def get_caller_config_module_path(
     if config_module_path == __hyfi_config_module_path__:
         return config_module_path
     # check if the config module is importable
-    try:
-        __import__(config_module_path)
-        return config_module_path
-    except ImportError:
-        logger.debug("Config module not found: %s", config_module_path)
-    return ""
+    return config_module_path if PKGs.is_importable(config_module_path) else ""
 
 
 _UNSPECIFIED_: Any = object()

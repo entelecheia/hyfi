@@ -141,8 +141,8 @@ def create_config_search_path(
         )
         append_search_path("main", path, search_path)
 
-    if caller_config_module := get_caller_config_module_path():
-        append_search_path("caller", f"pkg://{caller_config_module}", search_path)
+    # if caller_config_module := get_caller_config_module_path():
+    #     append_search_path("caller", f"pkg://{caller_config_module}", search_path)
 
     if search_path_dir is not None and os.path.isdir(search_path_dir):
         append_search_path("user", f"file://{search_path_dir}", search_path)

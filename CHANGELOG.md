@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.10.0 (2023-07-25)
+
+### Feature
+
+* **hyfi/main:** Add config_module and user_config path resolvers ([`2e14fb4`](https://github.com/entelecheia/hyfi/commit/2e14fb4c655cd0cc792ff6b50ce8299261925005))
+* **core:** Add type hinting to hyfi_path and home_path functions, add user_config_path and config_module_path functions ([`0dd36da`](https://github.com/entelecheia/hyfi/commit/0dd36dab6d4b63739eaa46458b03f311e6dfbc4b))
+* **hyfi:** Add project root and workspace path resolvers ([`3dff304`](https://github.com/entelecheia/hyfi/commit/3dff3041824f04881d8bb38058074a41a03fc028))
+* **hyfi/core:** Add project root and workspace path properties ([`d59dcb6`](https://github.com/entelecheia/hyfi/commit/d59dcb66ba6d338e03885edabcb4e69af7c7b312))
+
+### Documentation
+
+* Add new sections to pipe.md ([`78a5ff6`](https://github.com/entelecheia/hyfi/commit/78a5ff6acb6fabff5f9bf7863fb040c4a30c27b0))
+
 ## v1.9.4 (2023-07-25)
 
 ### Fix

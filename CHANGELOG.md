@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.9.4 (2023-07-25)
+
+### Fix
+
+* **core:** Change object property access ([`dba1f0d`](https://github.com/entelecheia/hyfi/commit/dba1f0d520be457a4df83bbc05ed4e9d1ce1427e))
+
 ## v1.9.3 (2023-07-24)
 
 ### Fix

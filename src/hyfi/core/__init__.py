@@ -202,12 +202,12 @@ class GlobalHyFIConfig(BaseModel):
 __global_hyfi__ = GlobalHyFIConfig()
 
 
-def __hyfi_path__():
+def __hyfi_path__() -> str:
     """Returns the path to the HyFI root folder"""
     return Path(__file__).parent.parent.as_posix()
 
 
-def __home_path__():
+def __home_path__() -> str:
     """Returns the path to the user's home folder"""
     return Path.home().as_posix()
 
@@ -243,3 +243,13 @@ def __package_path__() -> str:
     """
 
     return __global_hyfi__.package_path
+
+
+def __config_module_path__() -> str:
+    """Global HyFI config path for the package to search for."""
+    return __global_hyfi__.config_module_path
+
+
+def __user_config_path__() -> str:
+    """Global HyFI user config path for the package to search for."""
+    return __global_hyfi__.user_config_path

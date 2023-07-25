@@ -14,18 +14,19 @@ from hyfi.composer import Composer, SpecialKeys
 from hyfi.copier import Copier
 from hyfi.core import (
     __app_version__,
+    __config_module_path__,
     __global_hyfi__,
     __home_path__,
     __hyfi_path__,
     __hyfi_version__,
     __package_name__,
     __package_path__,
+    __user_config_path__,
 )
 from hyfi.core.config import (
     __global_config__,
     __project_root_path__,
     __project_workspace_path__,
-    __search_package_path__,
 )
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
@@ -54,7 +55,8 @@ OmegaConf.register_new_resolver("__package_name__", __package_name__)
 OmegaConf.register_new_resolver("__package_path__", __package_path__)
 OmegaConf.register_new_resolver("__app_version__", __app_version__)
 OmegaConf.register_new_resolver("__version__", __app_version__)
-OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
+OmegaConf.register_new_resolver("__config_module_path__", __config_module_path__)
+OmegaConf.register_new_resolver("__user_config_path__", __user_config_path__)
 OmegaConf.register_new_resolver("__home_path__", __home_path__)
 OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
 OmegaConf.register_new_resolver(

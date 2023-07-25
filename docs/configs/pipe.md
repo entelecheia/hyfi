@@ -38,3 +38,21 @@ Config location: `conf/pipe`
 {% include '../../src/hyfi/conf/pipe/__init__.yaml' %}
 ```
 
+## `dataset_load_from_disk.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/dataset_load_from_disk.yaml' %}
+```
+
+## `dataset_sample.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/dataset_sample.yaml' %}
+```
+
+## `dataset_save_to_disk.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/dataset_save_to_disk.yaml' %}
+```
+

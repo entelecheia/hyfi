@@ -2,7 +2,7 @@ import random
 from pathlib import Path
 from typing import Union
 
-from datasets import Dataset
+from datasets import Dataset  # type: ignore
 
 from hyfi.main import HyFI
 
@@ -16,7 +16,7 @@ def save_dataset_to_disk(
     """
     Save a dataset.
     """
-    data.save_to_disk(dataset_path)
+    data.save_to_disk(str(dataset_path))
     logger.info("Dataset saved to %s.", dataset_path)
 
     return data

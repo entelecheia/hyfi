@@ -315,11 +315,6 @@ class HyfiConfig(BaseModel):
 __global_config__ = HyfiConfig()
 
 
-def __search_package_path__():
-    """Global HyFI config path for the package to search for."""
-    return __global_config__.hyfi_config_module_path
-
-
 def __project_root_path__():
     """Global HyFI config path for the project root."""
     return __global_config__.project_root_path

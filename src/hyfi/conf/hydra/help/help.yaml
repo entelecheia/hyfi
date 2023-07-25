@@ -5,7 +5,6 @@ app_name: ${about.name}
 header: == ${hydra.help.app_name} ==
 
 footer: |-
-  Powered by Hydra (https://hydra.cc)
   Use --hydra-help to view Hydra specific help
 # Basic Hydra flags:
 #   $FLAGS_HELP
@@ -18,21 +17,11 @@ footer: |-
 #   $CONFIG : Generated config
 #
 template: |-
-  ${hydra.help.header}
-
-  authors: ${about.authors}
-  description: ${about.description}
-
-  ${hydra.help.app_name} Command Line Interface for Hydra
+  Command Line Interface for ${hydra.help.app_name}
 
   == Configuration groups ==
 
-  Compose your configuration from those groups (task=task_name)
-  $APP_CONFIG_GROUPS
-  == Config ==
+  Compose your configuration from those groups ('config group'='config name')
 
-  This is the config generated for this run.
-  --------------------------------------------------
-  $CONFIG
-  --------------------------------------------------
+  $APP_CONFIG_GROUPS
   ${hydra.help.footer}

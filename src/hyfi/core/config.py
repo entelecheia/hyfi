@@ -187,6 +187,7 @@ class HyfiConfig(BaseModel):
 
         self.initialize(force=reinit)
         self.project = ProjectConfig()
+        logger.info("HyFi project initialized with %s", self.project.project_name)
 
     def initialize(self, force: bool = False) -> None:
         """
@@ -300,6 +301,16 @@ class HyfiConfig(BaseModel):
             return str(self.project.path.get_path(path_name))
         return ""
 
+    @property
+    def project_root_path(self):
+        """Get the project root directory."""
+        return str(self.project.root_dir) if self.project else "."
+
+    @property
+    def project_workspace_path(self):
+        """Get the project workspace directory."""
+        return str(self.project.workspace_dir) if self.project else "."
+
 
 __global_config__ = HyfiConfig()
 
@@ -307,3 +318,13 @@ __global_config__ = HyfiConfig()
 def __search_package_path__():
     """Global HyFI config path for the package to search for."""
     return __global_config__.hyfi_config_module_path
+
+
+def __project_root_path__():
+    """Global HyFI config path for the project root."""
+    return __global_config__.project_root_path
+
+
+def __project_workspace_path__():
+    """Global HyFI config path for the project workspace directory."""
+    return __global_config__.project_workspace_path

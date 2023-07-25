@@ -19,9 +19,11 @@ footer: |-
 template: |-
   Command Line Interface for ${hydra.help.app_name}
 
-  == Configuration groups ==
+  Usage: ${__package_name__:} [options ...] [overrides ...]
 
-  Compose your configuration from those groups ('config group'='config name')
+  e.g. ${__package_name__:} +workflow=my_workflow project=my_project
+
+  Compose your configuration from the following config groups:
 
   $APP_CONFIG_GROUPS
   ${hydra.help.footer}

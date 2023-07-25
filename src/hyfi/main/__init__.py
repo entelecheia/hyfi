@@ -57,7 +57,9 @@ OmegaConf.register_new_resolver("__version__", __app_version__)
 OmegaConf.register_new_resolver("__search_package_path__", __search_package_path__)
 OmegaConf.register_new_resolver("__home_path__", __home_path__)
 OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
-OmegaConf.register_new_resolver("__project_workspace_path__", __project_workspace_path__)
+OmegaConf.register_new_resolver(
+    "__project_workspace_path__", __project_workspace_path__
+)
 OmegaConf.register_new_resolver("today", FUNCs.today)
 OmegaConf.register_new_resolver("to_datetime", FUNCs.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)

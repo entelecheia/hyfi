@@ -113,7 +113,7 @@ class GlobalHyFIConfig(BaseModel):
     @property
     def package_name(self) -> str:
         """Returns the name of the package."""
-        self.__package_name__ = os.path.basename(self.__package_path__)
+        self.__package_name__ = os.path.basename(self.package_path)
         return self.__package_name__
 
     @property

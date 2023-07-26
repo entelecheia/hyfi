@@ -1,5 +1,22 @@
 <!--next-version-placeholder-->
 
+## v1.11.0 (2023-07-26)
+
+### Feature
+
+* **hyfi:** Add load_dataset_from_disk, sample_dataset, and save_dataset_to_disk configurations ([`265db31`](https://github.com/entelecheia/hyfi/commit/265db31a06a4f0704f684e9959c21596bf55ce71))
+* **hyfi/conf/run:** Add new __init__.yaml for run configuration ([`7a72b85`](https://github.com/entelecheia/hyfi/commit/7a72b85ef550d798c7dcb22f2d2e689b7cd5869f))
+* **config:** Add load_dataframes, preprocessing_esg_ratings, and save_dataframes configurations ([`4a6ea2a`](https://github.com/entelecheia/hyfi/commit/4a6ea2a5f7a88e556fa6afc8c48cb87c41e4716c))
+* **config:** Add new default run commands in config files ([`1199686`](https://github.com/entelecheia/hyfi/commit/11996863b10fa823ab97102300996d8d6566aa12))
+
+### Fix
+
+* **pipeline/configs:** Handle both string and dict inputs for run config ([`793f218`](https://github.com/entelecheia/hyfi/commit/793f2180977a7c75ccd675425a7162a660a29629))
+* **pipe:** Replace run/kwargs with run_target/run_kwargs in general_instance_methods and dataframe_instance_methods ([`eff671c`](https://github.com/entelecheia/hyfi/commit/eff671cdd4c5ca25246303d8be001cc17018477f))
+* **hyfi:** Simplify dataset yaml configurations ([`95f03f3`](https://github.com/entelecheia/hyfi/commit/95f03f3aeaa20619f10b34768893e32cf839f9bd))
+* **composer:** Change 'run_with' to 'run' in key substitution ([`3ef33ba`](https://github.com/entelecheia/hyfi/commit/3ef33ba76ce6e6a2bec43c97a94a91f6a8854451))
+* **pipeline:** Replace run with with in test_general.yaml ([`953070a`](https://github.com/entelecheia/hyfi/commit/953070a06cc4ba10aec892c77a88fb7369337e65))
+
 ## v1.10.3 (2023-07-26)
 
 ### Fix

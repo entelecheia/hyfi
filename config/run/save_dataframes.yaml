@@ -1,0 +1,12 @@
+defaults:
+  - __init__
+
+_target_: hyfi.main.HyFI.save_dataframes
+data:
+data_file:
+data_dir:
+columns:
+index: false
+filetype: parquet
+suffix:
+verbose: ${oc.select:..verbose, false}

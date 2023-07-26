@@ -1,0 +1,10 @@
+defaults:
+  - __init__
+
+_target_: hyfi.pipe.datasets.sample_dataset
+num_samples: 100
+randomize: true
+random_seed: 123
+num_heads: 1
+num_tails: 1
+verbose: ${oc.select:..verbose, false}

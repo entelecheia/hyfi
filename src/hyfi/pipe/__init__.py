@@ -24,8 +24,13 @@ def general_instance_methods(obj: Any, config: PipeConfig):
     Returns:
         Any: The object with the method applied.
     """
+    run_target = config.run_target
+    run_kwargs = config.run_kwargs
+    if not run_target:
+        logger.warning("No target found for %s", config)
+        return obj
     with elapsed_timer(format_time=True) as elapsed:
-        obj = getattr(obj, config.run)(**config.kwargs)
+        obj = getattr(obj, run_target)(**run_kwargs)
 
         if config.verbose:
             logger.info(" >> elapsed time: %s", elapsed())
@@ -79,13 +84,18 @@ def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
         pd.DataFrame: The dataframe with the method applied.
     """
     config = DataframePipeConfig(**config.model_dump())
+    run_target = config.run_target
+    run_kwargs = config.run_kwargs
+    if not run_target:
+        logger.warning("No target found for %s", config)
+        return data
     with elapsed_timer(format_time=True) as elapsed:
         if config.columns:
             for col_name in config.columns:
                 logger.info("processing column: %s", col_name)
-                data[col_name] = getattr(data[col_name], config.run)(**config.kwargs)
+                data[col_name] = getattr(data[col_name], run_target)(**run_kwargs)
         else:
-            data = getattr(data, config.run)(**config.kwargs)
+            data = getattr(data, run_target)(**run_kwargs)
 
         if config.verbose:
             logger.info(" >> elapsed time: %s", elapsed())

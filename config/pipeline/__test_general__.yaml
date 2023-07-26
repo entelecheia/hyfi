@@ -6,8 +6,8 @@ defaults:
 use_task_as_initial_object: true
 steps:
   - uses: pipe1
-    run: print_config
+    with: print_config
     verbose: true
   - uses: pipe2
-    run: builtins.print
+    with: builtins.print
     verbose: true

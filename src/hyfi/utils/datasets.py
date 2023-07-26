@@ -14,7 +14,6 @@ from datasets.info import DatasetInfo
 from datasets.iterable_dataset import IterableDataset
 from datasets.splits import NamedSplit, Split
 from datasets.utils.info_utils import VerificationMode
-from datasets.utils.version import Version
 
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.iolibs import IOLIBs
@@ -489,14 +488,7 @@ class DATASETs:
         download_config: Optional[DownloadConfig] = None,
         download_mode: Optional[Union[DownloadMode, str]] = None,
         verification_mode: Optional[Union[VerificationMode, str]] = None,
-        ignore_verifications="deprecated",
-        keep_in_memory: Optional[bool] = None,
-        save_infos: bool = False,
-        revision: Optional[Union[str, Version]] = None,
-        token: Optional[Union[bool, str]] = None,
-        streaming: bool = False,
         num_proc: Optional[int] = None,
-        storage_options: Optional[Dict] = None,
         **config_kwargs,
     ) -> Union[DatasetDict, Dataset, IterableDatasetDict, IterableDataset]:
         """Load a dataset from the Hugging Face Hub, or a local dataset.
@@ -530,14 +522,7 @@ class DATASETs:
             download_config=download_config,
             download_mode=download_mode,
             verification_mode=verification_mode,
-            ignore_verifications=ignore_verifications,
-            keep_in_memory=keep_in_memory,
-            save_infos=save_infos,
-            revision=revision,
-            token=token,
-            streaming=streaming,
             num_proc=num_proc,
-            storage_options=storage_options,
             **config_kwargs,
         )
 

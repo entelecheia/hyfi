@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.10.2 (2023-07-26)
+
+### Fix
+
+* **composer:** Use local variables for config_module and plugins ([`9ad01fd`](https://github.com/entelecheia/hyfi/commit/9ad01fd879716d85f11ece7e9de792761293503e))
+
 ## v1.10.1 (2023-07-26)
 
 ### Fix

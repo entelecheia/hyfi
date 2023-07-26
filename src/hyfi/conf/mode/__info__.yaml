@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - __init__
+
+verbose: true
+logging_level: INFO

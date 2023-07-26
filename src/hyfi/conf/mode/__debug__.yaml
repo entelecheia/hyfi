@@ -1,13 +1,7 @@
 # @package _global_
 defaults:
-  - __init__
+  - __info__
 
 debug_mode: true
-verbose: true
 ignore_warnings: false
 logging_level: DEBUG
-hydra:
-  verbose: false
-  job_logging:
-    root:
-      level: ${logging_level}

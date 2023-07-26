@@ -14,7 +14,6 @@ from datasets.info import DatasetInfo
 from datasets.iterable_dataset import IterableDataset
 from datasets.splits import NamedSplit, Split
 from datasets.utils.info_utils import VerificationMode
-from datasets.utils.version import Version
 
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.iolibs import IOLIBs

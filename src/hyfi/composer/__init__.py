@@ -454,9 +454,9 @@ class Composer(BaseModel, CONFs):
             str: The alias for the special key.
         """
         # replace the exact `with`, `pipe` with `run_with`, `run_pipe`
-        key_ = re.sub(r"^with$", "run_with", key)
+        key_ = re.sub(r"^with$", "run", key)
         # replace the prefix `_` with `run_`
-        key_ = re.sub(r"^_with_$", "run_with", key_)
+        key_ = re.sub(r"^_with_$", "run", key_)
         key_ = re.sub(r"^_pipe_$", "pipe_target", key_)
         key_ = re.sub(r"^_run_$", "run", key_)
         return key_

@@ -18,8 +18,10 @@ def save_dataset_to_disk(
     Save a dataset.
     """
     data.save_to_disk(str(dataset_path))
+    logger.info("Dataset saved to %s.", dataset_path)
     if verbose:
-        logger.info("Dataset saved to %s.", dataset_path)
+        logger.info("Dataset features: %s", data.features)
+        logger.info("Number of samples: %s", len(data))
 
     return data
 

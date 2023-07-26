@@ -27,14 +27,13 @@ def test_pipe():
     print(df3)
     config = HyFI.compose("pipe=__dataframe_instance_methods__")
     pipe_config = DataframePipeConfig(**config)
-    pipe_config.run = "filter"
-    pipe_config.run_with = {"items": ["id"]}
+    pipe_config.run = {"_target_": "filter", "items": ["id"]}
     print(pipe_config)
     df4 = HyFI.run_pipe(df, pipe_config)
     print(df4)
     config = HyFI.compose("pipe=__dataframe_external_funcs__")
     pipe_config = DataframePipeConfig(**config)
-    pipe_config.run = "lambda x: x.replace('Economic', 'ECON')"
+    pipe_config.run = {"_target_": "lambda x: x.replace('Economic', 'ECON')"}
     pipe_config.columns_to_apply = "text"
     pipe_config.num_workers = 5
     pipe_config.verbose = True

@@ -9,25 +9,25 @@ from hyfi.pipeline.configs import PipeConfig, RunningConfig
 def test_running_config():
     assert Composer.generate_alias_for_special_keys("_run_") == "run"
     assert Composer.generate_alias_for_special_keys("_pipe_") == "pipe_target"
-    assert Composer.generate_alias_for_special_keys("_with_") == "run_with"
-    assert Composer.generate_alias_for_special_keys("with") == "run_with"
+    assert Composer.generate_alias_for_special_keys("_with_") == "run"
+    assert Composer.generate_alias_for_special_keys("with") == "run"
 
     config = RunningConfig(**{"with": {"a": 1, "b": 2}})
     print(config.model_dump())
-    print(config.kwargs)
-    assert config.kwargs == {"a": 1, "b": 2}
+    print(config.run_config)
+    assert config.run_config == {"a": 1, "b": 2}
 
 
 def test_pipe():
     data_path = "https://assets.entelecheia.ai/datasets/bok_minutes/meta-bok_minutes-train.parquet"
     config = HyFI.compose("pipe=_test_dataframes_load")
-    config.run_with = {"data_files": data_path}
+    config.run.update({"data_files": data_path})
     config.verbose = True
     HyFI.print(config)
     pipe = PipeConfig(**config)
     HyFI.print(pipe.model_dump())
-    print(pipe.kwargs)
-    assert pipe.run == "hyfi.main.HyFI.load_dataframes"
+    print(pipe.run_config)
+    assert pipe.run_config["_target_"] == "hyfi.main.HyFI.load_dataframes"
 
 
 def test_pipeline():
@@ -35,7 +35,7 @@ def test_pipeline():
         "https://assets.entelecheia.ai/datasets/esg_coverage/ESG_ratings_raw.csv"
     )
     config = HyFI.compose("pipeline=__test_dataframe__")
-    config.pipe1.run_with = {"data_files": data_path}
+    config.pipe1.run.update({"data_files": data_path})
     # HyFI.print(config)
     config = PipelineConfig(**config)
     HyFI.print(config.model_dump(exclude_none=True))

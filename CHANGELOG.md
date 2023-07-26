@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.10.3 (2023-07-26)
+
+### Fix
+
+* **pipe:** Add logging details to save_dataset_to_disk function ([`74b1661`](https://github.com/entelecheia/hyfi/commit/74b1661a54b6f75c8ed72f68999113dbf86c65ec))
+* **config:** Correct typo in workflow_name attribute, correct typo in workflow log message ([`cf3e579`](https://github.com/entelecheia/hyfi/commit/cf3e5791d2288fdd385b3404bb1932eee63ec0a0))
+* **hyfi:** Modify debug configurations and logging levels, introduce new config files for hydra and info modes ([`cf62132`](https://github.com/entelecheia/hyfi/commit/cf621328480bfde2b1583fa887fb409d64876742))
+
 ## v1.10.2 (2023-07-26)
 
 ### Fix

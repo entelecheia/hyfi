@@ -15,7 +15,7 @@ from pydantic import (
 )
 
 from hyfi.about import AboutConfig
-from hyfi.core import __app_version__, __global_hyfi__, __hyfi_name__, __package_name__
+from hyfi.core import __global_hyfi__
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
@@ -30,10 +30,6 @@ logger = LOGGING.getLogger(__name__)
 
 class HyfiConfig(BaseModel):
     """HyFI root config class.  This class is used to store the configuration"""
-
-    hyfi_config_module_path: str = __global_hyfi__.config_module_path
-    hyfi_config_module: str = __global_hyfi__.config_module
-    hyfi_user_config_path: str = __global_hyfi__.user_config_path
 
     debug_mode: bool = False
     resolve: bool = False
@@ -50,7 +46,7 @@ class HyfiConfig(BaseModel):
     workflow: Optional[WorkflowConfig] = None
     tasks: Optional[List[str]] = None
 
-    _version_: str = PrivateAttr(__app_version__())
+    _version_: str = PrivateAttr(__global_hyfi__.version)
     _initilized_: bool = PrivateAttr(False)
 
     model_config = ConfigDict(
@@ -79,20 +75,6 @@ class HyfiConfig(BaseModel):
             key = "hyfi_config_module"
             data[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
         return data
-
-    @field_validator("hyfi_user_config_path")
-    def _validate_hyfi_user_config_path(cls, v):
-        """
-        Validate and set hyfi_user_config_path.
-
-        Args:
-            cls: Class to use for validation.
-            v: Value to set if valid.
-
-        Returns:
-            True if valid False otherwise
-        """
-        return ENVs.check_and_set_osenv_var("hyfi_user_config_path", v)
 
     @field_validator("logging_level")
     def _validate_logging_level(cls, v, info: FieldValidationInfo):
@@ -201,12 +183,6 @@ class HyfiConfig(BaseModel):
             return
         if self.about is None:
             self.about = AboutConfig()
-        logger.debug(
-            "HyFiConfig initialized with hyfi_config_module=%s, hyfi_config_path=%s, hyfi_user_config_path=%s",
-            __global_hyfi__.hyfi_config_module,
-            __global_hyfi__.hyfi_config_module_path,
-            __global_hyfi__.hyfi_user_config_path,
-        )
         ENVs.load_dotenv()
 
         self._initilized_ = True
@@ -253,7 +229,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The version of the application
         """
-        return __app_version__()
+        return __global_hyfi__.version
 
     @property
     def app_name(self):
@@ -263,7 +239,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the application
         """
-        return self.about.name if self.about else __hyfi_name__
+        return self.about.name if self.about else __global_hyfi__.hyfi_name
 
     @property
     def package_name(self):
@@ -273,7 +249,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the package
         """
-        return __package_name__()
+        return __global_hyfi__.package_name
 
     @property
     def dotenv(self):

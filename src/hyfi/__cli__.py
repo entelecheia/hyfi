@@ -6,7 +6,7 @@ from typing import List, Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.core import __global_hyfi__, __hydra_version_base__, __hyfi_package_name__
+from hyfi.core import __global_hyfi__
 from hyfi.core.config import HyfiConfig
 from hyfi.core.hydra.main import main as hyfi_hydra_main
 from hyfi.main import HyFI
@@ -80,7 +80,7 @@ def hyfi_main(
         config_name = __global_hyfi__.config_name
     if not plugins:
         plugins = __global_hyfi__.plugins
-    if __global_hyfi__.package_name != __hyfi_package_name__:
+    if __global_hyfi__.package_name != __global_hyfi__.hyfi_package_name:
         overrides = overrides or []
         override = f"about={__global_hyfi__.package_name}"
         if override not in overrides:
@@ -92,7 +92,7 @@ def hyfi_main(
     hyfi_hydra_main(
         config_path=config_path,
         config_name=config_name,
-        version_base=__hydra_version_base__,
+        version_base=__global_hyfi__.hydra_version_base,
         overrides=overrides,
         plugins=plugins,
     )(cli_main)()

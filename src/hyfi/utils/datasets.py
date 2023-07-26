@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
 import datasets as hfds
 import pandas as pd
-from datasets import Dataset
+from datasets.arrow_dataset import Dataset
 from datasets.dataset_dict import DatasetDict, IterableDatasetDict
 from datasets.download.download_config import DownloadConfig
 from datasets.download.download_manager import DownloadMode
@@ -192,7 +192,7 @@ class DATASETs:
         use_cached: bool = False,
         verbose: bool = False,
         **kwargs,
-    ) -> Union[Dict[str, pd.DataFrame], pd.DataFrame]:
+    ) -> Optional[Union[Dict[str, pd.DataFrame], pd.DataFrame]]:
         """Load data from a file or a list of files"""
         if not data_files:
             logger.warning("No data_files provided")

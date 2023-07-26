@@ -29,7 +29,7 @@ def test_cli_run_workflow() -> None:
     assert exitcode == 0
 
 
-def test_worflow() -> None:
+def test_workflow() -> None:
     """Test workflow"""
     wf = HyFI.workflow(_config_name_="__test__")
     HyFI.print(wf.model_dump())
@@ -37,4 +37,4 @@ def test_worflow() -> None:
 
 
 if __name__ == "__main__":
-    test_worflow()
+    test_workflow()

@@ -15,7 +15,12 @@ def foo():
     print(get_first_caller())  # Prints "<module>" if called from the global scope
 
 
+def print_caller():
+    print(PKGs.get_caller_module_name())
+
+
 def test_is_importable():
+    print_caller()
     assert PKGs.is_importable("hyfi.conf")
     assert not PKGs.is_importable("hyfi.config")
     assert PKGs.is_importable("hyfi.main")

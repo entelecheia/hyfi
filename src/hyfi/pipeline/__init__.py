@@ -10,7 +10,7 @@ from hyfi.composer import Composer
 from hyfi.pipeline.configs import BaseRunConfig, PipeConfig, Pipes, RunningConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.contexts import change_directory
+from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
 from hyfi.workflow import WorkflowConfig
 
@@ -120,8 +120,17 @@ class PIPELINEs:
         # Run the task in the current directory.
         if task is None:
             task = TaskConfig()
-        with change_directory(task.workspace_dir):
-            return reduce(PIPELINEs.run_pipe, pipes, initial_object)
+        with elapsed_timer(format_time=True) as elapsed:
+            with change_directory(task.workspace_dir):
+                rst = reduce(PIPELINEs.run_pipe, pipes, initial_object)
+            # Print the elapsed time.
+            if config.verbose:
+                logger.info(
+                    " >> elapsed time for the pipeline with %s pipes: %s",
+                    len(pipes),
+                    elapsed(),
+                )
+        return rst
 
     @staticmethod
     def run_pipe(
@@ -234,12 +243,20 @@ class PIPELINEs:
         # Run all pipelines in the pipeline.
         if task.verbose:
             logger.info("Running %s pipeline(s)", len(task.pipelines or []))
-        for pipeline in PIPELINEs.get_pipelines(task):
+        with elapsed_timer(format_time=True) as elapsed:
+            for pipeline in PIPELINEs.get_pipelines(task):
+                if task.verbose:
+                    logger.info("Running pipeline: %s", pipeline.name)
+                    Composer.print(pipeline.model_dump())
+                initial_object = task if pipeline.use_task_as_initial_object else None
+                PIPELINEs.run_pipeline(pipeline, initial_object, task)
+            # Print the elapsed time.
             if task.verbose:
-                logger.info("Running pipeline: %s", pipeline.name)
-                Composer.print(pipeline.model_dump())
-            initial_object = task if pipeline.use_task_as_initial_object else None
-            PIPELINEs.run_pipeline(pipeline, initial_object, task)
+                logger.info(
+                    " >> elapsed time for the task with %s pipelines: %s",
+                    len(task.pipelines or []),
+                    elapsed(),
+                )
 
     @staticmethod
     def run_workflow(workflow: WorkflowConfig):
@@ -252,8 +269,16 @@ class PIPELINEs:
         if workflow.verbose:
             logger.info("Running %s task(s)", len(workflow.tasks or []))
         # Run all tasks in the workflow.
-        for task in workflow.get_tasks():
-            # Run the task if verbose is true.
+        with elapsed_timer(format_time=True) as elapsed:
+            for task in workflow.get_tasks():
+                # Run the task if verbose is true.
+                if workflow.verbose:
+                    logger.info("Running task: %s", task.task_name)
+                PIPELINEs.run_task(task, project=workflow.project)
+            # Print the elapsed time.
             if workflow.verbose:
-                logger.info("Running task: %s", task.task_name)
-            PIPELINEs.run_task(task, project=workflow.project)
+                logger.info(
+                    " >> elapsed time for the worflow with %s tasks: %s",
+                    len(workflow.tasks or []),
+                    elapsed(),
+                )

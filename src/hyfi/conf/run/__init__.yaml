@@ -1,0 +1,9 @@
+# A template for run configuration to instantiate a partial function.
+# List all parameters to the partial function at the root level except for the first parameter, which is the pipe object.
+# If the first parameter is not the pipe object, set use_pipe_obj to false in the pipe configuration and set the first parameter name in pipe_obj_arg_name.
+#
+# 'pipe' configuration:
+# use_pipe_obj: true # if true, the pipe target function will be called with the pipe object as the first argument
+# pipe_obj_arg_name: # if use_pipe_obj is true, the pipe object will be passed to the pipe target function with this argument name
+_target_:
+_partial_: true

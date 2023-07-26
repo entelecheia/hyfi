@@ -67,7 +67,7 @@ class PipelineConfig(BaseRunConfig):
         pipes: Pipes = []
         self.steps = self.steps or []
         # Add pipes to the pipeline.
-        for rc in PIPELINEs.get_RCs(self.steps):
+        for rc in PIPELINEs.get_running_configs(self.steps):
             # Add a pipe to the pipeline.
             config = getattr(self, rc.uses, None)
             if isinstance(config, dict):
@@ -180,7 +180,7 @@ class PIPELINEs:
         return pipe_fn(obj, config)
 
     @staticmethod
-    def get_RCs(steps: list) -> List[RunningConfig]:
+    def get_running_configs(steps: list) -> List[RunningConfig]:
         """
         Parses and returns list of running configs
 

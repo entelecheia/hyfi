@@ -1,5 +1,20 @@
 <!--next-version-placeholder-->
 
+## v1.10.1 (2023-07-26)
+
+### Fix
+
+* **dependencies:** Update datasets version range in pyproject.toml ([`b49c5b8`](https://github.com/entelecheia/hyfi/commit/b49c5b8c86c2f3a00475aa7819e57c9ea391cfc9))
+* **pipeline:** Add elapsed time logging ([`a32a2c2`](https://github.com/entelecheia/hyfi/commit/a32a2c273f3da9eee890880582f50d9b4ae25714))
+* **hyfi/pipe:** Add verbose logging options, import Dataset from arrow_dataset instead of datasets, add num_heads and num_tails parameters ([`6f8f8f8`](https://github.com/entelecheia/hyfi/commit/6f8f8f8cd066522df18136e0aba0560207b417b9))
+* **hyfi:** Use global hyfi instead of hyfi config module path ([`9d8f663`](https://github.com/entelecheia/hyfi/commit/9d8f66340c4d1d75902a59328ac2e51485f8bf2b))
+* **core:** Updated HyfiConfig class to use __global_hyfi__ more extensively ([`3833b05`](https://github.com/entelecheia/hyfi/commit/3833b055fe9de42fb6340375de78fb7fe8c0613f))
+* **core:** Enhance type annotations and properties definition ([`ea26dee`](https://github.com/entelecheia/hyfi/commit/ea26dee61bd19447767423276f839d748a16f94e))
+* **composer:** Replace global constant paths with attributes from __global_hyfi__ ([`8f3e8c2`](https://github.com/entelecheia/hyfi/commit/8f3e8c2786341e8f4a804e178c00f9bb7254cffb))
+* **hyfi:** Change __hyfi_path__ to __global_hyfi__ in src_path default ([`86e1aaa`](https://github.com/entelecheia/hyfi/commit/86e1aaa8b96fecf9e7cb1f6e11199058b4f2c65d))
+* **hyfi:** Use global hyfi for package name and version base ([`1acd9ca`](https://github.com/entelecheia/hyfi/commit/1acd9cac95b31740dd1ed727016ed84b526ae139))
+* **utils:** Improve get_caller_module_name in packages.py ([`4b5494d`](https://github.com/entelecheia/hyfi/commit/4b5494d4720fc692548edb7d85c48e97b12a8d2f))
+
 ## v1.10.0 (2023-07-25)
 
 ### Feature

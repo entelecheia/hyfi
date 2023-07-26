@@ -11,7 +11,6 @@ from typing import List, Optional
 
 from hyfi.__cli__ import hydra_main, hyfi_main
 from hyfi.core import __global_hyfi__ as global_hyfi
-from hyfi.core import __hydra_version_base__
 from hyfi.core.config import __global_config__ as global_config
 from hyfi.main import HyFI
 from hyfi.main import HyFI as H
@@ -27,7 +26,6 @@ __all__ = [
     "H",
     "HI",
     "LOGGING",
-    "__hydra_version_base__",
     "initialize_global_hyfi",
 ]
 

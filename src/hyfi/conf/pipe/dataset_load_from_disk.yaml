@@ -4,5 +4,7 @@ defaults:
 run: hyfi.pipe.datasets.load_dataset_from_disk
 run_with:
   dataset_path:
+  num_heads: 1
+  num_tails: 1
   verbose: ${..verbose}
 use_pipe_obj: false

@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - __debug__
+
+hydra:
+  verbose: true

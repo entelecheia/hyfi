@@ -278,7 +278,7 @@ class PIPELINEs:
             # Print the elapsed time.
             if workflow.verbose:
                 logger.info(
-                    " >> elapsed time for the worflow with %s tasks: %s",
+                    " >> elapsed time for the workflow with %s tasks: %s",
                     len(workflow.tasks or []),
                     elapsed(),
                 )

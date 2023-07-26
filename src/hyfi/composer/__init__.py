@@ -5,18 +5,14 @@ import collections.abc
 import os
 import re
 from enum import Enum
-from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple, Union
 
 import hydra
 from hydra.core.global_hydra import GlobalHydra
 from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict, PrivateAttr
 
-from hyfi.core import (
-    __global_hyfi__,
-    __hydra_default_config_group_value__,
-    __hydra_version_base__,
-)
+from hyfi.core import __global_hyfi__
 from hyfi.core import hydra as hyfi_hydra
 from hyfi.utils.conf import CONFs
 from hyfi.utils.logging import LOGGING
@@ -25,8 +21,6 @@ from hyfi.utils.packages import PKGs
 if level := os.environ.get("HYFI_LOG_LEVEL"):
     LOGGING.setLogger(level)
 logger = LOGGING.getLogger(__name__)
-
-__global_package_list__: Set[str] = {"cmd", "mode", "workflow"}
 
 
 class SpecialKeys(str, Enum):
@@ -215,9 +209,9 @@ class Composer(BaseModel, CONFs):
         else:
             with hyfi_hydra.initialize_config(
                 config_module=config_module,
-                config_dir=__global_hyfi__.hyfi_user_config_path,
+                config_dir=__global_hyfi__.user_config_path,
                 plugins=__global_hyfi__.plugins,
-                version_base=__hydra_version_base__,
+                version_base=__global_hyfi__.hydra_version_base,
             ):
                 cfg = hydra.compose(config_name=root_config_name, overrides=overrides)
         return cfg
@@ -233,7 +227,7 @@ class Composer(BaseModel, CONFs):
                 group_key, group_value = group_
             else:
                 group_key = group_[0]
-                group_value = __hydra_default_config_group_value__
+                group_value = __global_hyfi__.hydra_default_config_group_value
             config_group = f"{group_key}={group_value}"
         else:
             group_key = ""
@@ -320,7 +314,7 @@ class Composer(BaseModel, CONFs):
             overrides = []
         # Set the group key and value of the config group.
         config_group, group_key, group_value = Composer.split_config_group(config_group)
-        if group_key in __global_package_list__:
+        if group_key in __global_hyfi__.global_package_list:
             global_package = True
         # If group_key and group_value are specified in the configuration file.
         if group_key and group_value:

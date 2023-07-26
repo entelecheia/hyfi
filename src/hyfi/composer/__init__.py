@@ -443,8 +443,8 @@ class Composer(BaseModel, CONFs):
     def generate_alias_for_special_keys(key: str) -> str:
         """
         Generate an alias for special keys.
-        _with_ -> run_with
-        _pipe_ -> run_pipe
+        _with_ -> run
+        _pipe_ -> pipe_target
         _run_ -> run
 
         Args:

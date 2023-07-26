@@ -6,6 +6,8 @@ run_with:
   num_samples: 100
   randomize: true
   random_seed: 123
+  num_heads: 1
+  num_tails: 1
   verbose: ${..verbose}
 use_pipe_obj: true
 return_pipe_obj: false

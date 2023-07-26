@@ -1,15 +1,6 @@
 defaults:
   - __dataframe_external_funcs__
+  - /run: save_dataframes
 
-run: hyfi.main.HyFI.save_dataframes
-run_with:
-  data:
-  data_file:
-  data_dir:
-  columns:
-  index: false
-  filetype: parquet
-  suffix:
-  verbose: true
 pipe_obj_arg_name: data
 return_pipe_obj: true

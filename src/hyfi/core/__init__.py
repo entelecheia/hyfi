@@ -3,7 +3,7 @@
 """
 import os
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Set, Tuple
 
 from pydantic import BaseModel
 
@@ -11,15 +11,17 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
-__hydra_version_base__ = "1.2"
-__hydra_default_config_group_value__ = "__init__"
+__hydra_version_base__: str = "1.2"
+__hydra_default_config_group_value__: str = "__init__"
 __hyfi_name__: str = "HyFI"
-__hyfi_config_dirname__ = "conf"
-__hyfi_config_name__ = "config"
-__hyfi_user_config_path__ = "config"
+__hyfi_config_dirname__: str = "conf"
+__hyfi_config_name__: str = "config"
+__hyfi_user_config_path__: str = "config"
 __hyfi_package_path__: str = Path(__file__).parent.parent.as_posix()
 __hyfi_package_name__: str = os.path.basename(__hyfi_package_path__)
-__hyfi_config_module_path__ = f"{__hyfi_package_name__}.{__hyfi_config_dirname__}"
+__hyfi_config_module__: str = f"{__hyfi_package_name__}.{__hyfi_config_dirname__}"
+__hyfi_config_module_path__: str = f"pkg://{__hyfi_config_module__}"
+__global_package_list__: Set[str] = {"cmd", "mode", "workflow"}
 
 _batcher_instance_ = None
 
@@ -179,24 +181,54 @@ class GlobalHyFIConfig(BaseModel):
         return self.__user_config_path__
 
     @property
+    def hyfi_name(self) -> str:
+        """Returns the name of HyFI package."""
+        return __hyfi_name__
+
+    @property
     def hyfi_config_module_path(self) -> str:
-        """Returns the path to the HyFI root folder"""
-        return self.config_module_path
+        """Returns the path to HyFI root folder"""
+        return __hyfi_config_module_path__
 
     @property
     def hyfi_config_module(self) -> str:
-        """Returns the name of the configuration module."""
-        return self.config_module
-
-    @property
-    def hyfi_user_config_path(self) -> str:
-        """Returns the path to the user configuration directory."""
-        return self.user_config_path
+        """Returns the name of HyFI default configuration module."""
+        return __hyfi_config_module__
 
     @property
     def hyfi_config_name(self) -> str:
-        """Returns the name of the configuration module."""
-        return self.config_name
+        """Returns the name of HyFI default configuration module."""
+        return __hyfi_config_name__
+
+    @property
+    def hyfi_config_dirname(self) -> str:
+        """Returns the name of HyFI default configuration directory."""
+        return __hyfi_config_dirname__
+
+    @property
+    def hyfi_package_name(self) -> str:
+        """Returns the name of HyFI package."""
+        return __hyfi_package_name__
+
+    @property
+    def hyfi_package_path(self) -> str:
+        """Returns the path to the package root folder."""
+        return __hyfi_package_path__
+
+    @property
+    def hydra_version_base(self) -> str:
+        """Returns the version of Hydra."""
+        return __hydra_version_base__
+
+    @property
+    def hydra_default_config_group_value(self) -> str:
+        """Returns the default config group value of Hydra."""
+        return __hydra_default_config_group_value__
+
+    @property
+    def global_package_list(self) -> Set[str]:
+        """Returns the list of global packages."""
+        return __global_package_list__
 
 
 __global_hyfi__ = GlobalHyFIConfig()
@@ -204,7 +236,7 @@ __global_hyfi__ = GlobalHyFIConfig()
 
 def __hyfi_path__() -> str:
     """Returns the path to the HyFI root folder"""
-    return Path(__file__).parent.parent.as_posix()
+    return __global_hyfi__.hyfi_package_path
 
 
 def __home_path__() -> str:

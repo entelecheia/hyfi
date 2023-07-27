@@ -71,8 +71,8 @@ def hyfi_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    if search_path := global_hyfi.user_config_path:
-        sys.argv.append(f"--config-dir={search_path}")
+    if global_hyfi.user_config_path:
+        sys.argv.append(f"--config-dir={global_hyfi.user_config_path}")
     if not config_path:
         config_path = global_hyfi.config_module_path
     if not config_name:

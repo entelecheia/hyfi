@@ -116,7 +116,8 @@ def create_config_search_path(
 
     if plugins:
         for plugin in plugins:
-            append_search_path("hyfi-plugin", f"pkg://{plugin}", search_path)
+            plugin_name = plugin.split(".")[0]
+            append_search_path(f"hyfi-{plugin_name}", f"pkg://{plugin}", search_path)
 
     if config_module:
         path = (

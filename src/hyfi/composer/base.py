@@ -7,8 +7,9 @@ from typing import Any, Dict, List, Optional, Set, Union
 from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict, model_validator
 
-from hyfi.composer import Composer
 from hyfi.utils.logging import LOGGING
+
+from .composer import Composer
 
 logger = LOGGING.getLogger(__name__)
 

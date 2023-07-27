@@ -15,7 +15,7 @@ from pydantic import (
 )
 
 from hyfi.about import AboutConfig
-from hyfi.core import __global_hyfi__
+from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
@@ -46,7 +46,7 @@ class HyfiConfig(BaseModel):
     workflow: Optional[WorkflowConfig] = None
     tasks: Optional[List[str]] = None
 
-    _version_: str = PrivateAttr(__global_hyfi__.version)
+    _version_: str = PrivateAttr(global_hyfi.version)
     _initilized_: bool = PrivateAttr(False)
 
     model_config = ConfigDict(
@@ -229,7 +229,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The version of the application
         """
-        return __global_hyfi__.version
+        return global_hyfi.version
 
     @property
     def app_name(self):
@@ -239,7 +239,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the application
         """
-        return self.about.name if self.about else __global_hyfi__.hyfi_name
+        return self.about.name if self.about else global_hyfi.hyfi_name
 
     @property
     def package_name(self):
@@ -249,7 +249,7 @@ class HyfiConfig(BaseModel):
         Returns:
             The name of the package
         """
-        return __global_hyfi__.package_name
+        return global_hyfi.package_name
 
     @property
     def dotenv(self):

@@ -67,6 +67,8 @@ class GlobalHyFIConfig(BaseModel):
         package_path: str = __hyfi_name__,
         version: str = __hyfi_version__(),
         plugins: Optional[List[str]] = None,
+        user_config_path: Optional[str] = None,
+        config_dirname: Optional[str] = None,
     ) -> None:
         """
         Initializes the global HyFI instance.
@@ -82,6 +84,8 @@ class GlobalHyFIConfig(BaseModel):
             package_path: Path to the package root folder. e.g. `./src/hyfi`
             version: Version of the package. e.g. `0.1.0`
             plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
+            user_config_path: Path to the user configuration directory. e.g. `./config`
+            config_dirname: Name of the configuration directory. e.g. `conf`
         """
         self.__package_path__ = package_path
         self.__version__ = version
@@ -89,6 +93,10 @@ class GlobalHyFIConfig(BaseModel):
             self._packages_.append((package_path, version))
         if plugins:
             self.__plugins__ = self.get_plugins(plugins)
+        if user_config_path:
+            self.__user_config_path__ = user_config_path
+        if config_dirname:
+            self.__config_dirname__ = config_dirname
 
     @property
     def plugins(self) -> Optional[List[str]]:

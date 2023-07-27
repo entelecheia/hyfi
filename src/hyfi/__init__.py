@@ -10,11 +10,11 @@
 from typing import List, Optional
 
 from hyfi.__cli__ import hydra_main, hyfi_main
-from hyfi.core import __global_hyfi__ as global_hyfi
-from hyfi.core.config import __global_config__ as global_config
+from hyfi.core import global_hyfi
 from hyfi.main import HyFI
 from hyfi.main import HyFI as H
 from hyfi.main import HyFI as HI
+from hyfi.main import global_config
 from hyfi.utils.logging import LOGGING
 
 __all__ = [

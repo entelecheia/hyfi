@@ -6,10 +6,9 @@ from typing import List, Optional
 import hydra
 from omegaconf import DictConfig
 
-from hyfi.core import __global_hyfi__
-from hyfi.core.config import HyfiConfig
+from hyfi.core import global_hyfi
 from hyfi.core.hydra.main import main as hyfi_hydra_main
-from hyfi.main import HyFI
+from hyfi.main import HyFI, HyfiConfig
 
 logger = HyFI.getLogger(__name__)
 
@@ -72,27 +71,27 @@ def hyfi_main(
                         If config_path is None no directory is added to the Config search path.
         config_name: The name of the config (usually the file name without the .yaml extension)
     """
-    if search_path := __global_hyfi__.user_config_path:
+    if search_path := global_hyfi.user_config_path:
         sys.argv.append(f"--config-dir={search_path}")
     if not config_path:
-        config_path = __global_hyfi__.config_module_path
+        config_path = global_hyfi.config_module_path
     if not config_name:
-        config_name = __global_hyfi__.config_name
+        config_name = global_hyfi.config_name
     if not plugins:
-        plugins = __global_hyfi__.plugins
-    if __global_hyfi__.package_name != __global_hyfi__.hyfi_package_name:
+        plugins = global_hyfi.plugins
+    if global_hyfi.package_name != global_hyfi.hyfi_package_name:
         overrides = overrides or []
-        override = f"about={__global_hyfi__.package_name}"
+        override = f"about={global_hyfi.package_name}"
         if override not in overrides:
             overrides.append(override)
             logger.debug(
                 "Overriding `about` config group with `%s`",
-                __global_hyfi__.package_name,
+                global_hyfi.package_name,
             )
     hyfi_hydra_main(
         config_path=config_path,
         config_name=config_name,
-        version_base=__global_hyfi__.hydra_version_base,
+        version_base=global_hyfi.hydra_version_base,
         overrides=overrides,
         plugins=plugins,
     )(cli_main)()

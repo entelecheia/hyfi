@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.12.1 (2023-07-28)
+
+### Fix
+
+* **generator:** Skip VAR_KEYWORD params in GENERATOR ([`34cc59a`](https://github.com/entelecheia/hyfi/commit/34cc59a7addf8b157dd861b5f27cbd947ea3377e))
+* **pipe:** Add kwargs support to save_dataset_to_disk function ([`a226554`](https://github.com/entelecheia/hyfi/commit/a22655491a38618a1d4b6b4bfb5285cf49f33bac))
+
 ## v1.12.0 (2023-07-28)
 
 ### Feature

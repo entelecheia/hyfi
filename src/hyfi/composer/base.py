@@ -8,8 +8,8 @@ from omegaconf import DictConfig
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict, model_validator
 
-from hyfi.utils.logging import LOGGING
 from hyfi.core import global_hyfi
+from hyfi.utils.logging import LOGGING
 
 from .composer import Composer
 

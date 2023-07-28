@@ -1,5 +1,27 @@
 <!--next-version-placeholder-->
 
+## v1.12.0 (2023-07-28)
+
+### Feature
+
+* **generator:** Add pipe config support for HyFI ([`1696ee9`](https://github.com/entelecheia/hyfi/commit/1696ee9bf659a5e6d75cde42b8f163f2e29d38e8))
+* **tests:** Add new test_base.py for hyfi composer ([`9887ee1`](https://github.com/entelecheia/hyfi/commit/9887ee1eca9d92bb689d1e015361f874fb4f1391))
+* **composer/base:** Add save_hyfi_config method and TestModel class to base module ([`9fbbd3c`](https://github.com/entelecheia/hyfi/commit/9fbbd3c321c523e71879300d0dc66d22f66e2850))
+* **tests:** Add test for generating configs in Hyfi composer ([`a1fdce4`](https://github.com/entelecheia/hyfi/commit/a1fdce4eb7714d25ad9a0d22a6589b34997e44ae))
+* **hyfi:** Add GENERATOR to HyFi class ([`4f93600`](https://github.com/entelecheia/hyfi/commit/4f9360040248d575d923e4688e8c32007a84745a))
+* **core:** Add config_root property to GlobalHyFIConfig class ([`fc16744`](https://github.com/entelecheia/hyfi/commit/fc16744cf5127936b938f09fed6080c33bb3d3cc))
+* **utils:** Add new utilities including object identification and module name checks ([`e962ae1`](https://github.com/entelecheia/hyfi/commit/e962ae1240d84b4a39a77e98f9ecfd4c464c0b6c))
+* **hyfi-composer:** Add generator module ([`5d4e2ee`](https://github.com/entelecheia/hyfi/commit/5d4e2ee58797a8852d411e0b9ed2ef9288340125))
+* **composer:** Add generator to imports and __all__ list ([`cab15ec`](https://github.com/entelecheia/hyfi/commit/cab15ecc362acdad2c52a621a7d8773212c274af))
+
+### Fix
+
+* **hyfi/conf/pipe:** Add pipe_obj_arg_name in dataset configuration files ([`449b596`](https://github.com/entelecheia/hyfi/commit/449b596a8e006d27ce631bec27934667181c77da))
+* **hyfi:** Add user_config_path and config_dirname parameters, modify way to append config-dir in sys ([`dda715e`](https://github.com/entelecheia/hyfi/commit/dda715ed21476b491f434eddf5eaf93951c06137))
+* **core:** Add user_config_path and config_dirname options ([`94aba6c`](https://github.com/entelecheia/hyfi/commit/94aba6c7ebae96c832f457852f0183291ea9fb31))
+* **hydra:** Use plugin name in search path ([`58dd768`](https://github.com/entelecheia/hyfi/commit/58dd768f0232c6f448bf27f8d1157a18259e7af9))
+* **pipe:** Remove run_with from configuration ([`8643258`](https://github.com/entelecheia/hyfi/commit/8643258415affdc1408cba894161ac4ddbc98fe5))
+
 ## v1.11.0 (2023-07-26)
 
 ### Feature

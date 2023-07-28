@@ -3,9 +3,7 @@
 """
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, model_validator
-
-from hyfi.composer import Composer
+from hyfi.composer import BaseModel, Composer, ConfigDict, model_validator
 from hyfi.task import TaskConfig
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING

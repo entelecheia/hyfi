@@ -4,9 +4,8 @@ import click
 
 from hyfi._version import __version__
 from hyfi.copier import Copier
-from hyfi.core import __global_hyfi__
-from hyfi.core.config import HyfiConfig
-from hyfi.main import HyFI
+from hyfi.core import global_hyfi
+from hyfi.main import HyFI, HyfiConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -58,7 +57,7 @@ def cli(ctx, config: str, print: bool):
 @click.option(
     "--src_path",
     show_default=True,
-    default=f"{__global_hyfi__.hyfi_package_name}/{__global_hyfi__.hyfi_config_dirname}",
+    default=f"{global_hyfi.hyfi_package_name}/{global_hyfi.hyfi_config_dirname}",
     help="Source path to copy from",
 )
 @click.option(

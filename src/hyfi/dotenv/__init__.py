@@ -4,13 +4,13 @@ Configuration class for environment variables in HyFI.
 import os
 from typing import Optional, Tuple, Type, Union
 
-from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
 
+from hyfi.composer import Field, SecretStr, model_validator
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 

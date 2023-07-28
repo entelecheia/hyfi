@@ -8,8 +8,8 @@ from typing import List, Optional, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw
-from pydantic import BaseModel, ConfigDict
 
+from hyfi.composer import BaseModel, ConfigDict
 from hyfi.graphics.utils import get_image_font, load_image, load_images, scale_image
 
 log = logging.getLogger(__name__)

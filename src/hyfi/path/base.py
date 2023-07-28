@@ -1,8 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseModel
-
+from hyfi.composer import BaseModel
 from hyfi.path.dirnames import DirnamesConfig
 from hyfi.utils.logging import LOGGING
 

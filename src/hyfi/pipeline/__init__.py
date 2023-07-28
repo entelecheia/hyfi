@@ -4,9 +4,7 @@ A class to run a pipeline.
 from functools import reduce
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import field_validator
-
-from hyfi.composer import Composer
+from hyfi.composer import Composer, field_validator
 from hyfi.pipeline.configs import BaseRunConfig, PipeConfig, Pipes, RunningConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig

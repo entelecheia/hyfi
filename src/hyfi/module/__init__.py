@@ -1,7 +1,6 @@
 from typing import Any, List, Optional
 
-from pydantic import BaseModel
-
+from hyfi.composer import BaseModel
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

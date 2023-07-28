@@ -2,9 +2,7 @@ import os
 from pathlib import Path
 from typing import Union
 
-from pydantic import field_validator
-
-from hyfi.composer.base import BaseConfig
+from hyfi.composer import BaseConfig, field_validator
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path import PathConfig

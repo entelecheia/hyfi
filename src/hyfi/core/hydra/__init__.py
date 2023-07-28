@@ -11,9 +11,8 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 
-from hyfi.core import __global_hyfi__
+from hyfi.core import global_hyfi
 from hyfi.utils.logging import LOGGING
-from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 
@@ -112,11 +111,15 @@ def create_config_search_path(
     search_path.append("hydra", "pkg://hydra.conf")
 
     # addiing hyfi's config module to the search path should come before the other modules
-    append_search_path("hyfi", __global_hyfi__.hyfi_config_module_path, search_path)
+    append_search_path("hyfi", global_hyfi.hyfi_config_module_path, search_path)
 
     if plugins:
         for plugin in plugins:
-            append_search_path("hyfi-plugin", f"pkg://{plugin}", search_path)
+            plugin_name = plugin.split(".")[0]
+            plugin_name = (
+                plugin_name if plugin_name.startswith("hyfi") else f"hyfi-{plugin_name}"
+            )
+            append_search_path(plugin_name, f"pkg://{plugin}", search_path)
 
     if config_module:
         path = (

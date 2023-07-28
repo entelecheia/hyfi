@@ -22,9 +22,7 @@ import random
 from pathlib import Path
 from typing import Optional
 
-from pydantic import FieldValidationInfo, field_validator
-
-from hyfi.composer.base import BaseConfig
+from hyfi.composer import BaseConfig, FieldValidationInfo, field_validator
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.12.2 (2023-07-28)
+
+### Fix
+
+* **core:** Add global batcher instance ([`15eae20`](https://github.com/entelecheia/hyfi/commit/15eae20c84b01a8906b666bb5ebab2213483378b))
+* **hyfi/main:** Enhance config instantiation and execution checking for callable tasks ([`77067cf`](https://github.com/entelecheia/hyfi/commit/77067cf122336f4327ce75cf3330481c247970bc))
+* **pipeline:** Enhance task processing and initialization logic ([`28efc77`](https://github.com/entelecheia/hyfi/commit/28efc771180e3aaf6e834080f529d75a8822b578))
+* **workflow:** Replace TaskConfig instantiation with Composer instantiation ([`2a6e40c`](https://github.com/entelecheia/hyfi/commit/2a6e40ce43a9ee3df93bd8579bb91ce6c3485a4d))
+
 ## v1.12.1 (2023-07-28)
 
 ### Fix

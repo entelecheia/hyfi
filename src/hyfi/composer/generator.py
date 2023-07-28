@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 import functools
 import inspect
+from enum import Enum
 from pathlib import Path, PosixPath, WindowsPath
 from typing import Any, Callable, Dict, FrozenSet, Optional, TypeVar
 
@@ -69,48 +70,133 @@ del _lru_cache_type
 del _builtin_function_or_method_type
 
 
+class PipeTargetTypes(str, Enum):
+    GENERAL_EXTERNAL_FUNCS = "__general_external_funcs__"
+    GENERAL_INSTANCE_METHODS = "__general_instance_methods__"
+    DATAFRAME_EXTERNAL_FUNCS = "__dataframe_external_funcs__"
+    DATAFRAME_INSTANCE_METHODS = "__dataframe_instance_methods__"
+
+
 class GENERATOR:
     """
     Generates Hydra configs for functions and classes.
     """
 
     @staticmethod
+    def save_hyfi_pipe_config(
+        target: Callable,
+        pipe_target_type: PipeTargetTypes = PipeTargetTypes.GENERAL_EXTERNAL_FUNCS,
+        use_pipe_obj: bool = True,
+        pipe_obj_arg_name: Optional[str] = None,
+        return_pipe_obj: bool = False,
+        pipe_prefix: Optional[str] = None,
+        config_name: Optional[str] = None,
+        config_root: Optional[str] = None,
+        **kwargs_for_target,
+    ) -> str:
+        """
+        Generates HyFI pipe config for a given target.
+
+        Args:
+            target: Target function or class.
+            pipe_target_type: Type of target function or class.
+            use_pipe_obj: Whether to use pipe object as the first argument.
+            pipe_obj_arg_name: Name of the pipe object argument.
+            return_pipe_obj: Whether to return pipe object.
+            pipe_prefix: Prefix for pipe object argument.
+            config_name: Name of the config.
+            config_root: Root of the config.
+            **kwargs_for_target: Keyword arguments for the target.
+        """
+        use_first_arg_as_pipe_obj = not pipe_obj_arg_name and use_pipe_obj
+        run_config_name = GENERATOR.save_hyfi_config(
+            target,
+            use_first_arg_as_pipe_obj=use_first_arg_as_pipe_obj,
+            config_name=None,
+            config_path="run",
+            config_root=config_root,
+            **kwargs_for_target,
+        )
+
+        cfg = {
+            "defaults": [
+                pipe_target_type.value,
+                {"/run": run_config_name},
+            ],
+            "use_pipe_obj": use_pipe_obj,
+            "pipe_obj_arg_name": pipe_obj_arg_name,
+            "return_pipe_obj": return_pipe_obj,
+        }
+        config_name = config_name or target.__name__
+        config_name = f"{pipe_prefix}_{config_name}" if pipe_prefix else config_name
+        filename = f"{config_name}.yaml"
+        config_root = config_root or global_hyfi.config_root
+        config_path = Path(config_root) / "pipe"
+        config_path.mkdir(parents=True, exist_ok=True)
+        config_path /= filename
+        Composer.save(cfg, config_path)
+        logger.info(f"Saved HyFI pipe config for {target.__name__} to {config_path}")
+
+        return config_name
+
+    @staticmethod
     def save_hyfi_config(
         target: Callable,
+        use_first_arg_as_pipe_obj: bool = False,
         config_name: Optional[str] = None,
         config_path: str = "run",
         config_root: Optional[str] = None,
         **kwargs_for_target,
-    ) -> Dict[str, Any]:
+    ) -> str:
         """
         Saves a HyFI config to a file.
 
         Args:
             target (Callable): The function or class to generate a config for.
+            use_first_arg_as_pipe_obj (bool): Whether to use the first argument as the pipe object.
             config_name (Optional[str]): The name of the config. If not provided, the name of the target will be used.
             config_path (Optional[str]): The path to save the config to (relative to the config root). Defaults to "run".
             config_root (Optional[str]): The root of the config path. If not provided, the global hyfi config directory will be used.
             **kwargs_for_target: Keyword arguments to pass to the target.
         """
-        cfg = GENERATOR.generate_hyfi_config(target, **kwargs_for_target)
-        filename = f"{config_name or target.__name__}.yaml"
+        cfg = GENERATOR.generate_hyfi_config(
+            target,
+            remove_first_arg=use_first_arg_as_pipe_obj,
+            **kwargs_for_target,
+        )
+        config_name = config_name or target.__name__
+        filename = f"{config_name}.yaml"
         config_root = config_root or global_hyfi.config_root
         config_path = Path(config_root) / config_path
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename
         Composer.save(cfg, config_path)
         logger.info(f"Saved HyFI config for {target.__name__} to {config_path}")
-        return cfg
+        return config_name
 
     @staticmethod
-    def generate_hyfi_config(target: Callable, **kwargs) -> Dict[str, Any]:
+    def generate_hyfi_config(
+        target: Callable,
+        remove_first_arg: bool = False,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        """
+        Generates a HyFI config for a given target.
+
+        Args:
+            target (Callable): The function or class to generate a config for.
+            remove_first_arg (bool): Whether to remove the first argument from the config.
+            **kwargs: Keyword arguments to pass to the target.
+        """
         params = inspect.signature(target).parameters
 
         config_dict = {
             "_target_": f"{target.__module__}.{target.__name__}",
         }
 
-        for key, param in params.items():
+        for i, (key, param) in enumerate(params.items()):
+            if remove_first_arg and i == 0:
+                continue
             if key in kwargs:
                 value = kwargs[key]
             else:

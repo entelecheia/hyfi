@@ -1,4 +1,3 @@
 _target_: hyfi.pipe.datasets.save_dataset_to_disk
-data: null
 dataset_path: null
 verbose: false

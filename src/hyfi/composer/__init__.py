@@ -10,6 +10,7 @@ from pydantic import (
 
 from .base import BaseConfig, BaseModel
 from .composer import Composer, SpecialKeys
+from .generator import GENERATOR
 
 __all__ = [
     "BaseConfig",
@@ -19,6 +20,7 @@ __all__ = [
     "field_validator",
     "Field",
     "FieldValidationInfo",
+    "GENERATOR",
     "model_validator",
     "PrivateAttr",
     "SecretStr",

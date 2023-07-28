@@ -5,7 +5,9 @@ import os
 from typing import Any, List, Optional, Union
 
 from omegaconf import DictConfig
-from pydantic import (
+
+from hyfi.about import AboutConfig
+from hyfi.composer import (
     BaseModel,
     ConfigDict,
     FieldValidationInfo,
@@ -13,8 +15,6 @@ from pydantic import (
     field_validator,
     model_validator,
 )
-
-from hyfi.about import AboutConfig
 from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig

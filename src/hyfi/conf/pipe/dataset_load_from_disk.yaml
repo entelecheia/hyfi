@@ -1,5 +1,0 @@
-defaults:
-  - __general_external_funcs__
-  - /run: load_dataset_from_disk
-
-use_pipe_obj: false

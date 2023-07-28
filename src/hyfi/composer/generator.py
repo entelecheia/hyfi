@@ -109,10 +109,14 @@ class GENERATOR:
             **kwargs_for_target: Keyword arguments for the target.
         """
         use_first_arg_as_pipe_obj = not pipe_obj_arg_name and use_pipe_obj
+        config_name = config_name or target.__name__
+        config_name = f"{pipe_prefix}_{config_name}" if pipe_prefix else config_name
+        config_root = config_root or global_hyfi.config_root
+
         run_config_name = GENERATOR.save_hyfi_config(
             target,
             use_first_arg_as_pipe_obj=use_first_arg_as_pipe_obj,
-            config_name=None,
+            config_name=config_name,
             config_path="run",
             config_root=config_root,
             **kwargs_for_target,
@@ -127,10 +131,8 @@ class GENERATOR:
             "pipe_obj_arg_name": pipe_obj_arg_name,
             "return_pipe_obj": return_pipe_obj,
         }
-        config_name = config_name or target.__name__
-        config_name = f"{pipe_prefix}_{config_name}" if pipe_prefix else config_name
+
         filename = f"{config_name}.yaml"
-        config_root = config_root or global_hyfi.config_root
         config_path = Path(config_root) / "pipe"
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename

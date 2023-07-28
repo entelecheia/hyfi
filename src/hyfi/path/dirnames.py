@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from hyfi.composer import BaseModel
 
 
 class DirnamesConfig(BaseModel):

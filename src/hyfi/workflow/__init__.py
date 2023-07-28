@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseModel, Composer, ConfigDict, model_validator
 from hyfi.project import ProjectConfig
@@ -7,7 +7,7 @@ from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
-Tasks = List[TaskConfig]
+Tasks = List[Any]
 
 
 class WorkflowConfig(BaseModel):
@@ -30,8 +30,14 @@ class WorkflowConfig(BaseModel):
         self.tasks = self.tasks or []
         tasks: Tasks = []
         for name in self.tasks:
-            if isinstance(name, str) and isinstance(getattr(self, name), dict):
-                task = TaskConfig(**getattr(self, name))
-                task.name = name
-                tasks.append(task)
+            cfg = getattr(self, name, None)
+            if isinstance(name, str) and isinstance(cfg, dict):
+                if Composer.is_instantiatable(cfg):
+                    task = Composer.instantiate(cfg)
+                    if task is not None and getattr(task, "__call__", None):
+                        tasks.append(task)
+                else:
+                    task = TaskConfig(**cfg)
+                    task.name = name
+                    tasks.append(task)
         return tasks

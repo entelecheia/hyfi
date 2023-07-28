@@ -1,4 +1,5 @@
 from .core import __app_version__, __config_module_path__
+from .core import _batcher_instance_ as global_batcher
 from .core import __global_hyfi__ as global_hyfi
 from .core import (
     __home_path__,

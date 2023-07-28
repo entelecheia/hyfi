@@ -531,7 +531,10 @@ class HyFI(
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
             logger.info("Instantiating the HyFI config")
-            HyFI.instantiate(config)
+            task = HyFI.instantiate(config)
+            if task and getattr(task, "__call__", None):
+                logger.info("The HyFI config is callable, running it")
+                task()
         else:
             logger.info(
                 "The HyFI config is not instantiatable, running HyFI task with the config"

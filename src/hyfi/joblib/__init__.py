@@ -47,7 +47,7 @@ class JobLibConfig(BaseConfig):
                 ray.init(**ray_cfg)
                 backend_handle = ray
 
-            core._batcher_instance_ = batcher.Batcher(
+            core.global_batcher = batcher.Batcher(
                 backend_handle=backend_handle,
                 backend=self.backend,
                 procs=self.num_workers,
@@ -56,16 +56,16 @@ class JobLibConfig(BaseConfig):
                 task_num_gpus=self.num_gpus,
                 verbose=self.verbose,
             )
-            self._batcher_instance_ = core._batcher_instance_
-            logger.info("initialized batcher with %s", core._batcher_instance_)
+            self._batcher_instance_ = core.global_batcher
+            logger.info("initialized batcher with %s", core.global_batcher)
         self._initilized_ = True
 
     def stop_backend(self):
         """Stop the backend for joblib"""
         backend = self.backend
-        if core._batcher_instance_:
+        if core.global_batcher:
             logger.debug("stopping batcher")
-            del core._batcher_instance_
+            del core.global_batcher
 
         logger.debug("stopping distributed framework")
         if self.initialize_backend and backend == "ray":

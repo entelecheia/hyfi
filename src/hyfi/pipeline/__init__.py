@@ -106,8 +106,12 @@ class PIPELINEs:
         if not isinstance(config, PipelineConfig):
             config = PipelineConfig(**Composer.to_dict(config))
         pipes = config.get_pipes(task)
-        if initial_object is None and config.initial_object is not None:
-            initial_object = config.initial_object
+        if (
+            initial_object is None
+            and config.initial_object is not None
+            and Composer.is_instantiatable(config.initial_object)
+        ):
+            initial_object = Composer.instantiate(config.initial_object)
         # Return initial object for the initial object
         if not pipes:
             logger.warning("No pipes specified")
@@ -269,10 +273,17 @@ class PIPELINEs:
         # Run all tasks in the workflow.
         with elapsed_timer(format_time=True) as elapsed:
             for task in workflow.get_tasks():
-                # Run the task if verbose is true.
-                if workflow.verbose:
-                    logger.info("Running task: %s", task.task_name)
-                PIPELINEs.run_task(task, project=workflow.project)
+                if isinstance(task, TaskConfig):
+                    # Run the task if verbose is true.
+                    if workflow.verbose:
+                        logger.info("Running task: %s", task.task_name)
+                    PIPELINEs.run_task(task, project=workflow.project)
+                elif task is not None and getattr(task, "__call__", None):
+                    if workflow.verbose:
+                        logger.info("Running task: %s", task)
+                    task()
+                else:
+                    logger.warning("Invalid task: %s", task)
             # Print the elapsed time.
             if workflow.verbose:
                 logger.info(

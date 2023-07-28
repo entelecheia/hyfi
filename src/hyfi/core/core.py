@@ -154,6 +154,11 @@ class GlobalHyFIConfig(BaseModel):
         return self.__config_dirname__
 
     @property
+    def config_root(self) -> str:
+        """Returns the path to the configuration root directory."""
+        return f"{self.package_path}/{self.config_dirname}"
+
+    @property
     def config_module(self) -> str:
         """Returns the name of the configuration module."""
         return f"{self.package_name}.{self.config_dirname}"

@@ -13,7 +13,6 @@ from hydra.errors import HydraException
 
 from hyfi.core import global_hyfi
 from hyfi.utils.logging import LOGGING
-from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 

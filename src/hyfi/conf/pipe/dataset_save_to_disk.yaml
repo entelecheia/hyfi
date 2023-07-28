@@ -1,3 +1,5 @@
 defaults:
   - __general_external_funcs__
   - /run: save_dataset_to_disk
+
+pipe_obj_arg_name: data

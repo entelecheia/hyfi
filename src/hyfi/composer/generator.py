@@ -8,9 +8,9 @@ from typing import Any, Callable, Dict, FrozenSet, Optional, TypeVar
 from typing_extensions import Final, ParamSpec
 
 from hyfi.core import global_hyfi
+from hyfi.utils.logging import LOGGING
 
 from .composer import Composer
-from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 

@@ -1,8 +1,5 @@
-defaults:
-  - __init__
-
 _target_: hyfi.pipe.datasets.load_dataset_from_disk
-dataset_path:
+dataset_path: null
 num_heads: 1
 num_tails: 1
-verbose: ${oc.select:..verbose, false}
+verbose: false

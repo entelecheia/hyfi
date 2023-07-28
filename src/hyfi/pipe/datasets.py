@@ -13,11 +13,12 @@ def save_dataset_to_disk(
     data: Dataset,
     dataset_path: Union[str, Path],
     verbose: bool = False,
+    **kwargs,
 ) -> Dataset:
     """
     Save a dataset.
     """
-    data.save_to_disk(str(dataset_path))
+    data.save_to_disk(str(dataset_path), **kwargs)
     logger.info("Dataset saved to %s.", dataset_path)
     if verbose:
         logger.info("Dataset features: %s", data.features)

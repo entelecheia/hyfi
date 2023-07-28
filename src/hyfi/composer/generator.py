@@ -199,6 +199,8 @@ class GENERATOR:
         for i, (key, param) in enumerate(params.items()):
             if remove_first_arg and i == 0:
                 continue
+            if param.kind == inspect.Parameter.VAR_KEYWORD:
+                continue
             if key in kwargs:
                 value = kwargs[key]
             else:

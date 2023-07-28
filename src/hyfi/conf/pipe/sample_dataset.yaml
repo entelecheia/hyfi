@@ -1,0 +1,6 @@
+defaults:
+  - __general_external_funcs__
+  - /run: sample_dataset
+use_pipe_obj: true
+pipe_obj_arg_name: null
+return_pipe_obj: false

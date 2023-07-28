@@ -1,11 +1,10 @@
 from typing import Callable, Mapping, Optional, Sequence, Union
 
 import pandas as pd
-from pydantic import PrivateAttr
 from tqdm.auto import tqdm
 
 from hyfi import core
-from hyfi.composer.base import BaseConfig
+from hyfi.composer import BaseConfig, PrivateAttr
 from hyfi.joblib.batch import batcher
 from hyfi.joblib.batch.apply import decorator_apply
 from hyfi.joblib.batch.batcher import Batcher

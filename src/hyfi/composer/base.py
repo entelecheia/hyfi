@@ -5,13 +5,29 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 
 from omegaconf import DictConfig
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel as PydanticBaseModel
+from pydantic import ConfigDict, model_validator
 
 from hyfi.utils.logging import LOGGING
 
 from .composer import Composer
 
 logger = LOGGING.getLogger(__name__)
+
+
+class BaseModel(PydanticBaseModel):
+    """
+    Base class for all Pydantic models.
+    """
+
+    _config_name_: str = "__init__"
+    _config_group_: str = ""
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        extra="allow",
+        validate_assignment=False,
+    )  # type: ignore
 
 
 class BaseConfig(BaseModel):
@@ -21,6 +37,7 @@ class BaseConfig(BaseModel):
 
     _config_name_: str = "__init__"
     _config_group_: str = ""
+
     verbose: bool = False
 
     _init_args_: Dict[str, Any] = {}
@@ -28,18 +45,13 @@ class BaseConfig(BaseModel):
     _property_set_methods_: Dict[str, str] = {}
     _subconfigs_: Dict[str, Any] = {}
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        extra="allow",
-        validate_assignment=False,
-    )  # type: ignore
-
     def __init__(self, **config_kwargs):
         logger.debug(
             "init %s with %s args", self.__class__.__name__, len(config_kwargs)
         )
         super().__init__(**config_kwargs)
         self.initialize_subconfigs(config_kwargs)
+        self._init_args_ = config_kwargs.copy()
 
     def __setattr__(self, key, val):
         """

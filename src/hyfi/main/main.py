@@ -311,9 +311,11 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        if config_name := kwargs.get("workflow_name"):
+        config_group = kwargs.get("_config_group_")
+        config_name = kwargs.get("workflow_name")
+        if config_group and config_group == "workflow" and config_name:
             cfg = HyFI.compose_as_dict(
-                config_group=f"workflow={config_name}",
+                config_group=f"{config_group}={config_name}",
                 config_data=kwargs,
                 global_package=True,
             )
@@ -540,7 +542,8 @@ class HyFI(
                 "The HyFI config is not instantiatable, running HyFI task with the config"
             )
             # Run the HyFI task
-            if "tasks" in config or cmd_name == "run_workflow":
+            config_group = config.get("config_group", "")
+            if config_group == "workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
                 HyFI.run_workflow(workflow)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):

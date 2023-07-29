@@ -9,7 +9,9 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BasePathConfig(BaseModel):
-    _name_: str = "base"
+    _config_name_: str = "__init__"
+    _config_group_: str = "path"
+
     dirnames: DirnamesConfig = DirnamesConfig()
 
     @property

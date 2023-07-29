@@ -1,19 +1,18 @@
-from hyfi.path import PathConfig
+from hyfi.path import ProjectPathConfig
 from hyfi.utils.envs import ENVs
 from pathlib import Path
 from pprint import pprint
 
 
 def test_path_config():
-    config = PathConfig(
-        _config_name_="__init__",
+    config = ProjectPathConfig(
         project_root="workspace/tmp",
         global_hyfi_root=ENVs.expand_posix_vars("$HOME/.hyfi"),
         project_workspace_name="testspace",
     )
     pprint(config.model_dump())
     # Test that the default values are set correctly
-    assert config._config_name_ == "__init__"
+    assert config._config_name_ == "__project__"
     assert config.home == ENVs.expand_posix_vars("$HOME")
     assert (
         Path(config.project_root).absolute()

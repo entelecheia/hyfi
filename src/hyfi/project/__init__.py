@@ -5,7 +5,7 @@ from typing import Union
 from hyfi.composer import BaseConfig, field_validator
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
-from hyfi.path import PathConfig
+from hyfi.path import ProjectPathConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
@@ -31,7 +31,7 @@ class ProjectConfig(BaseConfig):
     # Config Classes
     dotenv: DotEnvConfig = None  # type: ignore
     joblib: JobLibConfig = None  # type: ignore
-    path: PathConfig = None  # type: ignore
+    path: ProjectPathConfig = None  # type: ignore
 
     _property_set_methods_ = {
         "project_name": "set_project_name",

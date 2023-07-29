@@ -11,15 +11,13 @@ Tasks = List[Any]
 
 
 class WorkflowConfig(BaseModel):
+    _config_group_: str = "workflow"
+    _config_name_: str = "__init__"
+
+    workflow_name: str = _config_name_
     project: Optional[ProjectConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []
     verbose: bool = False
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        extra="allow",
-        validate_assignment=False,
-    )  # type: ignore
 
     @model_validator(mode="before")
     def validate_model_config_before(cls, data):

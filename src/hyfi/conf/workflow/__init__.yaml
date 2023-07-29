@@ -3,7 +3,9 @@ defaults:
   - /project: __init__
   # - /task: __init__
 
-workflow_name: __init__
+_config_group_: workflow
+_config_name_: __init__
+workflow_name: ${._config_name_}
 verbose: false
 tasks:
   # - task

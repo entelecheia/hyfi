@@ -1,4 +1,5 @@
 defaults:
   - __task__
 
+_config_name_: __batch__
 batch_name: ${oc.select:..batch_name,__batch__}

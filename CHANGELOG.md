@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.12.3 (2023-07-29)
+
+### Fix
+
+* **hyfi/main:** Change "tasks" to "config_group" in condition check ([`8b1bfb3`](https://github.com/entelecheia/hyfi/commit/8b1bfb3b305dc26b29faadca00193e3db4c10f3a))
+* **workflow:** Remove unnecessary model_config ([`b8f3556`](https://github.com/entelecheia/hyfi/commit/b8f3556af040df3a246c13f8b9702682dae1bf35))
+* **utils/iolibs:** Add jsonl related functions and remove duplicates method in IOLIBs class ([`79431d5`](https://github.com/entelecheia/hyfi/commit/79431d5670b2c465e1d6e178d69504f14624ac3a))
+* **path:** Rename _name_ variable and add _config_group_ in BasePathConfig ([`18ffdd7`](https://github.com/entelecheia/hyfi/commit/18ffdd758b78d8f67ee67f791b6e96d3818fd62b))
+* **path:** Rename PathConfig to ProjectPathConfig and change _config_name_ value ([`0641a19`](https://github.com/entelecheia/hyfi/commit/0641a1999a9061776227f4fc97c7bf81feb3336f))
+* **main:** Adjust workflow config fetching conditions ([`acd02c6`](https://github.com/entelecheia/hyfi/commit/acd02c6de9d8c0da10af5239b6540c15c0ed04f5))
+* **task:** Add config group in task initialization ([`49e9316`](https://github.com/entelecheia/hyfi/commit/49e9316c2a987da275683e674244186dc9e84d74))
+* **hyfi/conf/path:** Add config name in batch.yaml ([`5f0ee95`](https://github.com/entelecheia/hyfi/commit/5f0ee950032c9828e1d1a92f6e197e501694645b))
+
 ## v1.12.2 (2023-07-28)
 
 ### Fix

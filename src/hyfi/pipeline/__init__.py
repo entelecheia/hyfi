@@ -272,16 +272,22 @@ class PIPELINEs:
             logger.info("Running %s task(s)", len(workflow.tasks or []))
         # Run all tasks in the workflow.
         with elapsed_timer(format_time=True) as elapsed:
-            for task in workflow.get_tasks():
+            for rc in PIPELINEs.get_running_configs(workflow.get_tasks()):
+                task = workflow.get_task(rc)
+                task_name = (
+                    task.task_name
+                    if isinstance(task, TaskConfig)
+                    else getattr(task, "_config_name_", "unknown")
+                )
+                logger.info("Running task [%s] with [%s]", task_name, rc)
                 if isinstance(task, TaskConfig):
                     # Run the task if verbose is true.
-                    if workflow.verbose:
-                        logger.info("Running task: %s", task.task_name)
                     PIPELINEs.run_task(task, project=workflow.project)
                 elif task is not None and getattr(task, "__call__", None):
-                    if workflow.verbose:
-                        logger.info("Running task: %s", task)
-                    task()
+                    if rc.run_kwargs:
+                        task(**rc.run_kwargs)
+                    else:
+                        task()
                 else:
                     logger.warning("Invalid task: %s", task)
             # Print the elapsed time.

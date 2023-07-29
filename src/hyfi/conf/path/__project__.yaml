@@ -1,0 +1,19 @@
+---
+# This file defines the path variables used in the project.
+# internal paths for hyfi
+defaults:
+  - __init__
+
+_config_name_: __project__
+home: ${__home_path__:}
+hyfi: ${__hyfi_path__:}
+package: ${__package_path__:}
+resources: ${alt:${oc.env:HYFI_RESOURCE_DIR,null},${.hyfi}/resources}
+runtime: ${get_original_cwd:}
+# global paths
+global_hyfi_root: ${oc.select:..global_hyfi_root,${alt:${oc.env:HYFI_GLOBAL_ROOT,null},${__home_path__:}}}
+global_workspace_name: ${oc.select:..global_workspace_name,${alt:${oc.env:HYFI_GLOBAL_WORKSPACE_NAME,null},.hyfi}}
+# project specific paths
+project_name: ${oc.select:..project_name,${alt:${oc.env:HYFI_PROJECT_NAME,null},hyfi}}
+project_root: ${oc.select:..project_root,${alt:${oc.env:HYFI_PROJECT_ROOT,null},${get_original_cwd:}}}
+project_workspace_name: ${oc.select:..project_workspace_name,${alt:${oc.env:HYFI_PROJECT_WORKSPACE_NAME,null},workspace}}

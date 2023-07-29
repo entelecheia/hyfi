@@ -542,7 +542,7 @@ class HyFI(
                 "The HyFI config is not instantiatable, running HyFI task with the config"
             )
             # Run the HyFI task
-            config_group = config.get("config_group", "")
+            config_group = config.get("_config_group_", "")
             if config_group == "workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
                 HyFI.run_workflow(workflow)

@@ -19,7 +19,7 @@ class BasePathConfig(BaseModel):
         """
         Returns the name of the path configuration.
         """
-        return self._name_
+        return self._config_name_
 
     @property
     def root_dir(self) -> Path:

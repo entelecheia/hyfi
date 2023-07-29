@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.12.5 (2023-07-29)
+
+### Fix
+
+* **workflow:** Modify get_tasks method and add get_task method ([`a545b3a`](https://github.com/entelecheia/hyfi/commit/a545b3aabbb50c7e15f0f2fff6c6f9d4b02853f2))
+* **pipeline:** Add running configurations in tasks ([`48316eb`](https://github.com/entelecheia/hyfi/commit/48316eb3699bf990b6121d9a08a27b55d5a9677a))
+* **hyfi:** Change config_group variable name ([`f455b82`](https://github.com/entelecheia/hyfi/commit/f455b82b97478253371703523f7381f340dc70ad))
+
 ## v1.12.4 (2023-07-29)
 
 ### Fix

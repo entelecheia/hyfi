@@ -7,8 +7,8 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-class PathConfig(BaseConfig, BasePathConfig):
-    _config_name_: str = "__init__"
+class ProjectPathConfig(BaseConfig, BasePathConfig):
+    _config_name_: str = "__project__"
     _config_group_: str = "path"
 
     # internal paths for hyfi

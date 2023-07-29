@@ -1,5 +1,6 @@
 """File I/O functions"""
 import errno
+import json
 import os
 import re
 import shutil
@@ -629,6 +630,53 @@ class IOLIBs:
         if sort:
             words = sorted(words)
         return words
+
+    @staticmethod
+    def append_to_jsonl(
+        data: dict,
+        filename: str,
+        encoding: str = "utf-8",
+    ) -> None:
+        """Append a json payload to the end of a jsonl file."""
+        json_string = json.dumps(data, ensure_ascii=False)
+        with open(filename, "a", encoding=encoding) as f:
+            f.write(json_string + "\n")
+
+    @staticmethod
+    def load_jsonl(
+        filename: str,
+        encoding: str = "utf-8",
+    ) -> List[dict]:
+        """Load a jsonl file into a list of json objects."""
+        with open(filename, "r", encoding=encoding) as f:
+            return [json.loads(line) for line in f]
+
+    @staticmethod
+    def save_jsonl(
+        data: List[dict],
+        filename: str,
+        encoding: str = "utf-8",
+    ) -> None:
+        """
+        Save a list of json objects to a jsonl file.
+        """
+        with open(filename, "w", encoding=encoding) as f:
+            for line in data:
+                f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+    @staticmethod
+    def remove_duplicates_from_list_of_dicts(
+        data: List[dict],
+        key: str,
+    ) -> List[dict]:
+        """Remove duplicates from a list of dicts based on a key."""
+        seen = set()
+        new_data = []
+        for d in data:
+            if d[key] not in seen:
+                new_data.append(d)
+                seen.add(d[key])
+        return new_data
 
 
 # See https://github.com/copier-org/copier/issues/345

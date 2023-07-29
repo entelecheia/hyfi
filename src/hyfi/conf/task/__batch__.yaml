@@ -4,5 +4,4 @@ defaults:
   - override /path: __batch__
 
 _config_name_: __batch__
-task_name: __batch__
-batch_name: __init__
+batch_name: ${.batch.batch_name}

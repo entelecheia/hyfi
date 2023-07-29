@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.12.4 (2023-07-29)
+
+### Fix
+
+* Typo ([`62a6fd2`](https://github.com/entelecheia/hyfi/commit/62a6fd29c1e2c85ed4e932e600e11f01e6b7eaf2))
+
 ## v1.12.3 (2023-07-29)
 
 ### Fix

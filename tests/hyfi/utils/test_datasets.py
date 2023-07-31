@@ -1,5 +1,26 @@
 from hyfi.main import HyFI
 from pathlib import Path
+from datasets.arrow_dataset import Dataset
+from datasets.dataset_dict import DatasetDict
+
+
+def test_datasets():
+    """Test datasets"""
+    dset = HyFI.load_dataset("lhoestq/demo1")
+    print(type(dset))
+    print(dset)
+    assert isinstance(dset, DatasetDict)
+    data = HyFI.sample_dataset(dset, num_samples=1, split="train")
+    print(data)
+    assert isinstance(data, Dataset)
+    HyFI.save_dataset_to_disk(data, "workspace/tmp/demo1")
+    data = HyFI.load_dataset_from_disk("workspace/tmp/demo1")
+    print(data)
+    print(type(data))
+    HyFI.save_dataset_to_disk(dset, "workspace/tmp/demo2", verbose=True)
+    data = HyFI.load_dataset_from_disk("workspace/tmp/demo2", verbose=True)
+    print(data)
+    print(type(data))
 
 
 def test_dataframe_load_and_save():
@@ -32,5 +53,6 @@ def test_data_load_and_concat():
 
 
 if __name__ == "__main__":
-    test_dataframe_load_and_save()
-    test_data_load_and_concat()
+    test_datasets()
+    # test_dataframe_load_and_save()
+    # test_data_load_and_concat()

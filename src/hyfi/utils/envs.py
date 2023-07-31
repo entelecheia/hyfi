@@ -104,6 +104,7 @@ class ENVs:
             dotenv.load_dotenv(
                 dotenv_path=dotenv_path, verbose=verbose, override=override
             )
+            os.environ["DOTENV_FILENAME"] = dotenv_path.name
             os.environ["DOTENV_PATH"] = str(dotenv_path)
             os.environ["DOTENV_DIR"] = str(dotenv_path.parent)
             # Load. env from dotenv_path.
@@ -130,6 +131,7 @@ class ENVs:
                 dotenv.load_dotenv(
                     dotenv_path=dotenv_path, verbose=verbose, override=override
                 )
+                os.environ["DOTENV_FILENAME"] = dotenv_path.name
                 os.environ["DOTENV_PATH"] = str(dotenv_path)
                 os.environ["DOTENV_DIR"] = os.path.dirname(dotenv_path)
                 # Load. env from dotenv_path.

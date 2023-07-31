@@ -29,6 +29,16 @@ def test_generate_config_for_HyFI():
         use_pipe_obj=True,
     )
     print(cfg)
+    cfg = HyFI.save_hyfi_pipe_config(
+        HyFI.load_dataset,
+        use_pipe_obj=False,
+    )
+    print(cfg)
+    cfg = HyFI.save_hyfi_pipe_config(
+        HyFI.load_data,
+        use_pipe_obj=False,
+    )
+    print(cfg)
 
 
 if __name__ == "__main__":

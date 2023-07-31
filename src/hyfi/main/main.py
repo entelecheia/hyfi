@@ -116,6 +116,9 @@ class HyFI(
         plugins: Optional[List[str]] = None,
         user_config_path: Optional[str] = None,
         config_dirname: Optional[str] = None,
+        dotenv_filename: Optional[str] = None,
+        secrets_dir: Optional[str] = None,
+        **kwargs,
     ) -> None:
         """
         Initializes the global HyFI instance.
@@ -133,6 +136,9 @@ class HyFI(
             plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
             user_config_path: Path to the user configuration directory. e.g. `./config`
             config_dirname: Name of the configuration directory. e.g. `conf`
+            dotenv_filename: Name of the dotenv file. e.g. `.env`
+            secrets_dir: Name of the secrets directory. e.g. `secrets`
+            **kwargs: Additional arguments to be set as attributes.
         """
         global_hyfi.initialize(
             package_path=package_path,
@@ -140,6 +146,9 @@ class HyFI(
             plugins=plugins,
             user_config_path=user_config_path,
             config_dirname=config_dirname,
+            dotenv_filename=dotenv_filename,
+            secrets_dir=secrets_dir,
+            **kwargs,
         )
 
     @staticmethod

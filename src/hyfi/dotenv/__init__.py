@@ -11,6 +11,7 @@ from pydantic_settings import (
 )
 
 from hyfi.composer import Field, SecretStr, model_validator
+from hyfi.core import global_hyfi
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 
@@ -102,10 +103,11 @@ class DotEnvConfig(BaseSettings):
         env_prefix="",
         env_nested_delimiter="__",
         case_sentive=False,
-        env_file=".env",
+        env_file=global_hyfi.dotenv_filename,
         env_file_encoding="utf-8",
         validate_assignment=True,
         extra="allow",
+        secrets_dir=global_hyfi.secrets_dir,
     )  # type: ignore
 
     @classmethod
@@ -117,10 +119,10 @@ class DotEnvConfig(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
-        ENVs.load_dotenv()
+        ENVs.load_dotenv(dotenv_filename=global_hyfi.dotenv_filename)
         return (
-            env_settings,
             file_secret_settings,
+            env_settings,
             init_settings,
         )
 

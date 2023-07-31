@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.13.1 (2023-07-31)
+
+### Fix
+
+* **utils:** Improve dotenv loading logs and support additional kwargs ([`a7788a8`](https://github.com/entelecheia/hyfi/commit/a7788a8d001d724e7b6946270e2a9a594aa0f615))
+
 ## v1.13.0 (2023-07-31)
 
 ### Feature

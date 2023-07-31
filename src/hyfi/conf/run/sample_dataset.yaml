@@ -1,4 +1,5 @@
-_target_: hyfi.pipe.datasets.sample_dataset
+_target_: hyfi.utils.datasets.DATASETs.sample_dataset
+split: null
 num_samples: 100
 randomize: true
 random_seed: 42

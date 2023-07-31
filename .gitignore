@@ -1,12 +1,13 @@
 # VSCode
 .vscode/
 
-# Tests
+# Working directory
 .hypothesis/
 tmp/
 workspace/
 testspace/
 tests/**/*.gif
+secrets/**/*
 
 #MKDOCS
 site/

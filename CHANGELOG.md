@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.14.1 (2023-07-31)
+
+### Fix
+
+* **utils/datasets:** Rename save_to_disk to save_dataset_to_disk and improve functionality ([`d3ea336`](https://github.com/entelecheia/hyfi/commit/d3ea336fc79523c795d95bb258d1021b1a3eee26))
+* **hyfi:** Move save_dataset_to_disk to utils.datasets and expand function parameters ([`3adc15e`](https://github.com/entelecheia/hyfi/commit/3adc15e62b1c2dbde387544f045f310b6aceb67a))
+* **sample_dataset.yaml:** Change target to utils.datasets.DATASETs.sample_dataset, add split option ([`e26cffa`](https://github.com/entelecheia/hyfi/commit/e26cffa446d5dc24f23018a155f00cc648e2a166))
+* **hyfi:** Change target function path, add keep_in_memory and storage_options parameters ([`d4f8b3a`](https://github.com/entelecheia/hyfi/commit/d4f8b3a0cfb4e69896b92b2533d886b5740c3b43))
+
 ## v1.14.0 (2023-07-31)
 
 ### Feature

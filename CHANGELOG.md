@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.14.0 (2023-07-31)
+
+### Feature
+
+* **test_generator:** Add additional test cases for save_hyfi_pipe_config function ([`61681db`](https://github.com/entelecheia/hyfi/commit/61681dbb7a01107ed35ba1b8be40c31435bad82c))
+* **hyfi:** Add load_dataset configurations ([`adb524f`](https://github.com/entelecheia/hyfi/commit/adb524fa0261a5b9e20bdb99778d317ad959b806))
+* **hyfi:** Add load_data configuration files ([`1389e85`](https://github.com/entelecheia/hyfi/commit/1389e85dd657eb7d1e64766ca727e46229b5007d))
+
 ## v1.13.1 (2023-07-31)
 
 ### Fix

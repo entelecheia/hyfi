@@ -83,6 +83,7 @@ class ENVs:
         raise_error_if_not_found: bool = False,
         usecwd: bool = False,
         verbose: bool = False,
+        **kwargs,
     ) -> None:
         """
         Load. env file from given directory or from current directory. This is a convenience function for use in tests that want to run dotenv in a non - interactive environment
@@ -103,54 +104,44 @@ class ENVs:
         # Load. env files and directories.
         if dotenv_path.is_file():
             dotenv.load_dotenv(
-                dotenv_path=dotenv_path, verbose=verbose, override=override
+                dotenv_path=str(dotenv_path),
+                verbose=verbose,
+                override=override,
+                **kwargs,
             )
             os.environ["DOTENV_FILENAME"] = dotenv_filename
             os.environ["DOTENV_FILE"] = str(dotenv_path)
             os.environ["DOTENV_DIR"] = dotenv_dir
             # Load. env from dotenv_path.
-            if verbose:
-                logger.info("Loaded .env from %s", dotenv_path)
-            else:
-                logger.debug("Loaded .env from %s", dotenv_path)
+            logger.info("Loaded .env from [%s]", dotenv_path)
         else:
             # If verbose is true print out the. env file.
-            if verbose:
-                logger.info(
-                    "No .env file found in %s, finding .env in parent dirs", dotenv_path
-                )
-            else:
-                logger.debug(
-                    "No .env file found in %s, finding .env in parent dirs", dotenv_path
-                )
-            # Load dotenv. env from dotenv.
+            logger.info("[%s] not found, finding .env in parent dirs", dotenv_path)
+            # Find. env file in parent directories.
             if dotenv_path := ENVs.find_dotenv(
                 filename=dotenv_filename,
                 raise_error_if_not_found=raise_error_if_not_found,
                 usecwd=usecwd,
             ):
                 dotenv.load_dotenv(
-                    dotenv_path=dotenv_path, verbose=verbose, override=override
+                    dotenv_path=dotenv_path,
+                    verbose=verbose,
+                    override=override,
+                    **kwargs,
                 )
+                dotenv_path = Path(dotenv_path)
                 dotenv_filename = dotenv_path.name
                 dotenv_dir = str(dotenv_path.parent)
                 os.environ["DOTENV_FILENAME"] = dotenv_filename
                 os.environ["DOTENV_FILE"] = str(dotenv_path)
                 os.environ["DOTENV_DIR"] = dotenv_dir
                 # Load. env from dotenv_path.
-                if verbose:
-                    logger.info("Loaded .env from %s", dotenv_path)
-                else:
-                    logger.debug("Loaded .env from %s", dotenv_path)
+                logger.info("Loaded .env from [%s]", dotenv_path)
             else:
                 os.environ["DOTENV_FILE"] = ""
                 os.environ["DOTENV_DIR"] = ""
-                dotenv_dir = str(dotenv_path.parent)
                 # Print out the. env file if verbose is true.
-                if verbose:
-                    logger.info("No .env file found in %s", dotenv_dir)
-                else:
-                    logger.debug("No .env file found in %s", dotenv_dir)
+                logger.info("No .env file found in the parent dirs of [%s]", dotenv_dir)
 
     @staticmethod
     def is_interactive():

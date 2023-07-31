@@ -10,7 +10,7 @@ from pydantic import (
 
 from .base import BaseConfig, BaseModel
 from .composer import Composer, SpecialKeys
-from .generator import GENERATOR
+from .generator import GENERATOR, PipeTargetTypes
 
 __all__ = [
     "BaseConfig",
@@ -22,6 +22,7 @@ __all__ = [
     "FieldValidationInfo",
     "GENERATOR",
     "model_validator",
+    "PipeTargetTypes",
     "PrivateAttr",
     "SecretStr",
     "SpecialKeys",

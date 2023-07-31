@@ -1,6 +1,0 @@
-defaults:
-  - __dataframe_external_funcs__
-  - /run: save_dataframes
-
-pipe_obj_arg_name: data
-return_pipe_obj: true

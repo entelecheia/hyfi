@@ -1,5 +1,22 @@
 <!--next-version-placeholder-->
 
+## v1.13.0 (2023-07-31)
+
+### Feature
+
+* **datasets:** Add type hints to functions, improve code readability ([`c42f446`](https://github.com/entelecheia/hyfi/commit/c42f446c73b2b9a2ac7f8e6e9de911b382ebd7c1))
+* **hyfi:** Add load and save dataframes configurations ([`07d84b9`](https://github.com/entelecheia/hyfi/commit/07d84b9897e213156122f2499280eb6b8a991130))
+* **dotenv:** Add HYFI_SECRETS_DIR variable ([`7c08200`](https://github.com/entelecheia/hyfi/commit/7c08200b7ec4d8f80abe6e4bcf6d8e00f6025ed3))
+* **utils/envs:** Add DOTENV_FILENAME to environment variables ([`8fcf29d`](https://github.com/entelecheia/hyfi/commit/8fcf29ddb5490cf69c324b1b0a0cc98e5ee308e0))
+* **main:** Add dotenv_filename and secrets_dir parameters ([`40e19e0`](https://github.com/entelecheia/hyfi/commit/40e19e03e4c0c5b0ec2d4b7d71a666aeebe9f98a))
+* **core:** Add dotenv_filename and secrets_dir to GlobalHyFIConfig ([`a313f4b`](https://github.com/entelecheia/hyfi/commit/a313f4bcf0947637b45cf80f374efc06d5dbb27a))
+
+### Fix
+
+* **composer:** Change target name representation ([`84e447d`](https://github.com/entelecheia/hyfi/commit/84e447da8b6c47c4340f2a88586faff0f0496f65))
+* **utils/envs:** Simplify dotenv file loading ([`76d4503`](https://github.com/entelecheia/hyfi/commit/76d45030ca5fb61f59bd283b54285ddd3c122053))
+* **dotenv:** Modify dotenv filename and secret directory sources from global_hyfi. rearrange loading dotenv order. ([`3ddbc66`](https://github.com/entelecheia/hyfi/commit/3ddbc66ae74998ff22af0066b4d4c0c890d41bd8))
+
 ## v1.12.5 (2023-07-29)
 
 ### Fix

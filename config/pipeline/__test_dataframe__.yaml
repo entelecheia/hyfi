@@ -1,8 +1,8 @@
 defaults:
   - __init__
-  - /pipe@pipe1: _test_dataframes_load
+  - /pipe@pipe1: load_dataframes
   - /pipe@pipe2: _test_preprocessing
-  - /pipe@pipe3: _test_dataframes_save
+  - /pipe@pipe3: save_dataframes
 
 steps:
   - uses: pipe1

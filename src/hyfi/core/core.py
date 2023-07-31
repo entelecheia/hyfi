@@ -49,6 +49,8 @@ class GlobalHyFIConfig(BaseModel):
     __config_name__ (str): The name of the configuration module.
     __config_dirname__ (str): The name of the configuration directory.
     __user_config_path__ (str): The path to the user configuration directory.
+    __dotenv_filename__ (str): The name of the dotenv file.
+    __secrets_dir__ (str): The name of the secrets directory.
     """
 
     __package_name__: str = __hyfi_package_name__
@@ -60,6 +62,9 @@ class GlobalHyFIConfig(BaseModel):
     __config_dirname__: str = __hyfi_config_dirname__
     __user_config_path__: str = __hyfi_user_config_path__
 
+    __dotenv_filename__: str = ".env"
+    __secrets_dir__: str = "./secrets"
+
     _packages_: List[Tuple[str, str]] = [(__hyfi_package_path__, __hyfi_version__())]
 
     def initialize(
@@ -69,6 +74,9 @@ class GlobalHyFIConfig(BaseModel):
         plugins: Optional[List[str]] = None,
         user_config_path: Optional[str] = None,
         config_dirname: Optional[str] = None,
+        dotenv_filename: Optional[str] = None,
+        secrets_dir: Optional[str] = None,
+        **kwargs,
     ) -> None:
         """
         Initializes the global HyFI instance.
@@ -86,6 +94,9 @@ class GlobalHyFIConfig(BaseModel):
             plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
             user_config_path: Path to the user configuration directory. e.g. `./config`
             config_dirname: Name of the configuration directory. e.g. `conf`
+            dotenv_filename: Name of the dotenv file. e.g. `.env`
+            secrets_dir: Name of the secrets directory. e.g. `secrets`
+            **kwargs: Additional arguments to be set as attributes.
         """
         self.__package_path__ = package_path
         self.__version__ = version
@@ -97,6 +108,30 @@ class GlobalHyFIConfig(BaseModel):
             self.__user_config_path__ = user_config_path
         if config_dirname:
             self.__config_dirname__ = config_dirname
+        if dotenv_filename:
+            self.__dotenv_filename__ = dotenv_filename
+        if secrets_dir:
+            self.__secrets_dir__ = secrets_dir
+
+        # for the future use
+        for key, value in kwargs.items():
+            key_name = (
+                key if key.startswith("__") and key.endswith("__") else f"__{key}__"
+            )
+            if hasattr(self, key_name):
+                setattr(self, key, value)
+            else:
+                logger.warning("Invalid key: %s", key)
+
+    @property
+    def dotenv_filename(self) -> str:
+        """Returns the name of the dotenv file."""
+        return self.__dotenv_filename__
+
+    @property
+    def secrets_dir(self) -> str:
+        """Returns the name of the secrets directory."""
+        return self.__secrets_dir__
 
     @property
     def plugins(self) -> Optional[List[str]]:

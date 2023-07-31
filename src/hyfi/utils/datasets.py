@@ -103,10 +103,10 @@ class DATASETs:
     def load_data(
         path: Optional[str] = "pandas",
         name: Optional[str] = None,
-        data_dir: Optional[str] = "",
+        data_dir: Optional[str] = None,
         data_files: Optional[Union[str, Sequence[str]]] = None,
         split: Optional[str] = "train",
-        filetype: Optional[str] = "",
+        filetype: Optional[str] = None,
         concatenate: Optional[bool] = False,
         use_cached: bool = False,
         verbose: Optional[bool] = False,
@@ -151,7 +151,7 @@ class DATASETs:
             Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
         ] = None,
         data_dir: Optional[str] = None,
-        split: str = "",
+        split: Optional[str] = None,
         recursive: bool = True,
         use_cached: bool = False,
         verbose: bool = False,
@@ -182,9 +182,9 @@ class DATASETs:
     @staticmethod
     def load_dataframes(
         data_files: Union[str, Sequence[str]],
-        data_dir: str = "",
-        filetype: str = "",
-        split: str = "",
+        data_dir: Optional[str] = None,
+        filetype: Optional[str] = None,
+        split: Optional[str] = None,
         concatenate: bool = False,
         ignore_index: bool = False,
         use_cached: bool = False,
@@ -241,8 +241,8 @@ class DATASETs:
     @staticmethod
     def load_dataframe(
         data_file: str,
-        data_dir: str = "",
-        filetype: str = "parquet",
+        data_dir: Optional[str] = None,
+        filetype: Optional[str] = None,
         columns: Optional[Sequence[str]] = None,
         index_col: Union[str, int, Sequence[str], Sequence[int], None] = None,
         verbose: bool = False,
@@ -266,6 +266,7 @@ class DATASETs:
             if data_file.split(".")[-1] in ["csv", "tsv", "parquet"]
             else filetype
         )
+        filetype = filetype or "csv"
         filetype = filetype.replace(".", "")
         if filetype not in ["csv", "tsv", "parquet"]:
             raise ValueError("`file` should be a csv or a parquet file.")
@@ -299,11 +300,11 @@ class DATASETs:
     def save_dataframes(
         data: Union[pd.DataFrame, dict],
         data_file: str,
-        data_dir: str = "",
+        data_dir: Optional[str] = None,
         columns: Optional[Sequence[str]] = None,
         index: bool = False,
-        filetype: str = "parquet",
-        suffix: str = "",
+        filetype: Optional[str] = "parquet",
+        suffix: Optional[str] = None,
         verbose: bool = False,
         **kwargs,
     ):
@@ -358,7 +359,12 @@ class DATASETs:
             raise ValueError(f"Unsupported data type: {type(data)}")
 
     @staticmethod
-    def to_datetime(data, _format=None, _columns=None, **kwargs):
+    def to_datetime(
+        data,
+        _format: Optional[str] = None,
+        _columns: Optional[Union[str, Sequence[str]]] = None,
+        **kwargs,
+    ):
         """Convert a string, int, or datetime object to a datetime object"""
         from datetime import datetime
 
@@ -385,9 +391,9 @@ class DATASETs:
     @staticmethod
     def to_numeric(
         data,
-        _columns=None,
-        errors="coerce",
-        downcast=None,
+        _columns: Optional[Union[str, Sequence[str]]] = None,
+        errors: Optional[str] = "coerce",
+        downcast: Optional[str] = None,
         **kwargs,
     ):
         """Convert a string, int, or float object to a float object"""
@@ -407,11 +413,11 @@ class DATASETs:
 
     @staticmethod
     def dict_to_dataframe(
-        data,
-        orient="columns",
+        data: Dict[Any, Any],
+        orient: str = "columns",
         dtype=None,
         columns=None,
-    ):
+    ) -> pd.DataFrame:
         """Convert a dictionary to a pandas dataframe"""
         import pandas as pd
 
@@ -425,7 +431,7 @@ class DATASETs:
         columns=None,
         coerce_float=False,
         nrows=None,
-    ):
+    ) -> pd.DataFrame:
         """Convert a list of records to a pandas dataframe"""
         import pandas as pd
 

@@ -20,14 +20,14 @@ def test_running_config():
 
 def test_pipe():
     data_path = "https://assets.entelecheia.ai/datasets/bok_minutes/meta-bok_minutes-train.parquet"
-    config = HyFI.compose("pipe=_test_dataframes_load")
+    config = HyFI.compose("pipe=load_dataframes")
     config.run.update({"data_files": data_path})
     config.verbose = True
     HyFI.print(config)
     pipe = PipeConfig(**config)
     HyFI.print(pipe.model_dump())
     print(pipe.run_config)
-    assert pipe.run_config["_target_"] == "hyfi.main.HyFI.load_dataframes"
+    assert pipe.run_config["_target_"] == "hyfi.utils.datasets.DATASETs.load_dataframes"
 
 
 def test_pipeline():

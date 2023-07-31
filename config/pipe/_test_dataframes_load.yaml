@@ -1,5 +1,0 @@
-defaults:
-  - __dataframe_external_funcs__
-  - /run: load_dataframes
-
-use_pipe_obj: false

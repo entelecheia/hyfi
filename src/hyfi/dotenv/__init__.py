@@ -11,6 +11,7 @@ from pydantic_settings import (
 )
 
 from hyfi.composer import Field, SecretStr, model_validator
+from hyfi.core import global_hyfi
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 
@@ -25,7 +26,7 @@ class DotEnvConfig(BaseSettings):
         _config_name_: str: Name of the configuration.
         DOTENV_FILENAME: Optional[str]: Name of the dotenv file.
         DOTENV_DIR: Optional[str]: Path to the dotenv file.
-        DOTENV_PATH: Optional[str]: Full path to the dotenv file.
+        DOTENV_FILE: Optional[str]: Full path to the dotenv file.
         HYFI_RESOURCE_DIR: Optional[str]: Path to the resource directory.
         HYFI_GLOBAL_ROOT: Optional[str]: Path to the global root directory.
         HYFI_GLOBAL_WORKSPACE_NAME: Optional[str]: Name of the global workspace.
@@ -64,8 +65,9 @@ class DotEnvConfig(BaseSettings):
 
     DOTENV_FILENAME: Optional[str] = ".env"
     DOTENV_DIR: Optional[str] = ""
-    DOTENV_PATH: Optional[str] = ""
+    DOTENV_FILE: Optional[str] = ""
     # Internal
+    HYFI_SECRETS_DIR: Optional[str] = ""
     HYFI_RESOURCE_DIR: Optional[str] = ""
     HYFI_GLOBAL_ROOT: Optional[str] = ""
     HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = ".hyfi"
@@ -102,10 +104,11 @@ class DotEnvConfig(BaseSettings):
         env_prefix="",
         env_nested_delimiter="__",
         case_sentive=False,
-        env_file=".env",
+        env_file=global_hyfi.dotenv_file,
         env_file_encoding="utf-8",
         validate_assignment=True,
         extra="allow",
+        secrets_dir=global_hyfi.secrets_dir,
     )  # type: ignore
 
     @classmethod
@@ -117,11 +120,11 @@ class DotEnvConfig(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
-        ENVs.load_dotenv()
+        ENVs.load_dotenv(dotenv_file=global_hyfi.dotenv_file)
         return (
-            env_settings,
-            file_secret_settings,
             init_settings,
+            file_secret_settings,
+            env_settings,
         )
 
     @model_validator(mode="after")  # type: ignore

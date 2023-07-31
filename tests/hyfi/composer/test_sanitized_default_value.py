@@ -19,7 +19,10 @@ from hyfi.composer.generator import sanitized_default_value
         # Test importable callable
         (str.upper, None),
         (list.append, None),
-        (dict.fromkeys, {"_target_": "None.fromkeys", "iterable": None, "value": None}),
+        (
+            dict.fromkeys,
+            {"_target_": "None.dict.fromkeys", "iterable": None, "value": None},
+        ),
         # Test unsupported types
         (object(), None),
         (lambda x: x, {"_target_": "test_sanitized_default_value.<lambda>", "x": None}),

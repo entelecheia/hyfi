@@ -79,8 +79,7 @@ class ENVs:
     @staticmethod
     def load_dotenv(
         override: bool = False,
-        dotenv_dir: str = "",
-        dotenv_filename: str = ".env",
+        dotenv_file: str = ".env",
         raise_error_if_not_found: bool = False,
         usecwd: bool = False,
         verbose: bool = False,
@@ -90,22 +89,25 @@ class ENVs:
 
         Args:
             override: If True override existing. env file
-            dotenv_dir: Directory to look for. env file ( default cwd )
-            dotenv_filename: Name of. env file to look for
+            dotenv_file: Name of. env file to look for in given directory or current directory
             verbose: Print debug information to console
 
         Returns:
             None or a Path object for the. env file
         """
-        dotenv_dir = dotenv_dir or ENVs.getcwd()
-        dotenv_path = Path(dotenv_dir, dotenv_filename)
+        dotenv_path = Path(dotenv_file)
+        if not dotenv_path.is_absolute():
+            dotenv_path = Path(ENVs.getcwd()) / dotenv_path
+        dotenv_filename = dotenv_path.name
+        dotenv_dir = str(dotenv_path.parent)
         # Load. env files and directories.
         if dotenv_path.is_file():
             dotenv.load_dotenv(
                 dotenv_path=dotenv_path, verbose=verbose, override=override
             )
-            os.environ["DOTENV_PATH"] = str(dotenv_path)
-            os.environ["DOTENV_DIR"] = str(dotenv_path.parent)
+            os.environ["DOTENV_FILENAME"] = dotenv_filename
+            os.environ["DOTENV_FILE"] = str(dotenv_path)
+            os.environ["DOTENV_DIR"] = dotenv_dir
             # Load. env from dotenv_path.
             if verbose:
                 logger.info("Loaded .env from %s", dotenv_path)
@@ -130,16 +132,20 @@ class ENVs:
                 dotenv.load_dotenv(
                     dotenv_path=dotenv_path, verbose=verbose, override=override
                 )
-                os.environ["DOTENV_PATH"] = str(dotenv_path)
-                os.environ["DOTENV_DIR"] = os.path.dirname(dotenv_path)
+                dotenv_filename = dotenv_path.name
+                dotenv_dir = str(dotenv_path.parent)
+                os.environ["DOTENV_FILENAME"] = dotenv_filename
+                os.environ["DOTENV_FILE"] = str(dotenv_path)
+                os.environ["DOTENV_DIR"] = dotenv_dir
                 # Load. env from dotenv_path.
                 if verbose:
                     logger.info("Loaded .env from %s", dotenv_path)
                 else:
                     logger.debug("Loaded .env from %s", dotenv_path)
             else:
-                os.environ["DOTENV_PATH"] = ""
+                os.environ["DOTENV_FILE"] = ""
                 os.environ["DOTENV_DIR"] = ""
+                dotenv_dir = str(dotenv_path.parent)
                 # Print out the. env file if verbose is true.
                 if verbose:
                     logger.info("No .env file found in %s", dotenv_dir)

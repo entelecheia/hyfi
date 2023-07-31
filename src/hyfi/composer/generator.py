@@ -193,7 +193,7 @@ class GENERATOR:
         params = inspect.signature(target).parameters
 
         config_dict = {
-            "_target_": f"{target.__module__}.{target.__name__}",
+            "_target_": f"{target.__module__}.{target.__qualname__}",
         }
 
         for i, (key, param) in enumerate(params.items()):

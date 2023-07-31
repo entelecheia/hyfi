@@ -758,13 +758,13 @@ files = [
 
 [[package]]
 name = "datasets"
-version = "2.14.1"
+version = "2.14.2"
 description = "HuggingFace community-driven open-source library of datasets"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "datasets-2.14.1-py3-none-any.whl", hash = "sha256:23058350cced65f5573266fc58b3f2ad6944959cd6c45495a852fe0d595592bf"},
-    {file = "datasets-2.14.1.tar.gz", hash = "sha256:11a20e8229c94ef60346ea0bf87ca71a97e0af16339a396a6d8efe8b1c056c6b"},
+    {file = "datasets-2.14.2-py3-none-any.whl", hash = "sha256:ea26fb2ec47b7238478b27db1be06c0cfc5258b60db05cec2a0478d59da31745"},
+    {file = "datasets-2.14.2.tar.gz", hash = "sha256:58864c970ab8f8a8ae22acd2be133f98b49f03c9859beca08693ded3a5af837c"},
 ]
 
 [package.dependencies]
@@ -4040,4 +4040,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1, <3.12"
-content-hash = "cd14b1c96cd6662e69ff522cd04a202e4f8f1e505260a03572bdf835f74bd900"
+content-hash = "48a523a4774bcf03566caedff414121c32212d7666e6eefc116ab567deabd81c"

@@ -249,7 +249,6 @@ class PIPELINEs:
             for pipeline in PIPELINEs.get_pipelines(task):
                 if task.verbose:
                     logger.info("Running pipeline: %s", pipeline.name)
-                    Composer.print(pipeline.model_dump())
                 initial_object = task if pipeline.use_task_as_initial_object else None
                 PIPELINEs.run_pipeline(pipeline, initial_object, task)
             # Print the elapsed time.
@@ -273,7 +272,7 @@ class PIPELINEs:
         # Run all tasks in the workflow.
         with elapsed_timer(format_time=True) as elapsed:
             for rc in PIPELINEs.get_running_configs(workflow.get_tasks()):
-                task = workflow.get_task(rc)
+                task = workflow.get_running_task(rc)
                 task_name = (
                     task.task_name
                     if isinstance(task, TaskConfig)
@@ -297,3 +296,45 @@ class PIPELINEs:
                     len(workflow.tasks or []),
                     elapsed(),
                 )
+        # Run the pipelines in the workflow, if any.
+        if workflow.pipelines:
+            task = workflow.get_task()
+            logger.info(
+                "Running pipelines in the workflow with task [%s]", task.task_name
+            )
+            with elapsed_timer(format_time=True) as elapsed:
+                for pipeline in PIPELINEs.get_worflow_pipelines(workflow):
+                    if task.verbose:
+                        logger.info("Running pipeline: %s", pipeline.name)
+                    initial_object = (
+                        task if pipeline.use_task_as_initial_object else None
+                    )
+                    PIPELINEs.run_pipeline(pipeline, initial_object, task)
+                # Print the elapsed time.
+                if workflow.verbose:
+                    logger.info(
+                        " >> elapsed time for the workflow with %s pipelines: %s",
+                        len(task.pipelines or []),
+                        elapsed(),
+                    )
+
+    @staticmethod
+    def get_worflow_pipelines(workflow: WorkflowConfig) -> Pipelines:
+        """
+        Get the list of pipelines for a workflow
+
+        Args:
+            task: The task to get the pipelines for
+
+        Returns:
+            A list of PipelineConfig objects
+        """
+        workflow.pipelines = workflow.pipelines or []
+        pipelines: Pipelines = []
+        for name in workflow.pipelines:
+            if isinstance(name, str) and isinstance(getattr(workflow, name), dict):
+                pipeline = PipelineConfig(**getattr(workflow, name))
+                if not pipeline.name:
+                    pipeline.name = name
+                pipelines.append(pipeline)
+        return pipelines

@@ -1,5 +1,20 @@
 <!--next-version-placeholder-->
 
+## v1.16.0 (2023-08-01)
+
+### Feature
+
+* **test_workflow:** Add tests for pipeline workflows ([`5b03565`](https://github.com/entelecheia/hyfi/commit/5b03565eb029e8b90037e2a44fedfa7fe76875a3))
+* **workflow:** Added pipelines to WorkflowConfig, renamed get_task to get_running_task, added get_task method to WorkflowConfig ([`c2cfc6f`](https://github.com/entelecheia/hyfi/commit/c2cfc6f63ed9b3bf909deb53841d376e8c35301c))
+* **pipeline:** Add workflow pipelines support ([`5244811`](https://github.com/entelecheia/hyfi/commit/5244811513ef61ccf6acd02c0431e2948800ee08))
+* **HyFI:** Add dryrun option for tasks and workflows, separate run_command and run_config methods ([`610eb6e`](https://github.com/entelecheia/hyfi/commit/610eb6edfefd48835601218f3c3cda1899826199))
+* **hyfi-config:** Add noop and dryrun flags ([`27940c0`](https://github.com/entelecheia/hyfi/commit/27940c0402aed0793bbefb69e9727a1fd42ddbab))
+* **workflow:** Add pipelines to configuration ([`37d4479`](https://github.com/entelecheia/hyfi/commit/37d447970ec2f30ac96ef051484616e9f39010fc))
+* **mode:** Add noop and dryrun flags in conf/mode.__init__.yaml ([`85964f6`](https://github.com/entelecheia/hyfi/commit/85964f6d080524c39797c626358692a954e9b241))
+* **hyfi:** Add HYFI_SECRETS_DIR to dotenv settings ([`0f3aaa7`](https://github.com/entelecheia/hyfi/commit/0f3aaa78951dc70baaff42e02933c7d842b3e579))
+* **hyfi:** Add dryrun parameter to run_config function ([`7f0e2a2`](https://github.com/entelecheia/hyfi/commit/7f0e2a25242916ee5a910bc1892143a18b27f95d))
+* **workflow:** Create test pipelines configuration ([`323093d`](https://github.com/entelecheia/hyfi/commit/323093d01b6f88e7b98f02ac95c003e8298381aa))
+
 ## v1.15.0 (2023-08-01)
 
 ### Feature

@@ -60,7 +60,7 @@ class BaseModel(PydanticBaseModel):
         model_fields = {
             key: getattr(value, "default") for key, value in cls.model_fields.items()
         }
-        cfg.update(model_fields)
+        cfg |= model_fields
 
         config_name = (
             config_name or getattr(cls._config_name_, "default")

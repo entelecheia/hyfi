@@ -31,7 +31,8 @@ def cli_main(cfg: DictConfig) -> None:
     if hyfi.project:
         HyFI.set_project(hyfi.project)
 
-    verbose = hyfi.verbose
+    dryrun = hyfi.dryrun or hyfi.noop
+    verbose = hyfi.verbose or dryrun
     # Print out the command line interface for the application.
     if verbose:
         app_name = hyfi.app_name
@@ -48,8 +49,7 @@ def cli_main(cfg: DictConfig) -> None:
         logger.info("Hydra working directory : %s", os.getcwd())
         logger.info("Orig working directory  : %s", hydra.utils.get_original_cwd())
 
-    HyFI.run_config(config=cfg)
-
+    HyFI.run_config(config=cfg, dryrun=dryrun)
     HyFI.terminate()
 
 

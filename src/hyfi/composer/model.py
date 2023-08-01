@@ -61,7 +61,7 @@ class BaseModel(PydanticBaseModel):
         model_fields = {
             key: getattr(value, "default") for key, value in cls.model_fields.items()
         }
-        cfg.update(model_fields)
+        cfg |= model_fields
         cfg = sanitized_config(cfg)
 
         config_name = (
@@ -120,5 +120,5 @@ def sanitized_config(
             _config[key] = value
     if defaults:
         sanitized_config["defaults"] = defaults
-    sanitized_config.update(_config)
+    sanitized_config |= _config
     return sanitized_config

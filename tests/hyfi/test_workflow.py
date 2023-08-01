@@ -29,6 +29,19 @@ def test_cli_run_workflow() -> None:
     assert exitcode == 0
 
 
+def test_cli_run_workflow_pipelines() -> None:
+    """Test cli command run_workflow"""
+    command = [
+        "poetry",
+        "run",
+        "hyfi",
+        "cmd=run_workflow",
+        "workflow=__test_pipelines__",
+    ]
+    out, err, exitcode = capture(command)
+    assert exitcode == 0
+
+
 def test_workflow() -> None:
     """Test workflow"""
     wf = HyFI.workflow(_config_name_="__test__")
@@ -36,5 +49,13 @@ def test_workflow() -> None:
     HyFI.run_workflow(wf)
 
 
+def test_workflow_pipelines() -> None:
+    """Test workflow"""
+    wf = HyFI.workflow(_config_name_="__test_pipelines__")
+    HyFI.print(wf.model_dump())
+    HyFI.run_workflow(wf)
+
+
 if __name__ == "__main__":
     test_workflow()
+    test_workflow_pipelines()

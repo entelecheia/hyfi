@@ -1,2 +1,2 @@
 # @package _global_
-_target_: hyfi.HyFI.run
+_target_: hyfi.HyFI.run_command

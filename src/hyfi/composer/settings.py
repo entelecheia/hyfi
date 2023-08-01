@@ -108,7 +108,7 @@ class BaseSettings(PydanticBaseSettings):
             dotenv_dir = os.path.dirname(env_file)
             data["DOTENV_DIR"] = dotenv_dir
             data["DOTENV_FILENAME"] = dotenv_filename
-
+        data["HYFI_SECRETS_DIR"] = global_hyfi.secrets_dir
         return ENVs.check_and_set_osenv_vars(data)
 
     @property

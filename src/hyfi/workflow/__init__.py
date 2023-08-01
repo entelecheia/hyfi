@@ -9,6 +9,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 Tasks = List[Any]
+Pipelines = List[Any]
 
 
 class WorkflowConfig(BaseModel):
@@ -17,7 +18,9 @@ class WorkflowConfig(BaseModel):
 
     workflow_name: str = _config_name_
     project: Optional[ProjectConfig] = None
+    task: Optional[TaskConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []
+    pipelines: Optional[List[Union[str, Dict]]] = []
     verbose: bool = False
 
     @model_validator(mode="before")
@@ -28,7 +31,7 @@ class WorkflowConfig(BaseModel):
     def get_tasks(self) -> Tasks:
         return self.tasks or []
 
-    def get_task(self, rc: RunningConfig) -> Any:
+    def get_running_task(self, rc: RunningConfig) -> Any:
         config = getattr(self, rc.uses, None)
         if rc.uses and isinstance(config, dict):
             if Composer.is_instantiatable(config):
@@ -40,3 +43,6 @@ class WorkflowConfig(BaseModel):
                 task.name = rc.uses
                 return task
         return None
+
+    def get_task(self):
+        return self.task or TaskConfig()

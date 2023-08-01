@@ -7,14 +7,18 @@ from pydantic import (
     field_validator,
     model_validator,
 )
+from pydantic_settings import PydanticBaseSettingsSource, SettingsConfigDict
 
-from .base import BaseConfig, BaseModel
 from .composer import Composer, SpecialKeys
+from .config import BaseConfig
 from .generator import GENERATOR, PipeTargetTypes
+from .model import BaseModel
+from .settings import BaseSettings
 
 __all__ = [
     "BaseConfig",
     "BaseModel",
+    "BaseSettings",
     "Composer",
     "ConfigDict",
     "field_validator",
@@ -24,6 +28,8 @@ __all__ = [
     "model_validator",
     "PipeTargetTypes",
     "PrivateAttr",
+    "PydanticBaseSettingsSource",
     "SecretStr",
+    "SettingsConfigDict",
     "SpecialKeys",
 ]

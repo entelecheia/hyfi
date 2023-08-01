@@ -6,6 +6,7 @@ header: == ${hydra.help.app_name} ==
 
 footer: |-
   Use --hydra-help to view Hydra specific help
+  ${hydra.help.app_name} v${version}
 # Basic Hydra flags:
 #   $FLAGS_HELP
 #

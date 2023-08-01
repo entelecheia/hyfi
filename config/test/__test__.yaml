@@ -1,4 +1,4 @@
-_target_: hyfi.composer.base.TestModel
+_target_: hyfi.composer.model.TestModel
 _config_name_: __test__
 _config_group_: test
 name: test

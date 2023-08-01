@@ -1,4 +1,4 @@
-from hyfi.composer.base import TestModel
+from hyfi.composer.model import TestModel
 
 
 def test_base_model():

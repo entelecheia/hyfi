@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.15.0 (2023-08-01)
+
+### Feature
+
+* **model:** Add BaseModel to composer model ([`7d00742`](https://github.com/entelecheia/hyfi/commit/7d00742ccf4387859aa6f012c0131b2d6ddad4ea))
+* **hyfi/composer:** Add base settings class for environment variables ([`f7c3de2`](https://github.com/entelecheia/hyfi/commit/f7c3de274cea9d6ff1c3b6e924196f0e3a93e82c))
+
 ## v1.14.1 (2023-07-31)
 
 ### Fix

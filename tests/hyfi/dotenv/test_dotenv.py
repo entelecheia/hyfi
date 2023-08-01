@@ -16,6 +16,7 @@ def test_dotenv_config():
     assert config.HYFI_PROJECT_NAME == "hyfi"
     assert config.os["HYFI_PROJECT_NAME"] == "hyfi"
     print(config.OPENAI_API_KEY.get_secret_value())
+    print(config.DOTENV_FILE)
 
 
 if __name__ == "__main__":

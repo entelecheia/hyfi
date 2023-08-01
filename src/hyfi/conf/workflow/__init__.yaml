@@ -9,3 +9,5 @@ workflow_name: ${._config_name_}
 verbose: false
 tasks:
   # - task
+pipelines:
+  # - pipeline

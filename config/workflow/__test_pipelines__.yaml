@@ -1,0 +1,12 @@
+# @package _global_
+defaults:
+  - __init__
+  - /pipeline@pipeline1: __test_general__
+  - /pipeline@pipeline2: __test_dataframe__
+  - override /project: __test__
+
+workflow_name: __test_pipelines__
+verbose: true
+pipelines:
+  - pipeline1
+  - pipeline2

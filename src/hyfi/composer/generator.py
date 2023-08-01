@@ -228,6 +228,10 @@ def sanitized_default_value(
     if hasattr(value, "__iter__"):
         return sanitize_collection(value)
 
+    # basemodel with _config_name_ attribute
+    # if hasattr(value, "_config_name_"):
+    #     return value._config_name_
+
     # importable callable (function, type, or method)
     if callable(value) and (
         inspect.isfunction(value)

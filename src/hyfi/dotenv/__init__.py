@@ -1,18 +1,9 @@
 """
 Configuration class for environment variables in HyFI.
 """
-import os
-from typing import Optional, Tuple, Type, Union
+from typing import Optional, Union
 
-from pydantic_settings import (
-    BaseSettings,
-    PydanticBaseSettingsSource,
-    SettingsConfigDict,
-)
-
-from hyfi.composer import Field, SecretStr, model_validator
-from hyfi.core import global_hyfi
-from hyfi.utils.envs import ENVs
+from hyfi.composer import BaseSettings, Field, SecretStr
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -62,32 +53,29 @@ class DotEnvConfig(BaseSettings):
     """Environment variables for HyFI"""
 
     _config_name_: str = "__init__"
+    _config_group_: str = "dotenv"
 
-    DOTENV_FILENAME: Optional[str] = ".env"
-    DOTENV_DIR: Optional[str] = ""
-    DOTENV_FILE: Optional[str] = ""
     # Internal
-    HYFI_SECRETS_DIR: Optional[str] = ""
-    HYFI_RESOURCE_DIR: Optional[str] = ""
-    HYFI_GLOBAL_ROOT: Optional[str] = ""
+    HYFI_RESOURCE_DIR: Optional[str] = None
+    HYFI_GLOBAL_ROOT: Optional[str] = None
     HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = ".hyfi"
-    HYFI_PROJECT_NAME: Optional[str] = ""
-    HYFI_PROJECT_DESC: Optional[str] = ""
-    HYFI_PROJECT_ROOT: Optional[str] = ""
+    HYFI_PROJECT_NAME: Optional[str] = None
+    HYFI_PROJECT_DESC: Optional[str] = None
+    HYFI_PROJECT_ROOT: Optional[str] = None
     HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"
     HYFI_LOG_LEVEL: Optional[str] = "WARNING"
     HYFI_VERBOSE: Optional[Union[bool, str, int]] = False
     HYFI_NUM_WORKERS: Optional[int] = 1
-    CACHED_PATH_CACHE_ROOT: Optional[str] = ""
+    CACHED_PATH_CACHE_ROOT: Optional[str] = None
     # For other packages
     CUDA_DEVICE_ORDER: Optional[str] = "PCI_BUS_ID"
-    CUDA_VISIBLE_DEVICES: Optional[str] = ""
-    WANDB_PROJECT: Optional[str] = ""
-    WANDB_DISABLED: Optional[str] = ""
-    WANDB_DIR: Optional[str] = ""
-    WANDB_NOTEBOOK_NAME: Optional[str] = ""
-    WANDB_SILENT: Optional[Union[bool, str]] = False
-    LABEL_STUDIO_SERVER: Optional[str] = ""
+    CUDA_VISIBLE_DEVICES: Optional[Union[str, int]] = None
+    WANDB_PROJECT: Optional[str] = None
+    WANDB_DISABLED: Optional[Union[bool, str]] = None
+    WANDB_DIR: Optional[str] = None
+    WANDB_NOTEBOOK_NAME: Optional[str] = None
+    WANDB_SILENT: Optional[Union[bool, str]] = None
+    LABEL_STUDIO_SERVER: Optional[str] = None
     KMP_DUPLICATE_LIB_OK: Optional[str] = "True"
     TOKENIZERS_PARALLELISM: Optional[Union[bool, str]] = False
     # API Keys and Tokens
@@ -99,39 +87,3 @@ class DotEnvConfig(BaseSettings):
     NASDAQ_API_KEY: Optional[SecretStr] = Field(exclude=True, default="")
     HF_USER_ACCESS_TOKEN: Optional[SecretStr] = Field(exclude=True, default="")
     LABEL_STUDIO_USER_TOKEN: Optional[SecretStr] = Field(exclude=True, default="")
-
-    model_config = SettingsConfigDict(
-        env_prefix="",
-        env_nested_delimiter="__",
-        case_sentive=False,
-        env_file=global_hyfi.dotenv_file,
-        env_file_encoding="utf-8",
-        validate_assignment=True,
-        extra="allow",
-        secrets_dir=global_hyfi.secrets_dir,
-    )  # type: ignore
-
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: Type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> Tuple[PydanticBaseSettingsSource, ...]:
-        ENVs.load_dotenv(dotenv_file=global_hyfi.dotenv_file)
-        return (
-            init_settings,
-            file_secret_settings,
-            env_settings,
-        )
-
-    @model_validator(mode="after")  # type: ignore
-    def check_and_set_values(cls, m: "DotEnvConfig"):
-        return ENVs.check_and_set_osenv_vars(m.model_dump())
-
-    @property
-    def os(self):
-        """Returns the OS environment variables."""
-        return os.environ

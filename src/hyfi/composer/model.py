@@ -11,6 +11,7 @@ from hyfi.core import global_hyfi
 from hyfi.utils.logging import LOGGING
 
 from .composer import Composer
+from .generator import sanitized_default_value
 
 logger = LOGGING.getLogger(__name__)
 
@@ -61,6 +62,7 @@ class BaseModel(PydanticBaseModel):
             key: getattr(value, "default") for key, value in cls.model_fields.items()
         }
         cfg.update(model_fields)
+        cfg = sanitized_config(cfg)
 
         config_name = (
             config_name or getattr(cls._config_name_, "default")
@@ -77,8 +79,46 @@ class BaseModel(PydanticBaseModel):
         return cfg
 
 
+class InnerTestModel(BaseModel):
+    _config_name_: str = "__inner__"
+    _config_group_: str = "test"
+
+    name: str = "inner"
+
+
 class TestModel(BaseModel):
     _config_name_: str = "__test__"
     _config_group_: str = "test"
+    inner: InnerTestModel = InnerTestModel()
 
     name: str = "test"
+
+
+def sanitized_config(
+    config: Dict[str, Any],
+) -> Dict[str, Any]:
+    """
+    Converts a config to Hydra-supported type if necessary and possible.
+
+    Args:
+        config (Dict[str, Any]): The config to sanitize.
+
+    Returns:
+        Dict[str, Any]: The sanitized config.
+    """
+    defaults = []
+    sanitized_config = {}
+    _config = {}
+    for key, value in config.items():
+        if hasattr(value, "_config_group_") and hasattr(value, "_config_name_"):
+            if value._config_group_ == key:
+                defaults.append({f"/{value._config_group_}": value._config_name_})
+            else:
+                defaults.append({f"/{value._config_group_}@{key}": value._config_name_})
+        else:
+            value = sanitized_default_value(value)
+            _config[key] = value
+    if defaults:
+        sanitized_config["defaults"] = defaults
+    sanitized_config.update(_config)
+    return sanitized_config

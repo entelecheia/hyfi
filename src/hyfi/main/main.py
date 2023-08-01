@@ -514,16 +514,17 @@ class HyFI(
     # Pipeline related functions
     ###############################
     @staticmethod
-    def run(**cfg):
-        """Run the provided config"""
-        HyFI.run_config(config=cfg)
+    def run_command(**config):
+        """Run a command"""
+        return HyFI.run_config(config)
 
     @staticmethod
-    def run_config(
+    def run(
         config_group: Optional[str] = None,
         overrides: Optional[List[str]] = None,
-        config: Optional[Union[Dict[str, Any], DictConfig]] = None,
+        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
         global_package=False,
+        dryrun=False,
         **kwargs,
     ):
         """Run the config by composing it and running it"""
@@ -532,9 +533,17 @@ class HyFI(
             config = HyFI.compose_as_dict(
                 config_group=config_group,
                 overrides=overrides,
-                config_data=config,
+                config_data=config_data,
                 global_package=global_package,
             )
+        HyFI.run_config(config, dryrun=dryrun)
+
+    @staticmethod
+    def run_config(
+        config: Union[Dict[str, Any], DictConfig],
+        dryrun=False,
+    ):
+        """Run the provided config"""
         config = HyFI.to_dict(config) if config else {}
         if not isinstance(config, dict):
             raise ValueError("The config must be a dictionary")
@@ -542,6 +551,9 @@ class HyFI(
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
             logger.info("Instantiating the HyFI config")
+            if dryrun:
+                print("\nDryrun is enabled, not running the HyFI config\n")
+                return
             task = HyFI.instantiate(config)
             if task and getattr(task, "__call__", None):
                 logger.info("The HyFI config is callable, running it")
@@ -554,6 +566,9 @@ class HyFI(
             config_group = config.get("_config_group_", "")
             if config_group == "workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
+                if dryrun:
+                    print("\nDryrun is enabled, not running the HyFI workflow\n")
+                    return
                 HyFI.run_workflow(workflow)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
                 project = (
@@ -562,9 +577,16 @@ class HyFI(
                     else None
                 )
                 task = HyFI.task(**config["task"])
+                if dryrun:
+                    print("\nDryrun is enabled, not running the HyFI task\n")
+                    return
                 HyFI.run_task(task, project=project)
             elif "copier" in config and (cmd_name is None or cmd_name == "copy_conf"):
-                with Copier(**config["copier"]) as worker:
+                copier_cfg = config["copier"]
+                if dryrun:
+                    print("Dryrun is enabled, not running the HyFI copier")
+                    return
+                with Copier(**copier_cfg) as worker:
                     worker.run_copy()
             else:
                 HyFI.about(**config.get("about", {}))

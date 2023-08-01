@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.16.1 (2023-08-01)
+
+### Fix
+
+* **composer/model.py:** Add sanitized_config ([`f892f4c`](https://github.com/entelecheia/hyfi/commit/f892f4c7bbd697d1b5cc496db32178cb75a71095))
+
 ## v1.16.0 (2023-08-01)
 
 ### Feature

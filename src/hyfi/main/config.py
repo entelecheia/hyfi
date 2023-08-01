@@ -32,6 +32,8 @@ class HyfiConfig(BaseModel):
     """HyFI root config class.  This class is used to store the configuration"""
 
     debug_mode: bool = False
+    noop: bool = False
+    dryrun: bool = False
     resolve: bool = False
     verbose: bool = False
     logging_level: str = "WARNING"

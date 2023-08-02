@@ -18,6 +18,6 @@ cleanup_on_error: false
 # When `True`, Overwrite files that already exist, without asking.
 overwrite: false
 # When `True`, produce no real rendering.
-dry_run: false
+dryrun: false
 # When `True`, show all output.
 verbose: true

@@ -29,15 +29,7 @@ from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PipeConfig, PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.conf import CONFs
-from hyfi.utils.datasets import DATASETs
-from hyfi.utils.envs import ENVs
-from hyfi.utils.funcs import FUNCs
-from hyfi.utils.gpumon import GPUs
-from hyfi.utils.iolibs import IOLIBs
-from hyfi.utils.logging import LOGGING
-from hyfi.utils.notebooks import NBs
-from hyfi.utils.packages import PKGs
+from hyfi.utils import LOGGING, CONFs, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
 
 from .config import __global_config__ as global_config

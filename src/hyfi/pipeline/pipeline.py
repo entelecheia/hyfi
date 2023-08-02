@@ -2,84 +2,23 @@
 A class to run a pipeline.
 """
 from functools import reduce
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
-from hyfi.composer import Composer, field_validator
+from hyfi.composer import Composer
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
 from hyfi.workflow import WorkflowConfig
 
-from .base import BaseRunConfig, RunningConfig
-from .pipes import PipeConfig, Pipes
+from .config import (
+    PipeConfig,
+    PipelineConfig,
+    Pipelines,
+    get_running_configs,
+)
 
 logger = LOGGING.getLogger(__name__)
-
-
-class PipelineConfig(BaseRunConfig):
-    """Pipeline Configuration"""
-
-    steps: Optional[List[Union[str, Dict]]] = []
-    initial_object: Optional[Any] = None
-    use_task_as_initial_object: bool = False
-
-    @field_validator("steps", mode="before")
-    def steps_to_list(cls, v):
-        """
-        Convert a list of steps to a list
-
-        Args:
-            cls: class to use for conversion
-            v: list of steps to convert
-
-        Returns:
-            list of steps converted to
-        """
-        return [v] if isinstance(v, str) else Composer.to_dict(v)
-
-    def update_configs(
-        self,
-        rc: Union[Dict, RunningConfig],
-    ):
-        """
-        Update running config with values from another config
-
-        Args:
-            rc: RunningConfig to update from
-        """
-        # If rc is a dict or dict it will be converted to RunningConfig.
-        if isinstance(rc, dict):
-            rc = RunningConfig(**rc)
-        self.name = rc.name or self.name
-        self.desc = rc.desc or self.desc
-
-    def get_pipes(self, task: Optional[TaskConfig] = None) -> Pipes:
-        """
-        Get all pipes that this task is aware of
-
-        Args:
-            task: The task to use for the pipe
-
-        Returns:
-            A list of : class : `PipeConfig` objects
-        """
-        pipes: Pipes = []
-        self.steps = self.steps or []
-        # Add pipes to the pipeline.
-        for rc in PIPELINEs.get_running_configs(self.steps):
-            # Add a pipe to the pipeline.
-            config = getattr(self, rc.uses, None)
-            if isinstance(config, dict):
-                pipe = PipeConfig(**Composer.update(config, rc.model_dump()))
-                # Set the task to be used for the pipe.
-                if task is not None:
-                    pipe.task = task
-                pipes.append(pipe)
-        return pipes
-
-
-Pipelines = List[PipelineConfig]
 
 
 class PIPELINEs:
@@ -107,7 +46,7 @@ class PIPELINEs:
         # If config is not a PipelineConfig object it will be converted to a PipelineConfig object.
         if not isinstance(config, PipelineConfig):
             config = PipelineConfig(**Composer.to_dict(config))
-        pipes = config.get_pipes(task)
+        pipes = config.get_pipes()
         if (
             initial_object is None
             and config.initial_object is not None
@@ -183,53 +122,26 @@ class PIPELINEs:
 
         return pipe_fn(obj, config)
 
-    @staticmethod
-    def get_running_configs(steps: list) -> List[RunningConfig]:
-        """
-        Parses and returns list of running configs
+    # @staticmethod
+    # def get_pipelines(task: TaskConfig) -> Pipelines:
+    #     """
+    #     Get the list of pipelines for a task
 
-        Args:
-            steps: list of config to parse
+    #     Args:
+    #         task: The task to get the pipelines for
 
-        Returns:
-            list of : class : `RunningConfig` objects
-        """
-        RCs: List[RunningConfig] = []
-        # Return the list of running RCs
-        if not steps:
-            logger.warning("No running configs provided")
-            return RCs
-        # Add running config to the list of running configs.
-        for rc in steps:
-            # Append a running config to the RCs list.
-            if isinstance(rc, str):
-                RCs.append(RunningConfig(uses=rc))
-            elif isinstance(rc, dict):
-                RCs.append(RunningConfig(**rc))
-            else:
-                raise ValueError(f"Invalid running config: {rc}")
-        return RCs
-
-    @staticmethod
-    def get_pipelines(task: TaskConfig) -> Pipelines:
-        """
-        Get the list of pipelines for a task
-
-        Args:
-            task: The task to get the pipelines for
-
-        Returns:
-            A list of PipelineConfig objects
-        """
-        task.pipelines = task.pipelines or []
-        pipelines: Pipelines = []
-        for name in task.pipelines:
-            if isinstance(name, str) and isinstance(getattr(task, name), dict):
-                pipeline = PipelineConfig(**getattr(task, name))
-                if not pipeline.name:
-                    pipeline.name = name
-                pipelines.append(pipeline)
-        return pipelines
+    #     Returns:
+    #         A list of PipelineConfig objects
+    #     """
+    #     task.pipelines = task.pipelines or []
+    #     pipelines: Pipelines = []
+    #     for name in task.pipelines:
+    #         if isinstance(name, str) and isinstance(getattr(task, name), dict):
+    #             pipeline = PipelineConfig(**getattr(task, name))
+    #             if not pipeline.name:
+    #                 pipeline.name = name
+    #             pipelines.append(pipeline)
+    #     return pipelines
 
     @staticmethod
     def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
@@ -248,7 +160,7 @@ class PIPELINEs:
         if task.verbose:
             logger.info("Running %s pipeline(s)", len(task.pipelines or []))
         with elapsed_timer(format_time=True) as elapsed:
-            for pipeline in PIPELINEs.get_pipelines(task):
+            for pipeline in task.get_pipelines():
                 if task.verbose:
                     logger.info("Running pipeline: %s", pipeline.name)
                 initial_object = task if pipeline.use_task_as_initial_object else None
@@ -273,7 +185,7 @@ class PIPELINEs:
             logger.info("Running %s task(s)", len(workflow.tasks or []))
         # Run all tasks in the workflow.
         with elapsed_timer(format_time=True) as elapsed:
-            for rc in PIPELINEs.get_running_configs(workflow.get_tasks()):
+            for rc in get_running_configs(workflow.get_tasks()):
                 task = workflow.get_running_task(rc)
                 task_name = (
                     task.task_name

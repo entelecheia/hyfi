@@ -236,3 +236,50 @@ def get_running_configs(steps: list) -> List[RunningConfig]:
         else:
             raise ValueError(f"Invalid running config: {rc}")
     return RCs
+
+
+def run_pipe(
+    obj: Any,
+    config: Union[Dict, PipeConfig],
+) -> Any:
+    """
+    Run a pipe on an object
+
+    Args:
+        obj: The object to pipe on
+        config: The configuration for the pipe
+
+    Returns:
+        The result of the pipe
+    """
+    # Create a PipeConfig object if not already a PipeConfig.
+    if not isinstance(config, PipeConfig):
+        config = PipeConfig(**Composer.to_dict(config))
+    pipe_fn = config.get_pipe_func()
+    # Return the object that is being used to execute the pipe function.
+    if pipe_fn is None:
+        logger.warning("No pipe function specified")
+        return obj
+    # Run a pipe with the pipe_fn
+    if config.verbose:
+        logger.info("Running a pipe with %s", config.pipe_target)
+    # Apply pipe function to each object.
+    if isinstance(obj, dict):
+        objs = {}
+        # Apply pipe to each object.
+        for no, name in enumerate(obj):
+            obj_ = obj[name]
+
+            # Apply pipe to an object.
+            if config.verbose:
+                logger.info(
+                    "Applying pipe to an object [%s], %d/%d",
+                    name,
+                    no + 1,
+                    len(obj),
+                )
+
+            objs[name] = pipe_fn(obj_, config)
+        return objs
+
+    return pipe_fn(obj, config)

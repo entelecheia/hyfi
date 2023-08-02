@@ -142,17 +142,14 @@ class BaseModel(PydanticBaseModel):
         config_name = (
             config_name or getattr(cls._config_name_, "default")
         ) or cls._config_name_
-        filename = f"{config_name}.yaml"
-        config_root = config_root or global_hyfi.config_root
-        _config_group_ = getattr(cls._config_group_, "default")
-        if _config_group_ and _config_group_.startswith("/"):
-            _config_group_ = _config_group_[1:]
-        config_path = config_path or _config_group_ or "test"
-        config_path = Path(config_root) / config_path
-        config_path.mkdir(parents=True, exist_ok=True)
-        config_path /= filename
-        Composer.save(cfg, config_path)
-        logger.info("Saved HyFI config for %s to %s", cls.__name__, config_path)
+        _save_config(
+            config=cfg,
+            class_name=cls.__name__,
+            config_group=getattr(cls._config_group_, "default"),
+            config_name=config_name,
+            config_path=config_path,
+            config_root=config_root,
+        )
         return cfg
 
     @staticmethod
@@ -173,12 +170,14 @@ class BaseModel(PydanticBaseModel):
         _config = {}
         for key, value in config.items():
             if hasattr(value, "_config_group_") and hasattr(value, "_config_name_"):
+                config_name = (
+                    getattr(value, "model_extra", {}).get("_config_name_")
+                    or value._config_name_
+                )
                 if value._config_group_ == key:
-                    defaults.append({f"{value._config_group_}": value._config_name_})
+                    defaults.append({f"{value._config_group_}": config_name})
                 else:
-                    defaults.append(
-                        {f"{value._config_group_}@{key}": value._config_name_}
-                    )
+                    defaults.append({f"{value._config_group_}@{key}": config_name})
             else:
                 value = sanitized_default_value(value)
                 _config[key] = value
@@ -186,6 +185,26 @@ class BaseModel(PydanticBaseModel):
             sanitized_config["defaults"] = defaults
         sanitized_config.update(_config)
         return sanitized_config
+
+
+def _save_config(
+    config: Dict[str, Any],
+    class_name: str,
+    config_name: str,
+    config_group: Optional[str] = None,
+    config_root: Optional[str] = None,
+    config_path: Optional[str] = None,
+):
+    filename = f"{config_name}.yaml"
+    config_root = config_root or global_hyfi.config_root
+    if config_group and config_group.startswith("/"):
+        config_group = config_group[1:]
+    config_path = config_path or config_group or "test"
+    config_path = Path(config_root) / config_path
+    config_path.mkdir(parents=True, exist_ok=True)
+    config_path /= filename
+    Composer.save(config, config_path)
+    logger.info("Saved HyFI config for %s to %s", class_name, config_path)
 
 
 class InnerTestModel(BaseModel):

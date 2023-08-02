@@ -539,6 +539,21 @@ class HyFI(
         HyFI.run_config(config, dryrun=dryrun)
 
     @staticmethod
+    def run_intantiatable(
+        config: Dict[str, Any],
+        dryrun=False,
+    ):
+        """Run the config by composing it and running it"""
+        logger.info("Instantiating the HyFI config")
+        if dryrun:
+            print("\nDryrun is enabled, not running the HyFI config\n")
+            return
+        task = HyFI.instantiate(config)
+        if task and getattr(task, "__call__", None):
+            logger.info("The HyFI config is callable, running it")
+            task()
+
+    @staticmethod
     def run_config(
         config: Union[Dict[str, Any], DictConfig],
         dryrun=False,
@@ -550,14 +565,7 @@ class HyFI(
         cmd_name = config.get("cmd_name")
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
-            logger.info("Instantiating the HyFI config")
-            if dryrun:
-                print("\nDryrun is enabled, not running the HyFI config\n")
-                return
-            task = HyFI.instantiate(config)
-            if task and getattr(task, "__call__", None):
-                logger.info("The HyFI config is callable, running it")
-                task()
+            HyFI.run_intantiatable(config, dryrun=dryrun)
         else:
             logger.info(
                 "The HyFI config is not instantiatable, running HyFI task with the config"

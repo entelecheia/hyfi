@@ -36,8 +36,6 @@ class BaseModel(PydanticBaseModel):
     _auto_generate_: bool = False
     _exclude_: Set[str] = set()
 
-    verbose: bool = False
-
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         extra="allow",

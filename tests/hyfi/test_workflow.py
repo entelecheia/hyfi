@@ -59,3 +59,4 @@ def test_workflow_pipelines() -> None:
 if __name__ == "__main__":
     test_workflow()
     test_workflow_pipelines()
+    test_cli_run_workflow_pipelines()

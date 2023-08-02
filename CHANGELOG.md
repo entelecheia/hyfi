@@ -1,5 +1,22 @@
 <!--next-version-placeholder-->
 
+## v1.17.1 (2023-08-02)
+
+### Fix
+
+* **pipeline/config:** Add optional name to PipelineConfig ([`fba13db`](https://github.com/entelecheia/hyfi/commit/fba13db4d805164656618a113f627c8aaa1c3289))
+* **pipeline:** Add dryrun option to run_task and run_workflow methods ([`5459f71`](https://github.com/entelecheia/hyfi/commit/5459f71268b0ed9f0cda63c3dd0a76abed477b2d))
+* **HyFI:** Integrate dryrun option into function calls ([`fc5af14`](https://github.com/entelecheia/hyfi/commit/fc5af14f95bd3965a4ef91f1f97deaa5588f1a3d))
+* **hydra:** Add verbosity check to logging statements ([`7edb914`](https://github.com/entelecheia/hyfi/commit/7edb914f716f96d50974b09062a4a47a2e8fa4b3))
+* **core:** Add verbosity level property ([`6bedfb0`](https://github.com/entelecheia/hyfi/commit/6bedfb0e02853c16c67125a5d62772b08b86a2b4))
+* **composer-model:** Enhance debug logs with verbosity checks ([`08b582c`](https://github.com/entelecheia/hyfi/commit/08b582cc5e603e361045297e94dba1fe22886450))
+* **runner:** Modify _config_group_ path ([`5040bce`](https://github.com/entelecheia/hyfi/commit/5040bce812da8cff4ebc71e8f4411be046e897f7))
+* **task:** Add _config_name_ attribute to TaskPathConfig class ([`95364b1`](https://github.com/entelecheia/hyfi/commit/95364b179cb16665e562a9d9a8800eef55396fa7))
+
+### Documentation
+
+* Add new files for composer and runner configs, extend content in path, pipe, run configs ([`aa9ea8f`](https://github.com/entelecheia/hyfi/commit/aa9ea8f4ad179d2011e76c6d37369b678abbce38))
+
 ## v1.17.0 (2023-08-02)
 
 ### Feature

@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.task import TaskPathConfig
-from hyfi.pipeline.config import PipeConfig, PipelineConfig, Pipelines, run_pipe
+from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
 from hyfi.project import ProjectConfig
 from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
@@ -151,23 +151,27 @@ class TaskConfig(BaseConfig):
                 pipelines.append(pipeline)
         return pipelines
 
-    def run(self, project: Optional[ProjectConfig] = None):
+    def run(
+        self,
+        project: Optional[ProjectConfig] = None,
+        pipelines: Optional[Pipelines] = None,
+    ):
         """
         Run pipelines specified in the task
 
         Args:
-            task: TaskConfig to run pipelines for
             project: ProjectConfig to run pipelines
         """
         # Set project to the project.
         if project:
             project.initialize()
             self.project = project
-        # Run all pipelines in the pipeline.
+        # Run all pipelines in the task.
+        pipelines = pipelines or self.get_pipelines()
         if self.verbose:
-            logger.info("Running %s pipeline(s)", len(self.pipelines or []))
+            logger.info("Running %s pipeline(s)", len(pipelines or []))
         with elapsed_timer(format_time=True) as elapsed:
-            for pipeline in self.get_pipelines():
+            for pipeline in pipelines:
                 if self.verbose:
                     logger.info("Running pipeline: %s", pipeline.name)
                 initial_object = self if pipeline.use_task_as_initial_object else None
@@ -176,7 +180,7 @@ class TaskConfig(BaseConfig):
             if self.verbose:
                 logger.info(
                     " >> elapsed time for the task with %s pipelines: %s",
-                    len(self.pipelines or []),
+                    len(pipelines or []),
                     elapsed(),
                 )
 

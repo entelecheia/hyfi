@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Union
 
 from hyfi.composer import BaseModel
 from hyfi.pipeline.config import RunningCalls, RunningConfig, get_running_configs
+from hyfi.run import RunConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
@@ -51,6 +52,7 @@ class BaseRunner(BaseModel):
 
 class TestRunner(BaseRunner):
     _config_name_: str = "__test__"
+    load_args: RunConfig = RunConfig(_config_name_="load_data")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseModel, Composer, model_validator
-from hyfi.pipeline.base import RunningConfig
+from hyfi.pipeline.config import RunningConfig
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING

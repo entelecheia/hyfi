@@ -13,6 +13,7 @@ class BaseRunner(BaseModel):
     _config_name_: str = "__init__"
 
     calls: Optional[List[Union[str, Dict]]] = []
+    verbose: bool = False
 
     def __call__(self) -> None:
         self.run()
@@ -46,3 +47,16 @@ class BaseRunner(BaseModel):
                     len(self.tasks or []),
                     elapsed(),
                 )
+
+
+class TestRunner(BaseRunner):
+    _config_name_: str = "__test__"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def hello(self, **kwargs):
+        print("Hello World!", kwargs)
+
+    def world(self, **kwargs):
+        print("World Hello!", kwargs)

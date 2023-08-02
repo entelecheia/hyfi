@@ -26,9 +26,7 @@ from hyfi.core import (
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
-from hyfi.main import __project_root_path__, __project_workspace_path__, global_config
-from hyfi.pipeline import PIPELINEs
-from hyfi.pipeline.configs import PipeConfig
+from hyfi.pipeline import PipeConfig, PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.conf import CONFs
@@ -41,6 +39,9 @@ from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 from hyfi.utils.packages import PKGs
 from hyfi.workflow import WorkflowConfig
+
+from .config import __global_config__ as global_config
+from .config import __project_root_path__, __project_workspace_path__
 
 logger = LOGGING.getLogger(__name__)
 

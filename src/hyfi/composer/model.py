@@ -56,7 +56,7 @@ class BaseModel(PydanticBaseModel):
             logger.debug("There is no config group specified.")
             return data
         # Initialize the config with the given config_name.
-        logger.info(
+        logger.debug(
             "Composing `%s` class with `%s` config in `%s` group.",
             _class_name_,
             _config_name_,

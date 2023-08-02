@@ -1,15 +1,13 @@
 from pathlib import Path
 
-from hyfi.composer import BaseConfig
 from hyfi.path.base import BasePathConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class ProjectPathConfig(BaseConfig, BasePathConfig):
+class ProjectPathConfig(BasePathConfig):
     _config_name_: str = "__project__"
-    _config_group_: str = "path"
 
     # internal paths for hyfi
     home: str = ""

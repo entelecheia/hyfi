@@ -75,5 +75,4 @@ class PIPELINEs:
         Args:
             workflow: WorkflowConfig object to run
         """
-        print(workflow)
         workflow.run()

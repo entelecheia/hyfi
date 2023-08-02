@@ -3,7 +3,7 @@
 """
 import os
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import List, Optional, Set, Tuple, Union
 
 from pydantic import BaseModel
 
@@ -64,6 +64,8 @@ class GlobalHyFIConfig(BaseModel):
 
     __dotenv_file__: str = ".env"
     __secrets_dir__: str = "./secrets"
+
+    __verbose__: Union[bool, int] = False
 
     _packages_: List[Tuple[str, str]] = [(__hyfi_package_path__, __hyfi_version__())]
 
@@ -281,6 +283,13 @@ class GlobalHyFIConfig(BaseModel):
     def global_package_list(self) -> Set[str]:
         """Returns the list of global packages."""
         return __global_package_list__
+
+    @property
+    def verbose(self) -> int:
+        """Returns the verbosity level."""
+        if os.environ.get("HYFI_VERBOSE"):
+            self.__verbose__ = int(os.environ.get("HYFI_VERBOSE", 0))
+        return self.__verbose__
 
 
 __global_hyfi__ = GlobalHyFIConfig()

@@ -10,7 +10,7 @@ from hyfi.pipeline.config import (
 )
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.contexts import change_directory, elapsed_timer
+from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

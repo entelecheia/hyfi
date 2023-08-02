@@ -11,6 +11,8 @@ def test_composer():
     my_function()
     cfg = Composer._compose("about", config_module="hyfi.conf")
     print(cfg)
+    cfg = Composer._compose("/path/dirnames=__init__")
+    print(cfg)
 
 
 if __name__ == "__main__":

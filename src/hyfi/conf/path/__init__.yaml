@@ -4,5 +4,5 @@
 defaults:
   - dirnames: __init__
 
-_config_group_: path
+_config_group_: /path
 _config_name_: __init__

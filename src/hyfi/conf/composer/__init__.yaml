@@ -1,0 +1,3 @@
+_target_: hyfi.composer.model.BaseModel
+_config_name_: __init__
+_config_group_: /composer

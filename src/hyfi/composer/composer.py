@@ -30,17 +30,20 @@ class SpecialKeys(str, Enum):
     CONFIG = "_config_"
     CONFIG_GROUP = "_config_group_"
     CONFIG_NAME = "_config_name_"
+    DESCRIPTION = "_description_"
     EXEC = "_exec_"
     FUNC = "_func_"
     KWARGS = "_kwargs_"
     METHOD = "_method_"
     PARTIAL = "_partial_"
-    PIPE = "_pipe_"
+    PIPE_TARGET = "pipe_target"
     RECURSIVE = "_recursive_"
-    RUN = "_run_"
+    RUN = "run"
+    RUN_WITH = "run_with"
     TARGET = "_target_"
     TYPE = "_type_"
-    WITH = "_with_"
+    USES = "uses"
+    WITH = "with"
 
 
 class ConfigGroup(BaseModel):

@@ -16,7 +16,7 @@ class ProjectConfig(BaseConfig):
     """Project Config"""
 
     _config_name_: str = "__init__"
-    _config_group_: str = "project"
+    _config_group_: str = "/project"
     # Project Config
     project_name: str = "hyfi"
     project_description: str = ""

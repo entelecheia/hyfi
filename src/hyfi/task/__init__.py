@@ -13,7 +13,7 @@ logger = LOGGING.getLogger(__name__)
 
 class TaskConfig(BaseConfig):
     _config_name_: str = "__init__"
-    _config_group_: str = "task"
+    _config_group_: str = "/task"
 
     task_name: str = "demo-task"
     task_root: str = "workspace"

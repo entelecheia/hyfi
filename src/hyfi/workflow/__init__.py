@@ -13,7 +13,7 @@ Pipelines = List[Any]
 
 
 class WorkflowConfig(BaseModel):
-    _config_group_: str = "workflow"
+    _config_group_: str = "/workflow"
     _config_name_: str = "__init__"
 
     workflow_name: str = _config_name_

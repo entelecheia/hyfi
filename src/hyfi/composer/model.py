@@ -111,7 +111,6 @@ class BaseModel(PydanticBaseModel):
         config_path: str = None,
         config_root: Optional[str] = None,
         save: bool = True,
-        **kwargs_for_target,
     ) -> Dict[str, Any]:
         """
         Saves a HyFI config for itself.
@@ -135,7 +134,10 @@ class BaseModel(PydanticBaseModel):
             key: getattr(value, "default") for key, value in cls.model_fields.items()
         }
         cfg.update(model_fields)
-        cfg = sanitized_config(cfg)
+        cfg = cls.sanitized_config(cfg)
+
+        if not save:
+            return cfg
 
         config_name = (
             config_name or getattr(cls._config_name_, "default")
@@ -149,11 +151,41 @@ class BaseModel(PydanticBaseModel):
         config_path = Path(config_root) / config_path
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename
-
-        if save:
-            Composer.save(cfg, config_path)
-            logger.info(f"Saved HyFI config for {cls.__name__} to {config_path}")
+        Composer.save(cfg, config_path)
+        logger.info("Saved HyFI config for %s to %s", cls.__name__, config_path)
         return cfg
+
+    @staticmethod
+    def sanitized_config(
+        config: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Converts a config to Hydra-supported type if necessary and possible.
+
+        Args:
+            config (Dict[str, Any]): The config to sanitize.
+
+        Returns:
+            Dict[str, Any]: The sanitized config.
+        """
+        defaults = []
+        sanitized_config = {}
+        _config = {}
+        for key, value in config.items():
+            if hasattr(value, "_config_group_") and hasattr(value, "_config_name_"):
+                if value._config_group_ == key:
+                    defaults.append({f"{value._config_group_}": value._config_name_})
+                else:
+                    defaults.append(
+                        {f"{value._config_group_}@{key}": value._config_name_}
+                    )
+            else:
+                value = sanitized_default_value(value)
+                _config[key] = value
+        if defaults:
+            sanitized_config["defaults"] = defaults
+        sanitized_config.update(_config)
+        return sanitized_config
 
 
 class InnerTestModel(BaseModel):
@@ -169,33 +201,3 @@ class TestModel(BaseModel):
     inner: InnerTestModel = InnerTestModel()
 
     name: str = "test"
-
-
-def sanitized_config(
-    config: Dict[str, Any],
-) -> Dict[str, Any]:
-    """
-    Converts a config to Hydra-supported type if necessary and possible.
-
-    Args:
-        config (Dict[str, Any]): The config to sanitize.
-
-    Returns:
-        Dict[str, Any]: The sanitized config.
-    """
-    defaults = []
-    sanitized_config = {}
-    _config = {}
-    for key, value in config.items():
-        if hasattr(value, "_config_group_") and hasattr(value, "_config_name_"):
-            if value._config_group_ == key:
-                defaults.append({f"{value._config_group_}": value._config_name_})
-            else:
-                defaults.append({f"{value._config_group_}@{key}": value._config_name_})
-        else:
-            value = sanitized_default_value(value)
-            _config[key] = value
-    if defaults:
-        sanitized_config["defaults"] = defaults
-    sanitized_config.update(_config)
-    return sanitized_config

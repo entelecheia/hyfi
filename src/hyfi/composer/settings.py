@@ -62,7 +62,7 @@ class BaseSettings(PydanticBaseSettings):
     """Environment variables for HyFI"""
 
     _config_name_: str = "__init__"
-    _config_group_: str = ""
+    _config_group_: str = "/settings"
 
     DOTENV_FILENAME: Optional[str] = ".env"
     DOTENV_DIR: Optional[str] = None

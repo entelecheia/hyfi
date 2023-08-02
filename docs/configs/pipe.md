@@ -38,6 +38,24 @@ Config location: `conf/pipe`
 {% include '../../src/hyfi/conf/pipe/__init__.yaml' %}
 ```
 
+## `load_data.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/load_data.yaml' %}
+```
+
+## `load_dataframes.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/load_dataframes.yaml' %}
+```
+
+## `load_dataset.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/load_dataset.yaml' %}
+```
+
 ## `load_dataset_from_disk.yaml`
 
 ```yaml
@@ -48,6 +66,12 @@ Config location: `conf/pipe`
 
 ```yaml
 {% include '../../src/hyfi/conf/pipe/sample_dataset.yaml' %}
+```
+
+## `save_dataframes.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/save_dataframes.yaml' %}
 ```
 
 ## `save_dataset_to_disk.yaml`

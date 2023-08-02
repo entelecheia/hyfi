@@ -14,6 +14,12 @@ Config location: `conf/path`
 {% include '../../src/hyfi/conf/path/__init__.yaml' %}
 ```
 
+## `__project__.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/path/__project__.yaml' %}
+```
+
 ## `__task__.yaml`
 
 ```yaml

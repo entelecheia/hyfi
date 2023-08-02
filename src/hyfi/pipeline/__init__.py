@@ -1,9 +1,9 @@
 from .config import (
     BaseRunConfig,
     DataframePipeConfig,
-    Pipelines,
     PipeConfig,
     PipelineConfig,
+    Pipelines,
     Pipes,
     RunningCalls,
     RunningConfig,

@@ -315,7 +315,7 @@ class HyFI(
         """
         config_group = kwargs.get("_config_group_")
         config_name = kwargs.get("workflow_name")
-        if config_group and config_group == "workflow" and config_name:
+        if config_group and config_group == "/workflow" and config_name:
             cfg = HyFI.compose_as_dict(
                 config_group=f"{config_group}={config_name}",
                 config_data=kwargs,
@@ -565,7 +565,7 @@ class HyFI(
             )
             # Run the HyFI task
             config_group = config.get("_config_group_", "")
-            if config_group == "workflow" or cmd_name == "run_workflow":
+            if config_group == "/workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
                 if dryrun:
                     print("\nDryrun is enabled, not running the HyFI workflow\n")

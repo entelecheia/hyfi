@@ -30,7 +30,7 @@ class AboutConfig(BaseModel):
         license (str): The license under which the package is distributed.
     """
 
-    _config_group_: str = "about"
+    _config_group_: str = "/about"
 
     name: str = __hyfi_name__
     authors: str = __hyfi_authors__

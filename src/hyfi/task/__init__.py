@@ -7,6 +7,7 @@ from hyfi.path.task import TaskPathConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
+from hyfi.pipeline.config import PipelineConfig, Pipelines
 
 logger = LOGGING.getLogger(__name__)
 
@@ -127,3 +128,23 @@ class TaskConfig(BaseConfig):
             from hyfi.utils.gpumon import GPUMon
 
             GPUMon.release_gpu_memory()
+
+    def get_pipelines(self) -> Pipelines:
+        """
+        Get the list of pipelines for a task
+
+        Args:
+            task: The task to get the pipelines for
+
+        Returns:
+            A list of PipelineConfig objects
+        """
+        self.pipelines = self.pipelines or []
+        pipelines: Pipelines = []
+        for name in self.pipelines:
+            if isinstance(name, str) and isinstance(getattr(self, name), dict):
+                pipeline = PipelineConfig(**getattr(self, name))
+                if not pipeline.name:
+                    pipeline.name = name
+                pipelines.append(pipeline)
+        return pipelines

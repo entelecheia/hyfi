@@ -82,20 +82,25 @@ class initialize_config:
 
 def append_search_path(provider: str, path: str, search_path: ConfigSearchPath) -> None:
     if not path:
-        logger.debug(
-            "Not adding empty path to Hydra's config search path for `%s`", provider
-        )
+        if global_hyfi.verbosity > 1:
+            logger.debug(
+                "Not adding empty path to Hydra's config search path for `%s`", provider
+            )
         return
     for sp_item in search_path.get_path():
         if sp_item.path == path:
-            logger.debug(
-                "Not adding `%s` to Hydra's config search path for `%s` because it is already there by `%s`",
-                path,
-                provider,
-                sp_item.provider,
-            )
+            if global_hyfi.verbosity > 1:
+                logger.debug(
+                    "Not adding `%s` to Hydra's config search path for `%s` because it is already there by `%s`",
+                    path,
+                    provider,
+                    sp_item.provider,
+                )
             return
-    logger.debug("Adding `%s` to Hydra's config search path for `%s`", path, provider)
+    if global_hyfi.verbosity > 0:
+        logger.debug(
+            "Adding `%s` to Hydra's config search path for `%s`", path, provider
+        )
     search_path.append(provider, path)
 
 

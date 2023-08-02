@@ -47,21 +47,24 @@ class BaseModel(PydanticBaseModel):
         # logger.debug("Validating model config before validating each field.")
         _auto_populate_ = data.get("_auto_populate_", getattr(cls._auto_populate_, "default", False))  # type: ignore
         if not _auto_populate_:
-            logger.debug("Auto-populate is disabled.")
+            if global_hyfi.verbosity > 1:
+                logger.debug("Auto-populate is disabled for class `%s`.", cls.__name__)
             return data
         _config_name_ = data.get("_config_name_", getattr(cls._config_name_, "default", "__init__"))  # type: ignore
         _config_group_ = data.get("_config_group_", getattr(cls._config_group_, "default"))  # type: ignore
         _class_name_ = cls.__name__  # type: ignore
         if not _config_group_:
-            logger.debug("There is no config group specified.")
+            if global_hyfi.verbosity > 0:
+                logger.debug("There is no config group specified.")
             return data
         # Initialize the config with the given config_name.
-        logger.debug(
-            "Composing `%s` class with `%s` config in `%s` group.",
-            _class_name_,
-            _config_name_,
-            _config_group_,
-        )
+        if global_hyfi.verbosity > 0:
+            logger.debug(
+                "Composing `%s` class with `%s` config in `%s` group.",
+                _class_name_,
+                _config_name_,
+                _config_group_,
+            )
         config_group = f"{_config_group_}={_config_name_}"
         cfg = Composer(
             config_group=config_group,

@@ -7,6 +7,8 @@ logger = LOGGING.getLogger(__name__)
 
 
 class TaskPathConfig(BasePathConfig):
+    _config_name_: str = "__task__"
+
     task_name: str = "demo-task"
     task_root: str = "workspace"
 

@@ -71,7 +71,7 @@ class Copier:
         overwrite:
             When `True`, Overwrite files that already exist, without asking.
 
-        dry_run:
+        dryrun:
             When `True`, produce no real rendering.
 
         verbose:
@@ -86,7 +86,7 @@ class Copier:
     skip_if_exists: bool = False
     cleanup_on_error: bool = True
     overwrite: bool = False
-    dry_run: bool = False
+    dryrun: bool = False
     verbose: bool = True
 
     def __post_init__(self):
@@ -197,7 +197,7 @@ class Copier:
                         )
                         continue
 
-                if not self.dry_run:
+                if not self.dryrun:
                     dst_file.parent.mkdir(parents=True, exist_ok=True)
                     copy2(src_file, dst_file)
                 FUNCs.printf(

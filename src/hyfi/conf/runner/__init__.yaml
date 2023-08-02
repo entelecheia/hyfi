@@ -1,5 +1,5 @@
 _target_: hyfi.runner.base.BaseRunner
 _config_name_: __init__
-_config_group_: runner
+_config_group_: /runner
 calls: []
 verbose: false

@@ -10,7 +10,7 @@ logger = LOGGING.getLogger(__name__)
 
 
 class BaseRunner(BaseModel):
-    _config_group_: str = "runner"
+    _config_group_: str = "/runner"
     _config_name_: str = "__init__"
 
     calls: Optional[List[Union[str, Dict]]] = []

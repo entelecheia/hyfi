@@ -53,7 +53,7 @@ class DotEnvConfig(BaseSettings):
     """Environment variables for HyFI"""
 
     _config_name_: str = "__init__"
-    _config_group_: str = "dotenv"
+    _config_group_: str = "/dotenv"
 
     # Internal
     HYFI_RESOURCE_DIR: Optional[str] = None

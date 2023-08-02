@@ -51,7 +51,7 @@ class BatchConfig(BaseConfig):
     """
 
     _config_name_: str = "__init__"
-    _config_group_: str = "batch"
+    _config_group_: str = "/batch"
 
     batch_name: str
     batch_num: Optional[int] = None
@@ -81,28 +81,26 @@ class BatchConfig(BaseConfig):
             **data (dict): Dictionary containing the configuration data.
         """
         super().__init__(**data)
-        self.set_batch_num(self.batch_num)
+        self.set_batch_num(data.get("batch_num"))
 
-    def set_batch_num(self, val):
+    def set_batch_num(self, val: Optional[int] = None):
         """
         Sets the batch number.
 
         Args:
             val (int): Batch number.
         """
-        if val is None:
-            self.batch_num = -1
-        if val < 0:
+        if val is None or val < 0:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
             self.batch_num = (
                 num_files - 1 if self.resume_latest and num_files > 0 else num_files
             )
-        if self.verbose:
-            logger.info(
-                "Init batch - Batch name: %s, Batch num: %s",
-                self.batch_name,
-                self.batch_num,
-            )
+            if self.verbose:
+                logger.info(
+                    "Init batch - Batch name: %s, Batch num: %s",
+                    self.batch_name,
+                    self.batch_num,
+                )
 
     @field_validator("batch_num", mode="before")
     def _validate_batch_num(cls, v):

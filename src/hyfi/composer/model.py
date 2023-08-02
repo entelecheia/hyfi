@@ -136,7 +136,7 @@ class BaseModel(PydanticBaseModel):
         model_fields = {
             key: getattr(value, "default") for key, value in cls.model_fields.items()
         }
-        cfg.update(model_fields)
+        cfg |= model_fields
         cfg = cls.sanitized_config(cfg)
 
         if not save:
@@ -186,7 +186,7 @@ class BaseModel(PydanticBaseModel):
                 _config[key] = value
         if defaults:
             sanitized_config["defaults"] = defaults
-        sanitized_config.update(_config)
+        sanitized_config |= _config
         return sanitized_config
 
 

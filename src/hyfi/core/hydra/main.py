@@ -11,7 +11,7 @@ from hydra.main import _get_rerun_conf
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
-from hyfi.core.hydra.utils import _run_hydra
+from .utils import _run_hydra
 
 _UNSPECIFIED_: Any = object()
 

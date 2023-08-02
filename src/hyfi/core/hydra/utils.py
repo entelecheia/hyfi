@@ -14,7 +14,7 @@ from hydra._internal.utils import (
 )
 from hydra.types import TaskFunction
 
-from hyfi.core.hydra import create_config_search_path
+from .config import create_config_search_path
 
 log = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@ def test_runner() -> None:
     """Test runner"""
     BaseRunner.generate_config()
     TestRunner.generate_config(config_root="config")
-
+    print(TestRunner().load_args.kwargs)
     cfg = HyFI.compose("runner=__test__")
     cfg.calls = ["hello", "world"]
     print(cfg)

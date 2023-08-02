@@ -36,6 +36,8 @@ class BaseModel(PydanticBaseModel):
     _auto_generate_: bool = False
     _exclude_: Set[str] = set()
 
+    verbose: bool = False
+
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         extra="allow",
@@ -110,6 +112,7 @@ class BaseModel(PydanticBaseModel):
         config_name: Optional[str] = None,
         config_path: str = None,
         config_root: Optional[str] = None,
+        save: bool = True,
         **kwargs_for_target,
     ) -> Dict[str, Any]:
         """
@@ -143,14 +146,15 @@ class BaseModel(PydanticBaseModel):
         config_root = config_root or global_hyfi.config_root
         _config_group_ = getattr(cls._config_group_, "default")
         if _config_group_ and _config_group_.startswith("/"):
-            _config_group = _config_group_[1:]
-        config_path = config_path or _config_group or "test"
+            _config_group_ = _config_group_[1:]
+        config_path = config_path or _config_group_ or "test"
         config_path = Path(config_root) / config_path
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename
 
-        Composer.save(cfg, config_path)
-        logger.info(f"Saved HyFI config for {cls.__name__} to {config_path}")
+        if save:
+            Composer.save(cfg, config_path)
+            logger.info(f"Saved HyFI config for {cls.__name__} to {config_path}")
         return cfg
 
 

@@ -1,5 +1,5 @@
 defaults:
-- /run@load_args: __init__
+- /run@load_args: load_data
 _target_: hyfi.runner.base.TestRunner
 _config_name_: __test__
 _config_group_: runner

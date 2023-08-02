@@ -94,10 +94,10 @@ class WorkflowConfig(BaseModel):
             )
             task.run(
                 project=self.project,
-                pipelines=self.get_worflow_pipelines(),
+                pipelines=self.get_pipelines(),
             )
 
-    def get_worflow_pipelines(self) -> Pipelines:
+    def get_pipelines(self) -> Pipelines:
         """
         Get the list of pipelines for a workflow
 

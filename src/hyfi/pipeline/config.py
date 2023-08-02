@@ -149,6 +149,7 @@ Pipes = List[PipeConfig]
 class PipelineConfig(BaseRunConfig):
     """Pipeline Configuration"""
 
+    name: Optional[str] = ""
     steps: Optional[List[Union[str, Dict]]] = []
     initial_object: Optional[Any] = None
     use_task_as_initial_object: bool = False

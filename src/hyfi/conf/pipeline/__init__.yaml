@@ -1,5 +1,3 @@
-name:
-desc:
 steps:
 initial_object:
 use_task_as_initial_object: false

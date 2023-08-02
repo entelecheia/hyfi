@@ -57,7 +57,11 @@ class PIPELINEs:
         return run_pipe(obj, config)
 
     @staticmethod
-    def run_task(task: TaskConfig, project: Optional[ProjectConfig] = None):
+    def run_task(
+        task: TaskConfig,
+        project: Optional[ProjectConfig] = None,
+        dryrun: bool = False,
+    ):
         """
         Run pipelines specified in the task
 
@@ -65,14 +69,20 @@ class PIPELINEs:
             task: TaskConfig to run pipelines for
             project: ProjectConfig to run pipelines
         """
+        if dryrun:
+            print("\nDryrun is enabled, not running the HyFI task\n")
+            return
         task.run(project=project)
 
     @staticmethod
-    def run_workflow(workflow: WorkflowConfig):
+    def run_workflow(workflow: WorkflowConfig, dryrun: bool = False):
         """
         Run the tasks specified in the workflow
 
         Args:
             workflow: WorkflowConfig object to run
         """
+        if dryrun:
+            print("\nDryrun is enabled, not running the HyFI workflow\n")
+            return
         workflow.run()

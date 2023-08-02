@@ -3,7 +3,7 @@ import pandas as pd
 from hyfi.composer import Composer
 from hyfi.main import HyFI
 from hyfi.pipeline import PipelineConfig
-from hyfi.pipeline.configs import PipeConfig, RunningConfig
+from hyfi.pipeline import PipeConfig, RunningConfig
 
 
 def test_running_config():

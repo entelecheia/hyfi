@@ -1,0 +1,5 @@
+defaults:
+  - __test__
+calls:
+  - hello
+  - world

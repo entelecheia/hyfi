@@ -26,7 +26,6 @@ class BatchTaskConfig(TaskConfig):
     """
 
     _config_name_: str = "__batch__"
-    _config_group_: str = "task"
 
     batch_name: str = "demo"
     batch: Optional[BatchConfig] = None
@@ -37,7 +36,7 @@ class BatchTaskConfig(TaskConfig):
         "task_root": "set_task_root",
         "batch_name": "set_batch_name",
     }
-    _subconfigs_ = {"batch": BatchConfig}
+    # _subconfigs_ = {"batch": BatchConfig}
 
     def set_batch_name(self, val):
         if not self.batch_name or self.batch_name != val:

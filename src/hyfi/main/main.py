@@ -26,21 +26,14 @@ from hyfi.core import (
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
-from hyfi.main import __project_root_path__, __project_workspace_path__, global_config
-from hyfi.pipeline import PIPELINEs
-from hyfi.pipeline.configs import PipeConfig
+from hyfi.pipeline import PipeConfig, PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils.conf import CONFs
-from hyfi.utils.datasets import DATASETs
-from hyfi.utils.envs import ENVs
-from hyfi.utils.funcs import FUNCs
-from hyfi.utils.gpumon import GPUs
-from hyfi.utils.iolibs import IOLIBs
-from hyfi.utils.logging import LOGGING
-from hyfi.utils.notebooks import NBs
-from hyfi.utils.packages import PKGs
+from hyfi.utils import LOGGING, CONFs, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
+
+from .config import __global_config__ as global_config
+from .config import __project_root_path__, __project_workspace_path__
 
 logger = LOGGING.getLogger(__name__)
 
@@ -322,7 +315,7 @@ class HyFI(
         """
         config_group = kwargs.get("_config_group_")
         config_name = kwargs.get("workflow_name")
-        if config_group and config_group == "workflow" and config_name:
+        if config_group and config_group == "/workflow" and config_name:
             cfg = HyFI.compose_as_dict(
                 config_group=f"{config_group}={config_name}",
                 config_data=kwargs,
@@ -539,6 +532,21 @@ class HyFI(
         HyFI.run_config(config, dryrun=dryrun)
 
     @staticmethod
+    def run_intantiatable(
+        config: Dict[str, Any],
+        dryrun=False,
+    ):
+        """Run the config by composing it and running it"""
+        logger.info("Instantiating the HyFI config")
+        if dryrun:
+            print("\nDryrun is enabled, not running the HyFI config\n")
+            return
+        task = HyFI.instantiate(config)
+        if task and getattr(task, "__call__", None):
+            logger.info("The HyFI config is callable, running it")
+            task()
+
+    @staticmethod
     def run_config(
         config: Union[Dict[str, Any], DictConfig],
         dryrun=False,
@@ -550,21 +558,14 @@ class HyFI(
         cmd_name = config.get("cmd_name")
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
-            logger.info("Instantiating the HyFI config")
-            if dryrun:
-                print("\nDryrun is enabled, not running the HyFI config\n")
-                return
-            task = HyFI.instantiate(config)
-            if task and getattr(task, "__call__", None):
-                logger.info("The HyFI config is callable, running it")
-                task()
+            HyFI.run_intantiatable(config, dryrun=dryrun)
         else:
             logger.info(
                 "The HyFI config is not instantiatable, running HyFI task with the config"
             )
             # Run the HyFI task
             config_group = config.get("_config_group_", "")
-            if config_group == "workflow" or cmd_name == "run_workflow":
+            if config_group == "/workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
                 if dryrun:
                     print("\nDryrun is enabled, not running the HyFI workflow\n")

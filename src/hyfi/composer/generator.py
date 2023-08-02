@@ -83,7 +83,7 @@ class GENERATOR:
     """
 
     @staticmethod
-    def save_hyfi_pipe_config(
+    def generate_pipe_config(
         target: Callable,
         pipe_target_type: PipeTargetTypes = PipeTargetTypes.GENERAL_EXTERNAL_FUNCS,
         use_pipe_obj: bool = True,
@@ -113,7 +113,7 @@ class GENERATOR:
         config_name = f"{pipe_prefix}_{config_name}" if pipe_prefix else config_name
         config_root = config_root or global_hyfi.config_root
 
-        run_config_name = GENERATOR.save_hyfi_config(
+        run_config_name = GENERATOR.generate_config(
             target,
             use_first_arg_as_pipe_obj=use_first_arg_as_pipe_obj,
             config_name=config_name,
@@ -142,7 +142,7 @@ class GENERATOR:
         return config_name
 
     @staticmethod
-    def save_hyfi_config(
+    def generate_config(
         target: Callable,
         use_first_arg_as_pipe_obj: bool = False,
         config_name: Optional[str] = None,

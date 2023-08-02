@@ -1,10 +1,13 @@
+from functools import reduce
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.task import TaskPathConfig
+from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
 from hyfi.project import ProjectConfig
+from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
 
@@ -13,7 +16,7 @@ logger = LOGGING.getLogger(__name__)
 
 class TaskConfig(BaseConfig):
     _config_name_: str = "__init__"
-    _config_group_: str = "task"
+    _config_group_: str = "/task"
 
     task_name: str = "demo-task"
     task_root: str = "workspace"
@@ -127,3 +130,104 @@ class TaskConfig(BaseConfig):
             from hyfi.utils.gpumon import GPUMon
 
             GPUMon.release_gpu_memory()
+
+    def get_pipelines(self) -> Pipelines:
+        """
+        Get the list of pipelines for a task
+
+        Args:
+            task: The task to get the pipelines for
+
+        Returns:
+            A list of PipelineConfig objects
+        """
+        self.pipelines = self.pipelines or []
+        pipelines: Pipelines = []
+        for name in self.pipelines:
+            if isinstance(name, str) and isinstance(getattr(self, name), dict):
+                pipeline = PipelineConfig(**getattr(self, name))
+                if not pipeline.name:
+                    pipeline.name = name
+                pipelines.append(pipeline)
+        return pipelines
+
+    def run(
+        self,
+        project: Optional[ProjectConfig] = None,
+        pipelines: Optional[Pipelines] = None,
+    ):
+        """
+        Run pipelines specified in the task
+
+        Args:
+            project: ProjectConfig to run pipelines
+        """
+        # Set project to the project.
+        if project:
+            project.initialize()
+            self.project = project
+        # Run all pipelines in the task.
+        pipelines = pipelines or self.get_pipelines()
+        if self.verbose:
+            logger.info("Running %s pipeline(s)", len(pipelines or []))
+        with elapsed_timer(format_time=True) as elapsed:
+            for pipeline in pipelines:
+                if self.verbose:
+                    logger.info("Running pipeline: %s", pipeline.name)
+                initial_object = self if pipeline.use_task_as_initial_object else None
+                self.run_pipeline(pipeline, initial_object)
+            # Print the elapsed time.
+            if self.verbose:
+                logger.info(
+                    " >> elapsed time for the task with %s pipelines: %s",
+                    len(pipelines or []),
+                    elapsed(),
+                )
+
+    def run_pipeline(
+        self,
+        pipeline: Union[Dict, PipelineConfig],
+        initial_object: Optional[Any] = None,
+    ) -> Any:
+        """
+        Run a pipeline given a config
+
+        Args:
+            config: PipelineConfig to run the pipeline
+            initial_obj: Object to use as initial value
+            task: TaskConfig to use as task
+
+        Returns:
+            The result of the pipeline
+        """
+        # If config is not a PipelineConfig object it will be converted to a PipelineConfig object.
+        if not isinstance(pipeline, PipelineConfig):
+            pipeline = PipelineConfig(**Composer.to_dict(pipeline))
+        pipes = pipeline.get_pipes()
+        if (
+            initial_object is None
+            and pipeline.initial_object is not None
+            and Composer.is_instantiatable(pipeline.initial_object)
+        ):
+            initial_object = Composer.instantiate(pipeline.initial_object)
+        # Return initial object for the initial object
+        if not pipes:
+            logger.warning("No pipes specified")
+            return initial_object
+
+        pipe_names = [pipe.run for pipe in pipes]
+        logger.info("Applying %s pipes: %s", len(pipe_names), pipe_names)
+        # Run the task in the current directory.
+        if self is None:
+            self = TaskConfig()
+        with elapsed_timer(format_time=True) as elapsed:
+            with change_directory(self.workspace_dir):
+                rst = reduce(run_pipe, pipes, initial_object)
+            # Print the elapsed time.
+            if pipeline.verbose:
+                logger.info(
+                    " >> elapsed time for the pipeline with %s pipes: %s",
+                    len(pipes),
+                    elapsed(),
+                )
+        return rst

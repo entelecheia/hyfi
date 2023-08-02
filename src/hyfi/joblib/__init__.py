@@ -17,7 +17,7 @@ class JobLibConfig(BaseConfig):
     """JobLib Configuration"""
 
     _config_name_: str = "__init__"
-    _config_group_: str = "joblib"
+    _config_group_: str = "/joblib"
 
     backend: str = "joblib"
     initialize_backend: bool = False

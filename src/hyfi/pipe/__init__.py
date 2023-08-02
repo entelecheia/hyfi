@@ -6,7 +6,7 @@ from typing import Any
 import pandas as pd
 
 from hyfi.joblib import BATCHER
-from hyfi.pipeline.configs import DataframePipeConfig, PipeConfig
+from hyfi.pipeline import DataframePipeConfig, PipeConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 

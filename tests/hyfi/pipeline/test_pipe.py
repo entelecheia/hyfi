@@ -1,5 +1,5 @@
 from hyfi.main import HyFI
-from hyfi.pipeline.configs import DataframePipeConfig
+from hyfi.pipeline import DataframePipeConfig
 
 
 def test_pipe():

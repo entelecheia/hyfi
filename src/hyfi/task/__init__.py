@@ -20,7 +20,6 @@ class TaskConfig(BaseConfig):
 
     task_name: str = "demo-task"
     task_root: str = "workspace"
-    autoload: bool = False
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None
     path: TaskPathConfig = TaskPathConfig()

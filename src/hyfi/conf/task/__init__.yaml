@@ -7,7 +7,6 @@ _config_name_: __init__
 project: ${oc.select:project,null}
 task_name: ${._config_name_}
 task_root: ${oc.select:project.project_root,.}/${oc.select:project.project_workspace_name,workspace}
-autoload: false
 version: ${__version__:}
 verbose: ${oc.select:project.verbose,false}
 pipelines:

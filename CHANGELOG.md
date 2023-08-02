@@ -1,5 +1,36 @@
 <!--next-version-placeholder-->
 
+## v1.17.0 (2023-08-02)
+
+### Feature
+
+* **tests:** Add new unit tests for RunConfig and update TestRunner tests ([`33ee129`](https://github.com/entelecheia/hyfi/commit/33ee12914de115d209c3f7e2b5a03e56e3475bfc))
+* **runner:** Add RunConfig to TestRunner ([`f62cc5b`](https://github.com/entelecheia/hyfi/commit/f62cc5b2964505af5ce80a8db32389d0d9fe7453))
+* **run:** Add new RunConfig class and methods to generate and save HyFi config ([`dabd678`](https://github.com/entelecheia/hyfi/commit/dabd6787d6de31e6a528fdc537642431f103c8fa))
+* **run:** Add RunConfig module ([`fe95115`](https://github.com/entelecheia/hyfi/commit/fe95115617a4e163b44455590dfef796acac9bf4))
+* **run-config:** Add new configuration template in 'help' yaml file ([`4b92892`](https://github.com/entelecheia/hyfi/commit/4b92892121f604b8234c07e2d4eb2756a87b4d72))
+* **composer:** Add sanitizer static method and enhance save method in BaseModel ([`b0ad1c6`](https://github.com/entelecheia/hyfi/commit/b0ad1c6dc974652f297d092181be0d3ff64bcde5))
+* **composer:** Add new SpecialKeys and rename few others ([`e3c3611`](https://github.com/entelecheia/hyfi/commit/e3c3611a517adfacd9552e6099716d4a7e20807f))
+* **runner:** Add defaults to test configuration ([`ca049e3`](https://github.com/entelecheia/hyfi/commit/ca049e37a716460f8bed7d7542bb7c348f707cab))
+* **runner:** Add verbose property to BaseRunner class, add new TestRunner class with 'hello' and 'world' methods ([`9ffee8e`](https://github.com/entelecheia/hyfi/commit/9ffee8e226b5f361a7551c1861e6aeed3e37c36e))
+* **composer/model:** Add verbose property, add save option in base model ([`081bb1e`](https://github.com/entelecheia/hyfi/commit/081bb1e8724da97db310b09ea06a93abb714af1d))
+* **runner:** Add new TestRunner and BaseRunner configurations ([`9c52d32`](https://github.com/entelecheia/hyfi/commit/9c52d32343cddc2731ad0c79b6d2851dceb8dcdb))
+* **runner:** Implement running calls function, add get_running_calls, run_call methods. ([`c41e177`](https://github.com/entelecheia/hyfi/commit/c41e1775fbeaabe343b260883afbc3f8d021d0eb))
+* **workflow:** Add task running capabilities, add pipeline support in workflow run ([`b46f145`](https://github.com/entelecheia/hyfi/commit/b46f1459bdb0939b4a044e6bbdbd68ab00950451))
+* **task:** Add run and run_pipeline methods ([`dc37419`](https://github.com/entelecheia/hyfi/commit/dc3741938c2ce3158cadb5aee5994d6f03c81327))
+* **pipeline:** Add run_pipe function ([`afc75d0`](https://github.com/entelecheia/hyfi/commit/afc75d0cd4e9d7f1727c06159262b310070355fd))
+* **task:** Add get_pipelines method ([`e16c032`](https://github.com/entelecheia/hyfi/commit/e16c03283ef73ca4347388eb51b2c245ba1eace5))
+* **runner:** Add BaseRunner to __init__.py ([`930a8f8`](https://github.com/entelecheia/hyfi/commit/930a8f84405c73408ab0b391729c47fe02559c87))
+* **pipeline:** Add pipeline execution and configuration classes ([`356e22f`](https://github.com/entelecheia/hyfi/commit/356e22fa4d7816e05ce275951bc98af516823cb2))
+* **runner:** Add BaseRunner class, rename configs.py to pipes.py ([`962d3cf`](https://github.com/entelecheia/hyfi/commit/962d3cf811367869780f7a8f93a1ca7279d59dbe))
+* **model:** Add auto-populate, auto-generate, exclude attributes and related functionality, update config group default values and related changes in compose mechanism ([`90cc874`](https://github.com/entelecheia/hyfi/commit/90cc87477cce7bc36f9625afc161ca6a53d9424a))
+
+### Fix
+
+* **hyfi/pipeline:** Add config module for pipeline configuration ([`c9b60c1`](https://github.com/entelecheia/hyfi/commit/c9b60c105e463c3439d880e0d4d474219a635786))
+* **HyFI:** Extract instantiation logic to separate method ([`7ad63f9`](https://github.com/entelecheia/hyfi/commit/7ad63f902c67e3d82883ca316b3cec14719a7bf6))
+* **composer:** Decouple ConfigGroup logic from Composer ([`63144ff`](https://github.com/entelecheia/hyfi/commit/63144ffeed4ef41e477add5e133e4292d9ce4535))
+
 ## v1.16.1 (2023-08-01)
 
 ### Fix

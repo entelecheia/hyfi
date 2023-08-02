@@ -567,10 +567,7 @@ class HyFI(
             config_group = config.get("_config_group_", "")
             if config_group == "/workflow" or cmd_name == "run_workflow":
                 workflow = HyFI.workflow(**config)
-                if dryrun:
-                    print("\nDryrun is enabled, not running the HyFI workflow\n")
-                    return
-                HyFI.run_workflow(workflow)
+                HyFI.run_workflow(workflow, dryrun=dryrun)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
                 project = (
                     HyFI.init_project(**config["project"])
@@ -578,15 +575,13 @@ class HyFI(
                     else None
                 )
                 task = HyFI.task(**config["task"])
-                if dryrun:
-                    print("\nDryrun is enabled, not running the HyFI task\n")
-                    return
-                HyFI.run_task(task, project=project)
+                HyFI.run_task(task, project=project, dryrun=dryrun)
+            elif "runner" in config:
+                runner = config["runner"]
+                HyFI.run_intantiatable(runner, dryrun)
             elif "copier" in config and (cmd_name is None or cmd_name == "copy_conf"):
                 copier_cfg = config["copier"]
-                if dryrun:
-                    print("Dryrun is enabled, not running the HyFI copier")
-                    return
+                copier_cfg["dryrun"] = dryrun
                 with Copier(**copier_cfg) as worker:
                     worker.run_copy()
             else:

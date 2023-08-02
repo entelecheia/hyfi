@@ -65,7 +65,7 @@ class GlobalHyFIConfig(BaseModel):
     __dotenv_file__: str = ".env"
     __secrets_dir__: str = "./secrets"
 
-    __verbose__: Union[bool, int] = False
+    __verbosity__: Union[bool, int] = False
 
     _packages_: List[Tuple[str, str]] = [(__hyfi_package_path__, __hyfi_version__())]
 
@@ -285,11 +285,11 @@ class GlobalHyFIConfig(BaseModel):
         return __global_package_list__
 
     @property
-    def verbose(self) -> int:
+    def verbosity(self) -> int:
         """Returns the verbosity level."""
-        if os.environ.get("HYFI_VERBOSE"):
-            self.__verbose__ = int(os.environ.get("HYFI_VERBOSE", 0))
-        return self.__verbose__
+        if os.environ.get("HYFI_VERBOSITY"):
+            self.__verbosity__ = int(os.environ.get("HYFI_VERBOSITY", 0))
+        return self.__verbosity__
 
 
 __global_hyfi__ = GlobalHyFIConfig()

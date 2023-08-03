@@ -10,7 +10,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from hyfi.composer import BaseModel, ConfigDict
-from hyfi.graphics.utils import get_image_font, load_image, load_images, scale_image
+
+from .utils import get_image_font, load_image, load_images, scale_image
 
 log = logging.getLogger(__name__)
 
@@ -90,7 +91,7 @@ def collage(
     ]
     # convert images
     images = [
-        convert_image(
+        _convert_image(
             image,
             show_filename=show_filename,
             filename=filename,
@@ -102,7 +103,7 @@ def collage(
         for image, filename in zip(images, filenames)
     ]
 
-    collage = grid_of_images(images, ncols, padding, bg_color=bg_color)
+    collage = _grid_of_images(images, ncols, padding, bg_color=bg_color)
     if collage_filepath is not None:
         collage_filepath = str(collage_filepath)
         os.makedirs(os.path.dirname(collage_filepath), exist_ok=True)
@@ -179,7 +180,7 @@ def label_collage(
     plt.tight_layout()
     if caption is not None:
         print(f"[{caption}]")
-    img = fig2img(fig, dpi=dpi)
+    img = _fig2img(fig, dpi=dpi)
     img = scale_image(img, max_width=collage.width)
     plt.close()
 
@@ -208,7 +209,7 @@ def _get_ticks(lim, n):
     return result
 
 
-def grid_of_images(
+def _grid_of_images(
     images: List[Image.Image],
     ncols: int = 3,
     padding: int = 10,
@@ -238,7 +239,7 @@ def grid_of_images(
     )
 
 
-def fig2img(fig, dpi=300):
+def _fig2img(fig, dpi=300):
     """Convert a Matplotlib figure to a PIL Image and return it"""
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=dpi, bbox_inches="tight", pad_inches=0)
@@ -246,7 +247,7 @@ def fig2img(fig, dpi=300):
     return Image.open(buf)
 
 
-def convert_image(
+def _convert_image(
     image_or_uri,
     show_filename: bool = False,
     filename: Optional[str] = None,

@@ -1,20 +1,19 @@
 from typing import Dict, List, Optional, Union
 
-from hyfi.composer import BaseModel
 from hyfi.pipeline.config import RunningCalls, RunningConfig, get_running_configs
 from hyfi.run import RunConfig
+from hyfi.task import TaskConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class BaseRunner(BaseModel):
+class BaseRunner(TaskConfig):
     _config_group_: str = "/runner"
     _config_name_: str = "__init__"
 
     calls: Optional[List[Union[str, Dict]]] = []
-    verbose: bool = False
 
     def __call__(self) -> None:
         self.run()

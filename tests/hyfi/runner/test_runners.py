@@ -20,5 +20,5 @@ def test_runner_config() -> None:
 
 
 if __name__ == "__main__":
-    # test_runner()
+    test_runner()
     test_runner_config()

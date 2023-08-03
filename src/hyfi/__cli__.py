@@ -7,7 +7,7 @@ import hydra
 from omegaconf import DictConfig
 
 from hyfi.core import global_hyfi
-from hyfi.core.hydra.main import main as hyfi_hydra_main
+from hyfi.core.hydra import hyfi_hydra_main
 from hyfi.main import HyFI, HyfiConfig
 
 logger = HyFI.getLogger(__name__)

@@ -1,7 +1,14 @@
 defaults:
+- /path@path: __task__
 - /run@load_args: load_data
 _target_: hyfi.runner.base.TestRunner
 _config_name_: __test__
 _config_group_: /runner
-calls: []
 verbose: false
+task_name: demo-task
+task_root: workspace
+version: 0.0.0
+module: null
+project: null
+pipelines: []
+calls: []

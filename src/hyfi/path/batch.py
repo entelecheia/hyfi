@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from hyfi.path.task import TaskPathConfig
 from hyfi.utils.logging import LOGGING
+
+from .task import TaskPathConfig
 
 logger = LOGGING.getLogger(__name__)
 

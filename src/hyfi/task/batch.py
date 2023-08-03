@@ -7,8 +7,9 @@ from typing import Dict, List, Optional, Set, Union
 from hyfi.batch import BatchConfig
 from hyfi.composer import Composer
 from hyfi.path.batch import BatchPathConfig
-from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING
+
+from .task import TaskConfig
 
 logger = LOGGING.getLogger(__name__)
 

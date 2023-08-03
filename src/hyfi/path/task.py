@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from hyfi.path.base import BasePathConfig
 from hyfi.utils.logging import LOGGING
+
+from .base import BasePathConfig
 
 logger = LOGGING.getLogger(__name__)
 

@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.17.2 (2023-08-03)
+
+### Fix
+
+* **runner:** BaseRunner now inherits from TaskConfig instead of BaseModel ([`d025731`](https://github.com/entelecheia/hyfi/commit/d0257312542e70c625d40b65910931c055c96cda))
+
 ## v1.17.1 (2023-08-02)
 
 ### Fix

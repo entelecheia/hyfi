@@ -15,5 +15,11 @@ def test_composer():
     print(cfg)
 
 
+def test_composer_overrides():
+    cfg = Composer._compose("about", overrides=["++about.name=test"])
+    print(cfg)
+
+
 if __name__ == "__main__":
     test_composer()
+    test_composer_overrides()

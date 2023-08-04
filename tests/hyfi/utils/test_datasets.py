@@ -10,7 +10,7 @@ def test_datasets():
     print(type(dset))
     print(dset)
     assert isinstance(dset, DatasetDict)
-    data = HyFI.sample_dataset(dset, num_samples=1, split="train")
+    data = HyFI.sample_dataset(dset, sample_size=1, split="train")
     print(data)
     assert isinstance(data, Dataset)
     HyFI.save_dataset_to_disk(data, "workspace/tmp/demo1")

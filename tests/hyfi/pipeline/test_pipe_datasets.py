@@ -15,7 +15,7 @@ def test_pipe_datasets():
     data2 = HyFI.run_pipe(data, HyFI.to_dict(config))
     print(data2)
     config = HyFI.compose("pipe=sample_dataset")
-    config.run.update({"num_samples": 1})
+    config.run.update({"sample_size": 1})
     print(config)
     data3 = HyFI.run_pipe(data, HyFI.to_dict(config))
     print(data3)

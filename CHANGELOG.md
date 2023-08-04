@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.18.0 (2023-08-04)
+
+### Feature
+
+* **pipe:** Add sample_data.yaml configuration ([`446f815`](https://github.com/entelecheia/hyfi/commit/446f815067cec2d41980f92df1d3d47074dadf36))
+* **hyfi/conf/pipe:** Add load_dataframe.yaml configuration ([`edc629e`](https://github.com/entelecheia/hyfi/commit/edc629e7342fedc9cc536d8495d0c4fe7f059771))
+* **hyfi/conf/pipe:** Add new filter_data_by_queries configuration file, add new run configuration for filter_data_by_queries ([`8da5d8c`](https://github.com/entelecheia/hyfi/commit/8da5d8cfc552c09f854d5f7e0a1b2b7ad3585911))
+* **hyfi/conf/pipe:** Add filter_and_sample_data.yaml configuration file ([`008a1d5`](https://github.com/entelecheia/hyfi/commit/008a1d5f30509970dad8157f8781179ce35b2d23))
+* **hyfi/conf/pipe:** Add dataset_to_pandas configuration ([`1386bdd`](https://github.com/entelecheia/hyfi/commit/1386bdd7fc3715ee47c234a247e2cc6d151ecd07))
+* **datasets:** Improve sampling logic, add data filtering and sampling methods, add query-based data filter, rename num_samples to sample_size and random_seed to sample_seed ([`e350738`](https://github.com/entelecheia/hyfi/commit/e350738ced664d74421153cabd494bdfca57c7ce))
+
 ## v1.17.2 (2023-08-03)
 
 ### Fix

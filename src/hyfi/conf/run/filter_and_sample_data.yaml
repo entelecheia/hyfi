@@ -1,0 +1,9 @@
+_target_: hyfi.utils.datasets.DATASETs.filter_and_sample_data
+queries: null
+sample_size: null
+sample_seed: 42
+output_dir: .
+sample_filename: null
+train_filename: train.parquet
+discard_filename: discard.parquet
+verbose: false

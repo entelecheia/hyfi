@@ -1,0 +1,6 @@
+defaults:
+- __dataframe_external_funcs__
+- /run: filter_and_sample_data
+use_pipe_obj: true
+pipe_obj_arg_name: null
+return_pipe_obj: false

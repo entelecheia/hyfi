@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.18.1 (2023-08-04)
+
+### Fix
+
+* **composer:** Streamline override addition process ([`1943f4a`](https://github.com/entelecheia/hyfi/commit/1943f4a9bdcc6f1763f34820d27d83c4ca84a806))
+
 ## v1.18.0 (2023-08-04)
 
 ### Feature

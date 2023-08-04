@@ -90,7 +90,6 @@ class ConfigGroup(BaseModel):
             config = Composer.hydra_compose(
                 root_config_name=root_config_name,
                 config_module=config_module,
-                overrides=overrides,
             )
             config = Composer.select(
                 config,
@@ -103,11 +102,8 @@ class ConfigGroup(BaseModel):
                 self.group_override if config is not None else f"+{self.group_override}"
             )
             # Add override to overrides list.
-            if override:
-                if overrides:
-                    overrides.append(override)
-                else:
-                    overrides = [override]
+            if override and override not in overrides:
+                overrides = [override] + overrides
 
         return overrides
 

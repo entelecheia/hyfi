@@ -16,11 +16,10 @@ from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 from .transform import DSTransform
+from .types import DatasetType
 from .utils import DSUtils
 
 logger = LOGGING.getLogger(__name__)
-
-from .types import DatasetType
 
 
 class DSLoad:

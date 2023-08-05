@@ -15,8 +15,6 @@ from .generator import sanitized_default_value
 
 logger = LOGGING.getLogger(__name__)
 
-__all__ = ["BaseModel", "model_validator"]
-
 
 class BaseModel(PydanticBaseModel):
     """
@@ -66,11 +64,11 @@ class BaseModel(PydanticBaseModel):
                 _config_group_,
             )
         config_group = f"{_config_group_}={_config_name_}"
-        cfg = Composer(
+        cfg = Composer.compose_as_dict(
             config_group=config_group,
             config_data=data,
             throw_on_compose_failure=False,
-        ).config_as_dict
+        )
         data = Composer.update(cfg, data)
         # Exclude any attributes specified in the class's `exclude` list.
         exclude = getattr(cls._exclude_, "default", set())  # type: ignore
@@ -223,3 +221,6 @@ class TestModel(BaseModel):
     inner: InnerTestModel = InnerTestModel()
 
     name: str = "test"
+
+
+__all__ = ["BaseModel", "model_validator"]

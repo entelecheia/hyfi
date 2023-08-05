@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.DATASETs.filter_and_sample_data
+_target_: hyfi.utils.datasets.filter.DSFilter.filter_and_sample_data
 queries: null
 sample_size: null
 sample_seed: 42

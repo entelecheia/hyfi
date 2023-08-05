@@ -88,10 +88,6 @@ class HyFI(
 ):
     """Primary class for the hyfi config package"""
 
-    global_config = global_config
-    global_hyfi = global_hyfi
-    SpeicialKeys = SpecialKeys
-    config_module = global_hyfi.config_module
     __version__ = __hyfi_version__()
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()

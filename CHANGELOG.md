@@ -1,5 +1,18 @@
 <!--next-version-placeholder-->
 
+## v1.19.0 (2023-08-05)
+
+### Feature
+
+* **datasets/utils:** Add DSUtils class with static utility methods ([`c3271e1`](https://github.com/entelecheia/hyfi/commit/c3271e18b1ed6f93fbd78e55733ff06c66ed6a02))
+* **hyfi/utils/datasets:** Add types for various datasets ([`407b73a`](https://github.com/entelecheia/hyfi/commit/407b73a55f94cf6393167c9bd35fe2c7e8d358f6))
+* **datasets:** Add new transform class for handling datasets ([`f144aec`](https://github.com/entelecheia/hyfi/commit/f144aecfe5e45a35b1335eb04b5cf28d42486b49))
+* **datasets:** Add new DSProcess class in process.py ([`2ee478e`](https://github.com/entelecheia/hyfi/commit/2ee478e1b0e15f7a8fbb5433c482492f86ae3d50))
+* **datasets:** Add DSSave class with save_dataframes and save_dataset_to_disk methods ([`ce373b6`](https://github.com/entelecheia/hyfi/commit/ce373b697f004cf476d207345b54689cfa32c0d4))
+* **DSLoad:** Add methods to load data from various formats and sources ([`5a1d5d0`](https://github.com/entelecheia/hyfi/commit/5a1d5d0387c1440ac2808fd21df10458b14eacbe))
+* **hyfi/utils/datasets/filter.py:** Add functionality to filter and sample datasets ([`b498ac3`](https://github.com/entelecheia/hyfi/commit/b498ac3fcd13cf5d01a7fef1b26784cd6ee61ce4))
+* **datasets:** Add new modules (DSFilter, DSLoad, DSProcess, DSSave, DSTransform, types and utils) under datasets directory. remove deprecated datasets.py file. ([`6567dbe`](https://github.com/entelecheia/hyfi/commit/6567dbe51e350ec75eded2b757861f67546f9628))
+
 ## v1.18.1 (2023-08-04)
 
 ### Fix

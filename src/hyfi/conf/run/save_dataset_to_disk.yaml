@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.DATASETs.save_dataset_to_disk
+_target_: hyfi.utils.datasets.save.DSSave.save_dataset_to_disk
 dataset_path: null
 max_shard_size: null
 num_shards: null

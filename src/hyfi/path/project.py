@@ -11,16 +11,16 @@ class ProjectPathConfig(BasePathConfig):
     _config_name_: str = "__project__"
 
     # internal paths for hyfi
-    home: str = ""
-    hyfi: str = ""
-    resources: str = ""
-    runtime: str = ""
+    home: str
+    hyfi: str
+    resources: str
+    runtime: str
     # global paths
-    global_hyfi_root: str = ""
+    global_hyfi_root: str = "."
     global_workspace_name: str = ".hyfi"
     # project specific paths
-    project_name: str = ""
-    project_root: str = ""
+    project_name: str
+    project_root: str = "."
     project_workspace_name: str = "workspace"
 
     @property

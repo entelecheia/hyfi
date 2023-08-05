@@ -24,6 +24,7 @@ from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 from hyfi.workflow import WorkflowConfig
+from hyfi.copier import Copier
 
 logger = LOGGING.getLogger(__name__)
 
@@ -41,7 +42,7 @@ class HyfiConfig(BaseModel):
     hydra: Optional[DictConfig] = None
 
     about: Optional[AboutConfig] = None
-    copier: Optional[DictConfig] = None
+    copier: Optional[Copier] = None
     project: Optional[ProjectConfig] = None
     pipeline: Optional[PipelineConfig] = None
     task: Optional[TaskConfig] = None
@@ -90,30 +91,21 @@ class HyfiConfig(BaseModel):
         logger.setLevel(v)
         return v
 
-    def __init__(self, **config_kwargs: Any):
-        """
-        Initialize the object with data
-
-        Args:
-            config_kwargs: Dictionary of values to initialize the object with
-        """
-        super().__init__(**config_kwargs)
-
     def init_project(
         self,
-        project_name: str = "",
-        project_description: str = "",
-        project_root: str = "",
-        project_workspace_name: str = "",
-        global_hyfi_root: str = "",
-        global_workspace_name: str = "",
-        num_workers: int = -1,
-        log_level: str = "",
+        project_name: Optional[str] = None,
+        project_description: Optional[str] = None,
+        project_root: Optional[str] = None,
+        project_workspace_name: Optional[str] = None,
+        global_hyfi_root: Optional[str] = None,
+        global_workspace_name: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        log_level: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,
-        **kwargs,
+        **project_kwargs,
     ):
         """
         Initialize and start hyfi.
@@ -131,6 +123,11 @@ class HyfiConfig(BaseModel):
             retina: Whether to use retina or not.
             verbose: Enables or disables logging
         """
+        if self._initilized_ and not reinit:
+            return
+        if self.about is None:
+            self.about = AboutConfig()
+        # ENVs.load_dotenv()
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
@@ -169,24 +166,8 @@ class HyfiConfig(BaseModel):
         if retina:
             NBs.set_matplotlib_formats("retina")
 
-        self.initialize(force=reinit)
-        self.project = ProjectConfig()
-        logger.info("HyFi project initialized with %s", self.project.project_name)
-
-    def initialize(self, force: bool = False) -> None:
-        """
-        Initialize hyfi.
-
-        Returns:
-            A boolean indicating whether initialization was successful
-        """
-        # Returns the current value of the _initilized_ attribute.
-        if self._initilized_ and not force:
-            return
-        if self.about is None:
-            self.about = AboutConfig()
-        ENVs.load_dotenv()
-
+        self.project = ProjectConfig(**project_kwargs)
+        logger.info("HyFi project [%s] initialized", self.project.project_name)
         self._initilized_ = True
 
     def terminate(self) -> None:

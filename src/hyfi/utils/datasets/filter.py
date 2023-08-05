@@ -113,7 +113,7 @@ class DSFilter:
         else:
             discard = data[~data.index.isin(train.index)]
         if discard_filename:
-            DSFilter.save_dataframes(
+            DSSave.save_dataframes(
                 discard,
                 data_file=f"{output_dir}/{discard_filename}",
                 verbose=verbose,

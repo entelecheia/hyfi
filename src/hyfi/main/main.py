@@ -147,19 +147,19 @@ class HyFI(
 
     @staticmethod
     def init_project(
-        project_name: str = "",
-        project_description: str = "",
-        project_root: str = "",
-        project_workspace_name: str = "",
-        global_hyfi_root: str = "",
-        global_workspace_name: str = "",
-        num_workers: int = -1,
-        log_level: str = "",
+        project_name: Optional[str] = None,
+        project_description: Optional[str] = None,
+        project_root: Optional[str] = None,
+        project_workspace_name: Optional[str] = None,
+        global_hyfi_root: Optional[str] = None,
+        global_workspace_name: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        log_level: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,
-        **kwargs,
+        **project_kwargs,
     ) -> ProjectConfig:
         """
         Initialize and start hyfi.
@@ -190,7 +190,7 @@ class HyFI(
             autotime=autotime,
             retina=retina,
             verbose=verbose,
-            **kwargs,
+            **project_kwargs,
         )
         if global_config.project:
             return global_config.project
@@ -207,19 +207,6 @@ class HyFI(
         """
         logger.info(f"Setting the global project to {project.project_name}")
         global_config.project = project
-
-    @staticmethod
-    def initialize(force: bool = False) -> None:
-        """
-        Initialize the global config.
-
-        Args:
-            force: If True, force initialization even if already initialized.
-
-        Returns:
-            bool: True if initialization was successful, False otherwise.
-        """
-        global_config.initialize(force=force)
 
     @staticmethod
     def terminate() -> None:

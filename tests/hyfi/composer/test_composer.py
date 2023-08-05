@@ -9,14 +9,14 @@ def my_function():
 
 def test_composer():
     my_function()
-    cfg = Composer._compose("about", config_module="hyfi.conf")
+    cfg = Composer.compose("about", config_module="hyfi.conf")
     print(cfg)
-    cfg = Composer._compose("/path/dirnames=__init__")
+    cfg = Composer.compose("/path/dirnames=__init__")
     print(cfg)
 
 
 def test_composer_overrides():
-    cfg = Composer._compose("about", overrides=["++about.name=test"])
+    cfg = Composer.compose("about", overrides=["++about.name=test"])
     print(cfg)
 
 

@@ -15,6 +15,7 @@ from hyfi.composer import (
     field_validator,
     model_validator,
 )
+from hyfi.copier import Copier
 from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.pipeline import PipelineConfig
@@ -24,7 +25,6 @@ from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 from hyfi.workflow import WorkflowConfig
-from hyfi.copier import Copier
 
 logger = LOGGING.getLogger(__name__)
 

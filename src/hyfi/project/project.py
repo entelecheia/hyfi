@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 from hyfi.composer import BaseConfig, field_validator
 from hyfi.dotenv import DotEnvConfig

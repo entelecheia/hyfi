@@ -27,7 +27,7 @@ def test_pipe():
     pipe = PipeConfig(**config)
     HyFI.print(pipe.model_dump())
     print(pipe.run_config)
-    assert pipe.run_config["_target_"] == "hyfi.utils.datasets.DATASETs.load_dataframes"
+    assert pipe.run_config["_target_"] == "hyfi.utils.datasets.load.DSLoad.load_dataframes"
 
 
 def test_pipeline():

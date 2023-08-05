@@ -10,7 +10,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import GENERATOR, Composer, SpecialKeys
+from hyfi.composer import GENERATOR, Composer
 from hyfi.copier import Copier
 from hyfi.core import (
     __app_version__,
@@ -26,7 +26,7 @@ from hyfi.core import (
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
-from hyfi.pipeline import PipeConfig, PIPELINEs
+from hyfi.pipeline import PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils import LOGGING, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs

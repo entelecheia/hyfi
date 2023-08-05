@@ -86,3 +86,16 @@ class PIPELINEs:
             print("\nDryrun is enabled, not running the HyFI workflow\n")
             return
         workflow.run()
+
+    @staticmethod
+    def pipe(**kwargs) -> PipeConfig:
+        """
+        Return the PipeConfig.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the PipeConfig constructor.
+
+        Returns:
+            PipeConfig: An instance of the PipeConfig class.
+        """
+        return PipeConfig(**kwargs)

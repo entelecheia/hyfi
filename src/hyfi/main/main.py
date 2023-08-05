@@ -268,19 +268,6 @@ class HyFI(
         return os.environ
 
     @staticmethod
-    def pipe(**kwargs) -> PipeConfig:
-        """
-        Return the PipeConfig.
-
-        Args:
-            **kwargs: Additional keyword arguments to pass to the PipeConfig constructor.
-
-        Returns:
-            PipeConfig: An instance of the PipeConfig class.
-        """
-        return PipeConfig(**kwargs)
-
-    @staticmethod
     def task(**kwargs) -> TaskConfig:
         """
         Return the TaskConfig.

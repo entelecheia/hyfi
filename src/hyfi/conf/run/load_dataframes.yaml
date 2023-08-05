@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.DATASETs.load_dataframes
+_target_: hyfi.utils.datasets.load.DSLoad.load_dataframes
 data_files: null
 data_dir: null
 filetype: null

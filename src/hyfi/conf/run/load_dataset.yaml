@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.DATASETs.load_dataset
+_target_: hyfi.utils.datasets.load.DSLoad.load_dataset
 path: null
 name: null
 data_dir: null

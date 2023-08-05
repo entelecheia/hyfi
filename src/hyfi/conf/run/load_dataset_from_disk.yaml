@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.DATASETs.load_dataset_from_disk
+_target_: hyfi.utils.datasets.load.DSLoad.load_dataset_from_disk
 dataset_path: null
 keep_in_memory: null
 storage_options: null

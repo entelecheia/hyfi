@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional
 
 from hyfi.composer import BaseConfig, field_validator
 from hyfi.dotenv import DotEnvConfig
@@ -19,19 +19,19 @@ class ProjectConfig(BaseConfig):
     _config_group_: str = "/project"
     # Project Config
     project_name: str = "hyfi"
-    project_description: str = ""
-    project_root: str = ""
+    project_description: Optional[str] = None
+    project_root: str = "."
     project_workspace_name: str = "workspace"
-    global_hyfi_root: str = ""
+    global_hyfi_root: str = "."
     global_workspace_name: str = ".hyfi"
     num_workers: int = 1
     use_huggingface_hub: bool = False
     use_wandb: bool = False
     verbose: Union[bool, int] = False
     # Config Classes
-    dotenv: DotEnvConfig = None  # type: ignore
-    joblib: JobLibConfig = None  # type: ignore
-    path: ProjectPathConfig = None  # type: ignore
+    dotenv: Optional[DotEnvConfig] = None
+    joblib: Optional[JobLibConfig] = None
+    path: Optional[ProjectPathConfig] = None
 
     _property_set_methods_ = {
         "project_name": "set_project_name",
@@ -72,12 +72,18 @@ class ProjectConfig(BaseConfig):
         self.dotenv = DotEnvConfig()
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
-        self.dotenv.HYFI_PROJECT_DESC = self.project_description
-        self.dotenv.HYFI_PROJECT_ROOT = self.project_root
-        self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
-        self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
-        self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
-        self.dotenv.HYFI_NUM_WORKERS = self.num_workers
+        if self.project_description:
+            self.dotenv.HYFI_PROJECT_DESC = self.project_description
+        if self.project_root:
+            self.dotenv.HYFI_PROJECT_ROOT = self.project_root
+        if self.project_workspace_name:
+            self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
+        if self.global_hyfi_root:
+            self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
+        if self.global_workspace_name:
+            self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
+        if self.num_workers:
+            self.dotenv.HYFI_NUM_WORKERS = self.num_workers
         self.dotenv.HYFI_VERBOSE = self.verbose
         self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
 

@@ -1,7 +1,9 @@
-from .batch import BatchTaskConfig
-from .task import TaskConfig
+from .batch import BatchPathConfig, BatchTaskConfig
+from .task import TaskConfig, TaskPathConfig
 
 __all__ = [
     "BatchTaskConfig",
     "TaskConfig",
+    "BatchPathConfig",
+    "TaskPathConfig",
 ]

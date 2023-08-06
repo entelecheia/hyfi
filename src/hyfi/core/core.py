@@ -308,54 +308,67 @@ class GlobalHyFIConfig(BaseModel):
 __global_hyfi__ = GlobalHyFIConfig()
 
 
-def __hyfi_path__() -> str:
-    """Returns the path to the HyFI root folder"""
-    return __global_hyfi__.hyfi_package_path
+class GlobalHyFIResolver:
+    @staticmethod
+    def __hyfi_version__() -> str:
+        """
+        Returns the version of HyFI.
 
+        Returns:
+            string containing the version of HyFI
+        """
+        from hyfi._version import __version__
 
-def __home_path__() -> str:
-    """Returns the path to the user's home folder"""
-    return Path.home().as_posix()
+        return __version__
 
+    def __hyfi_path__() -> str:
+        """Returns the path to the HyFI root folder"""
+        return __global_hyfi__.hyfi_package_path
 
-def __app_version__() -> str:
-    """
-    Returns the version of App.
+    @staticmethod
+    def __home_path__() -> str:
+        """Returns the path to the user's home folder"""
+        return Path.home().as_posix()
 
-    Returns:
-        string containing the version of App
-    """
+    @staticmethod
+    def __app_version__() -> str:
+        """
+        Returns the version of App.
 
-    return __global_hyfi__.version
+        Returns:
+            string containing the version of App
+        """
 
+        return __global_hyfi__.version
 
-def __package_name__() -> str:
-    """
-    Returns the package name of the App
+    @staticmethod
+    def __package_name__() -> str:
+        """
+        Returns the package name of the App
 
-    Returns:
-        string containing the package name of the App
-    """
+        Returns:
+            string containing the package name of the App
+        """
 
-    return __global_hyfi__.package_name
+        return __global_hyfi__.package_name
 
+    @staticmethod
+    def __package_path__() -> str:
+        """
+        Returns the path to the App root folder
 
-def __package_path__() -> str:
-    """
-    Returns the path to the App root folder
+        Returns:
+            string containing the path to the App root folder
+        """
 
-    Returns:
-        string containing the path to the App root folder
-    """
+        return __global_hyfi__.package_path
 
-    return __global_hyfi__.package_path
+    @staticmethod
+    def __config_module_path__() -> str:
+        """Global HyFI config path for the package to search for."""
+        return __global_hyfi__.config_module_path
 
-
-def __config_module_path__() -> str:
-    """Global HyFI config path for the package to search for."""
-    return __global_hyfi__.config_module_path
-
-
-def __user_config_path__() -> str:
-    """Global HyFI user config path for the package to search for."""
-    return __global_hyfi__.user_config_path
+    @staticmethod
+    def __user_config_path__() -> str:
+        """Global HyFI user config path for the package to search for."""
+        return __global_hyfi__.user_config_path

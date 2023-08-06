@@ -2,7 +2,8 @@
 Hyfi configuration file.
 """
 import os
-from typing import Any, List, Optional, Union
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 from omegaconf import DictConfig
 
@@ -15,22 +16,23 @@ from hyfi.composer import (
     field_validator,
     model_validator,
 )
-from hyfi.copier import Copier
 from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
-from hyfi.pipeline import PipelineConfig
 from hyfi.project import ProjectConfig
-from hyfi.task import TaskConfig
 from hyfi.utils.envs import ENVs
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
-from hyfi.workflow import WorkflowConfig
 
 logger = LOGGING.getLogger(__name__)
 
+ConfigType = Union[DictConfig, Dict]
 
-class HyfiConfig(BaseModel):
-    """HyFI root config class.  This class is used to store the configuration"""
+__default_project_root__ = "."
+__default_workspace_name__ = "workspace"
+
+
+class GlobalConfig(BaseModel):
+    """HyFI global config class.  This class is used to store the configuration"""
 
     debug_mode: bool = False
     noop: bool = False
@@ -39,14 +41,14 @@ class HyfiConfig(BaseModel):
     verbose: bool = False
     logging_level: str = "WARNING"
 
-    hydra: Optional[DictConfig] = None
+    hydra: Optional[ConfigType] = None
 
     about: Optional[AboutConfig] = None
-    copier: Optional[Copier] = None
+    copier: Optional[ConfigType] = None
     project: Optional[ProjectConfig] = None
-    pipeline: Optional[PipelineConfig] = None
-    task: Optional[TaskConfig] = None
-    workflow: Optional[WorkflowConfig] = None
+    pipeline: Optional[ConfigType] = None
+    task: Optional[ConfigType] = None
+    workflow: Optional[ConfigType] = None
     tasks: Optional[List[str]] = None
 
     _version_: str = PrivateAttr(global_hyfi.version)
@@ -255,30 +257,54 @@ class HyfiConfig(BaseModel):
         if pkg_name:
             print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
 
-    def get_project_path(self, path_name: str) -> str:
-        if self.project and self.project.path:
-            return str(self.project.path.get_path(path_name))
-        return ""
-
     @property
-    def project_root_path(self):
+    def project_dir(self) -> Path:
         """Get the project root directory."""
-        return str(self.project.root_dir) if self.project else "."
+        return (
+            self.project.root_dir
+            if self.project
+            else Path(__default_project_root__).absolute()
+        )
 
     @property
-    def project_workspace_path(self):
+    def project_workspace_dir(self) -> Path:
         """Get the project workspace directory."""
-        return str(self.project.workspace_dir) if self.project else "."
+        return (
+            self.project.workspace_dir
+            if self.project
+            else self.project_dir / __default_workspace_name__
+        )
+
+    def get_path(
+        self,
+        path_name: str,
+        base_dir: Optional[Union[Path, str]] = None,
+    ) -> Optional[Path]:
+        """
+        Get the path to a directory or file.
+        """
+        return (
+            self.project.get_path(path_name, base_dir=base_dir)
+            if self.project
+            else None
+        )
 
 
-__global_config__ = HyfiConfig()
+global_config = GlobalConfig()
 
 
-def __project_root_path__():
+def __project_root_path__() -> str:
     """Global HyFI config path for the project root."""
-    return __global_config__.project_root_path
+    return str(global_config.project_dir or "")
 
 
-def __project_workspace_path__():
+def __project_workspace_path__() -> str:
     """Global HyFI config path for the project workspace directory."""
-    return __global_config__.project_workspace_path
+    return str(global_config.project_workspace_dir or "")
+
+
+def __get_path__(path_name: str, base_dir: Optional[str] = None) -> str:
+    """
+    Get the path to a directory or file.
+    """
+    return str(global_config.get_path(path_name, base_dir=base_dir) or "")

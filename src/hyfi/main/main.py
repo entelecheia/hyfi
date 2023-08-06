@@ -32,8 +32,7 @@ from hyfi.task import TaskConfig
 from hyfi.utils import LOGGING, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
 
-from .config import __global_config__ as global_config
-from .config import __project_root_path__, __project_workspace_path__
+from .config import __project_root_path__, __project_workspace_path__, global_config
 
 logger = LOGGING.getLogger(__name__)
 
@@ -265,12 +264,7 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        if global_config.project and "project" in kwargs:
-            del kwargs["project"]
-        task = TaskConfig(**kwargs)
-        if global_config.project:
-            task.project = global_config.project
-        return task
+        return TaskConfig(**kwargs)
 
     @staticmethod
     def workflow(**kwargs) -> WorkflowConfig:
@@ -283,22 +277,7 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        config_group = kwargs.get("_config_group_")
-        config_name = kwargs.get("workflow_name")
-        if config_group and config_group == "/workflow" and config_name:
-            cfg = HyFI.compose_as_dict(
-                config_group=f"{config_group}={config_name}",
-                config_data=kwargs,
-                global_package=True,
-            )
-        else:
-            cfg = kwargs
-        if global_config.project and "project" in cfg:
-            del cfg["project"]
-        wf = WorkflowConfig(**cfg)
-        if global_config.project:
-            wf.project = global_config.project
-        return wf
+        return WorkflowConfig(**kwargs)
 
     ###############################
     # Pipeline related functions

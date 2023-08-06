@@ -1,5 +1,23 @@
 <!--next-version-placeholder-->
 
+## v1.20.0 (2023-08-06)
+
+### Feature
+
+* **hyfi/main:** Add new resolver __get_path__ ([`aa2a986`](https://github.com/entelecheia/hyfi/commit/aa2a986ca56a743fa0e01cf3b02f32787efa7699))
+* **hyfi:** Add config name and group properties ([`492bdc5`](https://github.com/entelecheia/hyfi/commit/492bdc5de198fbaf7a1ff618b1cddb91036a9530))
+* **HyFI:** Adds pipelines Optional[List[str]], adds app_name property ([`6dc25bb`](https://github.com/entelecheia/hyfi/commit/6dc25bbd24d340f63eeede2c57004e94ec26601f))
+* **hyfi/utils:** Add osenv method to ENVs class ([`c83e8ea`](https://github.com/entelecheia/hyfi/commit/c83e8ea419c98e392f2800aa006dd145d9801dd8))
+* **main:** Added validation for logging level, added new properties to HyFI class, method about renamed to print_about ([`6294208`](https://github.com/entelecheia/hyfi/commit/62942089e95c73c3743276c163512da5593e3b58))
+* **utils:** Add UTILs class and update __all__ list ([`e0bd072`](https://github.com/entelecheia/hyfi/commit/e0bd0728478fdb6656d28720f897b023e54e713d))
+
+### Fix
+
+* **hyfi:** Replace direct function calls with resolver methods ([`db9400b`](https://github.com/entelecheia/hyfi/commit/db9400bc4e16bbd6aabbf20eaa2760e768bfddd7))
+* **project:** Integrate composer into projectConfig class ([`a0c0eec`](https://github.com/entelecheia/hyfi/commit/a0c0eecc51799d6ad4c8f5bf1c08cf9b0120f2e0))
+* **hyfi:** Replace GlobalConfig with HyFI in print_about method ([`6bab887`](https://github.com/entelecheia/hyfi/commit/6bab8874302a0066043a48315ed84ddf16bdb6d8))
+* **hyfi:** Replace GlobalConfig with HyFI, streamline HyFI usage ([`4c446dd`](https://github.com/entelecheia/hyfi/commit/4c446dd22530648320698e57c8039e80130312ba))
+
 ## v1.19.1 (2023-08-06)
 
 ### Fix

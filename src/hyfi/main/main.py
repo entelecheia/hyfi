@@ -10,7 +10,16 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import GENERATOR, Composer
+from hyfi.composer import (
+    GENERATOR,
+    BaseModel,
+    Composer,
+    ConfigDict,
+    FieldValidationInfo,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from hyfi.copier import Copier
 from hyfi.core import (
     __app_version__,
@@ -29,12 +38,11 @@ from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils import LOGGING, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
 
 from .config import __project_root_path__, __project_workspace_path__, global_config
 
-logger = LOGGING.getLogger(__name__)
+logger = Composer.getLogger(__name__)
 
 
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
@@ -50,40 +58,33 @@ OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
 OmegaConf.register_new_resolver(
     "__project_workspace_path__", __project_workspace_path__
 )
-OmegaConf.register_new_resolver("today", FUNCs.today)
-OmegaConf.register_new_resolver("to_datetime", FUNCs.strptime)
+OmegaConf.register_new_resolver("today", Composer.today)
+OmegaConf.register_new_resolver("to_datetime", Composer.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
 OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
 OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
 OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
-OmegaConf.register_new_resolver("get_original_cwd", ENVs.getcwd)
-OmegaConf.register_new_resolver("exists", IOLIBs.exists)
-OmegaConf.register_new_resolver("join_path", IOLIBs.join_path)
-OmegaConf.register_new_resolver("mkdir", IOLIBs.mkdir)
+OmegaConf.register_new_resolver("get_original_cwd", Composer.getcwd)
+OmegaConf.register_new_resolver("exists", Composer.exists)
+OmegaConf.register_new_resolver("join_path", Composer.join_path)
+OmegaConf.register_new_resolver("mkdir", Composer.mkdir)
 OmegaConf.register_new_resolver("dirname", os.path.dirname)
 OmegaConf.register_new_resolver("basename", os.path.basename)
-OmegaConf.register_new_resolver("check_path", IOLIBs.check_path)
+OmegaConf.register_new_resolver("check_path", Composer.check_path)
 OmegaConf.register_new_resolver("cached_path", cached_path)
 OmegaConf.register_new_resolver(
-    "lower_case_with_underscores", FUNCs.lower_case_with_underscores
+    "lower_case_with_underscores", Composer.lower_case_with_underscores
 )
-OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)
+OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
 class HyFI(
+    BaseModel,
     BATCHER,
     Composer,
-    DATASETs,
-    ENVs,
-    FUNCs,
     GENERATOR,
-    GPUs,
     GRAPHICs,
-    IOLIBs,
-    LOGGING,
-    NBs,
     PIPELINEs,
-    PKGs,
 ):
     """Primary class for the hyfi config package"""
 

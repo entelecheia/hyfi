@@ -96,13 +96,14 @@ class HyFI(
 
     hydra: Optional[ConfigType] = None
 
-    # about: Optional[ConfigType] = None
-    # copier: Optional[ConfigType] = None
-    # project: Optional[ProjectConfig] = None
-    # pipeline: Optional[ConfigType] = None
-    # task: Optional[ConfigType] = None
-    # workflow: Optional[ConfigType] = None
-    # tasks: Optional[List[str]] = None
+    about: Optional[ConfigType] = None
+    copier: Optional[ConfigType] = None
+    project: Optional[ConfigType] = None
+    pipeline: Optional[ConfigType] = None
+    task: Optional[ConfigType] = None
+    workflow: Optional[ConfigType] = None
+    tasks: Optional[List[str]] = None
+    pipelines: Optional[List[str]] = None
 
     __version__ = __hyfi_version__()
     __hyfi_path__ = __hyfi_path__()
@@ -128,6 +129,16 @@ class HyFI(
             v = "INFO"
         logger.setLevel(v)
         return v
+
+    @property
+    def app_name(self):
+        """
+        Get the name of the application.
+
+        Returns:
+            The name of the application
+        """
+        return self.about.name if self.about else global_hyfi.hyfi_name
 
     @staticmethod
     def initialize_global_hyfi(
@@ -221,7 +232,7 @@ class HyFI(
             autotime=autotime,
             retina=retina,
             verbose=verbose,
-            **project_kwargs,
+            **HyFI.to_dict(project_kwargs),
         )
         if global_config.project:
             return global_config.project

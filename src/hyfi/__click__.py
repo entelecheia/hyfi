@@ -5,7 +5,8 @@ import click
 from hyfi._version import __version__
 from hyfi.copier import Copier
 from hyfi.core import global_hyfi
-from hyfi.main import HyFI, HyfiConfig
+from hyfi.main import HyFI
+from hyfi.main.config import GlobalConfig
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -107,7 +108,7 @@ def about():
     """
     Print the about information for Hyfi.
     """
-    HyfiConfig().print_about()
+    GlobalConfig().print_about()
 
 
 @cli.command()

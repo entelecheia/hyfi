@@ -6,7 +6,6 @@ from hyfi.composer import BaseConfig, Composer
 from hyfi.module import ModuleConfig
 from hyfi.path.task import TaskPathConfig
 from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
-from hyfi.project import ProjectConfig
 from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
@@ -23,16 +22,11 @@ class TaskConfig(BaseConfig):
     version: str = "0.0.0"
     module: Optional[ModuleConfig] = None
     path: TaskPathConfig = TaskPathConfig()
-    project: Optional[ProjectConfig] = None
     pipelines: Optional[List[Union[str, Dict]]] = []
 
-    _exclude_ = {
-        "project",
-    }
     _property_set_methods_ = {
         "task_name": "set_task_name",
         "task_root": "set_task_root",
-        # "project": "set_project",
     }
 
     def set_task_root(self, val: Union[str, Path]):
@@ -42,10 +36,6 @@ class TaskConfig(BaseConfig):
     def set_task_name(self, val):
         if not self.task_name or self.task_name != val:
             self.path.task_name = val
-
-    def set_project(self, val):
-        if isinstance(val, ProjectConfig):
-            self.task_root = str(val.workspace_dir / self.task_name)
 
     @property
     def config(self):
@@ -60,18 +50,12 @@ class TaskConfig(BaseConfig):
         return self.path.task_dir
 
     @property
-    def project_name(self) -> str:
-        return (
-            self.project.project_name if self.project else f"{self.task_name}-project"
-        )
-
-    @property
     def project_dir(self) -> Path:
-        return self.project.root_dir if self.project else self.root_dir
+        return self.path.project_dir
 
     @property
     def workspace_dir(self) -> Path:
-        return self.project.workspace_dir if self.project else self.root_dir
+        return self.path.workspace_dir
 
     @property
     def output_dir(self) -> Path:
@@ -152,19 +136,14 @@ class TaskConfig(BaseConfig):
 
     def run(
         self,
-        project: Optional[ProjectConfig] = None,
         pipelines: Optional[Pipelines] = None,
     ):
         """
         Run pipelines specified in the task
 
         Args:
-            project: ProjectConfig to run pipelines
+            pipelines: The pipelines to run
         """
-        # Set project to the project.
-        if project:
-            project.initialize()
-            self.project = project
         # Run all pipelines in the task.
         pipelines = pipelines or self.get_pipelines()
         if self.verbose:

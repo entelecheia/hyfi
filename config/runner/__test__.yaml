@@ -9,6 +9,5 @@ task_name: demo-task
 task_root: workspace
 version: 0.0.0
 module: null
-project: null
 pipelines: []
 calls: []

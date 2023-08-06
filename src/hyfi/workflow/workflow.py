@@ -21,6 +21,7 @@ Tasks = List[Any]
 class WorkflowConfig(BaseModel):
     _config_group_: str = "/workflow"
     _config_name_: str = "__init__"
+    _auto_populate_: bool = True
 
     workflow_name: str = _config_name_
     project: Optional[ProjectConfig] = None
@@ -71,7 +72,7 @@ class WorkflowConfig(BaseModel):
                 logger.info("Running task [%s] with [%s]", task_name, rc)
                 if isinstance(task, TaskConfig):
                     # Run the task if verbose is true.
-                    task.run(project=self.project)
+                    task.run()
                 elif task is not None and getattr(task, "__call__", None):
                     if rc.run_kwargs:
                         task(**rc.run_kwargs)
@@ -93,7 +94,6 @@ class WorkflowConfig(BaseModel):
                 "Running pipelines in the workflow with task [%s]", task.task_name
             )
             task.run(
-                project=self.project,
                 pipelines=self.get_pipelines(),
             )
 

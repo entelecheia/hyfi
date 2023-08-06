@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 from hyfi.composer import BaseConfig, field_validator
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
-from hyfi.path import ProjectPathConfig
+from hyfi.path.project import ProjectPathConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.notebooks import NBs
 
@@ -19,19 +19,19 @@ class ProjectConfig(BaseConfig):
     _config_group_: str = "/project"
     # Project Config
     project_name: str = "hyfi"
-    project_description: str = ""
-    project_root: str = ""
+    project_description: Optional[str] = None
+    project_root: str = "."
     project_workspace_name: str = "workspace"
-    global_hyfi_root: str = ""
+    global_hyfi_root: str = "."
     global_workspace_name: str = ".hyfi"
     num_workers: int = 1
     use_huggingface_hub: bool = False
     use_wandb: bool = False
     verbose: Union[bool, int] = False
     # Config Classes
-    dotenv: DotEnvConfig = None  # type: ignore
-    joblib: JobLibConfig = None  # type: ignore
-    path: ProjectPathConfig = None  # type: ignore
+    dotenv: DotEnvConfig = None
+    joblib: Optional[JobLibConfig] = None
+    path: ProjectPathConfig = None
 
     _property_set_methods_ = {
         "project_name": "set_project_name",
@@ -39,11 +39,11 @@ class ProjectConfig(BaseConfig):
     }
 
     def set_project_root(self, val: Union[str, Path]):
-        if (not self.project_root or self.project_root != val) and self.path:
+        if not self.project_root or self.project_root != val:
             self.path.project_root = str(val)
 
     def set_project_name(self, val):
-        if (not self.project_name or self.project_name != val) and self.path:
+        if not self.project_name or self.project_name != val:
             self.path.project_name = val
 
     @field_validator("project_name")
@@ -72,12 +72,18 @@ class ProjectConfig(BaseConfig):
         self.dotenv = DotEnvConfig()
 
         self.dotenv.HYFI_PROJECT_NAME = self.project_name
-        self.dotenv.HYFI_PROJECT_DESC = self.project_description
-        self.dotenv.HYFI_PROJECT_ROOT = self.project_root
-        self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
-        self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
-        self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
-        self.dotenv.HYFI_NUM_WORKERS = self.num_workers
+        if self.project_description:
+            self.dotenv.HYFI_PROJECT_DESC = self.project_description
+        if self.project_root:
+            self.dotenv.HYFI_PROJECT_ROOT = self.project_root
+        if self.project_workspace_name:
+            self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
+        if self.global_hyfi_root:
+            self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
+        if self.global_workspace_name:
+            self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
+        if self.num_workers:
+            self.dotenv.HYFI_NUM_WORKERS = self.num_workers
         self.dotenv.HYFI_VERBOSE = self.verbose
         self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
 
@@ -150,24 +156,30 @@ class ProjectConfig(BaseConfig):
 
     @property
     def root_dir(self) -> Path:
-        return self.path.root_dir if self.path else Path(self.project_root)
+        self.path.project_root = self.project_root
+        return self.path.root_dir
 
     @property
     def workspace_dir(self) -> Path:
-        return (
-            self.path.workspace_dir
-            if self.path
-            else self.root_dir / self.project_workspace_name
-        )
+        self.path.project_workspace_name = self.project_workspace_name
+        return self.path.workspace_dir
 
     @property
     def global_root_dir(self) -> Path:
-        return self.path.global_root_dir if self.path else Path(self.global_hyfi_root)
+        self.path.global_hyfi_root = self.global_hyfi_root
+        return self.path.global_root_dir
 
     @property
     def global_workspace_dir(self) -> Path:
-        return (
-            self.path.global_workspace_dir
-            if self.path
-            else self.global_root_dir / self.global_workspace_name
-        )
+        self.path.global_workspace_name = self.global_workspace_name
+        return self.path.global_workspace_dir
+
+    def get_path(
+        self,
+        path_name: str,
+        base_dir: Optional[Union[Path, str]] = None,
+    ) -> Optional[Path]:
+        """
+        Get the path to a directory or file.
+        """
+        return self.path.get_path(path_name, base_dir=base_dir) if self.path else None

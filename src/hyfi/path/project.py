@@ -11,17 +11,27 @@ class ProjectPathConfig(BasePathConfig):
     _config_name_: str = "__project__"
 
     # internal paths for hyfi
-    home: str = ""
-    hyfi: str = ""
-    resources: str = ""
-    runtime: str = ""
+    home: str
+    hyfi: str
+    resources: str
+    runtime: str
     # global paths
-    global_hyfi_root: str = ""
+    global_hyfi_root: str = "."
     global_workspace_name: str = ".hyfi"
     # project specific paths
-    project_name: str = ""
-    project_root: str = ""
+    project_name: str
+    project_root: str = "."
     project_workspace_name: str = "workspace"
+
+    @property
+    def home_dir(self) -> Path:
+        """
+        Return the path to the home directory.
+
+        Returns:
+            path to the home directory
+        """
+        return Path(self.home).absolute() if self.home else Path.home()
 
     @property
     def global_root_dir(self) -> Path:
@@ -32,6 +42,8 @@ class ProjectPathConfig(BasePathConfig):
             path to the hyfi directory
         """
         path_ = Path(self.global_hyfi_root)
+        if not path_.is_absolute():
+            path_ = self.home_dir / path_
         path_.mkdir(parents=True, exist_ok=True)
         return path_
 
@@ -144,7 +156,7 @@ class ProjectPathConfig(BasePathConfig):
         """
         path_ = Path(self.project_root)
         path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return path_.absolute()
 
     @property
     def workspace_dir(self) -> Path:

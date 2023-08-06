@@ -1,9 +1,11 @@
 from hyfi.path.batch import BatchPathConfig
 from pathlib import Path
 from pprint import pprint
+from hyfi import HyFI
 
 
 def test_path_config():
+    HyFI.init_project(project_root=".")
     config = BatchPathConfig(
         task_root="workspace/tasks",
         task_name="test-task",
@@ -13,10 +15,7 @@ def test_path_config():
     assert config._config_name_ == "__batch__"
     config.batch_name = "test-batch"
     print(config.batch_dir)
-    assert (
-        config.batch_dir
-        == Path("workspace/tasks/outputs/test-batch")
-    )
+    assert config.batch_dir == Path("workspace/tasks/outputs/test-batch").absolute()
 
     # Test that the log_dir is created
     assert Path(config.log_dir).is_dir()

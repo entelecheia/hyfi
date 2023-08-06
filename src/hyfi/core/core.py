@@ -134,10 +134,23 @@ class GlobalHyFIConfig(BaseModel):
 
     @property
     def secrets_dir(self) -> str:
-        """Returns the name of the secrets directory."""
-        if os.environ.get("HYFI_SECRETS_DIR"):
-            return os.environ.get("HYFI_SECRETS_DIR")
-        return self.__secrets_dir__
+        """Returns the path of the secrets directory."""
+        secret_dir = self.__secrets_dir__
+        if not os.path.isdir(secret_dir):
+            secret_dir = os.environ.get("HYFI_SECRETS_DIR", "")
+        if os.path.isdir(secret_dir):
+            secret_dir = (
+                secret_dir
+                if os.path.isabs(secret_dir)
+                else os.path.join(os.getcwd(), secret_dir)
+            )
+        else:
+            logger.debug(
+                "The secrets directory %s does not exist. ",
+                secret_dir,
+            )
+            secret_dir = None
+        return secret_dir
 
     @property
     def plugins(self) -> Optional[List[str]]:

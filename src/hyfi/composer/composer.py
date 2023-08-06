@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, Union
 import hydra
 from hydra.core.global_hydra import GlobalHydra
 from omegaconf import DictConfig
-from pydantic import BaseModel, ConfigDict, PrivateAttr
+from pydantic import BaseModel
 
 from hyfi.core import global_hyfi
 from hyfi.core import hydra as hyfi_hydra
@@ -130,154 +130,10 @@ class ConfigGroup(BaseModel):
         self._group_value_ = group_value
 
 
-class Composer(BaseModel, CONFs):
+class Composer(CONFs):
     """
     Compose a configuration by applying overrides
     """
-
-    config_group: Optional[str] = None
-    overrides: Optional[List[str]] = None
-    config_data: Optional[Union[Dict[str, Any], DictConfig]] = None
-    throw_on_resolution_failure: bool = True
-    throw_on_missing: bool = False
-    config_name: Optional[str] = None
-    config_module: Optional[str] = None
-    global_package: bool = False
-    verbose: bool = False
-
-    _cfg_: DictConfig = PrivateAttr({})
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )  # type: ignore
-
-    def __init__(self, **args):
-        super().__init__(**args)
-        self._cfg_ = self.compose(
-            config_group=self.config_group,
-            overrides=self.overrides,
-            config_data=self.config_data,
-            throw_on_resolution_failure=self.throw_on_resolution_failure,
-            throw_on_missing=self.throw_on_missing,
-            root_config_name=self.config_name,
-            config_module=self.config_module,
-            global_package=self.global_package,
-            verbose=self.verbose,
-        )
-
-    def compose(
-        self,
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        throw_on_compose_failure: bool = True,
-        throw_on_resolution_failure: bool = True,
-        throw_on_missing: bool = False,
-        root_config_name: Optional[str] = None,
-        config_module: Optional[str] = None,
-        global_package: bool = False,
-        verbose: bool = False,
-    ) -> DictConfig:
-        """
-        Compose a configuration by applying overrides
-
-        Args:
-            config_group: Name of the config group to compose (`config_group=name`)
-            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group.key=value`)
-            return_as_dict: Return the result as a dict
-            throw_on_compose_failure: If True throw an exception if composition fails
-            throw_on_resolution_failure: If True throw an exception if resolution fails
-            throw_on_missing: If True throw an exception if config_group doesn't exist
-            root_config_name: Name of the root config to be used (e.g. `hconf`)
-            config_module: Module of the config to be used (e.g. `hyfi.conf`)
-            global_package: If True, the config assumed to be a global package
-            verbose: If True print configuration to stdout
-
-        Returns:
-            A config object or a dictionary with the composed config
-        """
-        self._cfg_ = Composer._compose(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            throw_on_compose_failure=throw_on_compose_failure,
-            throw_on_resolution_failure=throw_on_resolution_failure,
-            throw_on_missing=throw_on_missing,
-            root_config_name=root_config_name,
-            config_module=config_module,
-            global_package=global_package,
-            verbose=verbose,
-        )
-        return self._cfg_
-
-    @property
-    def config(self) -> DictConfig:
-        """
-        Returns the composed configuration.
-        """
-        return self._cfg_
-
-    @property
-    def config_as_dict(self) -> Dict:
-        """
-        Return the configuration as a dictionary.
-        """
-        return Composer.to_dict(self._cfg_)
-
-    def __call__(
-        self,
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        throw_on_compose_failure: bool = True,
-        throw_on_resolution_failure: bool = True,
-        throw_on_missing: bool = False,
-        root_config_name: Optional[str] = None,
-        config_module: Optional[str] = None,
-        global_package: bool = False,
-        verbose: bool = False,
-    ) -> DictConfig:
-        return self.compose(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            throw_on_compose_failure=throw_on_compose_failure,
-            throw_on_resolution_failure=throw_on_resolution_failure,
-            throw_on_missing=throw_on_missing,
-            root_config_name=root_config_name,
-            config_module=config_module,
-            global_package=global_package,
-            verbose=verbose,
-        )
-
-    def __getitem__(self, key):
-        return self._cfg_[key]
-
-    def __iter__(self):
-        return iter(self._cfg_)
-
-    def __len__(self):
-        return len(self._cfg_)
-
-    def __contains__(self, key):
-        return key in self._cfg_
-
-    def __eq__(self, other):
-        return self._cfg_ == other
-
-    def __ne__(self, other):
-        return self._cfg_ != other
-
-    def __bool__(self):
-        return bool(self._cfg_)
-
-    def __hash__(self):
-        return hash(self._cfg_)
-
-    def __getstate__(self):
-        return self._cfg_
 
     @staticmethod
     def hydra_compose(
@@ -305,7 +161,7 @@ class Composer(BaseModel, CONFs):
         return cfg
 
     @staticmethod
-    def _compose_as_dict(
+    def compose_as_dict(
         config_group: Optional[str] = None,
         overrides: Optional[List[str]] = None,
         config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
@@ -318,7 +174,7 @@ class Composer(BaseModel, CONFs):
         **kwargs,
     ) -> Dict:
         return Composer.to_dict(
-            Composer._compose(
+            Composer.compose(
                 config_group=config_group,
                 overrides=overrides,
                 config_data=config_data,
@@ -333,7 +189,7 @@ class Composer(BaseModel, CONFs):
         )
 
     @staticmethod
-    def _compose(
+    def compose(
         config_group: Optional[str] = None,
         overrides: Optional[List[str]] = None,
         config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
@@ -443,7 +299,7 @@ class Composer(BaseModel, CONFs):
             bool: True if the configuration object is composable, False otherwise.
         """
         try:
-            cfg = Composer._compose(
+            cfg = Composer.compose(
                 config_group=config_group,
                 config_module=config_module,
             )
@@ -654,7 +510,7 @@ class Composer(BaseModel, CONFs):
             if _target_ is a class name: the instantiated object
             if _target_ is a callable: the return value of the call
         """
-        cfg = Composer._compose(
+        cfg = Composer.compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,
@@ -678,7 +534,7 @@ class Composer(BaseModel, CONFs):
             config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
             global_package: If True, the config assumed to be a global package
         """
-        cfg = Composer._compose(
+        cfg = Composer.compose(
             config_group=config_group,
             overrides=overrides,
             config_data=config_data,

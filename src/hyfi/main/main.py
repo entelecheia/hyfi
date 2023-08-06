@@ -4,13 +4,13 @@
 """
 import os
 import random
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import GENERATOR, Composer, SpecialKeys
+from hyfi.composer import GENERATOR, Composer
 from hyfi.copier import Copier
 from hyfi.core import (
     __app_version__,
@@ -26,14 +26,13 @@ from hyfi.core import (
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
-from hyfi.pipeline import PipeConfig, PIPELINEs
+from hyfi.pipeline import PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils import LOGGING, CONFs, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
+from hyfi.utils import LOGGING, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
 
-from .config import __global_config__ as global_config
-from .config import __project_root_path__, __project_workspace_path__
+from .config import __project_root_path__, __project_workspace_path__, global_config
 
 logger = LOGGING.getLogger(__name__)
 
@@ -73,7 +72,7 @@ OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)
 
 class HyFI(
     BATCHER,
-    CONFs,
+    Composer,
     DATASETs,
     ENVs,
     FUNCs,
@@ -88,10 +87,6 @@ class HyFI(
 ):
     """Primary class for the hyfi config package"""
 
-    global_config = global_config
-    global_hyfi = global_hyfi
-    SpeicialKeys = SpecialKeys
-    config_module = global_hyfi.config_module
     __version__ = __hyfi_version__()
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()
@@ -151,19 +146,19 @@ class HyFI(
 
     @staticmethod
     def init_project(
-        project_name: str = "",
-        project_description: str = "",
-        project_root: str = "",
-        project_workspace_name: str = "",
-        global_hyfi_root: str = "",
-        global_workspace_name: str = "",
-        num_workers: int = -1,
-        log_level: str = "",
+        project_name: Optional[str] = None,
+        project_description: Optional[str] = None,
+        project_root: Optional[str] = None,
+        project_workspace_name: Optional[str] = None,
+        global_hyfi_root: Optional[str] = None,
+        global_workspace_name: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        log_level: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
         verbose: Union[bool, int] = False,
-        **kwargs,
+        **project_kwargs,
     ) -> ProjectConfig:
         """
         Initialize and start hyfi.
@@ -194,7 +189,7 @@ class HyFI(
             autotime=autotime,
             retina=retina,
             verbose=verbose,
-            **kwargs,
+            **project_kwargs,
         )
         if global_config.project:
             return global_config.project
@@ -211,19 +206,6 @@ class HyFI(
         """
         logger.info(f"Setting the global project to {project.project_name}")
         global_config.project = project
-
-    @staticmethod
-    def initialize(force: bool = False) -> None:
-        """
-        Initialize the global config.
-
-        Args:
-            force: If True, force initialization even if already initialized.
-
-        Returns:
-            bool: True if initialization was successful, False otherwise.
-        """
-        global_config.initialize(force=force)
 
     @staticmethod
     def terminate() -> None:
@@ -272,19 +254,6 @@ class HyFI(
         return os.environ
 
     @staticmethod
-    def pipe(**kwargs) -> PipeConfig:
-        """
-        Return the PipeConfig.
-
-        Args:
-            **kwargs: Additional keyword arguments to pass to the PipeConfig constructor.
-
-        Returns:
-            PipeConfig: An instance of the PipeConfig class.
-        """
-        return PipeConfig(**kwargs)
-
-    @staticmethod
     def task(**kwargs) -> TaskConfig:
         """
         Return the TaskConfig.
@@ -295,12 +264,7 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        if global_config.project and "project" in kwargs:
-            del kwargs["project"]
-        task = TaskConfig(**kwargs)
-        if global_config.project:
-            task.project = global_config.project
-        return task
+        return TaskConfig(**kwargs)
 
     @staticmethod
     def workflow(**kwargs) -> WorkflowConfig:
@@ -313,195 +277,7 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        config_group = kwargs.get("_config_group_")
-        config_name = kwargs.get("workflow_name")
-        if config_group and config_group == "/workflow" and config_name:
-            cfg = HyFI.compose_as_dict(
-                config_group=f"{config_group}={config_name}",
-                config_data=kwargs,
-                global_package=True,
-            )
-        else:
-            cfg = kwargs
-        if global_config.project and "project" in cfg:
-            del cfg["project"]
-        wf = WorkflowConfig(**cfg)
-        if global_config.project:
-            wf.project = global_config.project
-        return wf
-
-    @staticmethod
-    def compose_as_dict(
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        throw_on_compose_failure: bool = True,
-        throw_on_resolution_failure: bool = True,
-        throw_on_missing: bool = False,
-        root_config_name: Optional[str] = None,
-        config_module: Optional[str] = None,
-        global_package: bool = False,
-        verbose: bool = False,
-    ) -> Dict:
-        """
-        Compose a configuration by applying overrides and return the result as a dict(
-
-        Args:
-            config_group (Optional[str], optional): Name of the config group to compose (`config_group=name`). Defaults to None.
-            overrides (Union[List[str], None], optional): List of config groups to apply overrides to (`overrides=["override_name"]`). Defaults to None.
-            config_data (Union[Dict[str, Any], DictConfig, None], optional): Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`). Defaults to None.
-            throw_on_compose_failure (bool, optional): If True throw an exception if composition fails. Defaults to True.
-            throw_on_resolution_failure (bool, optional): If True throw an exception if resolution fails. Defaults to True.
-            throw_on_missing (bool, optional): If True throw an exception if config_group doesn't exist. Defaults to False.
-            root_config_name (Optional[str], optional): Name of the root config to be used (e.g. `hconf`). Defaults to None.
-            config_module (Optional[str], optional): Name of the module containing the configuration. Defaults to None.
-            global_package (bool, optional): If True, the configuration is loaded from the global package. Defaults to False.
-            verbose (bool, optional): If True, print verbose output. Defaults to False.
-
-        Returns:
-            Dict: The composed configuration as a dictionary.
-        """
-        return Composer._compose_as_dict(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            throw_on_compose_failure=throw_on_compose_failure,
-            throw_on_resolution_failure=throw_on_resolution_failure,
-            throw_on_missing=throw_on_missing,
-            config_name=root_config_name,
-            config_module=config_module,
-            global_package=global_package,
-            verbose=verbose,
-        )
-
-    @staticmethod
-    def compose(
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        throw_on_compose_failure: bool = True,
-        throw_on_resolution_failure: bool = True,
-        throw_on_missing: bool = False,
-        root_config_name: Optional[str] = None,
-        config_module: Optional[str] = None,
-        global_package: bool = False,
-        verbose: bool = False,
-    ) -> DictConfig:
-        """
-        Compose a configuration by applying overrides
-
-        Args:
-            config_group: Name of the config group to compose (`config_group=name`)
-            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
-            return_as_dict: Return the result as a dict
-            throw_on_compose_failure: If True throw an exception if composition fails
-            throw_on_resolution_failure: If True throw an exception if resolution fails
-            throw_on_missing: If True throw an exception if config_group doesn't exist
-            root_config_name: Name of the root config to be used (e.g. `hconf`)
-            config_module: Module of the config to be used (e.g. `hyfi.conf`)
-            global_package: If True, the config assumed to be a global package
-            verbose: If True print configuration to stdout
-
-        Returns:
-            A config object or a dictionary with the composed config
-        """
-        return Composer._compose(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            throw_on_compose_failure=throw_on_compose_failure,
-            throw_on_resolution_failure=throw_on_resolution_failure,
-            throw_on_missing=throw_on_missing,
-            config_name=root_config_name,
-            config_module=config_module,
-            global_package=global_package,
-            verbose=verbose,
-        )
-
-    @staticmethod
-    def instantiate_config(
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        global_package: bool = False,
-        *args: Any,
-        **kwargs: Any,
-    ) -> Any:
-        """
-        Instantiates an object using the provided config group and overrides
-
-        Args:
-            config_group: Name of the config group to compose (`config_group=name`)
-            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
-            global_package: If True, the config assumed to be a global package
-            args: Optional positional parameters pass-through
-            kwargs: Optional named parameters to override
-                    parameters in the config object. Parameters not present
-                    in the config objects are being passed as is to the target.
-                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                                and cannot be used as passthrough
-
-        Returns:
-            if _target_ is a class name: the instantiated object
-            if _target_ is a callable: the return value of the call
-        """
-        return Composer.instantiate_config(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            global_package=global_package,
-            *args,
-            **kwargs,
-        )
-
-    @staticmethod
-    def print_config(
-        config_group: Optional[str] = None,
-        overrides: Optional[List[str]] = None,
-        config_data: Optional[Union[Dict[str, Any], DictConfig]] = None,
-        global_package: bool = False,
-    ):
-        """
-        Print the configuration
-
-        Args:
-            config_group: Name of the config group to compose (`config_group=name`)
-            overrides: List of config groups to apply overrides to (`overrides=["override_name"]`)
-            config_data: Keyword arguments to override config group values (will be converted to overrides of the form `config_group_name.key=value`)
-            global_package: If True, the config assumed to be a global package
-        """
-        Composer.print_config(
-            config_group=config_group,
-            overrides=overrides,
-            config_data=config_data,
-            global_package=global_package,
-        )
-
-    @staticmethod
-    def partial(
-        config: Union[str, Dict],
-        *args: Any,
-        **kwargs: Any,
-    ) -> Callable:
-        return Composer.partial(config, *args, **kwargs)
-
-    @staticmethod
-    def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-        return Composer.instantiate(config, *args, **kwargs)
-
-    @staticmethod
-    def is_instantiatable(cfg: Any):
-        return Composer.is_instantiatable(cfg)
-
-    @staticmethod
-    def getsource(obj):
-        return Composer.getsource(obj)
-
-    @staticmethod
-    def viewsource(obj):
-        return Composer.viewsource(obj)
+        return WorkflowConfig(**kwargs)
 
     ###############################
     # Pipeline related functions

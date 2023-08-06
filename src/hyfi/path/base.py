@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from hyfi.composer import BaseConfig
 from hyfi.path.dirnames import DirnamesConfig
@@ -40,14 +40,18 @@ class BasePathConfig(BaseConfig):
         path_.mkdir(parents=True, exist_ok=True)
         return path_
 
-    def get_path(self, path_name: str, base_dir: Optional[Path] = None) -> Path:
+    def get_path(
+        self,
+        path_name: str,
+        base_dir: Optional[Union[Path, str]] = None,
+    ) -> Path:
         """
         Get the path to a directory or file.
         """
         if not hasattr(self.dirnames, path_name):
             raise AttributeError(f"Path '{path_name}' does not exist.")
         base_dir = base_dir or self.workspace_dir
-        path_ = base_dir / getattr(self.dirnames, path_name)
+        path_ = Path(base_dir) / getattr(self.dirnames, path_name)
         path_.mkdir(parents=True, exist_ok=True)
         return path_
 

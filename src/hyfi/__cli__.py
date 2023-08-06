@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 
 from hyfi.core import global_hyfi
 from hyfi.core.hydra import hyfi_hydra_main
-from hyfi.main import HyFI, HyfiConfig
+from hyfi.main import GlobalConfig, HyFI
 
 logger = HyFI.getLogger(__name__)
 
@@ -26,10 +26,12 @@ def cli_main(cfg: DictConfig) -> None:
         None if everything went fine otherwise an error is raised
         to indicate the reason for the failure
     """
-    HyFI.initialize()
-    hyfi = HyfiConfig(**cfg)  # type: ignore
+    cfg = HyFI.to_dict(cfg)
+    hyfi = GlobalConfig(**cfg)
     if hyfi.project:
         HyFI.set_project(hyfi.project)
+    else:
+        HyFI.init_project()
 
     dryrun = hyfi.dryrun or hyfi.noop
     verbose = hyfi.verbose or dryrun

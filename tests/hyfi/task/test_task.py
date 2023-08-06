@@ -1,9 +1,11 @@
 from hyfi.task import TaskConfig
 from pathlib import Path
 from pprint import pprint
+from hyfi.main import HyFI
 
 
 def test_task_config():
+    HyFI.init_project(project_root=".")
     config = TaskConfig(
         task_name="demo2",
         verbose=True,
@@ -20,11 +22,11 @@ def test_task_config():
     pprint(config.model_dump())
     # Test that the default values are set correctly
     print(config.task_dir)
-    assert config.task_dir == Path("workspace/demo3")
+    assert config.task_dir == Path("workspace/demo3").absolute()
     config.task_root = "workspace/tmp"
     config.print_config()
     print(config.root_dir)
-    assert config.task_dir == Path("workspace/tmp/demo3")
+    assert config.task_dir == Path("workspace/tmp/demo3").absolute()
     config.save_config(filepath=config.path.config_filepath)
 
 

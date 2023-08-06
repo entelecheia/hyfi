@@ -14,13 +14,11 @@ from pydantic import BaseModel
 
 from hyfi.core import global_hyfi
 from hyfi.core import hydra as hyfi_hydra
-from hyfi.utils.conf import CONFs
-from hyfi.utils.logging import LOGGING
-from hyfi.utils.packages import PKGs
+from hyfi.utils import UTILs
 
 if level := os.environ.get("HYFI_LOG_LEVEL"):
-    LOGGING.setLogger(level)
-logger = LOGGING.getLogger(__name__)
+    UTILs.setLogger(level)
+logger = UTILs.getLogger(__name__)
 
 
 class SpecialKeys(str, Enum):
@@ -130,7 +128,7 @@ class ConfigGroup(BaseModel):
         self._group_value_ = group_value
 
 
-class Composer(CONFs):
+class Composer(UTILs):
     """
     Compose a configuration by applying overrides
     """
@@ -466,7 +464,7 @@ class Composer(CONFs):
                     target_string = obj[SpecialKeys.TARGET]
             elif isinstance(obj, str):
                 target_string = obj
-            return PKGs.getsource(target_string) if target_string else ""
+            return UTILs.getsource(target_string) if target_string else ""
         except Exception as e:
             logger.error(f"Error getting source: {e}")
             return ""

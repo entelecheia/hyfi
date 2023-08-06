@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.20.1 (2023-08-06)
+
+### Fix
+
+* **composer:** Rename config generation methods and reorder arguments (to solve collision with BaseModel) ([`332a5ef`](https://github.com/entelecheia/hyfi/commit/332a5ef794596bc81b5f544c9a4393b35346b0e9))
+
 ## v1.20.0 (2023-08-06)
 
 ### Feature

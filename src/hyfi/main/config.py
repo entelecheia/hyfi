@@ -14,7 +14,6 @@ from hyfi.composer import (
     FieldValidationInfo,
     PrivateAttr,
     field_validator,
-    model_validator,
 )
 from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
@@ -59,27 +58,6 @@ class GlobalConfig(BaseModel):
         validate_assignment=True,
         extra="allow",
     )  # type: ignore
-
-    @model_validator(mode="before")
-    def _validate_model_data(cls, data):
-        """
-        Validate and set the model data.
-
-        Args:
-            cls: Class to use for config lookup
-            data: Dictionary of values to check and set
-
-        Returns:
-            Validated dictionary of values
-        """
-        key = "hyfi_config_path"
-        val = ENVs.check_and_set_osenv_var(key, data.get(key))
-        # Set the hyfi_config_module value in the configuration file.
-        if val is not None:
-            data[key] = val
-            key = "hyfi_config_module"
-            data[key] = ENVs.check_and_set_osenv_var(key, val.replace("pkg://", ""))
-        return data
 
     @field_validator("logging_level")
     def _validate_logging_level(cls, v, info: FieldValidationInfo):

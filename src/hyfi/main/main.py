@@ -87,6 +87,9 @@ class HyFI(
 ):
     """Primary class for the hyfi config package"""
 
+    _config_name_: str = "config"
+    _config_group_: str = "/"
+
     debug_mode: bool = False
     noop: bool = False
     dryrun: bool = False

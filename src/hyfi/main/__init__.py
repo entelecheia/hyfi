@@ -1,9 +1,4 @@
-from .config import (
-    GlobalConfig,
-    __project_root_path__,
-    __project_workspace_path__,
-    global_config,
-)
+from .config import GlobalConfig, GlobalConfigResolver, global_config
 from .main import HyFI
 
 __all__ = [

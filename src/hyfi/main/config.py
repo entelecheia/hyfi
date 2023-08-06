@@ -1,7 +1,6 @@
 """
 Hyfi configuration file.
 """
-import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -213,14 +212,6 @@ class GlobalConfig(BaseModel):
             The name of the package
         """
         return global_hyfi.package_name
-
-    @property
-    def dotenv(self):
-        return DotEnvConfig()  # type: ignore
-
-    @property
-    def osenv(self):
-        return os.environ
 
     def print_about(self, **kwargs):
         self.about = AboutConfig(**kwargs)

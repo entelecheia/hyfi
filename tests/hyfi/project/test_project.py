@@ -13,7 +13,7 @@ def test_project_config():
     pprint(config.model_dump())
     assert config.project_name == "hyfi-test"
     print(config.workspace_dir)
-    assert config.workspace_dir == Path("workspace/tmp/workspace")
+    assert config.workspace_dir == Path("workspace/tmp/workspace").absolute()
     assert config.num_workers == 2
     # pprint(config.path.model_dump())
 

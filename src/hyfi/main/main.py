@@ -16,9 +16,7 @@ from hyfi.composer import (
     Composer,
     ConfigDict,
     FieldValidationInfo,
-    PrivateAttr,
     field_validator,
-    model_validator,
 )
 from hyfi.copier import Copier
 from hyfi.core import (
@@ -44,6 +42,7 @@ from .config import __project_root_path__, __project_workspace_path__, global_co
 
 logger = Composer.getLogger(__name__)
 
+ConfigType = Union[DictConfig, Dict]
 
 OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
 OmegaConf.register_new_resolver("__hyfi_version__", __hyfi_version__)
@@ -88,6 +87,23 @@ class HyFI(
 ):
     """Primary class for the hyfi config package"""
 
+    debug_mode: bool = False
+    noop: bool = False
+    dryrun: bool = False
+    resolve: bool = False
+    verbose: bool = False
+    logging_level: str = "WARNING"
+
+    hydra: Optional[ConfigType] = None
+
+    # about: Optional[ConfigType] = None
+    # copier: Optional[ConfigType] = None
+    # project: Optional[ProjectConfig] = None
+    # pipeline: Optional[ConfigType] = None
+    # task: Optional[ConfigType] = None
+    # workflow: Optional[ConfigType] = None
+    # tasks: Optional[List[str]] = None
+
     __version__ = __hyfi_version__()
     __hyfi_path__ = __hyfi_path__()
     __home_path__ = __home_path__()
@@ -95,8 +111,23 @@ class HyFI(
     __package_path__ = __package_path__()
     __app_version__ = __app_version__()
 
-    def __init__(self) -> None:
-        raise NotImplementedError("Use one of the static construction functions")
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra="allow",
+    )  # type: ignore
+
+    @field_validator("logging_level")
+    def _validate_logging_level(cls, v, info: FieldValidationInfo):
+        """
+        Validate and set the logging level
+        """
+        verbose = info.data.get("verbose", False)
+        # Set verbose to INFO.
+        if verbose and v == "WARNING":
+            v = "INFO"
+        logger.setLevel(v)
+        return v
 
     @staticmethod
     def initialize_global_hyfi(
@@ -141,7 +172,7 @@ class HyFI(
         )
 
     @staticmethod
-    def about(**args) -> None:
+    def print_about(**args) -> None:
         """Print the about information"""
         global_config.print_about(**args)
 
@@ -219,7 +250,7 @@ class HyFI(
         global_config.terminate()
 
     @staticmethod
-    def joblib(**kwargs) -> JobLibConfig:
+    def JobLibConfig(**kwargs) -> JobLibConfig:
         """
         Return the joblib pipe.
 
@@ -232,7 +263,7 @@ class HyFI(
         return JobLibConfig(**kwargs)
 
     @staticmethod
-    def dotenv(**kwargs) -> DotEnvConfig:
+    def DotEnvConfig(**kwargs) -> DotEnvConfig:
         """
         Return the DotEnvConfig.
 
@@ -245,17 +276,7 @@ class HyFI(
         return DotEnvConfig(**kwargs)
 
     @staticmethod
-    def osenv():
-        """
-        Return the os environment variables as a dictionary.
-
-        Returns:
-            dict: A dictionary containing the os environment variables.
-        """
-        return os.environ
-
-    @staticmethod
-    def task(**kwargs) -> TaskConfig:
+    def TaskConfig(**kwargs) -> TaskConfig:
         """
         Return the TaskConfig.
 
@@ -268,7 +289,7 @@ class HyFI(
         return TaskConfig(**kwargs)
 
     @staticmethod
-    def workflow(**kwargs) -> WorkflowConfig:
+    def WorkflowConfig(**kwargs) -> WorkflowConfig:
         """
         Return the WorkflowConfig.
 
@@ -343,7 +364,7 @@ class HyFI(
             # Run the HyFI task
             config_group = config.get("_config_group_", "")
             if config_group == "/workflow" or cmd_name == "run_workflow":
-                workflow = HyFI.workflow(**config)
+                workflow = HyFI.WorkflowConfig(**config)
                 HyFI.run_workflow(workflow, dryrun=dryrun)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
                 project = (
@@ -351,7 +372,7 @@ class HyFI(
                     if "project" in config
                     else None
                 )
-                task = HyFI.task(**config["task"])
+                task = HyFI.TaskConfig(**config["task"])
                 HyFI.run_task(task, project=project, dryrun=dryrun)
             elif "runner" in config:
                 runner = config["runner"]
@@ -362,4 +383,4 @@ class HyFI(
                 with Copier(**copier_cfg) as worker:
                     worker.run_copy()
             else:
-                HyFI.about(**config.get("about", {}))
+                HyFI.print_about(**config.get("about", {}))

@@ -19,17 +19,7 @@ from hyfi.composer import (
     field_validator,
 )
 from hyfi.copier import Copier
-from hyfi.core import (
-    __app_version__,
-    __config_module_path__,
-    __home_path__,
-    __hyfi_path__,
-    __hyfi_version__,
-    __package_name__,
-    __package_path__,
-    __user_config_path__,
-    global_hyfi,
-)
+from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
@@ -38,31 +28,32 @@ from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.workflow import WorkflowConfig
 
-from .config import (
-    __get_path__,
-    __project_root_path__,
-    __project_workspace_path__,
-    global_config,
-)
+from .config import GlobalConfigResolver, global_config
 
 logger = Composer.getLogger(__name__)
 
 ConfigType = Union[DictConfig, Dict]
 
-OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
-OmegaConf.register_new_resolver("__hyfi_version__", __hyfi_version__)
-OmegaConf.register_new_resolver("__package_name__", __package_name__)
-OmegaConf.register_new_resolver("__package_path__", __package_path__)
-OmegaConf.register_new_resolver("__app_version__", __app_version__)
-OmegaConf.register_new_resolver("__version__", __app_version__)
-OmegaConf.register_new_resolver("__config_module_path__", __config_module_path__)
-OmegaConf.register_new_resolver("__user_config_path__", __user_config_path__)
-OmegaConf.register_new_resolver("__home_path__", __home_path__)
-OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
+OmegaConf.register_new_resolver("__hyfi_path__", GlobalHyFIResolver.__hyfi_path__)
+OmegaConf.register_new_resolver("__hyfi_version__", GlobalHyFIResolver.__hyfi_version__)
+OmegaConf.register_new_resolver("__package_name__", GlobalHyFIResolver.__package_name__)
+OmegaConf.register_new_resolver("__package_path__", GlobalHyFIResolver.__package_path__)
+OmegaConf.register_new_resolver("__app_version__", GlobalHyFIResolver.__app_version__)
+OmegaConf.register_new_resolver("__version__", GlobalHyFIResolver.__app_version__)
 OmegaConf.register_new_resolver(
-    "__project_workspace_path__", __project_workspace_path__
+    "__config_module_path__", GlobalHyFIResolver.__config_module_path__
 )
-OmegaConf.register_new_resolver("__get_path__", __get_path__)
+OmegaConf.register_new_resolver(
+    "__user_config_path__", GlobalHyFIResolver.__user_config_path__
+)
+OmegaConf.register_new_resolver("__home_path__", GlobalHyFIResolver.__home_path__)
+OmegaConf.register_new_resolver(
+    "__project_root_path__", GlobalConfigResolver.__project_root_path__
+)
+OmegaConf.register_new_resolver(
+    "__project_workspace_path__", GlobalConfigResolver.__project_workspace_path__
+)
+OmegaConf.register_new_resolver("__get_path__", GlobalConfigResolver.__get_path__)
 OmegaConf.register_new_resolver("today", Composer.today)
 OmegaConf.register_new_resolver("to_datetime", Composer.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
@@ -114,12 +105,12 @@ class HyFI(
     tasks: Optional[List[str]] = None
     pipelines: Optional[List[str]] = None
 
-    __version__ = __hyfi_version__()
-    __hyfi_path__ = __hyfi_path__()
-    __home_path__ = __home_path__()
-    __package_name__ = __package_name__()
-    __package_path__ = __package_path__()
-    __app_version__ = __app_version__()
+    __version__ = GlobalHyFIResolver.__hyfi_version__()
+    __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
+    __home_path__ = GlobalHyFIResolver.__home_path__()
+    __package_name__ = GlobalHyFIResolver.__package_name__()
+    __package_path__ = GlobalHyFIResolver.__package_path__()
+    __app_version__ = GlobalHyFIResolver.__app_version__()
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,

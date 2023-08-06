@@ -2,17 +2,15 @@ import os
 from pathlib import Path
 from typing import Optional, Union
 
-from hyfi.composer import BaseConfig, field_validator
+from hyfi.composer import BaseConfig, Composer, field_validator
 from hyfi.dotenv import DotEnvConfig
 from hyfi.joblib import JobLibConfig
 from hyfi.path.project import ProjectPathConfig
-from hyfi.utils.logging import LOGGING
-from hyfi.utils.notebooks import NBs
 
-logger = LOGGING.getLogger(__name__)
+logger = Composer.getLogger(__name__)
 
 
-class ProjectConfig(BaseConfig):
+class ProjectConfig(BaseConfig, Composer):
     """Project Config"""
 
     _config_name_: str = "__init__"
@@ -142,7 +140,7 @@ class ProjectConfig(BaseConfig):
 
         local_token = HfFolder.get_token()
         if local_token is None:
-            if NBs.is_notebook():
+            if ProjectConfig.is_notebook():
                 notebook_login()
             else:
                 logger.info(

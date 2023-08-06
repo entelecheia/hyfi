@@ -113,12 +113,12 @@ class GENERATOR:
         config_name = f"{pipe_prefix}_{config_name}" if pipe_prefix else config_name
         config_root = config_root or global_hyfi.config_root
 
-        run_config_name = GENERATOR.generate_config(
+        run_config_name = GENERATOR.generate_callable_config(
             target,
-            use_first_arg_as_pipe_obj=use_first_arg_as_pipe_obj,
             config_name=config_name,
             config_path="run",
             config_root=config_root,
+            use_first_arg_as_pipe_obj=use_first_arg_as_pipe_obj,
             **kwargs_for_target,
         )
 
@@ -142,12 +142,12 @@ class GENERATOR:
         return config_name
 
     @staticmethod
-    def generate_config(
+    def generate_callable_config(
         target: Callable,
-        use_first_arg_as_pipe_obj: bool = False,
         config_name: Optional[str] = None,
         config_path: str = "run",
         config_root: Optional[str] = None,
+        use_first_arg_as_pipe_obj: bool = False,
         **kwargs_for_target,
     ) -> str:
         """
@@ -161,7 +161,7 @@ class GENERATOR:
             config_root (Optional[str]): The root of the config path. If not provided, the global hyfi config directory will be used.
             **kwargs_for_target: Keyword arguments to pass to the target.
         """
-        cfg = GENERATOR.generate_hyfi_config(
+        cfg = GENERATOR.generate_target_config(
             target,
             remove_first_arg=use_first_arg_as_pipe_obj,
             **kwargs_for_target,
@@ -177,7 +177,7 @@ class GENERATOR:
         return config_name
 
     @staticmethod
-    def generate_hyfi_config(
+    def generate_target_config(
         target: Callable,
         remove_first_arg: bool = False,
         **kwargs,
@@ -241,7 +241,7 @@ def sanitized_default_value(
     ):
         # `value` is importable callable -- create config that will import
         # `value` upon instantiation
-        return GENERATOR.generate_hyfi_config(value)
+        return GENERATOR.generate_target_config(value)
 
     return None
 

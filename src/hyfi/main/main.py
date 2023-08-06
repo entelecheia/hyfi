@@ -38,7 +38,12 @@ from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.workflow import WorkflowConfig
 
-from .config import __project_root_path__, __project_workspace_path__, global_config
+from .config import (
+    __get_path__,
+    __project_root_path__,
+    __project_workspace_path__,
+    global_config,
+)
 
 logger = Composer.getLogger(__name__)
 
@@ -57,6 +62,7 @@ OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
 OmegaConf.register_new_resolver(
     "__project_workspace_path__", __project_workspace_path__
 )
+OmegaConf.register_new_resolver("__get_path__", __get_path__)
 OmegaConf.register_new_resolver("today", Composer.today)
 OmegaConf.register_new_resolver("to_datetime", Composer.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)

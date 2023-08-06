@@ -3,7 +3,6 @@ A class to run a pipeline.
 """
 from typing import Any, Dict, Optional, Union
 
-from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.workflow import WorkflowConfig
@@ -59,7 +58,6 @@ class PIPELINEs:
     @staticmethod
     def run_task(
         task: TaskConfig,
-        project: Optional[ProjectConfig] = None,
         dryrun: bool = False,
     ):
         """
@@ -72,7 +70,7 @@ class PIPELINEs:
         if dryrun:
             print("\nDryrun is enabled, not running the HyFI task\n")
             return
-        task.run(project=project)
+        task.run()
 
     @staticmethod
     def run_workflow(workflow: WorkflowConfig, dryrun: bool = False):

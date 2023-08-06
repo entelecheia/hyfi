@@ -17,11 +17,9 @@ from hyfi.composer import (
 from hyfi.core import global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.project import ProjectConfig
-from hyfi.utils.envs import ENVs
-from hyfi.utils.logging import LOGGING
-from hyfi.utils.notebooks import NBs
+from hyfi.utils import UTILs
 
-logger = LOGGING.getLogger(__name__)
+logger = UTILs.getLogger(__name__)
 
 ConfigType = Union[DictConfig, Dict]
 
@@ -29,7 +27,7 @@ __default_project_root__ = "."
 __default_workspace_name__ = "workspace"
 
 
-class GlobalConfig(BaseModel):
+class GlobalConfig(BaseModel, UTILs):
     """HyFI global config class.  This class is used to store the configuration"""
 
     debug_mode: bool = False
@@ -110,24 +108,24 @@ class GlobalConfig(BaseModel):
         envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
         # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
-            envs.HYFI_PROJECT_NAME = ENVs.expand_posix_vars(project_name)
+            envs.HYFI_PROJECT_NAME = GlobalConfig.expand_posix_vars(project_name)
         # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
         if project_description:
-            envs.HYFI_PROJECT_DESC = ENVs.expand_posix_vars(project_description)
+            envs.HYFI_PROJECT_DESC = GlobalConfig.expand_posix_vars(project_description)
         # Set environment variables HYFI_PROJECT_ROOT to the project root if project_root is set to true.
         if project_root:
-            envs.HYFI_PROJECT_ROOT = ENVs.expand_posix_vars(project_root)
+            envs.HYFI_PROJECT_ROOT = GlobalConfig.expand_posix_vars(project_root)
         # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = ENVs.expand_posix_vars(
+            envs.HYFI_PROJECT_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
                 project_workspace_name
             )
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
-            envs.HYFI_GLOBAL_ROOT = ENVs.expand_posix_vars(global_hyfi_root)
+            envs.HYFI_GLOBAL_ROOT = GlobalConfig.expand_posix_vars(global_hyfi_root)
         # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = ENVs.expand_posix_vars(
+            envs.HYFI_GLOBAL_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
                 global_workspace_name
             )
         # Set the number of workers to use.
@@ -136,14 +134,14 @@ class GlobalConfig(BaseModel):
         # Set the log level to the given log level.
         if log_level:
             envs.HYFI_LOG_LEVEL = log_level
-            LOGGING.setLogger(log_level)
+            GlobalConfig.setLogger(log_level)
             logger.setLevel(log_level)
         # Load the extentions for the autotime extension.
         if autotime:
-            NBs.load_extentions(exts=["autotime"])
+            GlobalConfig.load_extentions(exts=["autotime"])
         # Set the retina matplotlib formats.
         if retina:
-            NBs.set_matplotlib_formats("retina")
+            GlobalConfig.set_matplotlib_formats("retina")
 
         self.project = ProjectConfig(**project_kwargs)
         logger.info("HyFi project [%s] initialized", self.project.project_name)

@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.19.1 (2023-08-06)
+
+### Fix
+
+* **workflow:** Add auto_populate property to WorkflowConfig class, remove project parameter from task run method ([`f5e5f4d`](https://github.com/entelecheia/hyfi/commit/f5e5f4d4c463d3442503aa2ef316b726156c910e))
+* **task:** Add BatchPathConfig and TaskPathConfig ([`0081f91`](https://github.com/entelecheia/hyfi/commit/0081f91ce2ce0b46be563996d33334b562f5304d))
+* **project:** Update path handling and add get_path method ([`26a2d48`](https://github.com/entelecheia/hyfi/commit/26a2d48e4864d38a996379cfaafd587766243bbc))
+* **project:** Add ProjectPathConfig ([`e6180a5`](https://github.com/entelecheia/hyfi/commit/e6180a5a868d63b1c5459b0a096fc23377025c15))
+* **task:** Use global defaults for task name and root, add properties for project directory and project workspace directory, change task root derivation logic ([`a98dbf0`](https://github.com/entelecheia/hyfi/commit/a98dbf07a0c4002e937cef25bffdf96fa558f859))
+* **project:** Add home directory support and enforce absolute paths ([`a948d3a`](https://github.com/entelecheia/hyfi/commit/a948d3a118ee558c274f48cfdc7496b6eda3c3ce))
+
 ## v1.19.0 (2023-08-05)
 
 ### Feature

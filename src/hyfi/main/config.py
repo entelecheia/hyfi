@@ -260,18 +260,20 @@ class GlobalConfig(BaseModel, UTILs):
 global_config = GlobalConfig()
 
 
-def __project_root_path__() -> str:
-    """Global HyFI config path for the project root."""
-    return str(global_config.project_dir or "")
+class GlobalConfigResolver:
+    @staticmethod
+    def __project_root_path__() -> str:
+        """Global HyFI config path for the project root."""
+        return str(global_config.project_dir or "")
 
+    @staticmethod
+    def __project_workspace_path__() -> str:
+        """Global HyFI config path for the project workspace directory."""
+        return str(global_config.project_workspace_dir or "")
 
-def __project_workspace_path__() -> str:
-    """Global HyFI config path for the project workspace directory."""
-    return str(global_config.project_workspace_dir or "")
-
-
-def __get_path__(path_name: str, base_dir: Optional[str] = None) -> str:
-    """
-    Get the path to a directory or file.
-    """
-    return str(global_config.get_path(path_name, base_dir=base_dir) or "")
+    @staticmethod
+    def __get_path__(path_name: str, base_dir: Optional[str] = None) -> str:
+        """
+        Get the path to a directory or file.
+        """
+        return str(global_config.get_path(path_name, base_dir=base_dir) or "")

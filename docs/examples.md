@@ -13,7 +13,7 @@ from hyfi import HyFI
 Now, let's check the version of the `hyfi` package we are using.
 
 ```python
-HyFI.about()
+HyFI.print_about()
 ```
 
 ## Initialize Project

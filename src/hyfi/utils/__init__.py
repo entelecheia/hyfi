@@ -8,6 +8,22 @@ from .logging import LOGGING
 from .notebooks import NBs
 from .packages import PKGs
 
+
+class UTILs(
+    CONFs,
+    DATASETs,
+    ENVs,
+    FUNCs,
+    GPUs,
+    IOLIBs,
+    LOGGING,
+    NBs,
+    PKGs,
+):
+    def __init__(self) -> None:
+        raise NotImplementedError("Use one of the static construction functions")
+
+
 __all__ = [
     "CONFs",
     "DATASETs",
@@ -18,4 +34,5 @@ __all__ = [
     "LOGGING",
     "NBs",
     "PKGs",
+    "UTILs",
 ]

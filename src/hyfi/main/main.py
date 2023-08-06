@@ -10,92 +10,135 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import GENERATOR, Composer
-from hyfi.copier import Copier
-from hyfi.core import (
-    __app_version__,
-    __config_module_path__,
-    __home_path__,
-    __hyfi_path__,
-    __hyfi_version__,
-    __package_name__,
-    __package_path__,
-    __user_config_path__,
-    global_hyfi,
+from hyfi.composer import (
+    GENERATOR,
+    BaseModel,
+    Composer,
+    ConfigDict,
+    FieldValidationInfo,
+    field_validator,
 )
+from hyfi.copier import Copier
+from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.dotenv import DotEnvConfig
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
-from hyfi.utils import LOGGING, DATASETs, ENVs, FUNCs, GPUs, IOLIBs, NBs, PKGs
 from hyfi.workflow import WorkflowConfig
 
-from .config import __project_root_path__, __project_workspace_path__, global_config
+from .config import GlobalConfigResolver, global_config
 
-logger = LOGGING.getLogger(__name__)
+logger = Composer.getLogger(__name__)
 
+ConfigType = Union[DictConfig, Dict]
 
-OmegaConf.register_new_resolver("__hyfi_path__", __hyfi_path__)
-OmegaConf.register_new_resolver("__hyfi_version__", __hyfi_version__)
-OmegaConf.register_new_resolver("__package_name__", __package_name__)
-OmegaConf.register_new_resolver("__package_path__", __package_path__)
-OmegaConf.register_new_resolver("__app_version__", __app_version__)
-OmegaConf.register_new_resolver("__version__", __app_version__)
-OmegaConf.register_new_resolver("__config_module_path__", __config_module_path__)
-OmegaConf.register_new_resolver("__user_config_path__", __user_config_path__)
-OmegaConf.register_new_resolver("__home_path__", __home_path__)
-OmegaConf.register_new_resolver("__project_root_path__", __project_root_path__)
+OmegaConf.register_new_resolver("__hyfi_path__", GlobalHyFIResolver.__hyfi_path__)
+OmegaConf.register_new_resolver("__hyfi_version__", GlobalHyFIResolver.__hyfi_version__)
+OmegaConf.register_new_resolver("__package_name__", GlobalHyFIResolver.__package_name__)
+OmegaConf.register_new_resolver("__package_path__", GlobalHyFIResolver.__package_path__)
+OmegaConf.register_new_resolver("__app_version__", GlobalHyFIResolver.__app_version__)
+OmegaConf.register_new_resolver("__version__", GlobalHyFIResolver.__app_version__)
 OmegaConf.register_new_resolver(
-    "__project_workspace_path__", __project_workspace_path__
+    "__config_module_path__", GlobalHyFIResolver.__config_module_path__
 )
-OmegaConf.register_new_resolver("today", FUNCs.today)
-OmegaConf.register_new_resolver("to_datetime", FUNCs.strptime)
+OmegaConf.register_new_resolver(
+    "__user_config_path__", GlobalHyFIResolver.__user_config_path__
+)
+OmegaConf.register_new_resolver("__home_path__", GlobalHyFIResolver.__home_path__)
+OmegaConf.register_new_resolver(
+    "__project_root_path__", GlobalConfigResolver.__project_root_path__
+)
+OmegaConf.register_new_resolver(
+    "__project_workspace_path__", GlobalConfigResolver.__project_workspace_path__
+)
+OmegaConf.register_new_resolver("__get_path__", GlobalConfigResolver.__get_path__)
+OmegaConf.register_new_resolver("today", Composer.today)
+OmegaConf.register_new_resolver("to_datetime", Composer.strptime)
 OmegaConf.register_new_resolver("iif", lambda cond, t, f: t if cond else f)
 OmegaConf.register_new_resolver("alt", lambda val, alt: val or alt)
 OmegaConf.register_new_resolver("randint", random.randint, use_cache=True)
 OmegaConf.register_new_resolver("get_method", hydra.utils.get_method)
-OmegaConf.register_new_resolver("get_original_cwd", ENVs.getcwd)
-OmegaConf.register_new_resolver("exists", IOLIBs.exists)
-OmegaConf.register_new_resolver("join_path", IOLIBs.join_path)
-OmegaConf.register_new_resolver("mkdir", IOLIBs.mkdir)
+OmegaConf.register_new_resolver("get_original_cwd", Composer.getcwd)
+OmegaConf.register_new_resolver("exists", Composer.exists)
+OmegaConf.register_new_resolver("join_path", Composer.join_path)
+OmegaConf.register_new_resolver("mkdir", Composer.mkdir)
 OmegaConf.register_new_resolver("dirname", os.path.dirname)
 OmegaConf.register_new_resolver("basename", os.path.basename)
-OmegaConf.register_new_resolver("check_path", IOLIBs.check_path)
+OmegaConf.register_new_resolver("check_path", Composer.check_path)
 OmegaConf.register_new_resolver("cached_path", cached_path)
 OmegaConf.register_new_resolver(
-    "lower_case_with_underscores", FUNCs.lower_case_with_underscores
+    "lower_case_with_underscores", Composer.lower_case_with_underscores
 )
-OmegaConf.register_new_resolver("dotenv_values", ENVs.dotenv_values)
+OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
 class HyFI(
+    BaseModel,
     BATCHER,
     Composer,
-    DATASETs,
-    ENVs,
-    FUNCs,
     GENERATOR,
-    GPUs,
     GRAPHICs,
-    IOLIBs,
-    LOGGING,
-    NBs,
     PIPELINEs,
-    PKGs,
 ):
     """Primary class for the hyfi config package"""
 
-    __version__ = __hyfi_version__()
-    __hyfi_path__ = __hyfi_path__()
-    __home_path__ = __home_path__()
-    __package_name__ = __package_name__()
-    __package_path__ = __package_path__()
-    __app_version__ = __app_version__()
+    _config_name_: str = "config"
+    _config_group_: str = "/"
 
-    def __init__(self) -> None:
-        raise NotImplementedError("Use one of the static construction functions")
+    debug_mode: bool = False
+    noop: bool = False
+    dryrun: bool = False
+    resolve: bool = False
+    verbose: bool = False
+    logging_level: str = "WARNING"
+
+    hydra: Optional[ConfigType] = None
+
+    about: Optional[ConfigType] = None
+    copier: Optional[ConfigType] = None
+    project: Optional[ConfigType] = None
+    pipeline: Optional[ConfigType] = None
+    task: Optional[ConfigType] = None
+    workflow: Optional[ConfigType] = None
+    tasks: Optional[List[str]] = None
+    pipelines: Optional[List[str]] = None
+
+    __version__ = GlobalHyFIResolver.__hyfi_version__()
+    __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
+    __home_path__ = GlobalHyFIResolver.__home_path__()
+    __package_name__ = GlobalHyFIResolver.__package_name__()
+    __package_path__ = GlobalHyFIResolver.__package_path__()
+    __app_version__ = GlobalHyFIResolver.__app_version__()
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra="allow",
+    )  # type: ignore
+
+    @field_validator("logging_level")
+    def _validate_logging_level(cls, v, info: FieldValidationInfo):
+        """
+        Validate and set the logging level
+        """
+        verbose = info.data.get("verbose", False)
+        # Set verbose to INFO.
+        if verbose and v == "WARNING":
+            v = "INFO"
+        logger.setLevel(v)
+        return v
+
+    @property
+    def app_name(self):
+        """
+        Get the name of the application.
+
+        Returns:
+            The name of the application
+        """
+        return self.about.name if self.about else global_hyfi.hyfi_name
 
     @staticmethod
     def initialize_global_hyfi(
@@ -140,7 +183,7 @@ class HyFI(
         )
 
     @staticmethod
-    def about(**args) -> None:
+    def print_about(**args) -> None:
         """Print the about information"""
         global_config.print_about(**args)
 
@@ -189,7 +232,7 @@ class HyFI(
             autotime=autotime,
             retina=retina,
             verbose=verbose,
-            **project_kwargs,
+            **HyFI.to_dict(project_kwargs),
         )
         if global_config.project:
             return global_config.project
@@ -218,7 +261,7 @@ class HyFI(
         global_config.terminate()
 
     @staticmethod
-    def joblib(**kwargs) -> JobLibConfig:
+    def JobLibConfig(**kwargs) -> JobLibConfig:
         """
         Return the joblib pipe.
 
@@ -231,7 +274,7 @@ class HyFI(
         return JobLibConfig(**kwargs)
 
     @staticmethod
-    def dotenv(**kwargs) -> DotEnvConfig:
+    def DotEnvConfig(**kwargs) -> DotEnvConfig:
         """
         Return the DotEnvConfig.
 
@@ -244,17 +287,7 @@ class HyFI(
         return DotEnvConfig(**kwargs)
 
     @staticmethod
-    def osenv():
-        """
-        Return the os environment variables as a dictionary.
-
-        Returns:
-            dict: A dictionary containing the os environment variables.
-        """
-        return os.environ
-
-    @staticmethod
-    def task(**kwargs) -> TaskConfig:
+    def TaskConfig(**kwargs) -> TaskConfig:
         """
         Return the TaskConfig.
 
@@ -267,7 +300,7 @@ class HyFI(
         return TaskConfig(**kwargs)
 
     @staticmethod
-    def workflow(**kwargs) -> WorkflowConfig:
+    def WorkflowConfig(**kwargs) -> WorkflowConfig:
         """
         Return the WorkflowConfig.
 
@@ -342,7 +375,7 @@ class HyFI(
             # Run the HyFI task
             config_group = config.get("_config_group_", "")
             if config_group == "/workflow" or cmd_name == "run_workflow":
-                workflow = HyFI.workflow(**config)
+                workflow = HyFI.WorkflowConfig(**config)
                 HyFI.run_workflow(workflow, dryrun=dryrun)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
                 project = (
@@ -350,7 +383,7 @@ class HyFI(
                     if "project" in config
                     else None
                 )
-                task = HyFI.task(**config["task"])
+                task = HyFI.TaskConfig(**config["task"])
                 HyFI.run_task(task, project=project, dryrun=dryrun)
             elif "runner" in config:
                 runner = config["runner"]
@@ -361,4 +394,4 @@ class HyFI(
                 with Copier(**copier_cfg) as worker:
                     worker.run_copy()
             else:
-                HyFI.about(**config.get("about", {}))
+                HyFI.print_about(**config.get("about", {}))

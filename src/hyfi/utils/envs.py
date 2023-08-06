@@ -241,3 +241,13 @@ class ENVs:
         for k, v in values.items():
             ENVs.check_and_set_osenv_var(k, v)
         return values
+
+    @staticmethod
+    def osenv():
+        """
+        Return the os environment variables as a dictionary.
+
+        Returns:
+            dict: A dictionary containing the os environment variables.
+        """
+        return os.environ

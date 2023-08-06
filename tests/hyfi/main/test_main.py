@@ -5,7 +5,7 @@ from pprint import pprint
 
 
 def test_about():
-    print(HyFI.about())
+    print(HyFI.print_about())
 
 
 def test_version():
@@ -14,7 +14,7 @@ def test_version():
 
 def test_envs():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi"
-    envs = HyFI.dotenv()
+    envs = HyFI.DotEnvConfig()
     pprint(envs.model_dump())
     assert envs.HYFI_PROJECT_NAME == "hyfi"
 

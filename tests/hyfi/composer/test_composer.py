@@ -20,6 +20,11 @@ def test_composer_overrides():
     print(cfg)
 
 
+def test_viewsource():
+    Composer.viewsource("hyfi.about.AboutConfig")
+
+
 if __name__ == "__main__":
-    test_composer()
-    test_composer_overrides()
+    # test_composer()
+    # test_composer_overrides()
+    test_viewsource()

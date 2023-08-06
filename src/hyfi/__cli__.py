@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 
 from hyfi.core import global_hyfi
 from hyfi.core.hydra import hyfi_hydra_main
-from hyfi.main import GlobalConfig, HyFI
+from hyfi.main import HyFI
 
 logger = HyFI.getLogger(__name__)
 
@@ -26,12 +26,11 @@ def cli_main(cfg: DictConfig) -> None:
         None if everything went fine otherwise an error is raised
         to indicate the reason for the failure
     """
-    cfg = HyFI.to_dict(cfg)
-    hyfi = GlobalConfig(**cfg)
+    hyfi = HyFI(**cfg)
     if hyfi.project:
-        HyFI.set_project(hyfi.project)
+        hyfi.init_project(**hyfi.project)
     else:
-        HyFI.init_project()
+        hyfi.init_project()
 
     dryrun = hyfi.dryrun or hyfi.noop
     verbose = hyfi.verbose or dryrun
@@ -43,16 +42,16 @@ def cli_main(cfg: DictConfig) -> None:
         # Prints the configuration to the console.
         if hyfi.resolve:
             logger.info("## hydra configuration resolved ##")
-            HyFI.print(cfg)
+            hyfi.print(cfg)
         else:
             logger.info("## hydra configuration ##")
-            print(HyFI.to_yaml(cfg))
+            print(hyfi.to_yaml(cfg))
 
         logger.info("Hydra working directory : %s", os.getcwd())
         logger.info("Orig working directory  : %s", hydra.utils.get_original_cwd())
 
-    HyFI.run_config(config=cfg, dryrun=dryrun)
-    HyFI.terminate()
+    hyfi.run_config(config=cfg, dryrun=dryrun)
+    hyfi.terminate()
 
 
 def hyfi_main(

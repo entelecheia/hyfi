@@ -10,14 +10,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import (
-    GENERATOR,
-    BaseModel,
-    Composer,
-    ConfigDict,
-    FieldValidationInfo,
-    field_validator,
-)
+from hyfi.composer import Composer
 from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.dotenv import DotEnvConfig
@@ -28,7 +21,7 @@ from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
 from hyfi.workflow import WorkflowConfig
 
-from .config import GlobalConfigResolver, global_config
+from .config import GlobalConfigResolver, HyFIConfig, global_config
 
 logger = Composer.getLogger(__name__)
 
@@ -75,35 +68,14 @@ OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
 class HyFI(
-    BaseModel,
     BATCHER,
     Composer,
-    GENERATOR,
     GRAPHICs,
     PIPELINEs,
 ):
     """Primary class for the hyfi config package"""
 
-    _config_name_: str = "config"
-    _config_group_: str = "/"
-
-    debug_mode: bool = False
-    noop: bool = False
-    dryrun: bool = False
-    resolve: bool = False
-    verbose: bool = False
-    logging_level: str = "WARNING"
-
-    hydra: Optional[ConfigType] = None
-
-    about: Optional[ConfigType] = None
-    copier: Optional[ConfigType] = None
-    project: Optional[ConfigType] = None
-    pipeline: Optional[ConfigType] = None
-    task: Optional[ConfigType] = None
-    workflow: Optional[ConfigType] = None
-    tasks: Optional[List[str]] = None
-    pipelines: Optional[List[str]] = None
+    __config__: Optional[HyFIConfig] = None
 
     __version__ = GlobalHyFIResolver.__hyfi_version__()
     __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
@@ -112,33 +84,99 @@ class HyFI(
     __package_path__ = GlobalHyFIResolver.__package_path__()
     __app_version__ = GlobalHyFIResolver.__app_version__()
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra="allow",
-    )  # type: ignore
-
-    @field_validator("logging_level")
-    def _validate_logging_level(cls, v, info: FieldValidationInfo):
-        """
-        Validate and set the logging level
-        """
-        verbose = info.data.get("verbose", False)
-        # Set verbose to INFO.
-        if verbose and v == "WARNING":
-            v = "INFO"
-        logger.setLevel(v)
-        return v
+    def __init__(self, **config_kwargs):
+        if config_kwargs:
+            self.__config__ = HyFIConfig(**config_kwargs)
+            if self.__config__.project:
+                self.initialize(**self.__config__.project)
 
     @property
-    def app_name(self):
+    def config(self) -> HyFIConfig:
+        """Get the global config."""
+        return self.__config__
+
+    @property
+    def project(self) -> Optional[ProjectConfig]:
+        """Get the project."""
+        if global_config.project:
+            return global_config.project
+        else:
+            raise ValueError("Project not initialized.")
+
+    @project.setter
+    def project(self, project: ProjectConfig) -> None:
+        """Set the project."""
+        global_config.project = project
+
+    @staticmethod
+    def set_project(project: ProjectConfig) -> None:
         """
-        Get the name of the application.
+        Set the project.
+
+        Args:
+            project: Project to set.
+        """
+        logger.info(f"Setting the global project to {project.project_name}")
+        global_config.project = project
+
+    @staticmethod
+    def initialize(
+        project_name: Optional[str] = None,
+        project_description: Optional[str] = None,
+        project_root: Optional[str] = None,
+        project_workspace_name: Optional[str] = None,
+        global_hyfi_root: Optional[str] = None,
+        global_workspace_name: Optional[str] = None,
+        num_workers: Optional[int] = None,
+        logging_level: Optional[str] = None,
+        reinit: bool = True,
+        autotime: bool = True,
+        retina: bool = True,
+        verbose: Union[bool, int] = False,
+        **project_kwargs,
+    ) -> "HyFI":
+        """
+        Initialize and start hyfi.
+
+        Args:
+            project_name: Name of the project to use.
+            project_description: Description of the project that will be used.
+            project_root: Root directory of the project.
+            project_workspace_name: Name of the project's workspace directory.
+            global_hyfi_root: Root directory of the global hyfi.
+            global_workspace_name: Name of the global hierachical workspace directory.
+            num_workers: Number of workers to run.
+            logging_level: Log level for the log.
+            autotime: Whether to automatically set time and / or keep track of run times.
+            retina: Whether to use retina or not.
+            verbose: Enables or disables logging
+        """
+        global_config.inititialize(
+            project_name=project_name,
+            project_description=project_description,
+            project_root=project_root,
+            project_workspace_name=project_workspace_name,
+            global_hyfi_root=global_hyfi_root,
+            global_workspace_name=global_workspace_name,
+            num_workers=num_workers,
+            logging_level=logging_level,
+            reinit=reinit,
+            autotime=autotime,
+            retina=retina,
+            verbose=verbose,
+            **HyFI.to_dict(project_kwargs),
+        )
+        return HyFI()
+
+    @staticmethod
+    def terminate() -> None:
+        """
+        Terminate the global config.
 
         Returns:
-            The name of the application
+            bool: True if termination was successful, False otherwise.
         """
-        return self.about.name if self.about else global_hyfi.hyfi_name
+        global_config.terminate()
 
     @staticmethod
     def initialize_global_hyfi(
@@ -182,83 +220,32 @@ class HyFI(
             **kwargs,
         )
 
+    @property
+    def dryrun(self) -> bool:
+        """Get the dryrun flag."""
+        return self.config.dryrun or self.config.noop
+
+    @property
+    def resolve(self) -> bool:
+        """Get the resolve flag."""
+        return self.config.resolve
+
+    @property
+    def verbose(self) -> bool:
+        """Get the verbose flag."""
+        return self.config.verbose or self.dryrun
+
+    @property
+    def app_name(self):
+        """
+        Get the name of the application.
+        """
+        return global_config.app_name
+
     @staticmethod
     def print_about(**args) -> None:
         """Print the about information"""
         global_config.print_about(**args)
-
-    @staticmethod
-    def init_project(
-        project_name: Optional[str] = None,
-        project_description: Optional[str] = None,
-        project_root: Optional[str] = None,
-        project_workspace_name: Optional[str] = None,
-        global_hyfi_root: Optional[str] = None,
-        global_workspace_name: Optional[str] = None,
-        num_workers: Optional[int] = None,
-        log_level: Optional[str] = None,
-        reinit: bool = True,
-        autotime: bool = True,
-        retina: bool = True,
-        verbose: Union[bool, int] = False,
-        **project_kwargs,
-    ) -> ProjectConfig:
-        """
-        Initialize and start hyfi.
-
-        Args:
-            project_name: Name of the project to use.
-            project_description: Description of the project that will be used.
-            project_root: Root directory of the project.
-            project_workspace_name: Name of the project's workspace directory.
-            global_hyfi_root: Root directory of the global hyfi.
-            global_workspace_name: Name of the global hierachical workspace directory.
-            num_workers: Number of workers to run.
-            log_level: Log level for the log.
-            autotime: Whether to automatically set time and / or keep track of run times.
-            retina: Whether to use retina or not.
-            verbose: Enables or disables logging
-        """
-        global_config.init_project(
-            project_name=project_name,
-            project_description=project_description,
-            project_root=project_root,
-            project_workspace_name=project_workspace_name,
-            global_hyfi_root=global_hyfi_root,
-            global_workspace_name=global_workspace_name,
-            num_workers=num_workers,
-            log_level=log_level,
-            reinit=reinit,
-            autotime=autotime,
-            retina=retina,
-            verbose=verbose,
-            **HyFI.to_dict(project_kwargs),
-        )
-        if global_config.project:
-            return global_config.project
-        else:
-            raise ValueError("Project not initialized.")
-
-    @staticmethod
-    def set_project(project: ProjectConfig) -> None:
-        """
-        Set the project.
-
-        Args:
-            project: Project to set.
-        """
-        logger.info(f"Setting the global project to {project.project_name}")
-        global_config.project = project
-
-    @staticmethod
-    def terminate() -> None:
-        """
-        Terminate the global config.
-
-        Returns:
-            bool: True if termination was successful, False otherwise.
-        """
-        global_config.terminate()
 
     @staticmethod
     def JobLibConfig(**kwargs) -> JobLibConfig:
@@ -379,7 +366,7 @@ class HyFI(
                 HyFI.run_workflow(workflow, dryrun=dryrun)
             elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
                 project = (
-                    HyFI.init_project(**config["project"])
+                    HyFI.initialize(**config["project"])
                     if "project" in config
                     else None
                 )

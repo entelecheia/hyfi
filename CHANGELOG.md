@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.21.0 (2023-08-07)
+
+### Feature
+
+* **hyfi/main:** Add app_version property ([`54489d1`](https://github.com/entelecheia/hyfi/commit/54489d1aaf90b8337c9b3dfe37bc90d369f4e2f9))
+* **hyfi/main:** Add HyFIConfig to public interfaces ([`72fa2ae`](https://github.com/entelecheia/hyfi/commit/72fa2ae8eafc2f937f7a30cc84c35b867eef3835))
+
+### Fix
+
+* **config:** Separate global configurations into different classes, change environment variables to project arguments, remove unnecessary comments and return info ([`495210a`](https://github.com/entelecheia/hyfi/commit/495210a36da871185726cb5430a4a2af7eea534b))
+
 ## v1.20.1 (2023-08-06)
 
 ### Fix

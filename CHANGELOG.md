@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.22.0 (2023-08-07)
+
+### Feature
+
+* **hyfi:** Add dataset_remove_columns configuration ([`44a5db2`](https://github.com/entelecheia/hyfi/commit/44a5db26c173df3559e4ddf105894125f2ecb582))
+
+### Fix
+
+* **composer:** Handle string values in group configuration ([`eb5eeb4`](https://github.com/entelecheia/hyfi/commit/eb5eeb4f5d402744453075f7c1ae7b8cb7543662))
+* **hyfi/main/config:** Add default argument in print_about function ([`cd16a4a`](https://github.com/entelecheia/hyfi/commit/cd16a4a638b0fc003e5487c3c3a8a16c531b8550))
+* **about:** Remove 'model_config' property and add '_auto_populate_' attribute ([`a320c11`](https://github.com/entelecheia/hyfi/commit/a320c11207e03667d13a16dd5dd700d4f861f7b8))
+
 ## v1.21.0 (2023-08-07)
 
 ### Feature

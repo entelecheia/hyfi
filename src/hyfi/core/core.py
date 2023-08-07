@@ -145,10 +145,7 @@ class GlobalHyFIConfig(BaseModel):
                 else os.path.join(os.getcwd(), secret_dir)
             )
         else:
-            logger.debug(
-                "The secrets directory %s does not exist. ",
-                secret_dir,
-            )
+            logger.debug("The secrets directory does not exist.")
             secret_dir = None
         return secret_dir
 

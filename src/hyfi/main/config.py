@@ -78,7 +78,6 @@ class GlobalConfig(UTILs):
     _project_: Optional[ProjectConfig] = None
     _version_: str = PrivateAttr(global_hyfi.version)
 
-    # _initilized_: bool = PrivateAttr(False)
     def __init__(self, **config_kwargs):
         if config_kwargs:
             self.__config__ = HyFIConfig(**config_kwargs)
@@ -126,7 +125,6 @@ class GlobalConfig(UTILs):
             verbose: Enables or disables logging
         """
         # Set the log level to the given log level.
-        # envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
         if logging_level:
             GlobalConfig.setLogger(logging_level)
             logger.setLevel(logging_level)
@@ -137,47 +135,27 @@ class GlobalConfig(UTILs):
         # Set the retina matplotlib formats.
         if retina:
             GlobalConfig.set_matplotlib_formats("retina")
-        # ENVs.load_dotenv()
         if self.project and not reinit:
             return
-        # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
         if project_name:
-            # envs.HYFI_PROJECT_NAME = GlobalConfig.expand_posix_vars(project_name)
             project_kwargs["project_name"] = project_name
-        # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
         if project_description:
-            # envs.HYFI_PROJECT_DESC = GlobalConfig.expand_posix_vars(project_description)
             project_kwargs["project_description"] = project_description
-        # Set environment variables HYFI_PROJECT_ROOT to the project root if project_root is set to true.
         if project_root:
-            # envs.HYFI_PROJECT_ROOT = GlobalConfig.expand_posix_vars(project_root)
             project_kwargs["project_root"] = project_root
-        # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
         if project_workspace_name:
-            # envs.HYFI_PROJECT_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
-            #     project_workspace_name
-            # )
             project_kwargs["project_workspace_name"] = project_workspace_name
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
-            # envs.HYFI_GLOBAL_ROOT = GlobalConfig.expand_posix_vars(global_hyfi_root)
             project_kwargs["global_hyfi_root"] = global_hyfi_root
-        # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
         if global_workspace_name:
-            # envs.HYFI_GLOBAL_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
-            #     global_workspace_name
-            # )
             project_kwargs["global_workspace_name"] = global_workspace_name
-        # Set the number of workers to use.
         if num_workers:
-            # envs.HYFI_NUM_WORKERS = num_workers
             project_kwargs["num_workers"] = num_workers
-        # Set the verbose environment variable.
         project_kwargs["verbose"] = verbose
 
         self._project_ = ProjectConfig(**project_kwargs)
         logger.info("HyFi project [%s] initialized", self._project_.project_name)
-        # self._initilized_ = True
 
     def terminate(self) -> None:
         """
@@ -186,13 +164,9 @@ class GlobalConfig(UTILs):
         Returns:
             True if successful False
         """
-        # If the module is not initialized yet.
-        # if not self.project:
-        #     return
         # Stop the backend if the joblib is running.
         if self.project and self.project.joblib:
             self.project.joblib.stop_backend()
-        # self._initilized_ = False
 
     def __repr__(self):
         """

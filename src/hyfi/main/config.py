@@ -202,6 +202,8 @@ class GlobalConfig(UTILs):
         return global_hyfi.package_name
 
     def print_about(self, **kwargs):
+        if not kwargs:
+            kwargs = {"_config_name_": global_hyfi.package_name}
         self._about_ = AboutConfig(**kwargs)
         pkg_name = self.package_name
         name = self.app_name

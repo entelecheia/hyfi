@@ -31,11 +31,10 @@ class AboutConfig(BaseModel):
     """
 
     _config_group_: str = "/about"
+    _auto_populate_: bool = True
 
     name: str = __hyfi_name__
     authors: str = __hyfi_authors__
     description: str = __hyfi_description__
     homepage: str = __hyfi_homepage__
     license: str = __hyfi_license__
-
-    model_config = ConfigDict(extra="allow")  # type: ignore

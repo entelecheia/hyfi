@@ -21,13 +21,14 @@ def test_envs():
 
 def test_init_project():
     os.environ["HYFI_PROJECT_ROOT"] = ""
-    prj = HyFI.init_project(
+    h = HyFI.initialize(
         project_name="hyfi2",
         global_hyfi_root="workspace",
         global_workspace_name="testspace",
         log_level="WARNING",
         verbose=True,
     )
+    prj = h.project
     pprint(prj.model_dump())
     assert prj.path.global_workspace_name == "testspace"
 

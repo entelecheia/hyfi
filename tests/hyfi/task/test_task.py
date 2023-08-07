@@ -5,7 +5,7 @@ from hyfi.main import HyFI
 
 
 def test_task_config():
-    HyFI.init_project(project_root=".")
+    HyFI.initialize(project_root=".")
     config = TaskConfig(
         task_name="demo2",
         verbose=True,

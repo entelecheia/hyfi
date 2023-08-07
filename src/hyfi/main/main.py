@@ -242,6 +242,13 @@ class HyFI(
         """
         return global_config.app_name
 
+    @property
+    def app_version(self):
+        """
+        Get the version of the application.
+        """
+        return global_config.app_version
+
     @staticmethod
     def print_about(**args) -> None:
         """Print the about information"""

@@ -4,7 +4,7 @@ from hyfi.project import ProjectConfig
 
 
 def test_task_config():
-    HyFI.init_project(
+    HyFI.initialize(
         project_name="run_task", project_root="workspace/run_task", num_workers=2
     )
 

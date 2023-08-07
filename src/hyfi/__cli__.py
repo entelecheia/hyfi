@@ -27,15 +27,9 @@ def cli_main(cfg: DictConfig) -> None:
         to indicate the reason for the failure
     """
     hyfi = HyFI(**cfg)
-    if hyfi.project:
-        hyfi.init_project(**hyfi.project)
-    else:
-        hyfi.init_project()
 
-    dryrun = hyfi.dryrun or hyfi.noop
-    verbose = hyfi.verbose or dryrun
     # Print out the command line interface for the application.
-    if verbose:
+    if hyfi.verbose:
         app_name = hyfi.app_name
         print(f"## Command Line Interface for {app_name} ##")
 
@@ -50,7 +44,7 @@ def cli_main(cfg: DictConfig) -> None:
         logger.info("Hydra working directory : %s", os.getcwd())
         logger.info("Orig working directory  : %s", hydra.utils.get_original_cwd())
 
-    hyfi.run_config(config=cfg, dryrun=dryrun)
+    hyfi.run_config(config=cfg, dryrun=hyfi.dryrun)
     hyfi.terminate()
 
 

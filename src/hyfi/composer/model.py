@@ -74,6 +74,7 @@ class BaseModel(PydanticBaseModel):
         exclude = getattr(cls._exclude_, "default", set())  # type: ignore
         for name in exclude:
             if name in data:
+                logger.debug("Excluding `%s` from the config.", name)
                 del data[name]  # type: ignore
         return data
 

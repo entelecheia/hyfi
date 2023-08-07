@@ -9,9 +9,7 @@ from typing import Any, Callable, Dict, FrozenSet, Optional, TypeVar
 from typing_extensions import Final, ParamSpec
 
 from hyfi.core import global_hyfi
-from hyfi.utils.logging import LOGGING
-
-from .composer import Composer
+from hyfi.utils import LOGGING, CONFs
 
 logger = LOGGING.getLogger(__name__)
 
@@ -136,7 +134,7 @@ class GENERATOR:
         config_path = Path(config_root) / "pipe"
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename
-        Composer.save(cfg, config_path)
+        CONFs.save(cfg, config_path)
         logger.info(f"Saved HyFI pipe config for {target.__name__} to {config_path}")
 
         return config_name
@@ -172,7 +170,7 @@ class GENERATOR:
         config_path = Path(config_root) / config_path
         config_path.mkdir(parents=True, exist_ok=True)
         config_path /= filename
-        Composer.save(cfg, config_path)
+        CONFs.save(cfg, config_path)
         logger.info(f"Saved HyFI config for {target.__name__} to {config_path}")
         return config_name
 

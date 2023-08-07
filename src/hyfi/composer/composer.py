@@ -16,6 +16,8 @@ from hyfi.core import global_hyfi
 from hyfi.core import hydra as hyfi_hydra
 from hyfi.utils import UTILs
 
+from .generator import GENERATOR
+
 if level := os.environ.get("HYFI_LOG_LEVEL"):
     UTILs.setLogger(level)
 logger = UTILs.getLogger(__name__)
@@ -128,7 +130,7 @@ class ConfigGroup(BaseModel):
         self._group_value_ = group_value
 
 
-class Composer(UTILs):
+class Composer(UTILs, GENERATOR):
     """
     Compose a configuration by applying overrides
     """

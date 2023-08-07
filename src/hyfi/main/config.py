@@ -15,7 +15,6 @@ from hyfi.composer import (
     field_validator,
 )
 from hyfi.core import global_hyfi
-from hyfi.dotenv import DotEnvConfig
 from hyfi.project import ProjectConfig
 from hyfi.utils import UTILs
 
@@ -27,8 +26,11 @@ __default_project_root__ = "."
 __default_workspace_name__ = "workspace"
 
 
-class GlobalConfig(BaseModel, UTILs):
-    """HyFI global config class.  This class is used to store the configuration"""
+class HyFIConfig(BaseModel, UTILs):
+    """HyFI root config class.  This class is used to store the configuration"""
+
+    _config_name_: str = "config"
+    _config_group_: str = "/"
 
     debug_mode: bool = False
     noop: bool = False
@@ -39,16 +41,14 @@ class GlobalConfig(BaseModel, UTILs):
 
     hydra: Optional[ConfigType] = None
 
-    about: Optional[AboutConfig] = None
+    about: Optional[ConfigType] = None
     copier: Optional[ConfigType] = None
-    project: Optional[ProjectConfig] = None
+    project: Optional[ConfigType] = None
     pipeline: Optional[ConfigType] = None
     task: Optional[ConfigType] = None
     workflow: Optional[ConfigType] = None
     tasks: Optional[List[str]] = None
-
-    _version_: str = PrivateAttr(global_hyfi.version)
-    _initilized_: bool = PrivateAttr(False)
+    workflows: Optional[List[str]] = None
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
@@ -68,7 +68,31 @@ class GlobalConfig(BaseModel, UTILs):
         logger.setLevel(v)
         return v
 
-    def init_project(
+
+class GlobalConfig(UTILs):
+    """HyFI global config class.  This class is used to store the global configuration"""
+
+    __config__: Optional[HyFIConfig] = None
+
+    _about_: Optional[AboutConfig] = None
+    _project_: Optional[ProjectConfig] = None
+    _version_: str = PrivateAttr(global_hyfi.version)
+
+    def __init__(self, **config_kwargs):
+        if config_kwargs:
+            self.__config__ = HyFIConfig(**config_kwargs)
+
+    @property
+    def about(self) -> AboutConfig:
+        if self._about_ is None:
+            self._about_ = AboutConfig()
+        return self._about_
+
+    @property
+    def project(self) -> ProjectConfig:
+        return self._project_
+
+    def inititialize(
         self,
         project_name: Optional[str] = None,
         project_description: Optional[str] = None,
@@ -77,7 +101,7 @@ class GlobalConfig(BaseModel, UTILs):
         global_hyfi_root: Optional[str] = None,
         global_workspace_name: Optional[str] = None,
         num_workers: Optional[int] = None,
-        log_level: Optional[str] = None,
+        logging_level: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
@@ -100,52 +124,38 @@ class GlobalConfig(BaseModel, UTILs):
             retina: Whether to use retina or not.
             verbose: Enables or disables logging
         """
-        if self._initilized_ and not reinit:
-            return
-        if self.about is None:
-            self.about = AboutConfig()
-        # ENVs.load_dotenv()
-        envs = DotEnvConfig(HYFI_VERBOSE=verbose)  # type: ignore
-        # Set the project name environment variable HYFI_PROJECT_NAME environment variable if project_name is not set.
-        if project_name:
-            envs.HYFI_PROJECT_NAME = GlobalConfig.expand_posix_vars(project_name)
-        # Set the project description environment variable HYFI_PROJECT_DESC environment variable.
-        if project_description:
-            envs.HYFI_PROJECT_DESC = GlobalConfig.expand_posix_vars(project_description)
-        # Set environment variables HYFI_PROJECT_ROOT to the project root if project_root is set to true.
-        if project_root:
-            envs.HYFI_PROJECT_ROOT = GlobalConfig.expand_posix_vars(project_root)
-        # Set the project workspace name environment variable HYFI_PROJECT_WORKSPACE_NAME environment variable if project_workspace_name is set to the project workspace name.
-        if project_workspace_name:
-            envs.HYFI_PROJECT_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
-                project_workspace_name
-            )
-        # Expand the hyfi_root environment variable.
-        if global_hyfi_root:
-            envs.HYFI_GLOBAL_ROOT = GlobalConfig.expand_posix_vars(global_hyfi_root)
-        # Set the global workspace name environment variable HYFI_GLOBAL_WORKSPACE_NAME environment variable.
-        if global_workspace_name:
-            envs.HYFI_GLOBAL_WORKSPACE_NAME = GlobalConfig.expand_posix_vars(
-                global_workspace_name
-            )
-        # Set the number of workers to use.
-        if num_workers:
-            envs.HYFI_NUM_WORKERS = num_workers
         # Set the log level to the given log level.
-        if log_level:
-            envs.HYFI_LOG_LEVEL = log_level
-            GlobalConfig.setLogger(log_level)
-            logger.setLevel(log_level)
+        if logging_level:
+            GlobalConfig.setLogger(logging_level)
+            logger.setLevel(logging_level)
+
         # Load the extentions for the autotime extension.
         if autotime:
             GlobalConfig.load_extentions(exts=["autotime"])
         # Set the retina matplotlib formats.
         if retina:
             GlobalConfig.set_matplotlib_formats("retina")
+        if self.project and not reinit:
+            return
+        if project_name:
+            project_kwargs["project_name"] = project_name
+        if project_description:
+            project_kwargs["project_description"] = project_description
+        if project_root:
+            project_kwargs["project_root"] = project_root
+        if project_workspace_name:
+            project_kwargs["project_workspace_name"] = project_workspace_name
+        # Expand the hyfi_root environment variable.
+        if global_hyfi_root:
+            project_kwargs["global_hyfi_root"] = global_hyfi_root
+        if global_workspace_name:
+            project_kwargs["global_workspace_name"] = global_workspace_name
+        if num_workers:
+            project_kwargs["num_workers"] = num_workers
+        project_kwargs["verbose"] = verbose
 
-        self.project = ProjectConfig(**project_kwargs)
-        logger.info("HyFi project [%s] initialized", self.project.project_name)
-        self._initilized_ = True
+        self._project_ = ProjectConfig(**project_kwargs)
+        logger.info("HyFi project [%s] initialized", self._project_.project_name)
 
     def terminate(self) -> None:
         """
@@ -154,29 +164,19 @@ class GlobalConfig(BaseModel, UTILs):
         Returns:
             True if successful False
         """
-        # If the module is not initialized yet.
-        if not self._initilized_:
-            return
         # Stop the backend if the joblib is running.
         if self.project and self.project.joblib:
             self.project.joblib.stop_backend()
-        self._initilized_ = False
 
     def __repr__(self):
         """
-        Returns a string representation of HyFIConfig.
-
-        Returns:
-            The string representation of HyFI
+        Returns a string representation of GlobalConfig.
         """
-        return f"HyFIConfig(project={self.project})"
+        return f"GlobalConfig(project={self.project})"
 
     def __str__(self):
         """
         Returns a string representation of the object.
-
-        Returns:
-                The string representation of the
         """
         return self.__repr__()
 
@@ -184,10 +184,6 @@ class GlobalConfig(BaseModel, UTILs):
     def app_version(self):
         """
         Get the version of the application.
-
-
-        Returns:
-            The version of the application
         """
         return global_hyfi.version
 
@@ -195,9 +191,6 @@ class GlobalConfig(BaseModel, UTILs):
     def app_name(self):
         """
         Get the name of the application.
-
-        Returns:
-            The name of the application
         """
         return self.about.name if self.about else global_hyfi.hyfi_name
 
@@ -205,14 +198,11 @@ class GlobalConfig(BaseModel, UTILs):
     def package_name(self):
         """
         Get the name of the package.
-
-        Returns:
-            The name of the package
         """
         return global_hyfi.package_name
 
     def print_about(self, **kwargs):
-        self.about = AboutConfig(**kwargs)
+        self._about_ = AboutConfig(**kwargs)
         pkg_name = self.package_name
         name = self.app_name
         print()

@@ -18,7 +18,7 @@ HyFI.print_about()
 
 ## Initialize Project
 
-We'll initialize the project using the `HyFI.init_project` function. The function takes the following parameters:
+We'll initialize the project using the `HyFI.initialize` function. The function takes the following parameters:
 
 - `project_name`: Name of the project to use.
 - `project_description`: Description of the project that will be used.
@@ -27,7 +27,7 @@ We'll initialize the project using the `HyFI.init_project` function. The functio
 - `global_hyfi_root`: Root directory of the global hyfi.
 - `global_workspace_name`: Name of the global hierachical workspace directory.
 - `num_workers`: Number of workers to run.
-- `log_level`: Log level for the log.
+- `logging_level`: Log level for the log.
 - `autotime`: Whether to automatically set time and / or keep track of run times.
 - `retina`: Whether to use retina or not.
 - `verbose`: Enables or disables logging
@@ -38,14 +38,14 @@ We'll check if we're running in Google Colab, and if so, we'll mount Google Driv
 if HyFI.is_colab():
     HyFI.mount_google_drive()
 
-ws = HyFI.init_project(
+h = HyFI.initialize(
     project_name="hyfi",
-    log_level="DEBUG",
+    logging_level="DEBUG",
     verbose=True,
 )
 
-print("Project directory:", prj.root_dir)
-print("Workspace directory:", prj.workspace_dir)
+print("project_dir:", h.project.root_dir)
+print("project_workspace_dir:", h.project.workspace_dir)
 ```
 
 ## Compose Configuration

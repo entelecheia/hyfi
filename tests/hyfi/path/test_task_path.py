@@ -5,7 +5,7 @@ from hyfi import HyFI
 
 
 def test_path_config():
-    HyFI.init_project(project_root=".")
+    HyFI.initialize(project_root=".")
     config = TaskPathConfig(
         task_root="workspace/tasks",
         task_name="test-task",

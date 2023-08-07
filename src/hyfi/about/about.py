@@ -5,7 +5,7 @@ metadata about the package, such as its name, version, authors, and license.
 It also defines the model_config attribute, which is a ConfigDict that allows
 extra configuration options to be added to the AboutConfig instance.
 """
-from hyfi.composer import BaseModel, ConfigDict
+from hyfi.composer import BaseModel
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)

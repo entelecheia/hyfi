@@ -1,0 +1,8 @@
+defaults:
+  - __general_instance_methods__
+
+run:
+  _target_: remove_columns
+  column_names:
+  new_fingerprint:
+verbose: true

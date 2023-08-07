@@ -261,7 +261,9 @@ class Composer(UTILs, GENERATOR):
             )
             if config_data and group_cfg:
                 group_overrides.extend(
-                    f"{cg.group_key}.{k}={v}"
+                    f"{cg.group_key}.{k}='{v}'"
+                    if isinstance(v, str)
+                    else f"{cg.group_key}.{k}={v}"
                     for k, v in config_data.items()
                     if isinstance(v, (str, int, float, bool)) and k in group_cfg
                 )

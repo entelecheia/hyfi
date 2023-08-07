@@ -56,8 +56,8 @@ class BaseModel(PydanticBaseModel):
                 logger.debug("There is no config group specified.")
             return data
         # Initialize the config with the given config_name.
-        if global_hyfi.verbosity > 0:
-            logger.debug(
+        if global_hyfi.verbosity > 1:
+            logger.info(
                 "Composing `%s` class with `%s` config in `%s` group.",
                 _class_name_,
                 _config_name_,

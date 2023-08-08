@@ -1,5 +1,28 @@
 <!--next-version-placeholder-->
 
+## v1.23.0 (2023-08-08)
+
+### Feature
+
+* **datasets:** Add example usage to split_dataframe function ([`acb9a51`](https://github.com/entelecheia/hyfi/commit/acb9a51e867df71bbbe212cefb84feeb3ce2a35a))
+* **datasets:** Add merge_dataframes function to DSCombine class ([`bc62681`](https://github.com/entelecheia/hyfi/commit/bc626810121c0267fb69225c79a3792451ba2d53))
+* **hyfi/conf:** Add split_dataframe configuration files ([`fb254e7`](https://github.com/entelecheia/hyfi/commit/fb254e7d754920d95046acc3c34974872ce7def2))
+* **hyfi:** Add merge_dataframes configuration ([`40a1cae`](https://github.com/entelecheia/hyfi/commit/40a1cae978d63f46e2f78c2d3155abe400c880fa))
+* **databases/basic.py:** Add multiple utility functions for dataframe operations ([`d36cc9a`](https://github.com/entelecheia/hyfi/commit/d36cc9a2e1c753c4d20041196ea2ed043550f42f))
+* **hyfi:** Add dataframe print head and tail configuration files ([`d79915b`](https://github.com/entelecheia/hyfi/commit/d79915bc939060c977f89810665f1d91ab55cb50))
+* **hyfi:** Add dataframe_eval_columns_with_pd_eval configuration files ([`8889809`](https://github.com/entelecheia/hyfi/commit/88898092fbb2305a1ddfe0ac7df83c34b6f5e301))
+* **hyfi/conf:** Add new yaml configuration files for dataframe_eval_columns_with_eval ([`68791c7`](https://github.com/entelecheia/hyfi/commit/68791c7f7ece3d704542dd5e0a122dd3d98e97c4))
+* **hyfi:** Add dataframe_eval_columns configuration files ([`4595a2a`](https://github.com/entelecheia/hyfi/commit/4595a2a1c0708fff29ee9f8a0d1447c9d71837da))
+* **hyfi/conf/pipe:** Add new dataframe_combine_str_columns config ([`6b85d0a`](https://github.com/entelecheia/hyfi/commit/6b85d0ad95b5f05dbb3f12b073a2cbdb7f07cf20))
+* **hyfi:** Add split string column functionality in dataframe config files ([`1ec66ec`](https://github.com/entelecheia/hyfi/commit/1ec66ec2a646e32ee675975947e3657130d5fd10))
+* **hyfi/conf:** Add dataframe drop configuration files ([`7367788`](https://github.com/entelecheia/hyfi/commit/7367788a13a3bf0df4157c114b15b4278cb757b6))
+* **hyfi:** Add dataframe drop columns configuration files ([`376be79`](https://github.com/entelecheia/hyfi/commit/376be798028bdd7edd94b176f0908e25af4e49ee))
+* **datasets:** Add aggregate, basic and reshape classes, rename transform to combine, process to plot, filter to slice ([`142c74a`](https://github.com/entelecheia/hyfi/commit/142c74a62e8951689b1da94222fd0496b8ad485b))
+
+### Documentation
+
+* **README:** Add codefactor and codacy badges ([`177fa5f`](https://github.com/entelecheia/hyfi/commit/177fa5f7f68d923b425ae58297270f6e4fd0ccc4))
+
 ## v1.22.0 (2023-08-07)
 
 ### Feature

@@ -245,7 +245,7 @@ class DSBasic:
             >>> import pandas as pd
             >>> from hyfi.utils.datasets.basic import DSBasic
             >>> data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-            F>>> DSBasic.dataframe_eval_columns_with_pd_eval(data, expressions={"c": "a + b"})
+            F>>> DSBasic.dataframe_eval_columns_with_pd_eval(data, expressions={"c": "data.a + data.b"})
                 a   b   c
             0   1   4   5
             1   2   5   7
@@ -281,6 +281,16 @@ class DSBasic:
 
         Returns:
             pd.DataFrame: The dataframe with the evaluated columns.
+
+                    Examples:
+            >>> import pandas as pd
+            >>> from hyfi.utils.datasets.basic import DSBasic
+            >>> data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+            F>>> DSBasic.dataframe_eval_columns_with_eval(data, expressions={"c": "data.a + data.b"})
+                a   b   c
+            0   1   4   5
+            1   2   5   7
+            2   3   6   9
         """
         for column in expressions:
             if verbose:

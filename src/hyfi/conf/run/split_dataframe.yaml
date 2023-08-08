@@ -1,0 +1,3 @@
+_target_: hyfi.utils.datasets.slice.DSSlice.split_dataframe
+indices_or_sections: null
+verbose: false

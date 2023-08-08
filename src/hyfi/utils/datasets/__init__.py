@@ -1,29 +1,35 @@
-from .filter import DSFilter
+from .aggregate import DSAggregate
+from .basic import DSBasic
+from .combine import DSCombine
 from .load import DSLoad
-from .process import DSProcess
+from .plot import DSPlot
+from .reshape import DSReshape
 from .save import DSSave
-from .transform import DSTransform
+from .slice import DSSlice
 from .types import DatasetDictType, DatasetLikeType, DatasetType
 from .utils import DSUtils
 
 
 class DATASETs(
+    DSAggregate,
+    DSBasic,
+    DSCombine,
     DSLoad,
-    DSUtils,
+    DSPlot,
+    DSReshape,
     DSSave,
-    DSFilter,
-    DSTransform,
-    DSProcess,
+    DSSlice,
+    DSUtils,
 ):
     def __init__(self):
         super().__init__()
 
 
 __all__ = [
-    "DSLoad",
-    "DSUtils",
-    "DatasetType",
     "DatasetDictType",
     "DatasetLikeType",
     "DATASETs",
+    "DatasetType",
+    "DSLoad",
+    "DSUtils",
 ]

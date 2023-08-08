@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.25.0 (2023-08-08)
+
+### Feature
+
+* **hyfi:** Add dataframe select columns configuration ([`8a3040a`](https://github.com/entelecheia/hyfi/commit/8a3040aa9db1bf260a1c554a64c80a155b052a19))
+* **datasets:** Add dataframe_select_columns method in DSBasic class ([`d46c3cf`](https://github.com/entelecheia/hyfi/commit/d46c3cf54f978c660c809c528d02bddb86ffb10c))
+
+### Fix
+
+* **hyfi:** Change discard_filename value to null ([`01780be`](https://github.com/entelecheia/hyfi/commit/01780be6b969c61bfe326a9863433dec8c775061))
+* **slice:** Change default discard_filename value, return original data from filter_data_by_queries function ([`c2b38ea`](https://github.com/entelecheia/hyfi/commit/c2b38ea701d36d5d8a2da0749b9675f0d62a3bec))
+
 ## v1.24.0 (2023-08-08)
 
 ### Feature

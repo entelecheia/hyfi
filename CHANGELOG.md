@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.24.0 (2023-08-08)
+
+### Feature
+
+* **hyfi/utils:** Add simpleeval.py, improve simpleeval to support more features ([`533acac`](https://github.com/entelecheia/hyfi/commit/533acacb7cf43b94cd4f377942df312ad3f647be))
+
+### Fix
+
+* **pipeline/config:** Remove lambda function support ([`62e253d`](https://github.com/entelecheia/hyfi/commit/62e253da14eea75734f7ea2da63f1ef320b83c67))
+
 ## v1.23.0 (2023-08-08)
 
 ### Feature

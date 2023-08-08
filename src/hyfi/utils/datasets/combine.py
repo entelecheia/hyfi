@@ -1,3 +1,6 @@
+"""
+Dataset transformation functions. Concatenate, merge, join, etc.
+"""
 from typing import Dict, List, Optional, Sequence, Union
 
 import datasets as hfds
@@ -13,7 +16,7 @@ from .types import DatasetType
 logger = LOGGING.getLogger(__name__)
 
 
-class DSTransform:
+class DSCombine:
     @staticmethod
     def concatenate_data(
         data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
@@ -28,14 +31,14 @@ class DSTransform:
     ) -> Union[pd.DataFrame, DatasetType]:
         # if data is a list of datasets, concatenate them
         if isinstance(data, list) and isinstance(data[0], Dataset):
-            return DSTransform.concatenate_datasets(
+            return DSCombine.concatenate_datasets(
                 data,
                 axis=axis,
                 split=split,
                 **kwargs,
             )
         else:
-            return DSTransform.concatenate_dataframes(
+            return DSCombine.concatenate_dataframes(
                 data,
                 columns=columns,
                 add_split_key_column=add_split_key_column,

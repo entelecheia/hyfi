@@ -5,5 +5,5 @@ sample_seed: 42
 output_dir: .
 sample_filename: null
 train_filename: train.parquet
-discard_filename: discard.parquet
+discard_filename: null
 verbose: false

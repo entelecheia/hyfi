@@ -50,6 +50,11 @@ def test_basics():
     DATASETs.dataframe_print_head_and_tail(data, num_heads=1, num_tails=1)
     HyFI.generate_pipe_config(DATASETs.dataframe_print_head_and_tail)
 
+    data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    data = DATASETs.dataframe_select_columns(data, columns=["a"])
+    assert "b" not in data.columns
+    HyFI.generate_pipe_config(DATASETs.dataframe_select_columns)
+
 
 if __name__ == "__main__":
     test_basics()

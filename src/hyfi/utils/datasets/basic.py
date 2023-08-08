@@ -12,6 +12,39 @@ logger = LOGGING.getLogger(__name__)
 
 class DSBasic:
     @staticmethod
+    def dataframe_select_columns(
+        data: pd.DataFrame,
+        columns: Union[List[str], str],
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """
+        Select columns from a dataframe.
+
+        Args:
+            data (pd.DataFrame): The dataframe to select columns from.
+            columns (List[str]): The columns to select.
+            verbose (bool, optional): Whether to print verbose output. Defaults to False.
+
+        Returns:
+            pd.DataFrame: The dataframe with the columns selected.
+
+        Examples:
+            >>> import pandas as pd
+            >>> from hyfi.utils.datasets.basic import DSBasic
+            >>> data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+            >>> DSBasic.dataframe_select_columns(data, columns=["a"])
+               a
+            0  1
+            1  2
+            2  3
+        """
+        columns = [columns] if isinstance(columns, str) else columns
+        columns = [c for c in columns if c in data.columns]
+        if verbose:
+            logger.info("Selecting columns: %s", columns)
+        return data[columns]
+
+    @staticmethod
     def dataframe_drop_columns(
         data: pd.DataFrame,
         columns: Union[List[str], str],

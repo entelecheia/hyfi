@@ -5,9 +5,11 @@
 [![release-date-image]][release-url]
 [![license-image]][license-url]
 [![codecov][codecov-image]][codecov-url]
-
+[![codefactor][codefactor-image]][codefactor-url]
+[![codacy][codacy-image]][codacy-url]
 
 <!-- Links: -->
+
 [codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
 [codecov-url]: https://codecov.io/gh/entelecheia/hyfi
 [pypi-image]: https://img.shields.io/pypi/v/hyfi
@@ -16,13 +18,16 @@
 [version-image]: https://img.shields.io/github/v/release/entelecheia/hyfi?sort=semver
 [release-date-image]: https://img.shields.io/github/release-date/entelecheia/hyfi
 [release-url]: https://github.com/entelecheia/hyfi/releases
-[jupyter-book-image]: https://jupyterbook.org/en/stable/_images/badge.svg
-
+[codefactor-image]: https://www.codefactor.io/repository/github/entelecheia/hyfi/badge
+[codefactor-url]: https://www.codefactor.io/repository/github/entelecheia/hyfi
+[codacy-image]: https://app.codacy.com/project/badge/Grade/6be6d2ecfbfe40b9ab8490ca25327a96
+[codacy-url]: https://app.codacy.com/gh/entelecheia/hyfi/dashboard?utm_source=github.com&utm_medium=referral&utm_content=entelecheia/hyfi&utm_campaign=Badge_grade
 [repo-url]: https://github.com/entelecheia/hyfi
 [pypi-url]: https://pypi.org/project/hyfi
 [docs-url]: https://hyfi.entelecheia.ai
 [changelog]: https://github.com/entelecheia/hyfi/blob/main/CHANGELOG.md
 [contributing guidelines]: https://github.com/entelecheia/hyfi/blob/main/CONTRIBUTING.md
+
 <!-- Links: -->
 
 Hydra Fast Interface (Hydra and Pydantic based interface framework)

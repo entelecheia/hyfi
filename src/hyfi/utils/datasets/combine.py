@@ -1,4 +1,7 @@
-from typing import Dict, List, Optional, Sequence, Union
+"""
+Dataset transformation functions. Concatenate, merge, join, etc.
+"""
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import datasets as hfds
 import pandas as pd
@@ -13,7 +16,7 @@ from .types import DatasetType
 logger = LOGGING.getLogger(__name__)
 
 
-class DSTransform:
+class DSCombine:
     @staticmethod
     def concatenate_data(
         data: Union[Dict[str, pd.DataFrame], Sequence[pd.DataFrame], List[DatasetType]],
@@ -28,14 +31,14 @@ class DSTransform:
     ) -> Union[pd.DataFrame, DatasetType]:
         # if data is a list of datasets, concatenate them
         if isinstance(data, list) and isinstance(data[0], Dataset):
-            return DSTransform.concatenate_datasets(
+            return DSCombine.concatenate_datasets(
                 data,
                 axis=axis,
                 split=split,
                 **kwargs,
             )
         else:
-            return DSTransform.concatenate_dataframes(
+            return DSCombine.concatenate_dataframes(
                 data,
                 columns=columns,
                 add_split_key_column=add_split_key_column,
@@ -116,4 +119,71 @@ class DSTransform:
             info=info,
             split=split,
             axis=axis,
+        )
+
+    @staticmethod
+    def merge_dataframes(
+        left: pd.DataFrame,
+        right: pd.DataFrame,
+        how: str = "inner",
+        on: Optional[Union[str, List[str]]] = None,
+        left_on: Optional[Union[str, List[str]]] = None,
+        right_on: Optional[Union[str, List[str]]] = None,
+        left_index: bool = False,
+        right_index: bool = False,
+        sort: bool = False,
+        suffixes: Tuple[str, str] = ("_x", "_y"),
+        copy: bool = True,
+        indicator: bool = False,
+        validate: Optional[str] = None,
+        verbose: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
+        """Merge two dataframes
+
+        Args:
+            left (pd.DataFrame): left dataframe
+            right (pd.DataFrame): right dataframe
+            how (str, optional): how to merge. Defaults to "inner".
+            on (Optional[Union[str, List[str]]], optional): column(s) to merge on. Defaults to None.
+            left_on (Optional[Union[str, List[str]]], optional): column(s) to merge on in left dataframe. Defaults to None.
+            right_on (Optional[Union[str, List[str]]], optional): column(s) to merge on in right dataframe. Defaults to None.
+            left_index (bool, optional): merge on index in left dataframe. Defaults to False.
+            right_index (bool, optional): merge on index in right dataframe. Defaults to False.
+            sort (bool, optional): sort merged dataframe. Defaults to False.
+            suffixes (Optional[Sequence[str]], optional): suffixes to add to column names. Defaults to None.
+            copy (bool, optional): copy dataframes. Defaults to True.
+            indicator (bool, optional): add indicator column. Defaults to False.
+            validate (Optional[str], optional): validation method. Defaults to None.
+            verbose (bool, optional): verbose logging. Defaults to False.
+
+        Returns:
+            pd.DataFrame: merged dataframe
+
+        Example:
+            >>> df1 = pd.DataFrame({"id": [1, 2, 3], "a": [1, 2, 3]})
+            >>> df2 = pd.DataFrame({"id": [1, 2, 4], "b": [4, 5, 6]})
+            >>> df = DSCombine.merge_dataframes(df1, df2, on="id")
+            >>> df
+                id  a  b
+            0   1  1  4
+            1   2  2  5
+
+        """
+        if verbose:
+            logger.info("Merging dataframes")
+        return left.merge(
+            right,
+            how=how,
+            on=on,
+            left_on=left_on,
+            right_on=right_on,
+            left_index=left_index,
+            right_index=right_index,
+            sort=sort,
+            suffixes=suffixes,
+            copy=copy,
+            indicator=indicator,
+            validate=validate,
+            **kwargs,
         )

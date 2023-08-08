@@ -1,0 +1,16 @@
+_target_: hyfi.utils.datasets.combine.DSCombine.merge_dataframes
+right: null
+how: inner
+'on': null
+left_on: null
+right_on: null
+left_index: false
+right_index: false
+sort: false
+suffixes:
+- _x
+- _y
+copy: true
+indicator: false
+validate: null
+verbose: false

@@ -1,6 +1,10 @@
+"""
+Filter datasets. Slice, sample, and filter datasets.
+"""
 import random
-from typing import List, Optional, Union
+from typing import List, Optional, Sequence, Union
 
+import numpy as np
 import pandas as pd
 from datasets.arrow_dataset import Dataset
 from datasets.dataset_dict import DatasetDict
@@ -14,7 +18,7 @@ from .types import DatasetLikeType
 logger = LOGGING.getLogger(__name__)
 
 
-class DSFilter:
+class DSSlice:
     @staticmethod
     def sample_dataset(
         data: DatasetLikeType,
@@ -71,7 +75,7 @@ class DSFilter:
         """
         # Filter by queries
         if queries:
-            data_ = DSFilter.filter_data_by_queries(data, queries, verbose=verbose)
+            data_ = DSSlice.filter_data_by_queries(data, queries, verbose=verbose)
         else:
             logger.warning("No query specified")
             data_ = data.copy()
@@ -79,7 +83,7 @@ class DSFilter:
         # Create a sample for analysis
         sample = None
         if sample_size:
-            sample = DSFilter.sample_data(
+            sample = DSSlice.sample_data(
                 data_,
                 sample_size_per_group=sample_size,
                 sample_seed=sample_seed,
@@ -237,3 +241,34 @@ class DSFilter:
                 print(grp_dists)
 
         return _sample
+
+    @staticmethod
+    def split_dataframe(
+        data,
+        indices_or_sections: Union[int, Sequence[int]],
+        verbose: bool = False,
+    ) -> List[pd.DataFrame]:
+        """
+        Split a dataframe into multiple dataframes
+
+        Args:
+            data (pd.DataFrame): dataframe to split
+            indices_or_sections (int or sequence of ints): if int, number of chunks to split the dataframe into
+
+        Returns:
+            List[pd.DataFrame]: list of dataframes
+
+        Examples:
+            >>> import pandas as pd
+            >>> data = pd.DataFrame({"text": ["hello world", "hello", "world"]})
+            >>> split_dataframe(data, 2)
+            [        text
+            0  hello world,
+            1        hello,        text
+            2  world]
+
+        """
+
+        if verbose:
+            logger.info("Splitting dataframe into %s", indices_or_sections)
+        return np.array_split(data, indices_or_sections)

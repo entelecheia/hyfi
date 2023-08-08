@@ -1,0 +1,6 @@
+_target_: hyfi.utils.datasets.basic.DSBasic.dataframe_drop
+labels: null
+axis: 1
+level: null
+errors: raise
+verbose: false

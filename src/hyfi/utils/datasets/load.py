@@ -1,3 +1,6 @@
+"""
+Load data from a file or a list of files
+"""
 import os
 from typing import Dict, Mapping, Optional, Sequence, Union
 
@@ -15,7 +18,7 @@ from datasets.utils.info_utils import VerificationMode
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
-from .transform import DSTransform
+from .combine import DSCombine
 from .types import DatasetType
 from .utils import DSUtils
 
@@ -68,7 +71,7 @@ class DSLoad:
             if isinstance(dset, (Dataset, IterableDataset)):
                 return {split: dset}
             if concatenate:
-                return {split: DSTransform.concatenate_datasets(dset.values())}
+                return {split: DSCombine.concatenate_datasets(dset.values())}
             else:
                 return {k: v for k, v in dset.items() if v is not None}
 

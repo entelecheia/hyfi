@@ -1,4 +1,4 @@
-_target_: hyfi.utils.datasets.filter.DSFilter.sample_dataset
+_target_: hyfi.utils.datasets.slice.DSSlice.sample_dataset
 split: null
 sample_size: 100
 sample_seed: 42

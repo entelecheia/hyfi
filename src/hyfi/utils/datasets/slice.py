@@ -257,6 +257,16 @@ class DSSlice:
 
         Returns:
             List[pd.DataFrame]: list of dataframes
+
+        Examples:
+            >>> import pandas as pd
+            >>> data = pd.DataFrame({"text": ["hello world", "hello", "world"]})
+            >>> split_dataframe(data, 2)
+            [        text
+            0  hello world,
+            1        hello,        text
+            2  world]
+
         """
 
         if verbose:

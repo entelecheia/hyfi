@@ -1,3 +1,6 @@
+"""
+Type aliases for datasets.
+"""
 from typing import Union
 
 from datasets.arrow_dataset import Dataset

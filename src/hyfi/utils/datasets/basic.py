@@ -219,7 +219,7 @@ class DSBasic:
             for expression in expressions:
                 if verbose:
                     logger.info("Evaluating expression %s", expression)
-                data.eval(expression, engine=engine, inplace=True)
+                data = data.eval(expression, engine=engine)
         return data
 
     @staticmethod
@@ -264,39 +264,39 @@ class DSBasic:
                 data = pd.eval(expression, engine=engine, target=data)
         return data
 
-    @staticmethod
-    def dataframe_eval_columns_with_eval(
-        data: pd.DataFrame,
-        expressions: Dict[str, str],
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """
-        Evaluate columns in a dataframe using the built-in eval function.
+    # @staticmethod
+    # def dataframe_eval_columns_with_eval(
+    #     data: pd.DataFrame,
+    #     expressions: Dict[str, str],
+    #     verbose: bool = False,
+    # ) -> pd.DataFrame:
+    #     """
+    #     Evaluate columns in a dataframe using the built-in eval function.
 
-        Args:
-            data (pd.DataFrame): The dataframe to evaluate.
-            expressions (Union[Dict[str, str], List[str]]): The expressions to evaluate.
-            engine (str, optional): The engine to use. Defaults to "python".
-            verbose (bool, optional): Whether to print verbose output. Defaults to False.
+    #     Args:
+    #         data (pd.DataFrame): The dataframe to evaluate.
+    #         expressions (Union[Dict[str, str], List[str]]): The expressions to evaluate.
+    #         engine (str, optional): The engine to use. Defaults to "python".
+    #         verbose (bool, optional): Whether to print verbose output. Defaults to False.
 
-        Returns:
-            pd.DataFrame: The dataframe with the evaluated columns.
+    #     Returns:
+    #         pd.DataFrame: The dataframe with the evaluated columns.
 
-                    Examples:
-            >>> import pandas as pd
-            >>> from hyfi.utils.datasets.basic import DSBasic
-            >>> data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-            F>>> DSBasic.dataframe_eval_columns_with_eval(data, expressions={"c": "data.a + data.b"})
-                a   b   c
-            0   1   4   5
-            1   2   5   7
-            2   3   6   9
-        """
-        for column in expressions:
-            if verbose:
-                logger.info("Evaluating column %s", column)
-            data[column] = eval(expressions[column])
-        return data
+    #                 Examples:
+    #         >>> import pandas as pd
+    #         >>> from hyfi.utils.datasets.basic import DSBasic
+    #         >>> data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    #         F>>> DSBasic.dataframe_eval_columns_with_eval(data, expressions={"c": "data.a + data.b"})
+    #             a   b   c
+    #         0   1   4   5
+    #         1   2   5   7
+    #         2   3   6   9
+    #     """
+    #     for column in expressions:
+    #         if verbose:
+    #             logger.info("Evaluating column %s", column)
+    #         data[column] = eval(expressions[column])
+    #     return data
 
     @staticmethod
     def dataframe_print_head_and_tail(

@@ -82,7 +82,8 @@ class PipeConfig(BaseRunConfig):
 
     def get_pipe_func(self) -> Optional[Callable]:
         if self.pipe_target.startswith("lambda"):
-            return eval(self.pipe_target)
+            raise NotImplementedError("Lambda functions are not supported. (dangerous)")
+            # return eval(self.pipe_target)
         elif self.pipe_target:
             return Composer.partial(self.pipe_target)
         else:
@@ -92,8 +93,8 @@ class PipeConfig(BaseRunConfig):
         run_cfg = self.run_config
         run_target = self.run_target
         if run_target and run_target.startswith("lambda"):
-            logger.info("Returning lambda function: %s", run_target)
-            return eval(run_target)
+            raise NotImplementedError("Lambda functions are not supported. (dangerous)")
+            # return eval(run_target)
         elif run_cfg:
             if self.pipe_obj_arg_name:
                 run_cfg.pop(self.pipe_obj_arg_name)
@@ -104,20 +105,6 @@ class PipeConfig(BaseRunConfig):
         else:
             logger.warning("No function found for %s", self)
             return None
-        # if self.run.startswith("lambda"):
-        #     logger.info("Returning lambda function: %s", self.run)
-        #     return eval(self.run)
-        # elif self.run:
-        #     kwargs = self.run_with or {}
-        #     if self.pipe_obj_arg_name:
-        #         kwargs.pop(self.pipe_obj_arg_name)
-        #     logger.info(
-        #         "Returning partial function: %s with kwargs: %s", self.run, kwargs
-        #     )
-        #     return Composer.partial(self.run, **kwargs)
-        # else:
-        #     logger.warning("No function found for %s", self)
-        #     return None
 
 
 class DataframePipeConfig(PipeConfig):

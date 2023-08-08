@@ -47,13 +47,6 @@ def test_basics():
     HyFI.generate_pipe_config(DATASETs.dataframe_eval_columns_with_pd_eval)
 
     data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-    DATASETs.dataframe_eval_columns_with_eval(
-        data, expressions={"c": "data.a + data.b"}
-    )
-    assert data["c"].iloc[0] == 5
-    HyFI.generate_pipe_config(DATASETs.dataframe_eval_columns_with_eval)
-
-    data = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     DATASETs.dataframe_print_head_and_tail(data, num_heads=1, num_tails=1)
     HyFI.generate_pipe_config(DATASETs.dataframe_print_head_and_tail)
 

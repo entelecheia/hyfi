@@ -7,6 +7,7 @@ from .iolibs import IOLIBs
 from .logging import LOGGING
 from .notebooks import NBs
 from .packages import PKGs
+from .simpleeval import SIMPLE_EVAL, SimpleEval
 
 
 class UTILs(
@@ -19,6 +20,7 @@ class UTILs(
     LOGGING,
     NBs,
     PKGs,
+    SIMPLE_EVAL,
 ):
     def __init__(self) -> None:
         raise NotImplementedError("Use one of the static construction functions")
@@ -35,4 +37,6 @@ __all__ = [
     "NBs",
     "PKGs",
     "UTILs",
+    "SIMPLE_EVAL",
+    "SimpleEval",
 ]

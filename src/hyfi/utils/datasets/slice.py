@@ -67,15 +67,31 @@ class DSSlice:
         output_dir: str = ".",
         sample_filename: Optional[str] = None,
         train_filename: Optional[str] = "train.parquet",
-        discard_filename: Optional[str] = "discard.parquet",
+        discard_filename: Optional[str] = None,
         verbose: bool = False,
     ) -> pd.DataFrame:
         """
         Filter the data to remove short documents and create a sample for analysis
+
+        Args:
+            data (pd.DataFrame): The data to filter and sample
+            queries (Optional[Union[str, List[str]]], optional): The queries to filter by. Defaults to None.
+            sample_size (Optional[Union[int, float]], optional): The sample size. Defaults to None.
+            sample_seed (int, optional): The seed for sampling. Defaults to 42.
+            output_dir (str, optional): The output directory. Defaults to ".".
+            sample_filename (Optional[str], optional): The sample filename. Defaults to None.
+            train_filename (Optional[str], optional): The train filename. Defaults to "train.parquet".
+            discard_filename (Optional[str], optional): The discard filename. Defaults to "discard.parquet".
+            verbose (bool, optional): Whether to print the sample. Defaults to False.
+
+        Returns:
+            pd.DataFrame: The original data
         """
         # Filter by queries
         if queries:
-            data_ = DSSlice.filter_data_by_queries(data, queries, verbose=verbose)
+            data_ = DSSlice.filter_data_by_queries(
+                data.copy(), queries, verbose=verbose
+            )
         else:
             logger.warning("No query specified")
             data_ = data.copy()
@@ -131,7 +147,7 @@ class DSSlice:
             discard.shape[0],
         )
 
-        return train
+        return data
 
     @staticmethod
     def filter_data_by_queries(

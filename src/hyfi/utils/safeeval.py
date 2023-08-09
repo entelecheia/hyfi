@@ -58,10 +58,13 @@ Contributors:
 - daxamin (Dax Amin) Better error for attempting to eval empty string
 - smurfix (Matthias Urlichs) Allow clearing functions / operators / etc completely
 
+The name of the module has been changed to SafeEval to reflect the fact that
+the purpose of this module is to provide a safe eval() function, not to be a
+full expression evaluator.
 -------------------------------------
 Basic Usage:
 
->>> s = SimpleEval()
+>>> s = SafeEval()
 >>> s.eval("20 + 30")
 50
 
@@ -83,15 +86,15 @@ repo.
 -----------
 
 If you don't need to re-use the evaluator (with it's names, functions, etc),
-then you can use the simple_eval() function:
+then you can use the safe_eval() function:
 
->>> simple_eval("21 + 19")
+>>> safe_eval("21 + 19")
 40
 
-You can pass names, operators and functions to the simple_eval function as
+You can pass names, operators and functions to the safe_eval function as
 well:
 
->>> simple_eval("40 + two", names={"two": 2})
+>>> safe_eval("40 + two", names={"two": 2})
 42
 
 """
@@ -216,7 +219,7 @@ class IterableTooLong(InvalidExpression):
 
 
 class AssignmentAttempted(UserWarning):
-    """Assignment not allowed in SimpleEval"""
+    """Assignment not allowed in SafeEval"""
 
     pass
 
@@ -231,7 +234,7 @@ class MultipleExpressions(UserWarning):
 # Default simple functions to include:
 
 
-def random_int(top):
+def random_int(top: int) -> int:
     """return a random int below <top>"""
 
     return int(random() * top)
@@ -333,9 +336,9 @@ ATTR_INDEX_FALLBACK = True
 # And the actual evaluator:
 
 
-class SimpleEval(object):  # pylint: disable=too-few-public-methods
+class SafeEval(object):  # pylint: disable=too-few-public-methods
     """A very simple expression parser.
-    >>> s = SimpleEval()
+    >>> s = SafeEval()
     >>> s.eval("20 + 30 - ( 10 * 5)")
     0
     """
@@ -583,34 +586,29 @@ class SimpleEval(object):  # pylint: disable=too-few-public-methods
     def _eval_subscript(self, node):
         container = self._eval(node.value)
         key = self._eval(node.slice)
-        # Currently if there's a KeyError, that gets raised straight up.
-        # TODO: Should that be wrapped in an InvalidExpression?
-        return container[key]
+        try:
+            return container[key]
+        except KeyError as e:
+            raise InvalidExpression(f"Invalid key: {key}") from e
 
     def _eval_attribute(self, node):
-        for prefix in DISALLOW_PREFIXES:
-            if node.attr.startswith(prefix):
-                raise FeatureNotAvailable(
-                    "Sorry, access to __attributes "
-                    " or func_ attributes is not available. "
-                    "({0})".format(node.attr)
-                )
-        if node.attr in DISALLOW_METHODS:
+        attr = node.attr
+        if any(attr.startswith(prefix) for prefix in DISALLOW_PREFIXES):
             raise FeatureNotAvailable(
-                "Sorry, this method is not available. " "({0})".format(node.attr)
+                f"Sorry, access to __attributes or func_ attributes is not available. ({attr})"
             )
-        # eval node
+        if attr in DISALLOW_METHODS:
+            raise FeatureNotAvailable(f"Sorry, this method is not available. ({attr})")
+
         node_evaluated = self._eval(node.value)
 
-        # Maybe the base object is an actual object, not just a dict
-        with contextlib.suppress(AttributeError, TypeError):
-            return getattr(node_evaluated, node.attr)
-        # TODO: is this a good idea?  Try and look for [x] if .x doesn't work?
-        if self.ATTR_INDEX_FALLBACK:
-            with contextlib.suppress(KeyError, TypeError):
-                return node_evaluated[node.attr]
-        # If it is neither, raise an exception
-        raise AttributeDoesNotExist(node.attr, self.expr)
+        try:
+            return getattr(node_evaluated, attr)
+        except (AttributeError, TypeError) as e:
+            if self.ATTR_INDEX_FALLBACK:
+                with contextlib.suppress(KeyError, TypeError):
+                    return node_evaluated[attr]
+            raise AttributeDoesNotExist(attr, self.expr) from e
 
     def _eval_index(self, node):
         return self._eval(node.value)
@@ -642,9 +640,9 @@ class SimpleEval(object):  # pylint: disable=too-few-public-methods
         return self._eval(node.value)
 
 
-class EvalWithCompoundTypes(SimpleEval):
+class EvalWithCompoundTypes(SafeEval):
     """
-    SimpleEval with additional Compound Types, and their respective
+    SafeEval with additional Compound Types, and their respective
     function editions. (list, tuple, dict, set).
     """
 
@@ -750,14 +748,14 @@ class EvalWithCompoundTypes(SimpleEval):
         return to_return
 
 
-class SIMPLE_EVAL:
+class SAFEEVAL:
     @staticmethod
-    def simple_eval(
+    def safe_eval(
         expr: str,
         operators=None,
         functions: Optional[Dict[str, Callable]] = None,
         names: Optional[Dict[str, Any]] = None,
     ):
         """Simply evaluate an expresssion"""
-        s = SimpleEval(operators=operators, functions=functions, names=names)
+        s = SafeEval(operators=operators, functions=functions, names=names)
         return s.eval(expr)

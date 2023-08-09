@@ -1,7 +1,7 @@
 # pylint: disable=too-many-public-methods, missing-docstring, eval-used, too-many-lines, no-self-use, disallowed-name, unspecified-encoding
 
 """
-    Unit tests for simpleeval.
+    Unit tests for safeeval.
     --------------------------
 
     Most of this stuff is pretty basic.
@@ -16,8 +16,8 @@ import sys
 import unittest
 import warnings
 
-from hyfi.utils import simpleeval
-from hyfi.utils.simpleeval import (
+from hyfi.utils import safeeval
+from hyfi.utils.safeeval import (
     AttributeDoesNotExist,
     EvalWithCompoundTypes,
     FeatureNotAvailable,
@@ -25,8 +25,8 @@ from hyfi.utils.simpleeval import (
     InvalidExpression,
     NameNotDefined,
     OperatorNotDefined,
-    SimpleEval,
-    SIMPLE_EVAL,
+    SafeEval,
+    SAFEEVAL,
 )
 
 
@@ -35,8 +35,8 @@ class DRYTest(unittest.TestCase):
     Don't Repeat Yourself."""
 
     def setUp(self):
-        """initialize a SimpleEval"""
-        self.s = SimpleEval()
+        """initialize a SafeEval"""
+        self.s = SafeEval()
 
     def t(self, expr, shouldbe):  # pylint: disable=invalid-name
         """test an evaluation of an expression against an expected answer"""
@@ -204,13 +204,13 @@ class TestBasic(DRYTest):
 
 
 class TestEvaluator(DRYTest):
-    """Tests for how the SimpleEval class does things"""
+    """Tests for how the SafeEval class does things"""
 
     def test_only_evalutate_first_statement(self):
         # it only evaluates the first statement:
         with warnings.catch_warnings(record=True) as ws:
             self.t("11; x = 21; x + x", 11)
-        self.assertIsInstance(ws[0].message, simpleeval.MultipleExpressions)
+        self.assertIsInstance(ws[0].message, safeeval.MultipleExpressions)
 
     def test_parse_and_use_previously_parsed(self):
         expr = "x + x"
@@ -232,8 +232,8 @@ class TestEvaluator(DRYTest):
         with self.assertRaises(MockedCalled):
             self.s.eval("10 + 10")
 
-        # Prove it's not installed in the actual SimpleEval
-        SimpleEval().eval("10 + 10")
+        # Prove it's not installed in the actual SafeEval
+        SafeEval().eval("10 + 10")
 
         # Now running .eval with a previously parsed
         self.assertEqual(self.s.eval(expr, previously_parsed=nodes), 42)
@@ -267,12 +267,12 @@ class TestFunctions(DRYTest):
 
         # and we should have *replaced* the default functions. Let's check:
 
-        with self.assertRaises(simpleeval.FunctionNotDefined):
+        with self.assertRaises(safeeval.FunctionNotDefined):
             self.t("int(read('testfile.txt'))", 42)
 
         # OK, so we can load in the default functions as well...
 
-        self.s.functions.update(simpleeval.DEFAULT_FUNCTIONS)
+        self.s.functions.update(safeeval.DEFAULT_FUNCTIONS)
 
         # now it works:
 
@@ -297,10 +297,10 @@ class TestFunctions(DRYTest):
 
     def test_methods(self):
         self.t('"WORD".lower()', "word")
-        x = simpleeval.DISALLOW_METHODS
-        simpleeval.DISALLOW_METHODS = []
+        x = safeeval.DISALLOW_METHODS
+        safeeval.DISALLOW_METHODS = []
         self.t('"{}:{}".format(1, 2)', "1:2")
-        simpleeval.DISALLOW_METHODS = x
+        safeeval.DISALLOW_METHODS = x
 
     def test_function_args_none(self):
         def foo():
@@ -351,7 +351,6 @@ class TestFunctions(DRYTest):
 class TestOperators(DRYTest):
     """Test adding in new operators, removing them, make sure it works."""
 
-    # TODO
     pass
 
 
@@ -378,95 +377,95 @@ class TestTryingToBreakOut(DRYTest):
 
     def test_long_running(self):
         """exponent operations can take a long time."""
-        old_max = simpleeval.MAX_POWER
+        old_max = safeeval.MAX_POWER
 
         self.t("9**9**5", 9**9**5)
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("9**9**8", 0)
 
         # and does limiting work?
 
-        simpleeval.MAX_POWER = 100
+        safeeval.MAX_POWER = 100
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("101**2", 0)
 
         # good, so set it back:
 
-        simpleeval.MAX_POWER = old_max
+        safeeval.MAX_POWER = old_max
 
     def test_large_shifts(self):
         """Trying to << or >> large amounts can be too slow."""
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("1<<25000", 0)
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
-            self.t("%s<<25" % (simpleeval.MAX_SHIFT_BASE + 1), 0)
+        with self.assertRaises(safeeval.NumberTooHigh):
+            self.t("%s<<25" % (safeeval.MAX_SHIFT_BASE + 1), 0)
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("1>>25000", 0)
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
-            self.t("%s>>25" % (simpleeval.MAX_SHIFT_BASE + 1), 0)
+        with self.assertRaises(safeeval.NumberTooHigh):
+            self.t("%s>>25" % (safeeval.MAX_SHIFT_BASE + 1), 0)
 
         # and test we can change it:
 
-        old_max = simpleeval.MAX_SHIFT
-        simpleeval.MAX_SHIFT = 100
+        old_max = safeeval.MAX_SHIFT
+        safeeval.MAX_SHIFT = 100
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("1<<250", 0)
 
-        with self.assertRaises(simpleeval.NumberTooHigh):
+        with self.assertRaises(safeeval.NumberTooHigh):
             self.t("1000>>250", 0)
 
         # good, so set it back.
 
-        simpleeval.MAX_SHIFT = old_max
+        safeeval.MAX_SHIFT = old_max
 
         self.t("1<<250", 1 << 250)
 
     def test_encode_bignums(self):
         # thanks gk
         if hasattr(1, "from_bytes"):  # python3 only
-            with self.assertRaises(simpleeval.IterableTooLong):
+            with self.assertRaises(safeeval.IterableTooLong):
                 self.t(
                     '(1).from_bytes(("123123123123123123123123").encode()*999999, "big")',
                     0,
                 )
 
     def test_string_length(self):
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("50000*'text'", 0)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("'text'*50000", 0)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("('text'*50000)*1000", 0)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("(50000*'text')*1000", 0)
 
         self.t("'stuff'*20000", 20000 * "stuff")
 
         self.t("20000*'stuff'", 20000 * "stuff")
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("('stuff'*20000) + ('stuff'*20000) ", 0)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("'stuff'*100000", 100000 * "stuff")
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("'" + (10000 * "stuff") + "'*100", 0)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("'" + (50000 * "stuff") + "'", 0)
 
         if sys.version_info >= (3, 6, 0):
-            with self.assertRaises(simpleeval.IterableTooLong):
+            with self.assertRaises(safeeval.IterableTooLong):
                 self.t("f'{\"foo\"*50000}'", 0)
 
     def test_bytes_array_test(self):
@@ -475,13 +474,13 @@ class TestTryingToBreakOut(DRYTest):
             "20000000000000000000".encode() * 5000,
         )
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("'123121323123131231223'.encode() * 5000", 20)
 
     def test_list_length_test(self):
         self.t("'spam spam spam'.split() * 5000", ["spam", "spam", "spam"] * 5000)
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.t("('spam spam spam' * 5000).split() * 5000", None)
 
     def test_function_globals_breakout(self):
@@ -491,7 +490,7 @@ class TestTryingToBreakOut(DRYTest):
         self.s.functions["x"] = lambda y: y + y
         self.t("x(100)", 200)
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t("x.__globals__", None)
 
         class EscapeArtist(object):
@@ -505,26 +504,26 @@ class TestTryingToBreakOut(DRYTest):
 
         self.s.names["houdini"] = EscapeArtist()
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t("houdini.trapdoor.__globals__", 0)
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t("houdini.trapdoor.func_globals", 0)
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t("houdini._quasi_private()", 0)
 
         # and test for changing '_' to '__':
 
-        dis = simpleeval.DISALLOW_PREFIXES
-        simpleeval.DISALLOW_PREFIXES = ["func_"]
+        dis = safeeval.DISALLOW_PREFIXES
+        safeeval.DISALLOW_PREFIXES = ["func_"]
 
         self.t("houdini.trapdoor()", 42)
         self.t("houdini._quasi_private()", 84)
 
         # and return things to normal
 
-        simpleeval.DISALLOW_PREFIXES = dis
+        safeeval.DISALLOW_PREFIXES = dis
 
     def test_mro_breakout(self):
         class Blah(object):
@@ -532,12 +531,12 @@ class TestTryingToBreakOut(DRYTest):
 
         self.s.names["b"] = Blah
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t("b.mro()", None)
 
     def test_builtins_private_access(self):
         # explicit attempt of the exploit from perkinslr
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t(
                 "True.__class__.__class__.__base__.__subclasses__()[-1]"
                 ".__init__.func_globals['sys'].exit(1)",
@@ -546,22 +545,22 @@ class TestTryingToBreakOut(DRYTest):
 
     def test_string_format(self):
         # python has so many ways to break out!
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.t('"{string.__class__}".format(string="things")', 0)
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             self.s.names["x"] = {"a": 1}
             self.t('"{a.__class__}".format_map(x)', 0)
 
         if sys.version_info >= (3, 6, 0):
             self.s.names["x"] = 42
 
-            with self.assertRaises(simpleeval.FeatureNotAvailable):
+            with self.assertRaises(safeeval.FeatureNotAvailable):
                 self.t('f"{x.__class__}"', 0)
 
             self.s.names["x"] = lambda y: y
 
-            with self.assertRaises(simpleeval.FeatureNotAvailable):
+            with self.assertRaises(safeeval.FeatureNotAvailable):
                 self.t('f"{x.__globals__}"', 0)
 
             class EscapeArtist(object):
@@ -577,26 +576,26 @@ class TestTryingToBreakOut(DRYTest):
                 "houdini"
             ] = EscapeArtist()  # let's just retest this, but in a f-string
 
-            with self.assertRaises(simpleeval.FeatureNotAvailable):
+            with self.assertRaises(safeeval.FeatureNotAvailable):
                 self.t('f"{houdini.trapdoor.__globals__}"', 0)
 
-            with self.assertRaises(simpleeval.FeatureNotAvailable):
+            with self.assertRaises(safeeval.FeatureNotAvailable):
                 self.t('f"{houdini.trapdoor.func_globals}"', 0)
 
-            with self.assertRaises(simpleeval.FeatureNotAvailable):
+            with self.assertRaises(safeeval.FeatureNotAvailable):
                 self.t('f"{houdini._quasi_private()}"', 0)
 
             # and test for changing '_' to '__':
 
-            dis = simpleeval.DISALLOW_PREFIXES
-            simpleeval.DISALLOW_PREFIXES = ["func_"]
+            dis = safeeval.DISALLOW_PREFIXES
+            safeeval.DISALLOW_PREFIXES = ["func_"]
 
             self.t('f"{houdini.trapdoor()}"', "42")
             self.t('f"{houdini._quasi_private()}"', "84")
 
             # and return things to normal
 
-            simpleeval.DISALLOW_PREFIXES = dis
+            safeeval.DISALLOW_PREFIXES = dis
 
 
 class TestCompoundTypes(DRYTest):
@@ -614,13 +613,13 @@ class TestCompoundTypes(DRYTest):
 
     def test_dict_contains(self):
         self.t('{"a":22}["a"]', 22)
-        with self.assertRaises(KeyError):
+        with self.assertRaises(safeeval.InvalidExpression):
             self.t('{"a":22}["b"]', 22)
 
         self.t('{"a": 24}.get("b", 11)', 11)
         self.t('"a" in {"a": 24}', True)
 
-    @unittest.skipIf(not simpleeval.PYTHON35, "feature not supported")
+    @unittest.skipIf(not safeeval.PYTHON35, "feature not supported")
     def test_dict_star_expression(self):
         self.s.names["x"] = {"a": 1, "b": 2}
         self.t('{"a": 0, **x, "c": 3}', {"a": 1, "b": 2, "c": 3})
@@ -629,7 +628,7 @@ class TestCompoundTypes(DRYTest):
         self.s.names["y"] = {"x": 1, "y": 2}
         self.t('{"a": 0, **x, **y, "c": 3}', {"a": 1, "b": 2, "c": 3, "x": 1, "y": 2})
 
-    @unittest.skipIf(not simpleeval.PYTHON35, "feature not supported")
+    @unittest.skipIf(not safeeval.PYTHON35, "feature not supported")
     def test_dict_invalid_star_expression(self):
         self.s.names["x"] = {"a": 1, "b": 2}
         self.s.names["y"] = {"x": 1, "y": 2}
@@ -668,12 +667,12 @@ class TestCompoundTypes(DRYTest):
 
         self.t('"b" in ["a","b"]', True)
 
-    @unittest.skipIf(not simpleeval.PYTHON3, "feature not supported")
+    @unittest.skipIf(not safeeval.PYTHON3, "feature not supported")
     def test_list_star_expression(self):
         self.s.names["x"] = [1, 2, 3]
         self.t('["a", *x, "b"]', ["a", 1, 2, 3, "b"])
 
-    @unittest.skipIf(not simpleeval.PYTHON3, "feature not supported")
+    @unittest.skipIf(not safeeval.PYTHON3, "feature not supported")
     def test_list_invalid_star_expression(self):
         self.s.names["x"] = [1, 2, 3]
         self.s.names["y"] = 42
@@ -765,28 +764,28 @@ class TestComprehensions(DRYTest):
     def test_too_long_generator(self):
         self.s.functions = {"range": range}
         s = "[j for i in range(1000) if i > 10 for j in range(i) if j < 20]"
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.s.eval(s)
 
     def test_too_long_generator_2(self):
         self.s.functions = {"range": range}
         s = "[j for i in range(100) if i > 1 for j in range(i+10) if j < 100 for k in range(i*j)]"
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.s.eval(s)
 
     def test_nesting_generators_to_cheat(self):
         self.s.functions = {"range": range}
         s = "[[[c for c in range(a)] for a in range(b)] for b in range(200)]"
 
-        with self.assertRaises(simpleeval.IterableTooLong):
+        with self.assertRaises(safeeval.IterableTooLong):
             self.s.eval(s)
 
     def test_no_leaking_names(self):
         # see issue #52, failing list comprehensions could leak locals
-        with self.assertRaises(simpleeval.NameNotDefined):
+        with self.assertRaises(safeeval.NameNotDefined):
             self.s.eval('[x if x == "2" else y for x in "123"]')
 
-        with self.assertRaises(simpleeval.NameNotDefined):
+        with self.assertRaises(safeeval.NameNotDefined):
             self.s.eval("x")
 
 
@@ -804,7 +803,7 @@ class TestNames(DRYTest):
         with self.assertRaises(NameNotDefined):
             with warnings.catch_warnings(record=True) as ws:
                 self.t("s += a", 21)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.s.names = None
 
@@ -829,7 +828,7 @@ class TestNames(DRYTest):
         # however, you can't assign to those names:
         with warnings.catch_warnings(record=True) as ws:
             self.t("a = 200", 200)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.assertEqual(self.s.names["a"], 42)
 
@@ -839,7 +838,7 @@ class TestNames(DRYTest):
 
         with warnings.catch_warnings(record=True) as ws:
             self.t("b[0] = 11", 11)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.assertEqual(self.s.names["b"], [0])
 
@@ -862,7 +861,7 @@ class TestNames(DRYTest):
 
         with warnings.catch_warnings(record=True) as ws:
             self.t("c['b'] = 99", 99)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.assertFalse("b" in self.s.names["c"])
 
@@ -872,7 +871,7 @@ class TestNames(DRYTest):
 
         with warnings.catch_warnings(record=True) as ws:
             self.t("c['c']['c'] = 21", 21)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.assertEqual(self.s.names["c"]["c"]["c"], 11)
 
@@ -887,11 +886,10 @@ class TestNames(DRYTest):
 
         with warnings.catch_warnings(record=True) as ws:
             self.t("a.b.c = 11", 11)
-        self.assertIsInstance(ws[0].message, simpleeval.AssignmentAttempted)
+        self.assertIsInstance(ws[0].message, safeeval.AssignmentAttempted)
 
         self.assertEqual(self.s.names["a"]["b"]["c"], 42)
 
-        # TODO: Wat?
         with warnings.catch_warnings(record=True) as ws:
             self.t("a.d = 11", 11)
 
@@ -906,7 +904,7 @@ class TestNames(DRYTest):
 
         self.s.names = {"a": {"b": {"c": 42}}}
 
-        with self.assertRaises(simpleeval.AttributeDoesNotExist):
+        with self.assertRaises(safeeval.AttributeDoesNotExist):
             self.t("a.b.c * 2", 84)
 
         self.t("a['b']['c'] * 2", 84)
@@ -996,19 +994,15 @@ class TestWhitespace(DRYTest):
         self.t("  \t 200 + 200  ", 400)
 
 
-class TestSimpleEval(unittest.TestCase):
-    """test the 'simple_eval' wrapper function"""
+class TestSafeEval(unittest.TestCase):
+    """test the 'safe_eval' wrapper function"""
 
     def test_basic_run(self):
-        self.assertEqual(SIMPLE_EVAL.simple_eval("6*7"), 42)
+        self.assertEqual(SAFEEVAL.safe_eval("6*7"), 42)
 
     def test_default_functions(self):
-        self.assertEqual(
-            SIMPLE_EVAL.simple_eval("rand() < 1.0 and rand() > -0.01"), True
-        )
-        self.assertEqual(
-            SIMPLE_EVAL.simple_eval("randint(200) < 200 and rand() > 0"), True
-        )
+        self.assertEqual(SAFEEVAL.safe_eval("rand() < 1.0 and rand() > -0.01"), True)
+        self.assertEqual(SAFEEVAL.safe_eval("randint(200) < 200 and rand() > 0"), True)
 
 
 class TestMethodChaining(unittest.TestCase):
@@ -1034,25 +1028,23 @@ class TestMethodChaining(unittest.TestCase):
 
         x = A()
         self.assertEqual(
-            SIMPLE_EVAL.simple_eval(
-                "x.add(1).sub(2).sub(3).tostring()", names={"x": x}
-            ),
+            SAFEEVAL.safe_eval("x.add(1).sub(2).sub(3).tostring()", names={"x": x}),
             "0-add1-sub2-sub3",
         )
 
 
 class TestExtendingClass(unittest.TestCase):
     """
-    It should be pretty easy to extend / inherit from the SimpleEval class,
+    It should be pretty easy to extend / inherit from the SafeEval class,
     to further lock things down, or unlock stuff, or whatever.
     """
 
     def test_methods_forbidden(self):
         # Example from README
-        class EvalNoMethods(simpleeval.SimpleEval):
+        class EvalNoMethods(safeeval.SafeEval):
             def _eval_call(self, node):
                 if isinstance(node.func, ast.Attribute):
-                    raise simpleeval.FeatureNotAvailable(
+                    raise safeeval.FeatureNotAvailable(
                         "No methods please, we're British"
                     )
                 return super(EvalNoMethods, self)._eval_call(node)
@@ -1063,7 +1055,7 @@ class TestExtendingClass(unittest.TestCase):
         self.assertEqual(e.eval("22 + 20"), 42)
         self.assertEqual(e.eval('int("42")'), 42)
 
-        with self.assertRaises(simpleeval.FeatureNotAvailable):
+        with self.assertRaises(safeeval.FeatureNotAvailable):
             e.eval('"  blah  ".strip()')
 
 
@@ -1145,7 +1137,7 @@ class TestUnusualComparisons(DRYTest):
         self.assertEqual(b > 2, BinaryExpression("GT"))
         self.assertEqual(b < 2, BinaryExpression("LT"))
 
-        # And should also work in simpleeval
+        # And should also work in safeeval
         self.s.names = {"b": b}
         self.t("b > 2", BinaryExpression("GT"))
         self.t("1 < 5 > b", BinaryExpression("LT"))
@@ -1228,16 +1220,16 @@ class TestDisallowedFunctions(DRYTest):
             compile,
             open,
         ]
-        if simpleeval.PYTHON3:
+        if safeeval.PYTHON3:
             # pylint: disable=exec-used
             exec("DISALLOWED.append(exec)")  # exec is not a function in Python2...
 
-        for f in simpleeval.DISALLOW_FUNCTIONS:
+        for f in safeeval.DISALLOW_FUNCTIONS:
             assert f in DISALLOWED
 
         for x in DISALLOWED:
             with self.assertRaises(FeatureNotAvailable):
-                SimpleEval(functions={"foo": x})
+                SafeEval(functions={"foo": x})
 
     def test_functions_are_disallowed_in_expressions(self):
         DISALLOWED = [
@@ -1252,27 +1244,27 @@ class TestDisallowedFunctions(DRYTest):
             open,
         ]
 
-        if simpleeval.PYTHON3:
+        if safeeval.PYTHON3:
             # pylint: disable=exec-used
             exec("DISALLOWED.append(exec)")  # exec is not a function in Python2...
 
-        for f in simpleeval.DISALLOW_FUNCTIONS:
+        for f in safeeval.DISALLOW_FUNCTIONS:
             assert f in DISALLOWED
 
-        DF = simpleeval.DEFAULT_FUNCTIONS.copy()
+        DF = safeeval.DEFAULT_FUNCTIONS.copy()
 
         for x in DISALLOWED:
-            simpleeval.DEFAULT_FUNCTIONS = DF.copy()
+            safeeval.DEFAULT_FUNCTIONS = DF.copy()
             with self.assertRaises(FeatureNotAvailable):
-                s = SimpleEval()
+                s = SafeEval()
                 s.functions["foo"] = x
                 s.eval("foo(42)")
 
-        simpleeval.DEFAULT_FUNCTIONS = DF.copy()
+        safeeval.DEFAULT_FUNCTIONS = DF.copy()
 
 
 @unittest.skipIf(
-    simpleeval.PYTHON3 is not True, "Python2 fails - but it's not supported anyway."
+    safeeval.PYTHON3 is not True, "Python2 fails - but it's not supported anyway."
 )
 @unittest.skipIf(
     platform.python_implementation() == "PyPy", "GC set_debug not available in PyPy"
@@ -1300,22 +1292,22 @@ class TestReferenceCleanup(DRYTest):
 
         self.assertEqual(self._initial_garbage_len, self._final_garbage_len)
 
-    def test_simpleeval_cleanup(self):
-        simpleeval.SimpleEval()
+    def test_safeeval_cleanup(self):
+        safeeval.SafeEval()
 
 
 class TestNoEntries(DRYTest):
     def test_no_functions(self):
         self.s.eval("int(42)")
         with self.assertRaises(FunctionNotDefined):
-            s = SimpleEval(functions={})
+            s = SafeEval(functions={})
             s.eval("int(42)")
 
     def test_no_names(self):
         # does not work on current Py3, True et al. are keywords now
         self.s.eval("True")
         # with self.assertRaises(NameNotDefined):
-        s = SimpleEval(names={})
+        s = SafeEval(names={})
         if sys.version_info < (3,):
             with self.assertRaises(NameNotDefined):
                 s.eval("True")
@@ -1325,7 +1317,7 @@ class TestNoEntries(DRYTest):
     def test_no_operators(self):
         self.s.eval("1+2")
         self.s.eval("~2")
-        s = SimpleEval(operators={})
+        s = SafeEval(operators={})
 
         with self.assertRaises(OperatorNotDefined):
             s.eval("1+2")

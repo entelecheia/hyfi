@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.25.1 (2023-08-09)
+
+### Fix
+
+* **utils:** Rename simpleeval.py to safeeval.py ([`52ff673`](https://github.com/entelecheia/hyfi/commit/52ff673017e8c34d76da18265ad1414c11ccba28))
+
 ## v1.25.0 (2023-08-08)
 
 ### Feature

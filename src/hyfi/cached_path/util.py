@@ -38,7 +38,7 @@ def filename_to_url(
 
     This is essentially the inverse of :func:`resource_to_filename()`.
     """
-    cache_dir = cache_dir if cache_dir else get_cache_dir()
+    cache_dir = cache_dir or get_cache_dir()
     cache_path = os.path.join(cache_dir, filename)
     if not os.path.exists(cache_path):
         raise FileNotFoundError(f"file {cache_path} not found")
@@ -57,7 +57,7 @@ def find_latest_cached(
     """
     Get the path to the latest cached version of a given resource.
     """
-    cache_dir = Path(cache_dir if cache_dir else get_cache_dir())
+    cache_dir = Path(cache_dir or get_cache_dir())
     filename = resource_to_filename(url)
     candidates: List[Tuple[Path, float]] = []
     for path in cache_dir.glob(f"{filename}*"):

@@ -83,7 +83,6 @@ class ProjectConfig(BaseConfig, Composer):
         if self.num_workers:
             self.dotenv.HYFI_NUM_WORKERS = self.num_workers
         self.dotenv.HYFI_VERBOSE = self.verbose
-        self.dotenv.CACHED_PATH_CACHE_ROOT = str(self.path.cache_dir / "cached_path")
 
         if self.joblib:
             self.joblib.init_backend()

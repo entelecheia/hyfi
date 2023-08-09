@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.25.2 (2023-08-09)
+
+### Fix
+
+* **batch:** Streamline method set up and type hinting ([`a0c8111`](https://github.com/entelecheia/hyfi/commit/a0c81110869e2d71602071b6aac0cb884febeb64))
+* **batch:** Change default values for batch_num and seed, refactor attributes to return specific types ([`4647322`](https://github.com/entelecheia/hyfi/commit/4647322064fbc46c857153cebf62e0ae052ab679))
+* **project:** Remove unused CACHED_PATH_CACHE_ROOT variable ([`32de561`](https://github.com/entelecheia/hyfi/commit/32de5613eb8105431d8d8bbcc9a7e866bfe79bb5))
+
 ## v1.25.1 (2023-08-09)
 
 ### Fix

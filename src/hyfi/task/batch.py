@@ -29,7 +29,7 @@ class BatchTaskConfig(TaskConfig):
     _config_name_: str = "__batch__"
 
     batch_name: str = "demo"
-    batch: Optional[BatchConfig] = None
+    batch: BatchConfig = BatchConfig()
     path: BatchPathConfig = BatchPathConfig()
 
     _property_set_methods_ = {
@@ -39,30 +39,23 @@ class BatchTaskConfig(TaskConfig):
     }
     # _subconfigs_ = {"batch": BatchConfig}
 
-    def set_batch_name(self, val):
+    def set_batch_name(self, val: str):
         if not self.batch_name or self.batch_name != val:
-            if self.path:
-                self.path.batch_name = val
-            if self.batch:
-                self.batch.batch_name = val
+            self.path.batch_name = val
+            self.batch.batch_name = val
 
-    def set_batch_num(self, val):
-        if self.batch:
-            self.batch.batch_num = val
+    def set_batch_num(self, val: Optional[int] = None):
+        self.batch.batch_num = val
 
-    def set_task_name(self, val):
+    def set_task_name(self, val: str):
         if not self.task_name or self.task_name != val:
-            if self.path:
-                self.path.task_name = val
-            if self.batch:
-                self.batch.batch_root = str(self.output_dir)
+            self.path.task_name = val
+            self.batch.batch_root = str(self.output_dir)
 
     def set_task_root(self, val: Union[str, Path]):
         if not self.task_root or self.task_root != val:
-            if self.path:
-                self.path.task_root = str(val)
-            if self.batch:
-                self.batch.batch_root = str(self.output_dir)
+            self.path.task_root = str(val)
+            self.batch.batch_root = str(self.output_dir)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -74,28 +67,28 @@ class BatchTaskConfig(TaskConfig):
         )
 
     @property
-    def batch_num(self):
-        return self.batch.batch_num if self.batch else None
+    def batch_num(self) -> int:
+        return self.batch.batch_num
 
     @batch_num.setter
-    def batch_num(self, val):
+    def batch_num(self, val: Optional[int]):
         self.set_batch_num(val)
 
     @property
-    def seed(self):
-        return self.batch.seed if self.batch else None
+    def seed(self) -> int:
+        return self.batch.seed
 
     @property
-    def batch_dir(self):
-        return self.batch.batch_dir if self.batch else None
+    def batch_dir(self) -> Path:
+        return self.batch.batch_dir
 
     @property
-    def device(self):
-        return self.batch.device if self.batch else None
+    def device(self) -> str:
+        return self.batch.device
 
     @property
-    def num_devices(self):
-        return self.batch.num_devices if self.batch else None
+    def num_devices(self) -> int:
+        return self.batch.num_devices
 
     def save_config(
         self,

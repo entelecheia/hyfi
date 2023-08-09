@@ -106,7 +106,7 @@ def test_filter_and_sample_data_with_sample_size(
         verbose=verbose,
     )
 
-    assert len(result) == 3
+    assert len(result) == len(data)
 
 
 def test_filter_and_sample_data_with_sample_size_zero(

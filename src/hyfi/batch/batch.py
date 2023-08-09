@@ -54,12 +54,12 @@ class BatchConfig(BaseConfig):
     _config_group_: str = "/batch"
 
     batch_name: str
-    batch_num: Optional[int] = None
+    batch_num: int = -1
     batch_root: str = "workspace/outputs"
     output_suffix: str = ""
     output_extention: str = ""
     random_seed: bool = True
-    seed: int = -1
+    seed: int = 123
     resume_run: bool = False
     resume_latest: bool = False
     device: str = "cpu"
@@ -153,14 +153,14 @@ class BatchConfig(BaseConfig):
         return v.strip(".") if v else ""
 
     @property
-    def root_dir(self):
+    def root_dir(self) -> Path:
         """
         Root directory for the batch.
         """
         return Path(self.batch_root)
 
     @property
-    def batch_dir(self):
+    def batch_dir(self) -> Path:
         """
         Returns the path to the batch directory.
         """
@@ -169,14 +169,14 @@ class BatchConfig(BaseConfig):
         return path_
 
     @property
-    def file_prefix(self):
+    def file_prefix(self) -> str:
         """
         Prefix for the output file name.
         """
         return f"{self.batch_name}({self.batch_num})"
 
     @property
-    def output_file(self):
+    def output_file(self) -> str:
         """
         Output file name.
         """
@@ -186,28 +186,28 @@ class BatchConfig(BaseConfig):
             return f"{self.file_prefix}.{self.output_extention}"
 
     @property
-    def config_filename(self):
+    def config_filename(self) -> str:
         """
         Name of the YAML configuration file.
         """
         return f"{self.file_prefix}_{self.config_yaml}"
 
     @property
-    def config_jsonfile(self):
+    def config_jsonfile(self) -> str:
         """
         Name of the JSON configuration file.
         """
         return f"{self.file_prefix}_{self.config_json}"
 
     @property
-    def config_filepattern(self):
+    def config_filepattern(self) -> str:
         """
         File pattern for the configuration files.
         """
         return f"{self.batch_name}(*)_{self.config_yaml}"
 
     @property
-    def config_dir(self):
+    def config_dir(self) -> Path:
         """
         Directory for the configuration files.
         """
@@ -216,14 +216,14 @@ class BatchConfig(BaseConfig):
         return config_dir
 
     @property
-    def config_filepath(self):
+    def config_filepath(self) -> Path:
         """
         Path to the YAML configuration file.
         """
         return self.config_dir / self.config_filename
 
     @property
-    def config_jsonpath(self):
+    def config_jsonpath(self) -> Path:
         """
         Path to the JSON configuration file.
         """

@@ -40,6 +40,8 @@ class BatchTaskConfig(TaskConfig):
     # _subconfigs_ = {"batch": BatchConfig}
 
     def set_batch_name(self, val: str):
+        if not val:
+            raise ValueError("Batch name cannot be empty")
         if not self.batch_name or self.batch_name != val:
             self.path.batch_name = val
             self.batch.batch_name = val
@@ -48,11 +50,15 @@ class BatchTaskConfig(TaskConfig):
         self.batch.batch_num = val
 
     def set_task_name(self, val: str):
+        if not val:
+            raise ValueError("Task name cannot be empty")
         if not self.task_name or self.task_name != val:
             self.path.task_name = val
             self.batch.batch_root = str(self.output_dir)
 
     def set_task_root(self, val: Union[str, Path]):
+        if not val:
+            raise ValueError("Task root cannot be empty")
         if not self.task_root or self.task_root != val:
             self.path.task_root = str(val)
             self.batch.batch_root = str(self.output_dir)

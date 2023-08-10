@@ -1,7 +1,6 @@
 import collections.abc
 import json
 import os
-from enum import Enum
 from pathlib import Path
 from typing import IO, Any, Dict, List, Mapping, Tuple, Union
 

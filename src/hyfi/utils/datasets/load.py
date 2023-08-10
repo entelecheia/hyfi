@@ -2,8 +2,8 @@
 Load data from a file or a list of files
 """
 import os
-from typing import Dict, Mapping, Optional, Sequence, Union
 from pathlib import Path
+from typing import Dict, Mapping, Optional, Sequence, Union
 
 import datasets as hfds
 import pandas as pd

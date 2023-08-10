@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Union
 import pandas as pd
 
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.types import DictLike, ListLike
 
 logger = LOGGING.getLogger(__name__)
 
@@ -243,12 +244,12 @@ class DSBasic:
             2   3   6   9
 
         """
-        if isinstance(expressions, dict):
+        if isinstance(expressions, DictLike):
             for column in expressions:
                 if verbose:
                     logger.info("Evaluating column %s", column)
                 data[column] = data.eval(expressions[column], engine=engine)
-        elif isinstance(expressions, list):
+        elif isinstance(expressions, ListLike):
             for expression in expressions:
                 if verbose:
                     logger.info("Evaluating expression %s", expression)
@@ -285,12 +286,12 @@ class DSBasic:
             2   3   6   9
 
         """
-        if isinstance(expressions, dict):
+        if isinstance(expressions, DictLike):
             for column in expressions:
                 if verbose:
                     logger.info("Evaluating column %s", column)
                 data[column] = pd.eval(expressions[column], engine=engine, target=data)
-        elif isinstance(expressions, list):
+        elif isinstance(expressions, ListLike):
             for expression in expressions:
                 if verbose:
                     logger.info("Evaluating expression %s", expression)

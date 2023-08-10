@@ -81,6 +81,10 @@ class BatchTaskConfig(TaskConfig):
         self.set_batch_num(val)
 
     @property
+    def batch_id(self) -> str:
+        return self.batch.batch_id
+
+    @property
     def seed(self) -> int:
         return self.batch.seed
 

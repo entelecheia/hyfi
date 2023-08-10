@@ -1,7 +1,7 @@
 from enum import Enum
 from os import PathLike
 from pathlib import PosixPath, WindowsPath
-from typing import Any, Dict, List, Mapping, Sequence, Union
+from typing import Dict, List, Mapping, Sequence, Union
 
 from omegaconf import DictConfig, ListConfig
 

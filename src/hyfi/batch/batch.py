@@ -169,7 +169,7 @@ class BatchConfig(BaseConfig):
         return path_
 
     @property
-    def file_prefix(self) -> str:
+    def batch_id(self) -> str:
         """
         Prefix for the output file name.
         """
@@ -181,23 +181,23 @@ class BatchConfig(BaseConfig):
         Output file name.
         """
         if self.output_suffix:
-            return f"{self.file_prefix}_{self.output_suffix}.{self.output_extention}"
+            return f"{self.batch_id}_{self.output_suffix}.{self.output_extention}"
         else:
-            return f"{self.file_prefix}.{self.output_extention}"
+            return f"{self.batch_id}.{self.output_extention}"
 
     @property
     def config_filename(self) -> str:
         """
         Name of the YAML configuration file.
         """
-        return f"{self.file_prefix}_{self.config_yaml}"
+        return f"{self.batch_id}_{self.config_yaml}"
 
     @property
     def config_jsonfile(self) -> str:
         """
         Name of the JSON configuration file.
         """
-        return f"{self.file_prefix}_{self.config_json}"
+        return f"{self.batch_id}_{self.config_json}"
 
     @property
     def config_filepattern(self) -> str:

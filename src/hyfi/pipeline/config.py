@@ -38,7 +38,7 @@ class BaseRunConfig(BaseModel):
     def run_config(self) -> Dict[str, Any]:
         if self.run and isinstance(self.run, str):
             return {"_target_": self.run}
-        return self.run or {}
+        return Composer.to_dict(self.run) or {}
 
     @property
     def run_target(self) -> str:

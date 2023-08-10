@@ -1,17 +1,15 @@
 import collections.abc
 import json
 import os
-from enum import Enum
 from pathlib import Path
 from typing import IO, Any, Dict, List, Mapping, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.types import DictKeyType, DictLike, ListLike
 
 logger = LOGGING.getLogger(__name__)
-
-DictKeyType = Union[str, int, Enum, float, bool]
 
 
 class CONFs:
@@ -106,6 +104,32 @@ class CONFs:
                 pprint.pprint(cfg, **kwargs)
         else:
             print(cfg)
+
+    @staticmethod
+    def is_dictlike(cfg: Any):
+        """
+        Determines whether the input object is a valid dictionary configuration object.
+
+        Args:
+            cfg (Any): The object to check.
+
+        Returns:
+            bool: True if the object is a valid dictionary configuration object, False otherwise.
+        """
+        return isinstance(cfg, DictLike)
+
+    @staticmethod
+    def is_listlike(cfg: Any):
+        """
+        Determines whether the input object is a valid list configuration object.
+
+        Args:
+            cfg (Any): The object to check.
+
+        Returns:
+            bool: True if the object is a valid list configuration object, False otherwise.
+        """
+        return isinstance(cfg, ListLike)
 
     @staticmethod
     def is_config(cfg: Any):

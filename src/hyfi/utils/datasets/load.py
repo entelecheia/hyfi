@@ -2,6 +2,7 @@
 Load data from a file or a list of files
 """
 import os
+from pathlib import Path
 from typing import Dict, Mapping, Optional, Sequence, Union
 
 import datasets as hfds
@@ -136,7 +137,7 @@ class DSLoad:
 
     @staticmethod
     def load_dataframe(
-        data_file: str,
+        data_file: Union[str, Path],
         data_dir: Optional[str] = None,
         filetype: Optional[str] = None,
         columns: Optional[Sequence[str]] = None,
@@ -150,6 +151,7 @@ class DSLoad:
             dtype = {k: "str" for k in dtype}
         parse_dates = kwargs.pop("parse_dates", False)
 
+        data_file = str(data_file)
         if data_file.startswith("http"):
             filepath = data_file
         else:

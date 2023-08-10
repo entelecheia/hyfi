@@ -1,5 +1,21 @@
 <!--next-version-placeholder-->
 
+## v1.26.0 (2023-08-10)
+
+### Feature
+
+* **batch:** Add batch_id property ([`253524d`](https://github.com/entelecheia/hyfi/commit/253524d904e9a828afee4368147e1f12f69818b2))
+
+### Fix
+
+* **datasets/load:** Support pathlib.Path in data_file argument ([`254e975`](https://github.com/entelecheia/hyfi/commit/254e9756f5dd2f432dd2d029c64548526c9e39eb))
+* **batch.py:** Add validation for empty values in batch name, task name, and task root ([`e83f184`](https://github.com/entelecheia/hyfi/commit/e83f1849d138f92acb2c235a520ec83c3d822d79))
+* **hyfi:** Change batch_name variable in task config (to prevent recursions) ([`25adcd6`](https://github.com/entelecheia/hyfi/commit/25adcd691361e74ed130f969bc6daa1fe1a10992))
+* **datasets:** Replace dict and list checks with DictLike and ListLike ([`f797a75`](https://github.com/entelecheia/hyfi/commit/f797a75816a02ddd343cc75acf79fbe508d84121))
+* **utils:** Update types in hyfi/utils/types.py ([`66bec25`](https://github.com/entelecheia/hyfi/commit/66bec25337faa89159de6c7b89318e498b7a3661))
+* **hyfi/utils:** Add 'is_dictlike' and 'is_listlike' methods ([`a039d4b`](https://github.com/entelecheia/hyfi/commit/a039d4b7f0696e5820b1198f06b84c2d579af301))
+* **pipeline/config:** Change return statement in run_config method ([`4de6fe8`](https://github.com/entelecheia/hyfi/commit/4de6fe8d3435439b91158412f89b4443cf5307a0))
+
 ## v1.25.2 (2023-08-09)
 
 ### Fix

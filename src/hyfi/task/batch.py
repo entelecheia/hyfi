@@ -61,7 +61,7 @@ class BatchTaskConfig(TaskConfig):
             raise ValueError("Task root cannot be empty")
         if not self.task_root or self.task_root != val:
             self.path.task_root = str(val)
-            self.batch.batch_root = str(self.output_dir)
+            self.batch.batch_root = str(self.path.task_dir)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

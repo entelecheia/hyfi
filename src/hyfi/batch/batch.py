@@ -55,11 +55,12 @@ class BatchConfig(BaseConfig):
 
     batch_name: str
     batch_num: int = -1
+    batch_num_auto: bool = False
     batch_root: str = "workspace/outputs"
     output_suffix: str = ""
     output_extention: str = ""
-    random_seed: bool = True
-    seed: int = 123
+    random_seed: bool = False
+    seed: int = -1
     resume_run: bool = False
     resume_latest: bool = False
     device: str = "cpu"
@@ -90,7 +91,7 @@ class BatchConfig(BaseConfig):
         Args:
             val (int): Batch number.
         """
-        if val is None or val < 0:
+        if val is None or val < 0 and self.batch_num_auto:
             num_files = len(list(self.config_dir.glob(self.config_filepattern)))
             self.batch_num = (
                 num_files - 1 if self.resume_latest and num_files > 0 else num_files
@@ -114,6 +115,20 @@ class BatchConfig(BaseConfig):
             int: Validated batch number.
         """
         return v if v is not None else -1
+
+    @field_validator("batch_num_auto", mode="before")
+    def _validate_batch_num_auto(cls, v, info: FieldValidationInfo):
+        """
+        Validates the batch number auto flag.
+
+        Args:
+            v (int): Batch number auto flag.
+
+        Returns:
+            int: Validated batch number auto flag.
+        """
+        batch_num = info.data["batch_num"]
+        return batch_num is None or batch_num < 0
 
     @field_validator("seed")
     def _validate_seed(cls, v, info: FieldValidationInfo):

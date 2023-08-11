@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.26.2 (2023-08-11)
+
+### Fix
+
+* **batch:** Add set_batch_num function call in BatchTaskConfig ([`e17ceb9`](https://github.com/entelecheia/hyfi/commit/e17ceb9a1f4271dc10904787f04df8f39e85356c))
+* **batch:** Add automatic batch number functionality, change default random seed to False, modify seed validation ([`7bd8225`](https://github.com/entelecheia/hyfi/commit/7bd8225273d4b4b0bbb57d0aabeb5bda3fce06cf))
+
 ## v1.26.1 (2023-08-11)
 
 ### Fix

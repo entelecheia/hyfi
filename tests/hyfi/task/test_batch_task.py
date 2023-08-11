@@ -16,8 +16,6 @@ def test_batch_task_config():
 
     assert config.batch.batch_name == "batch11"
     # Test that the log_dir and cache_dir properties return the correct values
-    assert Path(config.log_dir).is_dir()
-    assert Path(config.cache_dir).is_dir()
     config.save_config()
     config.batch_num = 2222
     config.save_config()

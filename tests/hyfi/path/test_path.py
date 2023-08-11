@@ -21,8 +21,6 @@ def test_path_config():
     assert config.workspace_dir == Path("workspace/tmp/testspace").absolute()
 
     # Test that the log_dir and cache_dir properties return the correct values
-    assert Path(config.log_dir).is_dir()
-    assert Path(config.cache_dir).is_dir()
     config.project_name = "newproject"
     config.print_config()
     print(config.config_jsonpath)

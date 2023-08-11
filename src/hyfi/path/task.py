@@ -47,8 +47,7 @@ class TaskPathConfig(BasePathConfig):
             path_ = Path(self.task_root)
             if not path_.is_absolute():
                 path_ = self.project_dir / path_
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return path_.absolute()
 
     @property
     def task_dir(self) -> Path:
@@ -58,10 +57,7 @@ class TaskPathConfig(BasePathConfig):
         Returns:
             an path to the task root directory or None if it doesn't exist or cannot be converted to a path object
         """
-        # return as an path
-        path_ = self.root_dir / self.task_name
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.root_dir / self.task_name
 
     @property
     def workspace_dir(self) -> Path:

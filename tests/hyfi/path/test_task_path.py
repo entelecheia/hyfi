@@ -16,12 +16,11 @@ def test_path_config():
     print(config.task_dir)
     assert config.workspace_dir == Path("workspace/tasks").absolute()
 
-    # Test that the log_dir is created
-    assert Path(config.log_dir).is_dir()
     print(config.config_jsonpath)
-    assert config.config_filepath == Path(
-        "workspace/tasks/configs/test-task2_config.yaml"
-    ).absolute()
+    assert (
+        config.config_filepath
+        == Path("workspace/tasks/configs/test-task2_config.yaml").absolute()
+    )
 
 
 if __name__ == "__main__":

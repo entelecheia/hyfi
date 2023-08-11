@@ -15,10 +15,7 @@ def test_path_config():
     assert config._config_name_ == "__batch__"
     config.batch_name = "test-batch"
     print(config.batch_dir)
-    assert config.batch_dir == Path("workspace/tasks/outputs/test-batch").absolute()
-
-    # Test that the log_dir is created
-    assert Path(config.log_dir).is_dir()
+    assert config.batch_dir == Path("workspace/tasks/test-task/test-batch").absolute()
 
 
 if __name__ == "__main__":

@@ -175,8 +175,15 @@ class ProjectConfig(BaseConfig, Composer):
         self,
         path_name: str,
         base_dir: Optional[Union[Path, str]] = None,
+        ensure_exists: bool = False,
     ) -> Optional[Path]:
         """
         Get the path to a directory or file.
         """
-        return self.path.get_path(path_name, base_dir=base_dir) if self.path else None
+        return (
+            self.path.get_path(
+                path_name, base_dir=base_dir, ensure_exists=ensure_exists
+            )
+            if self.path
+            else None
+        )

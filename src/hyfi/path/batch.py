@@ -17,9 +17,7 @@ class BatchPathConfig(TaskPathConfig):
         """
         Returns the path to the batch directory.
         """
-        path_ = self.task_dir / self.batch_name
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.task_dir / self.batch_name
 
     @property
     def workspace_dir(self) -> Path:

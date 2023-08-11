@@ -32,11 +32,16 @@ def elapsed_timer(format_time=False):
 
 
 @contextmanager
-def change_directory(directory):
+def change_directory(
+    directory: str,
+    ensure_directory: bool = True,
+):
     """Change directory and change back to original directory"""
     original = os.path.abspath(os.getcwd())
 
     FUNCs.fancy_print(f" Change directory to {directory}")
+    if ensure_directory:
+        os.makedirs(directory, exist_ok=True)
     os.chdir(directory)
     try:
         yield

@@ -26,24 +26,20 @@ class BasePathConfig(BaseConfig):
         """
         Returns the path to the root directory.
         """
-        # return as an path
-        path_ = Path(".")
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return Path(".").absolute()
 
     @property
     def workspace_dir(self) -> Path:
         """
         Returns the path to the workspace directory.
         """
-        path_ = self.root_dir / "workspace"
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.root_dir / "workspace"
 
     def get_path(
         self,
         path_name: str,
         base_dir: Optional[Union[Path, str]] = None,
+        ensure_exists: bool = False,
     ) -> Path:
         """
         Get the path to a directory or file.
@@ -52,7 +48,8 @@ class BasePathConfig(BaseConfig):
             raise AttributeError(f"Path '{path_name}' does not exist.")
         base_dir = base_dir or self.workspace_dir
         path_ = Path(base_dir) / getattr(self.dirnames, path_name)
-        path_.mkdir(parents=True, exist_ok=True)
+        if ensure_exists:
+            path_.mkdir(parents=True, exist_ok=True)
         return path_
 
     @property

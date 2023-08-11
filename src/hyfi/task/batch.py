@@ -68,6 +68,9 @@ class BatchTaskConfig(TaskConfig):
         # At init, set the batch root to the task root
         # Othertimes, the batch root is set to the task root when the task root is set
         self.batch.batch_root = str(self.path.task_dir)
+        # Call set_batch_num to set the batch_num and batch_id correctly after init
+        if self.batch.batch_num_auto:
+            self.batch.set_batch_num()
         logger.info(
             "Initalized batch: %s(%s) in %s",
             self.batch_name,

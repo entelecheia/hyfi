@@ -44,7 +44,6 @@ class ProjectPathConfig(BasePathConfig):
         path_ = Path(self.global_hyfi_root)
         if not path_.is_absolute():
             path_ = self.home_dir / path_
-        path_.mkdir(parents=True, exist_ok=True)
         return path_
 
     @property
@@ -55,9 +54,7 @@ class ProjectPathConfig(BasePathConfig):
         Returns:
             path to the global workspace directory
         """
-        path_ = self.global_root_dir / self.global_workspace_name
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.global_root_dir / self.global_workspace_name
 
     @property
     def global_archive_dir(self) -> Path:
@@ -155,7 +152,6 @@ class ProjectPathConfig(BasePathConfig):
             path to the project directory
         """
         path_ = Path(self.project_root)
-        path_.mkdir(parents=True, exist_ok=True)
         return path_.absolute()
 
     @property
@@ -166,6 +162,4 @@ class ProjectPathConfig(BasePathConfig):
         Returns:
             path to the project workspace directory
         """
-        path_ = self.root_dir / self.project_workspace_name
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.root_dir / self.project_workspace_name

@@ -33,6 +33,15 @@ class BaseModel(PydanticBaseModel):
     _auto_populate_: bool = False
     _auto_generate_: bool = False
     _exclude_: Set[str] = set()
+    _exclude_keys_ = {
+        "_exclude_keys_": True,
+        "_target_": True,
+        "_config_name_": True,
+        "_config_group_": True,
+        "_auto_populate_": True,
+        "_auto_generate_": True,
+        "_exclude_": True,
+    }
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,

@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.26.3 (2023-08-11)
+
+### Fix
+
+* **model:** Add _exclude_keys_ in BaseModel ([`2540213`](https://github.com/entelecheia/hyfi/commit/2540213ce07c13414aa39132e9d847342813b52f))
+
 ## v1.26.2 (2023-08-11)
 
 ### Fix

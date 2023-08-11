@@ -157,16 +157,14 @@ class BatchConfig(BaseConfig):
         """
         Root directory for the batch.
         """
-        return Path(self.batch_root)
+        return Path(self.batch_root).absolute()
 
     @property
     def batch_dir(self) -> Path:
         """
         Returns the path to the batch directory.
         """
-        path_ = self.root_dir / self.batch_name
-        path_.mkdir(parents=True, exist_ok=True)
-        return path_
+        return self.root_dir / self.batch_name
 
     @property
     def batch_id(self) -> str:
@@ -211,9 +209,7 @@ class BatchConfig(BaseConfig):
         """
         Directory for the configuration files.
         """
-        config_dir = self.batch_dir / self.config_dirname
-        config_dir.mkdir(parents=True, exist_ok=True)
-        return config_dir
+        return self.batch_dir / self.config_dirname
 
     @property
     def config_filepath(self) -> Path:

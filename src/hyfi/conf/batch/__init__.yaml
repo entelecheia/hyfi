@@ -2,10 +2,11 @@ _config_group_: /batch
 _config_name_: __init__
 batch_name: ${oc.select:..batch_name,${._config_name_}}
 batch_num:
+batch_num_auto: false
 batch_root: ${oc.select:..task_root,workspace}/${oc.select:..task_name,outputs}
 output_suffix:
 output_extention:
-random_seed: true
+random_seed: false
 seed: -1
 resume_run: false
 resume_latest: false

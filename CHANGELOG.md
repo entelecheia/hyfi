@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.26.1 (2023-08-11)
+
+### Fix
+
+* **utils:** Enhance change_directory function with directory existence check ([`0076066`](https://github.com/entelecheia/hyfi/commit/0076066d6d6b44e154898ebf36e79581a06dc869))
+* **project:** Add ensure_exists parameter for path getting ([`f797b09`](https://github.com/entelecheia/hyfi/commit/f797b09a5c39f39e8318178e880a2922d8c5157f))
+* **config:** Add ensure_exists parameter to get_path function ([`5b8579e`](https://github.com/entelecheia/hyfi/commit/5b8579ed4303fcb638946fdbfa4037d912063c17))
+* **batch:** Initialize batch root with task root ([`a2d532a`](https://github.com/entelecheia/hyfi/commit/a2d532a0d11ee300b907f5707b3e49d0a9d4d9c6))
+
 ## v1.26.0 (2023-08-10)
 
 ### Feature

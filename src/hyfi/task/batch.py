@@ -71,6 +71,9 @@ class BatchTaskConfig(TaskConfig):
             self.batch_num,
             self.batch_dir,
         )
+        # At init, set the batch root to the task root
+        # Othertimes, the batch root is set to the task root when the task root is set
+        self.batch.batch_root = str(self.path.task_dir)
 
     @property
     def batch_num(self) -> int:

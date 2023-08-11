@@ -238,12 +238,15 @@ class GlobalConfig(UTILs):
         self,
         path_name: str,
         base_dir: Optional[Union[Path, str]] = None,
+        ensure_exists: bool = False,
     ) -> Optional[Path]:
         """
         Get the path to a directory or file.
         """
         return (
-            self.project.get_path(path_name, base_dir=base_dir)
+            self.project.get_path(
+                path_name, base_dir=base_dir, ensure_exists=ensure_exists
+            )
             if self.project
             else None
         )

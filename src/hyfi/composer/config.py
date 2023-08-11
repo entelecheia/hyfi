@@ -45,32 +45,13 @@ class BaseConfig(BaseModel):
             val (Any): The value to set the attribute to.
         """
         if method := self._property_set_methods_.get(key):  # type: ignore
-            # logger.info(
-            #     "Setting %s to %s",
-            #     key,
-            #     val if isinstance(val, (str, int)) else type(val),
-            # )
+            logger.debug(
+                "Setting %s to %s",
+                key,
+                val if isinstance(val, (str, int)) else type(val),
+            )
             getattr(self, method)(val)
         super().__setattr__(key, val)
-
-    # def initialize_subconfigs(self, config_kwargs: Dict[str, Any]):
-    #     """
-    #     Initializes subconfigs with the given config data.
-    #     The function updates the object's dictionary with the given config data,
-    #     after excluding any attributes specified in the object's `exclude` list.
-
-    #     Args:
-    #         config_kwargs (Dict[str, Any]): The config data to initialize the subconfigs with.
-
-    #     Returns:
-    #         None
-    #     """
-    #     self._subconfigs_ = self._subconfigs_ or {}
-    #     for name, config in self._subconfigs_.items():
-    #         if name in config_kwargs and isinstance(config_kwargs[name], dict):
-    #             cfg = config_kwargs[name]
-    #             logger.debug("Initializing subconfig %s with %s", name, cfg)
-    #             setattr(self, name, config.model_validate(cfg))
 
     def export_config(
         self,

@@ -273,7 +273,7 @@ class COLLAGE:
         num_cols: int,
         num_rows: Optional[int] = None,
         output_dir: Optional[Union[str, Path]] = None,
-        output_file_format: str = "collage_{page_num}.png",
+        output_file_format: str = "collage_p{page_num}.png",
         titles: Optional[List[str]] = None,
         title_fontsize: int = 10,
         title_color: str = "black",
@@ -284,6 +284,7 @@ class COLLAGE:
         sharey: bool = True,
         squeeze: bool = True,
         dpi: int = 100,
+        verbose: bool = False,
     ):
         """Make subplot pages from images.
 
@@ -331,6 +332,7 @@ class COLLAGE:
                 sharey=sharey,
                 squeeze=squeeze,
                 dpi=dpi,
+                verbose=verbose,
             )
 
     @staticmethod
@@ -349,6 +351,7 @@ class COLLAGE:
         sharey: bool = True,
         squeeze: bool = True,
         dpi: int = 100,
+        verbose: bool = False,
     ):
         """Make subplots from images.
 
@@ -396,4 +399,4 @@ class COLLAGE:
                 ax.set_title(titles[i], fontsize=title_fontsize, color=title_color)
             ax.axis("off")
         if output_file:
-            GUTILs.save_adjusted_subplots(fig, output_file, dpi=dpi)
+            GUTILs.save_adjusted_subplots(fig, output_file, dpi=dpi, verbose=verbose)

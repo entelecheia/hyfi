@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.29.0 (2023-08-12)
+
+### Feature
+
+* **collage:** Add subplot generation from images ([`46847f5`](https://github.com/entelecheia/hyfi/commit/46847f5e38747cc15ffe213330ae1a45ff869de9))
+
+### Fix
+
+* **collage:** Change output_file_format naming, add verbose parameter ([`0f516f9`](https://github.com/entelecheia/hyfi/commit/0f516f91bec26a35ecfb6fd85b065854c4404e99))
+* **graphics:** Create directory for output file if not exists ([`451d838`](https://github.com/entelecheia/hyfi/commit/451d838c26377b96c87ac5d0e13225e1824ea9df))
+
 ## v1.28.0 (2023-08-12)
 
 ### Feature

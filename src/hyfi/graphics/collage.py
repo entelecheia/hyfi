@@ -1,4 +1,5 @@
 """Collage of images.""" ""
+import math
 import os
 import textwrap
 from pathlib import Path
@@ -264,3 +265,138 @@ class COLLAGE:
             .swapaxes(1, 2)
             .reshape(height * nrows, width * ncols, intensity)
         )
+
+    @staticmethod
+    def make_subplot_pages_from_images(
+        images: List[Union[str, Path, np.ndarray, Image.Image]],
+        num_images_per_page: int,
+        num_cols: int,
+        num_rows: Optional[int] = None,
+        output_dir: Optional[Union[str, Path]] = None,
+        output_file_format: str = "collage_p{page_num}.png",
+        titles: Optional[List[str]] = None,
+        title_fontsize: int = 10,
+        title_color: str = "black",
+        figsize: Optional[Tuple[float, float]] = None,
+        width_multiple: float = 4,
+        height_multiple: float = 2,
+        sharex: bool = True,
+        sharey: bool = True,
+        squeeze: bool = True,
+        dpi: int = 100,
+        verbose: bool = False,
+    ):
+        """Make subplot pages from images.
+
+        Args:
+            images: List of images to be plotted.
+            num_images_per_page: Number of images per page.
+            num_cols: Number of columns.
+            num_rows: Number of rows. If None, it will be calculated automatically.
+            output_dir: Output directory.
+            output_file_format: Output file format.
+            titles: List of titles for each image.
+            title_fontsize: Title fontsize.
+            title_color: Title color.
+            figsize: Figure size.
+            width_multiple: Width multiple.
+            height_multiple: Height multiple.
+            sharex: Share x-axis.
+            sharey: Share y-axis.
+            squeeze: Squeeze.
+            dpi: Dots per inch.
+        """
+        num_images = len(images)
+        num_pages = math.ceil(num_images / num_images_per_page)
+        for page_num in range(num_pages):
+            start_idx = page_num * num_images_per_page
+            end_idx = start_idx + num_images_per_page
+            page_images = images[start_idx:end_idx]
+            page_output_file = (
+                Path(output_dir) / output_file_format.format(page_num=page_num)
+                if output_dir
+                else None
+            )
+            COLLAGE.make_subplots_from_images(
+                page_images,
+                num_cols=num_cols,
+                num_rows=num_rows,
+                output_file=page_output_file,
+                titles=titles,
+                title_fontsize=title_fontsize,
+                title_color=title_color,
+                figsize=figsize,
+                width_multiple=width_multiple,
+                height_multiple=height_multiple,
+                sharex=sharex,
+                sharey=sharey,
+                squeeze=squeeze,
+                dpi=dpi,
+                verbose=verbose,
+            )
+
+    @staticmethod
+    def make_subplots_from_images(
+        images: List[Union[str, Path, np.ndarray, Image.Image]],
+        num_cols: int,
+        num_rows: Optional[int] = None,
+        output_file: Optional[Union[str, Path]] = None,
+        titles: Optional[List[str]] = None,
+        title_fontsize: int = 10,
+        title_color: str = "black",
+        figsize: Optional[Tuple[float, float]] = None,
+        width_multiple: float = 4,
+        height_multiple: float = 2,
+        sharex: bool = True,
+        sharey: bool = True,
+        squeeze: bool = True,
+        dpi: int = 100,
+        verbose: bool = False,
+    ):
+        """Make subplots from images.
+
+        Args:
+            images: List of images to be plotted.
+            num_cols: Number of columns.
+            num_rows: Number of rows. If None, it will be calculated automatically.
+            output_file: Output file path.
+            titles: List of titles for each image.
+            title_fontsize: Title fontsize.
+            title_color: Title color.
+            figsize: Figure size.
+            sharex: Share x-axis or not.
+            sharey: Share y-axis or not.
+            squeeze: Squeeze or not.
+            dpi: Dots per inch.
+        """
+        if num_rows is None:
+            num_images = len(images)
+            num_rows = math.ceil(num_images / num_cols)
+        if figsize is None:
+            figsize = (num_cols * width_multiple, num_rows * height_multiple)
+        fig, axes = plt.subplots(
+            num_rows,
+            num_cols,
+            figsize=figsize,
+            sharex=sharex,
+            sharey=sharey,
+            squeeze=squeeze,
+        )
+        for i in range(num_cols * num_rows):
+            ax = (
+                axes[i % num_cols]
+                if num_rows == 1
+                else axes[i // num_cols, i % num_cols]
+            )
+            if i >= len(images):
+                ax.set_visible(False)
+                continue
+            image = images[i]
+            if isinstance(image, (str, Path)):
+                image = GUTILs.load_image(image)
+            ax.imshow(image)
+            if titles:
+                ax.set_title(titles[i], fontsize=title_fontsize, color=title_color)
+            ax.axis("off")
+        if output_file:
+            GUTILs.save_adjusted_subplots(fig, output_file, dpi=dpi, verbose=verbose)

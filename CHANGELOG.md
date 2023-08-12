@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.28.0 (2023-08-12)
+
+### Feature
+
+* **graphics/utils.py:** Add load_image_as_ndarray method, add save_adjusted_subplots method ([`05c38e9`](https://github.com/entelecheia/hyfi/commit/05c38e98efce853fff5484232ebc5c7f71c99832))
+* **model:** Add kwargs property to BaseModel ([`f65171e`](https://github.com/entelecheia/hyfi/commit/f65171efde4ac45aa2dc4bc7fec9b298a4d53523))
+* **utils:** Add cached to UTILs class ([`7dc5b81`](https://github.com/entelecheia/hyfi/commit/7dc5b8143bcde51512a5f3f40b81dd3f990f4583))
+* **hyfi/utils:** Add cached_path and cached_gdown methods in CACHED class ([`a1f47b2`](https://github.com/entelecheia/hyfi/commit/a1f47b260c4a7819a1ed7e532f9b65690956bd89))
+
 ## v1.27.0 (2023-08-12)
 
 ### Feature

@@ -383,8 +383,6 @@ class GUTILs:
             verbose: Verbose mode
         """
 
-        if verbose:
-            logger.info("Save subplots to %s", output_file)
         # make the figure look better
         fig.subplots_adjust(
             left=left,
@@ -396,6 +394,8 @@ class GUTILs:
         )
         if tight_layout:
             fig.tight_layout()
+
+        Path(output_file).parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(
             output_file,
             dpi=dpi,

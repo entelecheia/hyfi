@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.27.0 (2023-08-12)
+
+### Feature
+
+* **graphics:** Add new collage class with functionality ([`92f0b83`](https://github.com/entelecheia/hyfi/commit/92f0b8391649767bf711ebf1ec7186bd504419ba))
+
+### Fix
+
+* **config:** Modify print_about to adjust package name for hyfi ([`bf53fd8`](https://github.com/entelecheia/hyfi/commit/bf53fd8ecee06bf254f0cf6e6fb108bd7a21513d))
+
 ## v1.26.3 (2023-08-11)
 
 ### Fix

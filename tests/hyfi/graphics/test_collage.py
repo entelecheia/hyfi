@@ -11,6 +11,12 @@ def test_collage():
 
     cimg = HyFI.collage([img, img2], num_cols=2)
     assert cimg.image and cimg.image.size == (1054, 532)
+    HyFI.make_subplot_pages_from_images(
+        [img, img2, img, img2],
+        num_cols=2,
+        num_images_per_page=2,
+        output_dir="workspace",
+    )
 
 
 def test_makegif():

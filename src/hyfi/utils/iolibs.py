@@ -69,7 +69,7 @@ class IOLIBs:
     @staticmethod
     def get_filepaths(
         filename_patterns: Union[List[PathLikeType], PathLikeType],
-        base_dir: Union[str, PosixPath, WindowsPath] = "",
+        base_dir: Optional[Union[str, PosixPath, WindowsPath]] = None,
         recursive: bool = True,
         use_cached: bool = False,
         verbose: bool = False,

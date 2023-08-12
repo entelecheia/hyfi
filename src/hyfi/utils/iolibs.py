@@ -400,8 +400,8 @@ class IOLIBs:
         words: List[str],
         filepath: Union[str, PosixPath, WindowsPath, Path],
         sort: bool = True,
-        verbose: bool = True,
         encoding: str = "utf-8",
+        verbose: bool = True,
     ):
         """Save the word list to the file."""
         if sort:
@@ -424,8 +424,8 @@ class IOLIBs:
         max_ngram_to_include: Optional[int] = None,
         ngram_delimiter: str = ";",
         remove_delimiter: bool = False,
-        verbose: bool = True,
         encoding: str = "utf-8",
+        verbose: bool = True,
     ) -> List[str]:
         """Load the word list from the file."""
         filepath = Path(filepath)

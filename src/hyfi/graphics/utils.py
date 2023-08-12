@@ -96,6 +96,13 @@ class GUTILs:
         return image
 
     @staticmethod
+    def load_image_as_ndarray(
+        image_or_uri: Union[str, Path, Image.Image],
+    ) -> np.ndarray:
+        """Load image from file or URI."""
+        return np.asarray(GUTILs.load_image(image_or_uri))
+
+    @staticmethod
     def load_image(
         image_or_uri: Union[str, Path, Image.Image],
         max_width: Optional[int] = None,
@@ -175,7 +182,8 @@ class GUTILs:
     ) -> Optional[ImageFont.ImageFont]:
         """Get font for PIL image."""
         fontname, fontpath = GUTILs.get_plot_font(
-            set_font_for_matplot=False, fontname=fontname
+            fontname=fontname,
+            set_font_for_matplot=False,
         )
         return ImageFont.truetype(fontpath, fontsize) if fontpath else None
 
@@ -210,13 +218,25 @@ class GUTILs:
 
     @staticmethod
     def get_plot_font(
-        set_font_for_matplot: bool = True,
         fontpath: Optional[str] = None,
         fontname: Optional[str] = None,
         lang: str = "en",
+        set_font_for_matplot: bool = True,
         verbose: bool = False,
-    ):
-        """Get font for plot"""
+    ) -> Tuple[str, str]:
+        """Get font for plot
+
+        Args:
+            fontpath: Font file path
+            fontname: Font name
+            lang: Language
+            set_font_for_matplot: Set font for matplot
+            verbose: Verbose mode
+
+        Returns:
+            Tuple of font name and font path
+
+        """
         if fontname and not fontname.endswith(".ttf"):
             fontname += ".ttf"
         if not fontpath:
@@ -326,3 +346,62 @@ class GUTILs:
         ticks = ticks - (ticks[1] - ticks[0]) / 2
         ticks[0] = lim[0]
         return ticks
+
+    @staticmethod
+    def save_adjusted_subplots(
+        fig: plt.Figure,
+        output_file: str,
+        left: float = 0.1,
+        right: float = 0.9,
+        bottom: float = 0.1,
+        top: float = 0.9,
+        wspace: float = 0,
+        hspace: float = 0,
+        tight_layout: bool = True,
+        bbox_inches: str = "tight",
+        pad_inches: float = 0,
+        transparent: bool = True,
+        dpi: int = 300,
+        verbose: bool = True,
+    ):
+        """Save subplots after adjusting the figure
+
+        Args:
+            fig: Figure
+            output_file: Output file path
+            left: Left
+            right: Right
+            bottom: Bottom
+            top: Top
+            wspace: Wspace
+            hspace: Hspace
+            tight_layout: Tight layout
+            bbox_inches: Bbox inches
+            pad_inches: Pad inches
+            transparent: Transparent
+            dpi: DPI
+            verbose: Verbose mode
+        """
+
+        if verbose:
+            logger.info("Save subplots to %s", output_file)
+        # make the figure look better
+        fig.subplots_adjust(
+            left=left,
+            right=right,
+            bottom=bottom,
+            top=top,
+            wspace=wspace,
+            hspace=hspace,
+        )
+        if tight_layout:
+            fig.tight_layout()
+        fig.savefig(
+            output_file,
+            dpi=dpi,
+            bbox_inches=bbox_inches,
+            pad_inches=pad_inches,
+            transparent=transparent,
+        )
+        if verbose:
+            logger.info("Saved subplots to %s", output_file)

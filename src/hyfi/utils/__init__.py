@@ -1,3 +1,4 @@
+from .cached import CACHED
 from .conf import CONFs
 from .datasets import DATASETs
 from .envs import ENVs
@@ -11,6 +12,7 @@ from .safeeval import SAFEEVAL, SafeEval
 
 
 class UTILs(
+    CACHED,
     CONFs,
     DATASETs,
     ENVs,

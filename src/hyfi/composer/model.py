@@ -88,6 +88,13 @@ class BaseModel(PydanticBaseModel):
         return data
 
     @property
+    def kwargs(self) -> Dict[str, Any]:
+        """
+        Returns the model as a dictionary excluding any keys specified in the class's `exclude_keys` list.
+        """
+        return self.model_dump(exclude=self._exclude_keys_)
+
+    @property
     def config_name(self) -> str:
         """
         Returns the name of the model.

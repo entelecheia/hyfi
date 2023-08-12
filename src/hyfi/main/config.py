@@ -203,7 +203,12 @@ class GlobalConfig(UTILs):
 
     def print_about(self, **kwargs):
         if not kwargs:
-            kwargs = {"_config_name_": global_hyfi.package_name}
+            config_name = (
+                "__init__"
+                if global_hyfi.package_name == "hyfi"
+                else global_hyfi.package_name
+            )
+            kwargs = {"_config_name_": config_name}
         self._about_ = AboutConfig(**kwargs)
         pkg_name = self.package_name
         name = self.app_name

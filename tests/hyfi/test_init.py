@@ -19,6 +19,7 @@ def test_init():
         package_path="src/hyfi", version="0.0.1", plugins=["hyfi", "lexikanon"]
     )
     print(global_hyfi.plugins)
+    HyFI.print_about()
 
 
 if __name__ == "__main__":

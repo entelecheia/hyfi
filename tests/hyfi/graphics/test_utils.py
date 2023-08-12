@@ -1,5 +1,4 @@
 from hyfi.main import HyFI
-from hyfi.graphics.utils import get_default_system_font
 
 
 def test_load_image():
@@ -13,7 +12,7 @@ def test_load_image():
 
 
 def test_get_image_font():
-    print(get_default_system_font(lang="en"))
+    print(HyFI.get_default_system_font(lang="en"))
     font = HyFI.get_image_font()
     print(font)
     assert font and font.size == 12

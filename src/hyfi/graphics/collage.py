@@ -312,6 +312,7 @@ class COLLAGE:
             start_idx = page_num * num_images_per_page
             end_idx = start_idx + num_images_per_page
             page_images = images[start_idx:end_idx]
+            page_titles = titles[start_idx:end_idx] if titles else None
             page_output_file = (
                 Path(output_dir) / output_file_format.format(page_num=page_num)
                 if output_dir
@@ -322,7 +323,7 @@ class COLLAGE:
                 num_cols=num_cols,
                 num_rows=num_rows,
                 output_file=page_output_file,
-                titles=titles,
+                titles=page_titles,
                 title_fontsize=title_fontsize,
                 title_color=title_color,
                 figsize=figsize,

@@ -14,7 +14,7 @@ from hyfi.utils.logging import LOGGING
 
 from .utils import GUTILs
 
-log = LOGGING.getLogger(__name__)
+logger = LOGGING.getLogger(__name__)
 
 
 class Collage(BaseModel):
@@ -69,7 +69,7 @@ class COLLAGE:
         num_images, num_cols, nrows = GUTILs.get_grid_size(
             num_images, num_cols=num_cols
         )
-        log.info(
+        logger.info(
             "Creating collage of %d images in %d columns and %d rows",
             num_images,
             num_cols,
@@ -112,7 +112,7 @@ class COLLAGE:
             os.makedirs(os.path.dirname(output_file), exist_ok=True)
             collage.image.save(output_file)
             collage.filepath = output_file
-            log.info("Saved collage to %s", output_file)
+            logger.info("Saved collage to %s", output_file)
         return collage
 
     @staticmethod
@@ -318,6 +318,12 @@ class COLLAGE:
                 if output_dir
                 else None
             )
+            if verbose:
+                logger.info(
+                    f"Making page {page_num + 1}/{num_pages} with {len(page_images)} images"
+                )
+                logger.info(f"Page titles: {page_titles}")
+                logger.info(f"Page output file: {page_output_file}")
             COLLAGE.make_subplots_from_images(
                 page_images,
                 num_cols=num_cols,

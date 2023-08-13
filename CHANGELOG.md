@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.29.2 (2023-08-13)
+
+### Fix
+
+* **collage:** Rename 'log' to 'logger' and add verbose logging ([`59948b9`](https://github.com/entelecheia/hyfi/commit/59948b9debfc10c152609f88de42232975fa485a))
+
 ## v1.29.1 (2023-08-13)
 
 ### Fix

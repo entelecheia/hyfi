@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.29.1 (2023-08-13)
+
+### Fix
+
+* **collage:** Add functionality to handle page titles ([`4acde43`](https://github.com/entelecheia/hyfi/commit/4acde43545db6827f26b701bdf60c72f35beacf2))
+
 ## v1.29.0 (2023-08-12)
 
 ### Feature

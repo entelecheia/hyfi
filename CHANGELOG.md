@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.29.4 (2023-08-14)
+
+### Fix
+
+* **tests:** Add returning_data parameter in test_datasets_funcs.py ([`b0a4044`](https://github.com/entelecheia/hyfi/commit/b0a40444c2bb04852832ffecaf83fde1c41985f9))
+* **runner:** Add batch configuration and name ([`d93cd43`](https://github.com/entelecheia/hyfi/commit/d93cd43dd491d7928def2f6f22dda25ecb251fad))
+* **config:** Rename task path to batch path ([`b5e5164`](https://github.com/entelecheia/hyfi/commit/b5e5164cabdb89ea4a0ae7f780f134d8254a4b52))
+* **hyfi/conf:** Add returning_data in filter_and_sample_data.yaml ([`712c9ee`](https://github.com/entelecheia/hyfi/commit/712c9eed50a9593a8dc5543f9ed32f3ca9e4d62d))
+* **runner:** Change TaskConfig to BatchTaskConfig in base.py ([`b456d9b`](https://github.com/entelecheia/hyfi/commit/b456d9b0eb89b924d29bb2aa4c252b699bfafa00))
+
 ## v1.29.3 (2023-08-14)
 
 ### Fix

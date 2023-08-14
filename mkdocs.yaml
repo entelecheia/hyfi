@@ -9,7 +9,8 @@ repo_url: https://github.com/entelecheia/hyfi
 edit_uri: edit/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2023 Young Joon Lee
+copyright: |
+  Copyright &copy; 2023 <a href="https://github.com/entelecheia"  target="_blank" rel="noopener">Young Joon Lee</a>
 
 # Configuration
 theme:
@@ -17,6 +18,9 @@ theme:
   palette:
     scheme: slate
   features:
+    - navigation.instant
+    - navigation.top
+    - navigation.path
     # - navigation.expand
     - navigation.indexes
     - content.action.edit
@@ -86,6 +90,11 @@ extra:
   analytics:
     provider: google
     property: G-RGCZCJ4ZZF
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/entelecheia
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/entelecheia
 # Page tree
 # nav:
 #  - Home: index.md

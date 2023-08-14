@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.29.5 (2023-08-14)
+
+### Fix
+
+* **runner:** Change references from 'task' to 'call' in logging statements ([`cc27e6d`](https://github.com/entelecheia/hyfi/commit/cc27e6dedbb551d0ba293aba4e80afbf138f60e0))
+
 ## v1.29.4 (2023-08-14)
 
 ### Fix

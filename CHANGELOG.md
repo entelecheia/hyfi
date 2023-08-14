@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.29.6 (2023-08-14)
+
+### Fix
+
+* **mkdocs.yaml:** Add social links to github and linkedin, enhance copyright statement with html link ([`42277d7`](https://github.com/entelecheia/hyfi/commit/42277d7872b6a7827bf88868d9a927f14a96ef18))
+
+### Documentation
+
+* **README:** Add citation section ([`25d7172`](https://github.com/entelecheia/hyfi/commit/25d7172fdcb1803f08d2d005cd9f204646a497e1))
+* Add new yaml configurations to pipe.md and run.md ([`e0cd530`](https://github.com/entelecheia/hyfi/commit/e0cd530a258557fec5d62b3c1c731e078d95f622))
+
 ## v1.29.5 (2023-08-14)
 
 ### Fix

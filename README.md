@@ -56,6 +56,18 @@ Stay focused on your core problems. HyFI takes care of the usual overheads such 
 - **Advanced Logging**: Make use of the integrated logging configurations, complemented by Hydra logging.
 - **Robust Caching**: Cache both files and data efficiently.
 
+## Citation
+
+```tex
+@software{lee_2023_hyfi,
+  author       = {Young Joon Lee},
+  title        = {HyFI: Hydra Fast Interface},
+  year         = 2023,
+  publisher    = {GitHub},
+  url          = {https://github.com/entelecheia/hyfi}
+}
+```
+
 ## Changelog
 
 See the [CHANGELOG] for more information.

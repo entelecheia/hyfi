@@ -36,15 +36,15 @@ class BaseRunner(BatchTaskConfig):
         calls = self.get_running_calls()
         if self.verbose:
             logger.info("Running %s call(s)", len(calls))
-        # Run all tasks in the workflow.
+        # Run all calls in the runner
         with elapsed_timer(format_time=True) as elapsed:
             for rc in calls:
                 logger.info("Running call [%s] with [%s]", rc.uses, rc.run_kwargs)
                 self.run_call(rc)
             if self.verbose:
                 logger.info(
-                    " >> elapsed time for the workflow with %s tasks: %s",
-                    len(self.tasks or []),
+                    " >> elapsed time for the runner with %s calls: %s",
+                    len(self.calls or []),
                     elapsed(),
                 )
 

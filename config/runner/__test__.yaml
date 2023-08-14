@@ -1,5 +1,6 @@
 defaults:
-- /path@path: __task__
+- /path@path: __batch__
+- /batch@batch: __init__
 - /run@load_args: load_data
 _target_: hyfi.runner.base.TestRunner
 _config_name_: __test__
@@ -10,4 +11,5 @@ task_root: workspace
 version: 0.0.0
 module: null
 pipelines: []
+batch_name: demo
 calls: []

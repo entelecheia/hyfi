@@ -10,8 +10,6 @@
 
 HyFI, short for Hydra Fast Interface, is a powerful Python framework built atop the foundations of [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/). Its main objective is to provide a streamlined interface for configuring, structuring, executing, and scaling Python applications and workflows.
 
-Please find pertinent links below:
-
 - [Documentation][docs-url]
 - [GitHub Repository][repo-url]
 - [PyPI Package][pypi-url]

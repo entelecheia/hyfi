@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.29.3 (2023-08-14)
+
+### Fix
+
+* **DSSlice:** Add returning_data parameter for train, sample, discard data options ([`cc46334`](https://github.com/entelecheia/hyfi/commit/cc4633452030db61a2e68d29a09bc5ee21cb86f9))
+* **datasets/combine:** Add ability to load dataframe from path or string in merge process ([`8a9d510`](https://github.com/entelecheia/hyfi/commit/8a9d51012822ae0856ac6e14ee9088c07be67524))
+* **hyfi/utils/datasets/load:** Replace DSCombine with hfds usage ([`7466634`](https://github.com/entelecheia/hyfi/commit/74666343cb1624d7ce2f2378a8f0362b96242f57))
+
 ## v1.29.2 (2023-08-13)
 
 ### Fix

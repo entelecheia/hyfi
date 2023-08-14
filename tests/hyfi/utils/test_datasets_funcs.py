@@ -103,6 +103,7 @@ def test_filter_and_sample_data_with_sample_size(
         sample_filename=sample_filename,
         train_filename=train_filename,
         discard_filename=discard_filename,
+        returning_data="original",
         verbose=verbose,
     )
 

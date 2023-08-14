@@ -6,4 +6,5 @@ output_dir: .
 sample_filename: null
 train_filename: train.parquet
 discard_filename: null
+returning_data: train
 verbose: false

@@ -8,6 +8,68 @@
 [![codefactor][codefactor-image]][codefactor-url]
 [![codacy][codacy-image]][codacy-url]
 
+HyFI, short for Hydra Fast Interface, is a powerful Python framework built atop the foundations of [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/). Its main objective is to provide a streamlined interface for configuring, structuring, executing, and scaling Python applications and workflows.
+
+Please find pertinent links below:
+
+- [Documentation][docs-url]
+- [GitHub Repository][repo-url]
+- [PyPI Package][pypi-url]
+
+## Overview
+
+In the modern world of software and data science, creating scalable, reproducible, and modular Python workflows is vital. HyFI is here to make that process not just feasible but also efficient and straightforward. It has been meticulously crafted to help developers and researchers build pipeline-oriented projects and promote shareable and reproducible workflows.
+
+## Core Features
+
+### **1. Dynamic Configuration Management**
+
+- **Modular Configuration**: Harness the power of [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/) to manage your application configurations dynamically and modularity.
+- **Seamless Command Line Overrides**: Experiment swiftly without the clutter of multiple similar configuration files.
+- **Jupyter Notebook Integration**: The **HyFI** class allows for easy composition of configurations even in a jupyter notebook setting.
+
+### **2. Zero Boilerplate**
+
+Stay focused on your core problems. HyFI takes care of the usual overheads such as command line flags, loading configuration files, and logging.
+
+### **3. Structured Workflows**
+
+- **Configurable Automated Processes**: Divide your research into unit jobs or tasks, and then bundle them into workflows.
+
+- **Versatility**: Have the liberty to create multiple workflows, with each performing varied sets of tasks.
+
+### **4. Reproducibility and Sharing**
+
+- **Complete Sharing Capability**: Share your datasets, models, and even configurations effortlessly.
+
+- **Reproducibility**: Sharing configurations alongside datasets and models ensures that every piece of research can be replicated.
+
+- **Granular or Holistic**: Choose to share individual unit jobs or an entire workflow, as per your need.
+
+## Other Noteworthy Features:
+
+- **Workspace Management**: Automatic workspace creation and environment variable management.
+- **Task Pipelining**: Chain and parallelize jobs and steps seamlessly.
+- **Optimized Parallelism**: Efficient job batching with the help of Joblib.
+- **Dotenv Integration**: Manage configurations via .env files with ease.
+- **Built-in Commands**: Simplify processes like initializing projects, running pipelines, and copying files.
+- **Extensibility**: Easily extend HyFI's capabilities by crafting new Config classes and utilizing the building blocks it offers.
+- **Command Line Interface (CLI)**: Access a suite of commands and workflows directly from the command line.
+- **Advanced Logging**: Make use of the integrated logging configurations, complemented by Hydra logging.
+- **Robust Caching**: Cache both files and data efficiently.
+
+## Changelog
+
+See the [CHANGELOG] for more information.
+
+## Contributing
+
+Contributions are welcome! Please see the [contributing guidelines] for more information.
+
+## License
+
+This project is released under the [MIT License][license-url].
+
 <!-- Links: -->
 
 [codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
@@ -29,23 +91,3 @@
 [contributing guidelines]: https://github.com/entelecheia/hyfi/blob/main/CONTRIBUTING.md
 
 <!-- Links: -->
-
-Hydra Fast Interface (Hydra and Pydantic based interface framework)
-
-- Documentation: [https://hyfi.entelecheia.ai][docs-url]
-- GitHub: [https://github.com/entelecheia/hyfi][repo-url]
-- PyPI: [https://pypi.org/project/hyfi][pypi-url]
-
-HyFI is a framework for building interfaces for Python applications. It is based on [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/) and provides a set of tools to build interfaces for Python applications.
-
-## Changelog
-
-See the [CHANGELOG] for more information.
-
-## Contributing
-
-Contributions are welcome! Please see the [contributing guidelines] for more information.
-
-## License
-
-This project is released under the [MIT License][license-url].

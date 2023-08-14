@@ -1,6 +1,7 @@
 """
 Dataset transformation functions. Concatenate, merge, join, etc.
 """
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import datasets as hfds
@@ -11,6 +12,7 @@ from datasets.splits import NamedSplit
 
 from hyfi.utils.logging import LOGGING
 
+from .load import DSLoad
 from .types import DatasetType
 
 logger = LOGGING.getLogger(__name__)
@@ -123,8 +125,8 @@ class DSCombine:
 
     @staticmethod
     def merge_dataframes(
-        left: pd.DataFrame,
-        right: pd.DataFrame,
+        data: pd.DataFrame,
+        right: Union[str, Path, pd.DataFrame],
         how: str = "inner",
         on: Optional[Union[str, List[str]]] = None,
         left_on: Optional[Union[str, List[str]]] = None,
@@ -172,7 +174,9 @@ class DSCombine:
         """
         if verbose:
             logger.info("Merging dataframes")
-        return left.merge(
+        if isinstance(right, (str, Path)):
+            right = DSLoad.load_dataframe(right)
+        return data.merge(
             right,
             how=how,
             on=on,

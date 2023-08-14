@@ -68,6 +68,7 @@ class DSSlice:
         sample_filename: Optional[str] = None,
         train_filename: Optional[str] = "train.parquet",
         discard_filename: Optional[str] = None,
+        returning_data: str = "train",
         verbose: bool = False,
     ) -> pd.DataFrame:
         """
@@ -82,6 +83,7 @@ class DSSlice:
             sample_filename (Optional[str], optional): The sample filename. Defaults to None.
             train_filename (Optional[str], optional): The train filename. Defaults to "train.parquet".
             discard_filename (Optional[str], optional): The discard filename. Defaults to "discard.parquet".
+            returning_data (str, optional): The data to return. Defaults to "train" ('train', 'sample', 'discard', or 'original').
             verbose (bool, optional): Whether to print the sample. Defaults to False.
 
         Returns:
@@ -147,6 +149,12 @@ class DSSlice:
             discard.shape[0],
         )
 
+        if returning_data == "train":
+            return train
+        elif returning_data == "sample" and sample is not None:
+            return sample
+        elif returning_data == "discard":
+            return discard
         return data
 
     @staticmethod

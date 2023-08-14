@@ -4,6 +4,7 @@
 [![version-image]][release-url]
 [![release-date-image]][release-url]
 [![license-image]][license-url]
+[![DOI][zenodo-image]][zenodo-url]
 [![codecov][codecov-image]][codecov-url]
 [![codefactor][codefactor-image]][codefactor-url]
 [![codacy][codacy-image]][codacy-url]
@@ -82,6 +83,8 @@ This project is released under the [MIT License][license-url].
 
 <!-- Links: -->
 
+[zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.8247720.svg
+[zenodo-url]: https://doi.org/10.5281/zenodo.8247719
 [codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
 [codecov-url]: https://codecov.io/gh/entelecheia/hyfi
 [pypi-image]: https://img.shields.io/pypi/v/hyfi

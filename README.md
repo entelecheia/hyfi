@@ -65,6 +65,18 @@ Stay focused on your core problems. HyFI takes care of the usual overheads such 
 ## Citation
 
 ```tex
+@software{lee_2023_8247719,
+  author       = {Young Joon Lee},
+  title        = {HyFI: Hydra Fast Interface},
+  month        = aug,
+  year         = 2023,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.8247719},
+  url          = {https://doi.org/10.5281/zenodo.8247719}
+}
+```
+
+```tex
 @software{lee_2023_hyfi,
   author       = {Young Joon Lee},
   title        = {HyFI: Hydra Fast Interface},
@@ -88,7 +100,7 @@ This project is released under the [MIT License][license-url].
 
 <!-- Links: -->
 
-[zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.8247720.svg
+[zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.8247719.svg
 [zenodo-url]: https://doi.org/10.5281/zenodo.8247719
 [codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
 [codecov-url]: https://codecov.io/gh/entelecheia/hyfi

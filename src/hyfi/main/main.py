@@ -388,4 +388,9 @@ class HyFI(
                 with Copier(**copier_cfg) as worker:
                     worker.run_copy()
             else:
-                HyFI.print_about(**config.get("about", {}))
+                for _, cfg in config.items():
+                    if HyFI.is_instantiatable(cfg):
+                        HyFI.run_intantiatable(cfg, dryrun)
+                        return
+                if not dryrun:
+                    HyFI.print_about(**config.get("about", {}))

@@ -39,11 +39,16 @@ Stay focused on your core problems. HyFI takes care of the usual overheads such 
 
 ### **4. Reproducibility and Sharing**
 
-- **Complete Sharing Capability**: Share your datasets, models, and even configurations effortlessly.
+- **Sharing Capability**: Share your datasets, models, and configurations effortlessly.
 
 - **Reproducibility**: Sharing configurations alongside datasets and models ensures that every piece of research can be replicated.
 
 - **Granular or Holistic**: Choose to share individual unit jobs or an entire workflow, as per your need.
+
+### **5. Support for Plugins**
+
+- **Integration of HyFI-based Applications**: Enhance your project by plugging in several HyFI-based applications. This allows you to leverage the functionalities of plugins along with their specific configuration files.
+- **Modular Design Enablement**: The plugin support fosters a truly modular design approach, enabling seamless integration of various components and features, thereby promoting greater flexibility and extensibility in your projects.
 
 ## Other Noteworthy Features:
 

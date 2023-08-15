@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v1.29.7 (2023-08-15)
+
+### Fix
+
+* **hyfi/main:** Implement check for instantiatable config and run if present ([`8124301`](https://github.com/entelecheia/hyfi/commit/8124301dc93e66fb7045415bbd6a84fc60275f23))
+
+### Documentation
+
+* **README:** Add citation details, update zenodo badge link ([`b13feb8`](https://github.com/entelecheia/hyfi/commit/b13feb8095b75dbba4160e6a86c5be33e2bf7977))
+* **README:** Add support for plugins section ([`e161b90`](https://github.com/entelecheia/hyfi/commit/e161b903f96edaf70deae38007321af822f5bf50))
+* **README:** Add Zenodo DOI badge ([`9d957aa`](https://github.com/entelecheia/hyfi/commit/9d957aab1e433b6413d6e42c2a8701b75ba17306))
+
 ## v1.29.6 (2023-08-14)
 
 ### Fix

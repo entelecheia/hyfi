@@ -144,6 +144,7 @@ class Composer(UTILs, GENERATOR):
     ):
         is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
         config_module = config_module or global_hyfi.config_module
+        # TODO: #223 multiple plugins are not correctly handled
         plugins = plugins or global_hyfi.plugins
         # logger.debug("config_module: %s", config_module)
         if is_initialized:

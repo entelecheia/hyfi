@@ -160,6 +160,9 @@ class GlobalHyFIConfig(BaseModel):
 
         Be careful!
         It does not check if the plugin is importable.
+        When several plugins are specified and those plugins also use plugins,
+        the order of the plugins is important.
+        To handle this, need to store the plugins in the OS environment variable.
 
         Args:
             plugins: List[str]: A list of plugins to load.

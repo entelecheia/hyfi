@@ -9,6 +9,8 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
+# TODO: #228 need to have a separate envs config class and a separate project envs config class
+# change name to EnvsConfig, ProjectEnvsConfig
 class DotEnvConfig(BaseSettings):
     """
     Configuration class for environment variables in HyFI.

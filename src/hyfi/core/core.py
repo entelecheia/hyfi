@@ -162,7 +162,8 @@ class GlobalHyFIConfig(BaseModel):
         It does not check if the plugin is importable.
         When several plugins are specified and those plugins also use plugins,
         the order of the plugins is important.
-        To handle this, need to store the plugins in the OS environment variable.
+        To handle this, need to store the plugins in the dictionary. (TODO)
+        ex) plugins = {'__package_name__': ['hyfi.conf', 'plugin1.conf', 'plugin2.conf']}
 
         Args:
             plugins: List[str]: A list of plugins to load.

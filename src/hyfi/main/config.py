@@ -43,6 +43,7 @@ class HyFIConfig(BaseModel, UTILs):
 
     about: Optional[ConfigType] = None
     copier: Optional[ConfigType] = None
+    globals: Optional[ConfigType] = None
     project: Optional[ConfigType] = None
     pipeline: Optional[ConfigType] = None
     task: Optional[ConfigType] = None

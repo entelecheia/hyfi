@@ -53,7 +53,7 @@ class BatchConfig(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "/batch"
 
-    batch_name: str
+    batch_name: str = "batch"
     batch_num: int = -1
     batch_num_auto: bool = False
     batch_root: str = "workspace/outputs"

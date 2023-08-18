@@ -394,41 +394,43 @@ class HyFI(
     ):
         """Run the provided config"""
         config = HyFI.to_dict(config) if config else {}
-        if not isinstance(config, dict):
-            raise ValueError("The config must be a dictionary")
-        cmd_name = config.get("cmd_name")
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
             HyFI.run_intantiatable(config, dryrun=dryrun)
-        else:
-            logger.info(
-                "The HyFI config is not instantiatable, running HyFI task with the config"
+            return
+
+        logger.info(
+            "The HyFI config is not instantiatable, running HyFI task with the config"
+        )
+        # Run the HyFI task
+        cmd_name = config.get("cmd_name")
+        config_group = config.get("_config_group_", "")
+        if not cmd_name:
+            if config_group == "/workflow":
+                cmd_name = "run_workflow"
+            elif "task" in config:
+                cmd_name = "run_task"
+            elif "copier" in config:
+                cmd_name = "copy_conf"
+
+        if cmd_name == "run_workflow":
+            workflow = HyFI.WorkflowConfig(**config)
+            HyFI.run_workflow(workflow, dryrun=dryrun)
+        elif cmd_name == "run_task":
+            project = (
+                HyFI.initialize(**config["project"]) if "project" in config else None
             )
-            # Run the HyFI task
-            config_group = config.get("_config_group_", "")
-            if config_group == "/workflow" or cmd_name == "run_workflow":
-                workflow = HyFI.WorkflowConfig(**config)
-                HyFI.run_workflow(workflow, dryrun=dryrun)
-            elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
-                project = (
-                    HyFI.initialize(**config["project"])
-                    if "project" in config
-                    else None
-                )
-                task = HyFI.TaskConfig(**config["task"])
-                HyFI.run_task(task, project=project, dryrun=dryrun)
-            elif "runner" in config:
-                runner = config["runner"]
-                HyFI.run_intantiatable(runner, dryrun)
-            elif "copier" in config and (cmd_name is None or cmd_name == "copy_conf"):
-                copier_cfg = config["copier"]
-                copier_cfg["dryrun"] = dryrun
-                with Copier(**copier_cfg) as worker:
-                    worker.run_copy()
-            else:
-                for _, cfg in config.items():
-                    if HyFI.is_instantiatable(cfg):
-                        HyFI.run_intantiatable(cfg, dryrun)
-                        return
-                if not dryrun:
-                    HyFI.print_about(**config.get("about", {}))
+            task = HyFI.TaskConfig(**config["task"])
+            HyFI.run_task(task, project=project, dryrun=dryrun)
+        elif cmd_name == "copy_conf":
+            copier_cfg = config["copier"]
+            copier_cfg["dryrun"] = dryrun
+            with Copier(**copier_cfg) as worker:
+                worker.run_copy()
+        else:
+            for _, cfg in config.items():
+                if HyFI.is_instantiatable(cfg):
+                    HyFI.run_intantiatable(cfg, dryrun)
+                    return
+            if not dryrun:
+                HyFI.print_about(**config.get("about", {}))

@@ -155,7 +155,7 @@ class GlobalHyFIConfig(BaseModel):
         """Returns the list of plugins to load."""
         caller_pkg_name = PKGs.get_next_level_caller_package_name()
         if self.__plugins__ and caller_pkg_name in self.__plugins__:
-            logger.info(
+            logger.debug(
                 "Loading plugins for %s: %s",
                 caller_pkg_name,
                 self.__plugins__[caller_pkg_name],

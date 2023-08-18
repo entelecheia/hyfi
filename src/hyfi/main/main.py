@@ -10,7 +10,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import Composer
+from hyfi.composer import BaseConfig, Composer
 from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.dotenv import DotEnvConfig
@@ -67,6 +67,23 @@ OmegaConf.register_new_resolver(
 OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
+class GlobalVariables(BaseConfig):
+    _config_name_: str = "__init__"
+    _config_group_: str = "/globals"
+
+    hyfi_path: str = GlobalHyFIResolver.__hyfi_path__
+    hyfi_version: str = GlobalHyFIResolver.__hyfi_version__
+    package_name: str = GlobalHyFIResolver.__package_name__
+    package_path: str = GlobalHyFIResolver.__package_path__
+    app_version: str = GlobalHyFIResolver.__app_version__
+    version: str = GlobalHyFIResolver.__app_version__
+    config_module_path: str = GlobalHyFIResolver.__config_module_path__
+    user_config_path: str = GlobalHyFIResolver.__user_config_path__
+    home_path: str = GlobalHyFIResolver.__home_path__
+    project_root_path: str = GlobalConfigResolver.__project_root_path__
+    project_workspace_path: str = GlobalConfigResolver.__project_workspace_path__
+
+
 class HyFI(
     BATCHER,
     Composer,
@@ -76,6 +93,7 @@ class HyFI(
     """Primary class for the hyfi config package"""
 
     __config__: Optional[HyFIConfig] = None
+    __global_variables__: Optional[GlobalVariables] = None
 
     __version__ = GlobalHyFIResolver.__hyfi_version__()
     __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
@@ -226,6 +244,13 @@ class HyFI(
         return self.config.dryrun or self.config.noop
 
     @property
+    def global_variables(self) -> GlobalVariables:
+        """Get the global variables."""
+        if self.__global_variables__ is None:
+            self.__global_variables__ = GlobalVariables()
+        return self.__global_variables__
+
+    @property
     def resolve(self) -> bool:
         """Get the resolve flag."""
         return self.config.resolve
@@ -253,6 +278,19 @@ class HyFI(
     def print_about(**args) -> None:
         """Print the about information"""
         global_config.print_about(**args)
+
+    @staticmethod
+    def GlobalVariables(**kwargs) -> GlobalVariables:
+        """
+        Return the global variables.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the GlobalVariables constructor.
+
+        Returns:
+            GlobalVariables: An instance of the GlobalVariables class.
+        """
+        return GlobalVariables(**kwargs)
 
     @staticmethod
     def JobLibConfig(**kwargs) -> JobLibConfig:

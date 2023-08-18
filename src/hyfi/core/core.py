@@ -3,7 +3,7 @@
 """
 import os
 from pathlib import Path
-from typing import List, Optional, Set, Tuple, Union
+from typing import List, Optional, Set, Tuple, Union, Dict
 
 from pydantic import BaseModel
 
@@ -56,7 +56,7 @@ class GlobalHyFIConfig(BaseModel):
     __package_name__: str = __hyfi_package_name__
     __package_path__: str = __hyfi_package_path__
     __version__: str = __hyfi_version__()
-    __plugins__: Optional[List[str]] = None
+    __plugins__: Optional[Dict[str, List[str]]] = None
 
     __config_name__: str = __hyfi_config_name__
     __config_dirname__: str = __hyfi_config_dirname__
@@ -105,7 +105,7 @@ class GlobalHyFIConfig(BaseModel):
         if package_path not in self._packages_:
             self._packages_.append((package_path, version))
         if plugins:
-            self.__plugins__ = self.get_plugins(plugins)
+            self.__plugins__ = self.init_plugins(plugins)
         if user_config_path:
             self.__user_config_path__ = user_config_path
         if config_dirname:
@@ -152,9 +152,11 @@ class GlobalHyFIConfig(BaseModel):
     @property
     def plugins(self) -> Optional[List[str]]:
         """Returns the list of plugins to load."""
-        return self.__plugins__
+        if self.__plugins__ and self.__package_name__ in self.__plugins__:
+            return self.__plugins__[self.__package_name__]
+        return None
 
-    def get_plugins(self, plugins: List[str]) -> List[str]:
+    def init_plugins(self, plugins: List[str]) -> Dict[str, List[str]]:
         """Returns the list of plugins to load.
         A plugin is a python module which contains a configuration module.
 
@@ -173,7 +175,7 @@ class GlobalHyFIConfig(BaseModel):
             plugin = plugin.split(".")[0]
             config_module = f"{plugin}.{self.__config_dirname__}"
             _plugins.append(config_module)
-        return _plugins
+        return {self.__package_name__: _plugins}
 
     @property
     def package_name(self) -> str:

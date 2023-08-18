@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.29.8 (2023-08-18)
+
+### Fix
+
+* **core:** Use caller's package name in plugin loading ([`04156be`](https://github.com/entelecheia/hyfi/commit/04156be46de0ec6794165f6a5944bddaed85e340))
+* **utils:** Improve module name inspection methods ([`a638659`](https://github.com/entelecheia/hyfi/commit/a638659d103651412b2a489d4819f07ecde43c4c))
+* **core:** Change plugins type to Dict and rename method, enhance plugins retrieval from package name ([`5702d87`](https://github.com/entelecheia/hyfi/commit/5702d8746c35c3da1fc8fd91c4ed67bab38a6a12))
+* **batch:** Add default value for batch_name ([`94d3898`](https://github.com/entelecheia/hyfi/commit/94d3898f2757c9939d42c3c111ffe066573a9030))
+
 ## v1.29.7 (2023-08-15)
 
 ### Fix

@@ -1,0 +1,11 @@
+hyfi_path: ${__hyfi_path__:}
+hyfi_version: ${__hyfi_version__:}
+package_name: ${__package_name__:}
+package_path: ${__package_path__:}
+app_version: ${__app_version__:}
+version: ${__app_version__:}
+config_module_path: ${__config_module_path__:}
+user_config_path: ${__user_config_path__:}
+home_path: ${__home_path__:}
+project_root_path: ${__project_root_path__:}
+project_workspace_path: ${__project_workspace_path__:}

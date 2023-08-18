@@ -3,11 +3,12 @@
 """
 import os
 from pathlib import Path
-from typing import List, Optional, Set, Tuple, Union
+from typing import List, Optional, Set, Tuple, Union, Dict
 
 from pydantic import BaseModel
 
 from hyfi.utils.logging import LOGGING
+from hyfi.utils.packages import PKGs
 
 logger = LOGGING.getLogger(__name__)
 
@@ -56,7 +57,7 @@ class GlobalHyFIConfig(BaseModel):
     __package_name__: str = __hyfi_package_name__
     __package_path__: str = __hyfi_package_path__
     __version__: str = __hyfi_version__()
-    __plugins__: Optional[List[str]] = None
+    __plugins__: Optional[Dict[str, List[str]]] = None
 
     __config_name__: str = __hyfi_config_name__
     __config_dirname__: str = __hyfi_config_dirname__
@@ -105,7 +106,7 @@ class GlobalHyFIConfig(BaseModel):
         if package_path not in self._packages_:
             self._packages_.append((package_path, version))
         if plugins:
-            self.__plugins__ = self.get_plugins(plugins)
+            self.__plugins__ = self.init_plugins(plugins)
         if user_config_path:
             self.__user_config_path__ = user_config_path
         if config_dirname:
@@ -152,24 +153,38 @@ class GlobalHyFIConfig(BaseModel):
     @property
     def plugins(self) -> Optional[List[str]]:
         """Returns the list of plugins to load."""
-        return self.__plugins__
+        if self.__plugins__:
+            caller_pkg_name = PKGs.get_next_level_caller_package_name()
+            if caller_pkg_name in self.__plugins__:
+                logger.debug(
+                    "Loading plugins for %s: %s",
+                    caller_pkg_name,
+                    self.__plugins__[caller_pkg_name],
+                )
+                return self.__plugins__[caller_pkg_name]
+        return None
 
-    def get_plugins(self, plugins: List[str]) -> List[str]:
+    def init_plugins(self, plugins: List[str]) -> Dict[str, List[str]]:
         """Returns the list of plugins to load.
         A plugin is a python module which contains a configuration module.
 
-        Be careful!
-        It does not check if the plugin is importable.
-
         Args:
             plugins: List[str]: A list of plugins to load.
+
+        Returns:
+            Dict[str, List[str]]: A dictionary of plugins to load. ex) plugins = {'__package_name__': ['plugin1.conf', 'plugin2.conf']}
         """
+        caller_pkg_name = PKGs.get_next_level_caller_package_name()
         _plugins = []
         for plugin in plugins:
             plugin = plugin.split(".")[0]
-            config_module = f"{plugin}.{self.__config_dirname__}"
+            if PKGs.is_importable(plugin):
+                logger.debug("Plugin %s is importable.", plugin)
+                config_module = f"{plugin}.{self.__config_dirname__}"
+            else:
+                logger.debug("Plugin %s is not importable.", plugin)
             _plugins.append(config_module)
-        return _plugins
+        return {caller_pkg_name: _plugins}
 
     @property
     def package_name(self) -> str:

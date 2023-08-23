@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.31.0 (2023-08-23)
+
+### Feature
+
+* **hyfi:** Add new configuration file with environment variables ([`e4acb14`](https://github.com/entelecheia/hyfi/commit/e4acb1490444ebd1d7d81a03b23adcbae00fac94))
+* **hyfi/env:** Add new env module ([`82ff306`](https://github.com/entelecheia/hyfi/commit/82ff3065b904ff6bba62f8d62edd6fa0e3512205))
+
 ## v1.30.0 (2023-08-23)
 
 ### Feature

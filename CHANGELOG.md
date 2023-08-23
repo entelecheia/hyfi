@@ -1,5 +1,19 @@
 <!--next-version-placeholder-->
 
+## v1.30.0 (2023-08-23)
+
+### Feature
+
+* **test_model:** Add InnerTestModel to tests ([`e107be4`](https://github.com/entelecheia/hyfi/commit/e107be4d7d181e9d2022bf3585fffec95c8c205b))
+* **composer:** Add variable overrides and debug message ([`32cdefe`](https://github.com/entelecheia/hyfi/commit/32cdefea79d88d58d21b6b4d307898e5306c0667))
+* **config:** Add new test vars configuration file ([`0115fe9`](https://github.com/entelecheia/hyfi/commit/0115fe9c1dcc0acd2b67b89a95aa12f793b420bf))
+* **config:** Add new InnerTestModel configuration ([`c89dc67`](https://github.com/entelecheia/hyfi/commit/c89dc67c19cf3e2ec4418158ab2ba33a4752c5ff))
+* **main:** Add GlobalVariables class to handle global variables ([`7e4ef1f`](https://github.com/entelecheia/hyfi/commit/7e4ef1fd9b3b4774064e49035baa1fb9dfd83345))
+* **hyfi/main/config:** Add globals optional ConfigType ([`f2c8fae`](https://github.com/entelecheia/hyfi/commit/f2c8faecd353bfcb57a4017b10f50aadae0f6d06))
+* **hyfi:** Restructure global configuration files ([`38879a4`](https://github.com/entelecheia/hyfi/commit/38879a4ff320527b3641008865d6acb48b17cf27))
+* **config:** Add global init to defaults ([`29e7e4f`](https://github.com/entelecheia/hyfi/commit/29e7e4fbc84dfe225017abf207b6f927715c34f5))
+* **hyfi/conf/global:** Add new configuration file ([`17c7c2b`](https://github.com/entelecheia/hyfi/commit/17c7c2b56a166f14b60a4b64fe012a8f02dfde17))
+
 ## v1.29.8 (2023-08-18)
 
 ### Fix

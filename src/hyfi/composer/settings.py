@@ -53,16 +53,17 @@ class DotEnvSettingsSource(PydanticDotEnvSettingsSource):
         )
 
 
-class BaseSettings(PydanticBaseSettings):
+class BaseSettings(PydanticBaseSettings, ENVs):
     """
     Configuration class for environment variables in HyFI.
 
+    !! The variables are read-only and cannot be changed after initialization.
     """
 
     """Environment variables for HyFI"""
 
     _config_name_: str = "__init__"
-    _config_group_: str = "/settings"
+    _config_group_: str = "/env"
 
     DOTENV_FILENAME: Optional[str] = ".env"
     DOTENV_DIR: Optional[str] = None
@@ -89,7 +90,7 @@ class BaseSettings(PydanticBaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
-        # ENVs.load_dotenv(dotenv_file=global_hyfi.dotenv_file)
+        # BaseSettings.load_dotenv(dotenv_file=global_hyfi.dotenv_file)
         return (
             init_settings,
             file_secret_settings,
@@ -109,7 +110,7 @@ class BaseSettings(PydanticBaseSettings):
             data["DOTENV_DIR"] = dotenv_dir
             data["DOTENV_FILENAME"] = dotenv_filename
         data["HYFI_SECRETS_DIR"] = global_hyfi.secrets_dir
-        return ENVs.check_and_set_osenv_vars(data)
+        return BaseSettings.check_and_set_osenv_vars(data)
 
     @property
     def os(self):

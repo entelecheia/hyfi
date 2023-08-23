@@ -69,7 +69,7 @@ OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 class GlobalVariables(BaseConfig):
     _config_name_: str = "__init__"
-    _config_group_: str = "/globals"
+    _config_group_: str = "/variables"
 
     hyfi_path: str = GlobalHyFIResolver.__hyfi_path__
     hyfi_version: str = GlobalHyFIResolver.__hyfi_version__

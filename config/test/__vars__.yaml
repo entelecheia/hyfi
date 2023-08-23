@@ -1,0 +1,7 @@
+defaults:
+- /test@inner: __inner__
+_target_: hyfi.composer.model.TestModel
+_config_name_: __test__
+_config_group_: /test
+name: test
+app_version: ${variables.app_version}

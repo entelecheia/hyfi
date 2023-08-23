@@ -220,7 +220,7 @@ class ENVs:
             logger.info("Overwriting %s=%s with %s", key, pre_val, value)
         else:
             logger.info("Setting %s=%s", key, value)
-        os.environ[key] = value
+        os.setdefault(key, value)
 
     @staticmethod
     def check_and_set_osenv_var(key: str, value: Any) -> Any:

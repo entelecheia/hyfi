@@ -1,3 +1,0 @@
-# `hyfi.dotenv`
-
-::: hyfi.dotenv

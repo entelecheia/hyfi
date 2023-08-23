@@ -1,5 +1,5 @@
 defaults:
-  - /dotenv: __init__
+  - /env: __init__
   - /joblib: __init__
   - /path: __project__
 

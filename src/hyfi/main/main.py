@@ -13,7 +13,7 @@ from hyfi.cached_path import cached_path
 from hyfi.composer import BaseConfig, Composer
 from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
-from hyfi.dotenv import DotEnvConfig
+from hyfi.env import Env
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLibConfig
 from hyfi.pipeline import PIPELINEs
@@ -280,15 +280,15 @@ class HyFI(
         global_config.print_about(**args)
 
     @staticmethod
-    def GlobalVariables(**kwargs) -> Variables:
+    def Variables(**kwargs) -> Variables:
         """
-        Return the global variables.
+        Return the Variables.
 
         Args:
-            **kwargs: Additional keyword arguments to pass to the GlobalVariables constructor.
+            **kwargs: Additional keyword arguments to pass to the Variables constructor.
 
         Returns:
-            GlobalVariables: An instance of the GlobalVariables class.
+            Variables: An instance of the Variables class.
         """
         return Variables(**kwargs)
 
@@ -306,17 +306,17 @@ class HyFI(
         return JobLibConfig(**kwargs)
 
     @staticmethod
-    def DotEnvConfig(**kwargs) -> DotEnvConfig:
+    def Env(**kwargs) -> Env:
         """
-        Return the DotEnvConfig.
+        Return the Env.
 
         Args:
-            **kwargs: Additional keyword arguments to pass to the DotEnvConfig constructor.
+            **kwargs: Additional keyword arguments to pass to the Env constructor.
 
         Returns:
-            DotEnvConfig: An instance of the DotEnvConfig class.
+            Env: An instance of the Env class.
         """
-        return DotEnvConfig(**kwargs)
+        return Env(**kwargs)
 
     @staticmethod
     def TaskConfig(**kwargs) -> TaskConfig:

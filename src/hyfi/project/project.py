@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from hyfi.composer import BaseConfig, Composer, field_validator
-from hyfi.dotenv import DotEnvConfig
+from hyfi.env import ProjectEnv
 from hyfi.joblib import JobLibConfig
 from hyfi.path.project import ProjectPathConfig
 
@@ -27,7 +27,7 @@ class ProjectConfig(BaseConfig, Composer):
     use_wandb: bool = False
     verbose: Union[bool, int] = False
     # Config Classes
-    dotenv: DotEnvConfig = None
+    env: ProjectEnv = None
     joblib: Optional[JobLibConfig] = None
     path: ProjectPathConfig = None
 
@@ -67,22 +67,22 @@ class ProjectConfig(BaseConfig, Composer):
 
     def initialize(self):
         logger.debug("Initializing Project Config: %s", self.project_name)
-        self.dotenv = DotEnvConfig()
+        self.env = ProjectEnv()
 
-        self.dotenv.HYFI_PROJECT_NAME = self.project_name
+        self.env.HYFI_PROJECT_NAME = self.project_name
         if self.project_description:
-            self.dotenv.HYFI_PROJECT_DESC = self.project_description
+            self.env.HYFI_PROJECT_DESC = self.project_description
         if self.project_root:
-            self.dotenv.HYFI_PROJECT_ROOT = self.project_root
+            self.env.HYFI_PROJECT_ROOT = self.project_root
         if self.project_workspace_name:
-            self.dotenv.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
+            self.env.HYFI_PROJECT_WORKSPACE_NAME = self.project_workspace_name
         if self.global_hyfi_root:
-            self.dotenv.HYFI_GLOBAL_ROOT = self.global_hyfi_root
+            self.env.HYFI_GLOBAL_ROOT = self.global_hyfi_root
         if self.global_workspace_name:
-            self.dotenv.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
+            self.env.HYFI_GLOBAL_WORKSPACE_NAME = self.global_workspace_name
         if self.num_workers:
-            self.dotenv.HYFI_NUM_WORKERS = self.num_workers
-        self.dotenv.HYFI_VERBOSE = self.verbose
+            self.env.HYFI_NUM_WORKERS = self.num_workers
+        self.env.HYFI_VERBOSE = self.verbose
 
         if self.joblib:
             self.joblib.init_backend()
@@ -96,8 +96,8 @@ class ProjectConfig(BaseConfig, Composer):
     def init_wandb(self):
         if self.path is None:
             raise ValueError("Path object not initialized")
-        if self.dotenv is None:
-            raise ValueError("DotEnv object not initialized")
+        if self.env is None:
+            raise ValueError("Env object not initialized")
 
         if not self.use_wandb:
             return
@@ -109,13 +109,13 @@ class ProjectConfig(BaseConfig, Composer):
     def _init_wandb(self):
         import wandb  # type: ignore
 
-        self.dotenv.WANDB_DIR = str(self.path.log_dir)
+        self.env.WANDB_DIR = str(self.path.log_dir)
         project_name = self.project_name.replace("/", "-").replace("\\", "-")
-        self.dotenv.WANDB_PROJECT = project_name
+        self.env.WANDB_PROJECT = project_name
         notebook_name = self.path.log_dir / f"{project_name}-nb"
         notebook_name.mkdir(parents=True, exist_ok=True)
-        self.dotenv.WANDB_NOTEBOOK_NAME = str(notebook_name)
-        self.dotenv.WANDB_SILENT = str(not self.verbose)
+        self.env.WANDB_NOTEBOOK_NAME = str(notebook_name)
+        self.env.WANDB_SILENT = str(not self.verbose)
 
         wandb.init(project=project_name)
 
@@ -130,12 +130,12 @@ class ProjectConfig(BaseConfig, Composer):
             )
             return
 
-        self.dotenv = DotEnvConfig()
+        self.env = ProjectEnv()
         if (
-            self.dotenv.HUGGING_FACE_HUB_TOKEN is None
-            and self.dotenv.HF_USER_ACCESS_TOKEN is not None
+            self.env.HUGGING_FACE_HUB_TOKEN is None
+            and self.env.HF_USER_ACCESS_TOKEN is not None
         ):
-            self.dotenv.HUGGING_FACE_HUB_TOKEN = self.dotenv.HF_USER_ACCESS_TOKEN
+            self.env.HUGGING_FACE_HUB_TOKEN = self.env.HF_USER_ACCESS_TOKEN
 
         local_token = HfFolder.get_token()
         if local_token is None:

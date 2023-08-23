@@ -280,15 +280,15 @@ class HyFI(
         global_config.print_about(**args)
 
     @staticmethod
-    def GlobalVariables(**kwargs) -> Variables:
+    def Variables(**kwargs) -> Variables:
         """
-        Return the global variables.
+        Return the Variables.
 
         Args:
-            **kwargs: Additional keyword arguments to pass to the GlobalVariables constructor.
+            **kwargs: Additional keyword arguments to pass to the Variables constructor.
 
         Returns:
-            GlobalVariables: An instance of the GlobalVariables class.
+            Variables: An instance of the Variables class.
         """
         return Variables(**kwargs)
 

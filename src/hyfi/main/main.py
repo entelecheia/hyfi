@@ -67,7 +67,7 @@ OmegaConf.register_new_resolver(
 OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
-class GlobalVariables(BaseConfig):
+class Variables(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "/variables"
 
@@ -93,7 +93,7 @@ class HyFI(
     """Primary class for the hyfi config package"""
 
     __config__: Optional[HyFIConfig] = None
-    __global_variables__: Optional[GlobalVariables] = None
+    __variables__: Optional[Variables] = None
 
     __version__ = GlobalHyFIResolver.__hyfi_version__()
     __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
@@ -244,11 +244,11 @@ class HyFI(
         return self.config.dryrun or self.config.noop
 
     @property
-    def global_variables(self) -> GlobalVariables:
+    def variables(self) -> Variables:
         """Get the global variables."""
-        if self.__global_variables__ is None:
-            self.__global_variables__ = GlobalVariables()
-        return self.__global_variables__
+        if self.__variables__ is None:
+            self.__variables__ = Variables()
+        return self.__variables__
 
     @property
     def resolve(self) -> bool:
@@ -280,7 +280,7 @@ class HyFI(
         global_config.print_about(**args)
 
     @staticmethod
-    def GlobalVariables(**kwargs) -> GlobalVariables:
+    def GlobalVariables(**kwargs) -> Variables:
         """
         Return the global variables.
 
@@ -290,7 +290,7 @@ class HyFI(
         Returns:
             GlobalVariables: An instance of the GlobalVariables class.
         """
-        return GlobalVariables(**kwargs)
+        return Variables(**kwargs)
 
     @staticmethod
     def JobLibConfig(**kwargs) -> JobLibConfig:

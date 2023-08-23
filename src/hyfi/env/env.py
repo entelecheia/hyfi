@@ -9,9 +9,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-# TODO: #228 need to have a separate envs config class and a separate project envs config class
-# change name to EnvsConfig, ProjectEnvsConfig
-class DotEnvConfig(BaseSettings):
+class Env(BaseSettings):
     """
     Configuration class for environment variables in HyFI.
 
@@ -31,6 +29,32 @@ class DotEnvConfig(BaseSettings):
         HYFI_VERBOSE: Optional[Union[bool, str, int]]: Verbosity level for HyFI.
         HYFI_NUM_WORKERS: Optional[int]: Number of workers for HyFI.
         CACHED_PATH_CACHE_ROOT: Optional[str]: Path to the cached path cache root.
+    """
+
+    """Environment variables for HyFI"""
+
+    _config_name_: str = "__init__"
+    _config_group_: str = "/env"
+
+    # Internal
+    HYFI_RESOURCE_DIR: Optional[str] = None
+    HYFI_GLOBAL_ROOT: Optional[str] = None
+    HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = ".hyfi"
+    HYFI_PROJECT_NAME: Optional[str] = None
+    HYFI_PROJECT_DESC: Optional[str] = None
+    HYFI_PROJECT_ROOT: Optional[str] = None
+    HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"
+    HYFI_LOG_LEVEL: Optional[str] = "WARNING"
+    HYFI_VERBOSE: Optional[Union[bool, str, int]] = False
+    HYFI_NUM_WORKERS: Optional[int] = 1
+    CACHED_PATH_CACHE_ROOT: Optional[str] = None
+
+
+class ProjectEnv(Env):
+    """
+    Project configuration class for environment variables in HyFI.
+
+    Attributes:
         CUDA_DEVICE_ORDER: Optional[str]: CUDA device order.
         CUDA_VISIBLE_DEVICES: Optional[str]: CUDA visible devices.
         WANDB_PROJECT: Optional[str]: Name of the Weights & Biases project.
@@ -49,26 +73,12 @@ class DotEnvConfig(BaseSettings):
         NASDAQ_API_KEY: Optional[SecretStr]: NASDAQ API key.
         HF_USER_ACCESS_TOKEN: Optional[SecretStr]: Hugging Face user access token.
         LABEL_STUDIO_USER_TOKEN: Optional[SecretStr]: Label Studio user token.
-        model_config: SettingsConfigDict: Configuration dictionary for the model.
     """
 
     """Environment variables for HyFI"""
 
-    _config_name_: str = "__init__"
-    _config_group_: str = "/dotenv"
+    _config_name_: str = "__project__"
 
-    # Internal
-    HYFI_RESOURCE_DIR: Optional[str] = None
-    HYFI_GLOBAL_ROOT: Optional[str] = None
-    HYFI_GLOBAL_WORKSPACE_NAME: Optional[str] = ".hyfi"
-    HYFI_PROJECT_NAME: Optional[str] = None
-    HYFI_PROJECT_DESC: Optional[str] = None
-    HYFI_PROJECT_ROOT: Optional[str] = None
-    HYFI_PROJECT_WORKSPACE_NAME: Optional[str] = "workspace"
-    HYFI_LOG_LEVEL: Optional[str] = "WARNING"
-    HYFI_VERBOSE: Optional[Union[bool, str, int]] = False
-    HYFI_NUM_WORKERS: Optional[int] = 1
-    CACHED_PATH_CACHE_ROOT: Optional[str] = None
     # For other packages
     CUDA_DEVICE_ORDER: Optional[str] = "PCI_BUS_ID"
     CUDA_VISIBLE_DEVICES: Optional[Union[str, int]] = None

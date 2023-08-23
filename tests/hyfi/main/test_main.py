@@ -31,6 +31,7 @@ def test_init_project():
     prj = h.project
     pprint(prj.model_dump())
     assert prj.path.global_workspace_name == "testspace"
+    print(h.variables)
 
 
 def test_compose():

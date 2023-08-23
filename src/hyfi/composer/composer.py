@@ -144,8 +144,18 @@ class Composer(UTILs, GENERATOR):
     ):
         is_initialized = GlobalHydra.instance().is_initialized()  # type: ignore
         config_module = config_module or global_hyfi.config_module
-        # TODO: #223 multiple plugins are not correctly handled
         plugins = plugins or global_hyfi.plugins
+
+        overrides = overrides or []
+        # by adding the variables=__init__ override,
+        # we can access the variables in the config whenever we want
+        override = "+variables=__init__"
+        if override not in overrides:
+            overrides.append(override)
+            logger.debug(
+                "Overriding `about` config group with `%s`",
+                global_hyfi.package_name,
+            )
         # logger.debug("config_module: %s", config_module)
         if is_initialized:
             # Hydra is already initialized.

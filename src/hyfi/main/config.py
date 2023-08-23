@@ -46,6 +46,7 @@ class HyFIConfig(BaseModel, UTILs):
     project: Optional[ConfigType] = None
     pipeline: Optional[ConfigType] = None
     task: Optional[ConfigType] = None
+    variables: Optional[ConfigType] = None
     workflow: Optional[ConfigType] = None
     tasks: Optional[List[str]] = None
     workflows: Optional[List[str]] = None

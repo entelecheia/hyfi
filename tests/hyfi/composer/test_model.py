@@ -1,10 +1,12 @@
-from hyfi.composer.model import TestModel
+from hyfi.composer.model import TestModel, InnerTestModel
 
 
 def test_base_model():
     cfg = TestModel.generate_config(config_root="config")
     print(cfg)
     cfg = TestModel().generate_config(config_root="config")
+    print(cfg)
+    cfg = InnerTestModel.generate_config(config_root="config")
     print(cfg)
 
 

@@ -10,7 +10,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from hyfi.cached_path import cached_path
-from hyfi.composer import Composer
+from hyfi.composer import BaseConfig, Composer
 from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.dotenv import DotEnvConfig
@@ -67,6 +67,23 @@ OmegaConf.register_new_resolver(
 OmegaConf.register_new_resolver("dotenv_values", Composer.dotenv_values)
 
 
+class Variables(BaseConfig):
+    _config_name_: str = "__init__"
+    _config_group_: str = "/variables"
+
+    hyfi_path: str = GlobalHyFIResolver.__hyfi_path__
+    hyfi_version: str = GlobalHyFIResolver.__hyfi_version__
+    package_name: str = GlobalHyFIResolver.__package_name__
+    package_path: str = GlobalHyFIResolver.__package_path__
+    app_version: str = GlobalHyFIResolver.__app_version__
+    version: str = GlobalHyFIResolver.__app_version__
+    config_module_path: str = GlobalHyFIResolver.__config_module_path__
+    user_config_path: str = GlobalHyFIResolver.__user_config_path__
+    home_path: str = GlobalHyFIResolver.__home_path__
+    project_root_path: str = GlobalConfigResolver.__project_root_path__
+    project_workspace_path: str = GlobalConfigResolver.__project_workspace_path__
+
+
 class HyFI(
     BATCHER,
     Composer,
@@ -76,6 +93,7 @@ class HyFI(
     """Primary class for the hyfi config package"""
 
     __config__: Optional[HyFIConfig] = None
+    __variables__: Optional[Variables] = None
 
     __version__ = GlobalHyFIResolver.__hyfi_version__()
     __hyfi_path__ = GlobalHyFIResolver.__hyfi_path__()
@@ -226,6 +244,13 @@ class HyFI(
         return self.config.dryrun or self.config.noop
 
     @property
+    def variables(self) -> Variables:
+        """Get the global variables."""
+        if self.__variables__ is None:
+            self.__variables__ = Variables()
+        return self.__variables__
+
+    @property
     def resolve(self) -> bool:
         """Get the resolve flag."""
         return self.config.resolve
@@ -253,6 +278,19 @@ class HyFI(
     def print_about(**args) -> None:
         """Print the about information"""
         global_config.print_about(**args)
+
+    @staticmethod
+    def GlobalVariables(**kwargs) -> Variables:
+        """
+        Return the global variables.
+
+        Args:
+            **kwargs: Additional keyword arguments to pass to the GlobalVariables constructor.
+
+        Returns:
+            GlobalVariables: An instance of the GlobalVariables class.
+        """
+        return Variables(**kwargs)
 
     @staticmethod
     def JobLibConfig(**kwargs) -> JobLibConfig:
@@ -356,41 +394,43 @@ class HyFI(
     ):
         """Run the provided config"""
         config = HyFI.to_dict(config) if config else {}
-        if not isinstance(config, dict):
-            raise ValueError("The config must be a dictionary")
-        cmd_name = config.get("cmd_name")
         # Check if the config is instantiatable
         if HyFI.is_instantiatable(config):
             HyFI.run_intantiatable(config, dryrun=dryrun)
-        else:
-            logger.info(
-                "The HyFI config is not instantiatable, running HyFI task with the config"
+            return
+
+        logger.info(
+            "The HyFI config is not instantiatable, running HyFI task with the config"
+        )
+        # Run the HyFI task
+        cmd_name = config.get("cmd_name")
+        config_group = config.get("_config_group_", "")
+        if not cmd_name:
+            if config_group == "/workflow":
+                cmd_name = "run_workflow"
+            elif "task" in config:
+                cmd_name = "run_task"
+            elif "copier" in config:
+                cmd_name = "copy_conf"
+
+        if cmd_name == "run_workflow":
+            workflow = HyFI.WorkflowConfig(**config)
+            HyFI.run_workflow(workflow, dryrun=dryrun)
+        elif cmd_name == "run_task":
+            project = (
+                HyFI.initialize(**config["project"]) if "project" in config else None
             )
-            # Run the HyFI task
-            config_group = config.get("_config_group_", "")
-            if config_group == "/workflow" or cmd_name == "run_workflow":
-                workflow = HyFI.WorkflowConfig(**config)
-                HyFI.run_workflow(workflow, dryrun=dryrun)
-            elif "task" in config and (cmd_name is None or cmd_name == "run_task"):
-                project = (
-                    HyFI.initialize(**config["project"])
-                    if "project" in config
-                    else None
-                )
-                task = HyFI.TaskConfig(**config["task"])
-                HyFI.run_task(task, project=project, dryrun=dryrun)
-            elif "runner" in config:
-                runner = config["runner"]
-                HyFI.run_intantiatable(runner, dryrun)
-            elif "copier" in config and (cmd_name is None or cmd_name == "copy_conf"):
-                copier_cfg = config["copier"]
-                copier_cfg["dryrun"] = dryrun
-                with Copier(**copier_cfg) as worker:
-                    worker.run_copy()
-            else:
-                for _, cfg in config.items():
-                    if HyFI.is_instantiatable(cfg):
-                        HyFI.run_intantiatable(cfg, dryrun)
-                        return
-                if not dryrun:
-                    HyFI.print_about(**config.get("about", {}))
+            task = HyFI.TaskConfig(**config["task"])
+            HyFI.run_task(task, project=project, dryrun=dryrun)
+        elif cmd_name == "copy_conf":
+            copier_cfg = config["copier"]
+            copier_cfg["dryrun"] = dryrun
+            with Copier(**copier_cfg) as worker:
+                worker.run_copy()
+        else:
+            for _, cfg in config.items():
+                if HyFI.is_instantiatable(cfg):
+                    HyFI.run_intantiatable(cfg, dryrun)
+                    return
+            if not dryrun:
+                HyFI.print_about(**config.get("about", {}))

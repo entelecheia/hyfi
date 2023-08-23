@@ -1,0 +1,4 @@
+_target_: hyfi.composer.model.InnerTestModel
+_config_name_: __inner__
+_config_group_: /test
+name: inner

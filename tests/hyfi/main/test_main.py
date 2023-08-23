@@ -14,9 +14,9 @@ def test_version():
 
 def test_envs():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi"
-    envs = HyFI.DotEnvConfig()
-    pprint(envs.model_dump())
-    assert envs.HYFI_PROJECT_NAME == "hyfi"
+    env = HyFI.Env()
+    pprint(env.model_dump())
+    assert env.HYFI_PROJECT_NAME == "hyfi"
 
 
 def test_init_project():

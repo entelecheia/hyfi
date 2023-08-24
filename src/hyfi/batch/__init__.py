@@ -1,3 +1,3 @@
-from .batch import BatchConfig
+from .batch import Batch
 
-__all__ = ["BatchConfig"]
+__all__ = ["Batch"]

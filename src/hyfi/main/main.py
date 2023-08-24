@@ -18,7 +18,7 @@ from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLib
 from hyfi.pipeline import PIPELINEs
 from hyfi.project import Project
-from hyfi.task import TaskConfig
+from hyfi.task import Task
 from hyfi.workflow import WorkflowConfig
 
 from .config import GlobalConfigResolver, HyFIConfig, global_config
@@ -319,7 +319,7 @@ class HyFI(
         return Env(**kwargs)
 
     @staticmethod
-    def TaskConfig(**kwargs) -> TaskConfig:
+    def TaskConfig(**kwargs) -> Task:
         """
         Return the TaskConfig.
 
@@ -329,7 +329,7 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        return TaskConfig(**kwargs)
+        return Task(**kwargs)
 
     @staticmethod
     def WorkflowConfig(**kwargs) -> WorkflowConfig:

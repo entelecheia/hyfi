@@ -7,7 +7,7 @@ from hyfi.task import TaskConfig
 from hyfi.utils.logging import LOGGING
 from hyfi.workflow import WorkflowConfig
 
-from .config import PipeConfig, PipelineConfig, run_pipe
+from .config import Pipe, Pipeline, run_pipe
 
 logger = LOGGING.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class PIPELINEs:
 
     @staticmethod
     def run_pipeline(
-        config: Union[Dict, PipelineConfig],
+        config: Union[Dict, Pipeline],
         initial_object: Optional[Any] = None,
         task: Optional[TaskConfig] = None,
     ) -> Any:
@@ -41,7 +41,7 @@ class PIPELINEs:
     @staticmethod
     def run_pipe(
         obj: Any,
-        config: Union[Dict, PipeConfig],
+        config: Union[Dict, Pipe],
     ) -> Any:
         """
         Run a pipe on an object
@@ -86,7 +86,7 @@ class PIPELINEs:
         workflow.run()
 
     @staticmethod
-    def pipe(**kwargs) -> PipeConfig:
+    def pipe(**kwargs) -> Pipe:
         """
         Return the PipeConfig.
 
@@ -96,4 +96,4 @@ class PIPELINEs:
         Returns:
             PipeConfig: An instance of the PipeConfig class.
         """
-        return PipeConfig(**kwargs)
+        return Pipe(**kwargs)

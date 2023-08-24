@@ -13,7 +13,7 @@ from hyfi.utils.packages import PKGs
 logger = LOGGING.getLogger(__name__)
 
 
-class TaskConfig(BaseConfig):
+class Task(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "/task"
 
@@ -197,7 +197,7 @@ class TaskConfig(BaseConfig):
         logger.info("Applying %s pipes: %s", len(pipe_names), pipe_names)
         # Run the task in the current directory.
         if self is None:
-            self = TaskConfig()
+            self = Task()
         with elapsed_timer(format_time=True) as elapsed:
             with change_directory(self.workspace_dir):
                 rst = reduce(run_pipe, pipes, initial_object)

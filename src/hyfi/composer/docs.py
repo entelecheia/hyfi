@@ -12,22 +12,71 @@ class DocGenerator(BaseModel):
     _config_group_: str = "/docs"
 
     config_docs_dirname: str = "docs/configs"
+    reference_docs_dirname: str = "docs/reference"
 
     exclude_configs: List[str] = []
-
-    @property
-    def config_dir(self) -> Path:
-        return Path(global_hyfi.package_path) / global_hyfi.config_dirname
+    exclude_references: List[str] = [
+        "conf",
+        "__cli__.py",
+        "__click__.py",
+        "__init__.py",
+        "_version.py",
+        "__pycache__",
+    ]
 
     @property
     def root_dir(self) -> Path:
         return Path().cwd()
 
     @property
+    def package_dir(self) -> Path:
+        return Path(global_hyfi.package_path)
+
+    @property
+    def package_name(self) -> str:
+        return global_hyfi.package_name
+
+    @property
+    def config_dir(self) -> Path:
+        return self.package_dir / global_hyfi.config_dirname
+
+    @property
     def config_docs_dir(self) -> Path:
         path_ = self.root_dir / self.config_docs_dirname
         path_.mkdir(parents=True, exist_ok=True)
         return path_
+
+    @property
+    def reference_docs_dir(self) -> Path:
+        path_ = self.root_dir / self.reference_docs_dirname
+        path_.mkdir(parents=True, exist_ok=True)
+        return path_
+
+    def generate_reference_docs(self):
+        exclude_refs = self.exclude_references or []
+        for _path in self.package_dir.iterdir():
+            module_name = _path.name
+            if _path.is_file() or module_name in exclude_refs:
+                continue
+            self.write_ref_doc(_path)
+            # for file in _path.iterdir():
+            #     if file.name in exclude_refs:
+            #         continue
+            #     self.write_ref_doc(file)
+
+    def write_ref_doc(self, module_path: Path):
+        module_name = module_path.relative_to(self.package_dir)
+        if module_path.is_dir():
+            ref_file = self.reference_docs_dir / str(module_name) / "index.md"
+        else:
+            module_name = module_name.with_suffix("")
+            ref_file = self.reference_docs_dir / f"{module_name}.md"
+        module_name = module_name.as_posix().replace("/", ".")
+        module_name = f"{self.package_name}.{module_name}"
+        ref_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(ref_file, "w") as f:
+            f.write(f"# `{module_name}`\n\n")
+            f.write(f"::: {module_name}\n")
 
     def generate_config_docs(self):
         exclude_configs = self.exclude_configs or []

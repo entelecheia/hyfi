@@ -1,7 +1,7 @@
 defaults:
 - /path@path: __batch__
 - /batch@batch: __init__
-_target_: hyfi.runner.base.BaseRunner
+_target_: hyfi.runner.base.Runner
 _config_name_: __init__
 _config_group_: /runner
 verbose: false

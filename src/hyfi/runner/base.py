@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Union
 
 from hyfi.pipeline.config import RunningCalls, Running, get_running_configs
-from hyfi.run import RunConfig
+from hyfi.run import Run
 from hyfi.task import BatchTaskConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
@@ -51,7 +51,7 @@ class BaseRunner(BatchTaskConfig):
 
 class TestRunner(BaseRunner):
     _config_name_: str = "__test__"
-    load_args: RunConfig = RunConfig(_config_name_="load_data")
+    load_args: Run = Run(_config_name_="load_data")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

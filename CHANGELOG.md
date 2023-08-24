@@ -1,5 +1,16 @@
 <!--next-version-placeholder-->
 
+## v1.32.1 (2023-08-24)
+
+### Fix
+
+* **DocGenerator:** Add logger to record activities ([`247b139`](https://github.com/entelecheia/hyfi/commit/247b1398a9d2b5df201e86437ac3412d8115b180))
+* **docs.py:** Update exclude_configs with "docs" and "hydra" ([`6b1f6b6`](https://github.com/entelecheia/hyfi/commit/6b1f6b620805149c213b2c1a9b5982715ee1c4be))
+
+### Documentation
+
+* **examples:** Update HyFI.compose usage in examples ([`b611c7b`](https://github.com/entelecheia/hyfi/commit/b611c7bc34d5c283ca03808d568357a546a9ede1))
+
 ## v1.32.0 (2023-08-24)
 
 ### Feature

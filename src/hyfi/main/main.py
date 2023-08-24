@@ -15,7 +15,7 @@ from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.env import Env
 from hyfi.graphics import GRAPHICs
-from hyfi.joblib import BATCHER, JobLibConfig
+from hyfi.joblib import BATCHER, JobLib
 from hyfi.pipeline import PIPELINEs
 from hyfi.project import ProjectConfig
 from hyfi.task import TaskConfig
@@ -293,7 +293,7 @@ class HyFI(
         return Variables(**kwargs)
 
     @staticmethod
-    def JobLibConfig(**kwargs) -> JobLibConfig:
+    def JobLibConfig(**kwargs) -> JobLib:
         """
         Return the joblib pipe.
 
@@ -303,7 +303,7 @@ class HyFI(
         Returns:
             JobLibConfig: An instance of the JobLibConfig class.
         """
-        return JobLibConfig(**kwargs)
+        return JobLib(**kwargs)
 
     @staticmethod
     def Env(**kwargs) -> Env:

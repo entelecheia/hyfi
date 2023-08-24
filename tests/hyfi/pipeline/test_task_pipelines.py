@@ -1,6 +1,6 @@
 from hyfi.main import HyFI
 from hyfi.task import TaskConfig
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 
 
 def test_task_config():

@@ -18,7 +18,7 @@ logger = LOGGING.getLogger(__name__)
 Tasks = List[Any]
 
 
-class WorkflowConfig(BaseModel):
+class Workflow(BaseModel):
     _config_group_: str = "/workflow"
     _config_name_: str = "__init__"
     _auto_populate_: bool = True

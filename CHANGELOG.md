@@ -1,5 +1,25 @@
 <!--next-version-placeholder-->
 
+## v1.32.0 (2023-08-24)
+
+### Feature
+
+* **test_docs:** Add test for generating reference docs ([`a0f63d1`](https://github.com/entelecheia/hyfi/commit/a0f63d1ea86181b5883f5c4398a986128bc1d6bc))
+* **docs:** Add detailed DocGenerator class description ([`af50c4c`](https://github.com/entelecheia/hyfi/commit/af50c4ccd8096aa7c15a6ae4954e7c8aec372542))
+* **docs:** Add reference for run, runner, and utils ([`467d1b9`](https://github.com/entelecheia/hyfi/commit/467d1b9e9241d83cff7bc6bce662ef0fbbd16baa))
+* **docs:** Add reference for cached_path in hyfi ([`6f44843`](https://github.com/entelecheia/hyfi/commit/6f44843abafbd2ea99fc066818ee6c14ace04233))
+* **docs:** Add new workflow reference page ([`07a5742`](https://github.com/entelecheia/hyfi/commit/07a5742374ad01459512a85400220891eb40a60f))
+* **docs:** Add reference_docs_dirname and exclude_references fields ([`e69e839`](https://github.com/entelecheia/hyfi/commit/e69e839e342d65c0e4c22de12e8e12b3e0a2e77d))
+* **docs:** Add reference_docs_dir property and related methods to DocGenerator class ([`dd597b9`](https://github.com/entelecheia/hyfi/commit/dd597b94461f83d1466739fd44d6b42b1a2f16e8))
+* **docs:** Add variables config documentation ([`9547c34`](https://github.com/entelecheia/hyfi/commit/9547c34c47b37443abd93969dd7a07f9156d2271))
+* **docs:** Add hydra config documentation ([`8be7b89`](https://github.com/entelecheia/hyfi/commit/8be7b89f3e82999e49e80ce7133d6a294450b324))
+* **docs:** Add __project__.yaml section to env.md ([`54da091`](https://github.com/entelecheia/hyfi/commit/54da091f3ccbc2758f44152b2eda0752bdd9d1e6))
+* **docs:** Add new configs documentation ([`0236581`](https://github.com/entelecheia/hyfi/commit/023658186b05e98cc3aa74fef55b4677a6159183))
+* **tests:** Add tests for DocGenerator in hyfi composer ([`25b8238`](https://github.com/entelecheia/hyfi/commit/25b823879db2e019cf7267bdfbd0d7d4ae99ffba))
+* **docs:** Add automatic documentation generation for configs and models ([`081bb2d`](https://github.com/entelecheia/hyfi/commit/081bb2db504833b97e191ddef8a88202fd3ac62e))
+* **composer:** Add DocGenerator to module exports ([`9df4fe6`](https://github.com/entelecheia/hyfi/commit/9df4fe6ff390aa3d1afe02c863a500b8f27fc565))
+* **docs:** Initialize configuration for docs ([`bee8ca0`](https://github.com/entelecheia/hyfi/commit/bee8ca04704e309f65c49730243eec733e3c2772))
+
 ## v1.31.0 (2023-08-23)
 
 ### Feature

@@ -1,3 +1,5 @@
-_config_group_: /docs
+_target_: hyfi.composer.docs.DocGenerator
 _config_name_: __init__
-config_docs_dir: docs/configs
+_config_group_: /docs
+config_docs_dirname: docs/configs
+exclude_configs: []

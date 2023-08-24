@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
-from hyfi.module import ModuleConfig
+from hyfi.module import Module
 from hyfi.path.task import TaskPathConfig
 from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
 from hyfi.utils.contexts import change_directory, elapsed_timer
@@ -20,7 +20,7 @@ class TaskConfig(BaseConfig):
     task_name: str = "demo-task"
     task_root: str = "workspace"
     version: str = "0.0.0"
-    module: Optional[ModuleConfig] = None
+    module: Optional[Module] = None
     path: TaskPathConfig = TaskPathConfig()
     pipelines: Optional[List[Union[str, Dict]]] = []
 

@@ -17,7 +17,7 @@ from hyfi.env import Env
 from hyfi.graphics import GRAPHICs
 from hyfi.joblib import BATCHER, JobLib
 from hyfi.pipeline import PIPELINEs
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 from hyfi.task import TaskConfig
 from hyfi.workflow import WorkflowConfig
 
@@ -114,7 +114,7 @@ class HyFI(
         return self.__config__
 
     @property
-    def project(self) -> Optional[ProjectConfig]:
+    def project(self) -> Optional[Project]:
         """Get the project."""
         if global_config.project:
             return global_config.project
@@ -122,12 +122,12 @@ class HyFI(
             raise ValueError("Project not initialized.")
 
     @project.setter
-    def project(self, project: ProjectConfig) -> None:
+    def project(self, project: Project) -> None:
         """Set the project."""
         global_config.project = project
 
     @staticmethod
-    def set_project(project: ProjectConfig) -> None:
+    def set_project(project: Project) -> None:
         """
         Set the project.
 

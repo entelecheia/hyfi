@@ -1,3 +1,3 @@
-from .project import ProjectConfig, ProjectPathConfig
+from .project import ProjectConfig, ProjectPath
 
-__all__ = ["ProjectConfig", "ProjectPathConfig"]
+__all__ = ["ProjectConfig", "ProjectPath"]

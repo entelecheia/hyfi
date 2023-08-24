@@ -1,7 +1,7 @@
 from hyfi.composer import BaseModel
 
 
-class DirnamesConfig(BaseModel):
+class Dirnames(BaseModel):
     _config_name_: str = "__init__"
     _config_group_: str = "/path/dirnames"
 

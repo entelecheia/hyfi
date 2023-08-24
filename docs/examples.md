@@ -50,10 +50,10 @@ print("project_workspace_dir:", h.project.workspace_dir)
 
 ## Compose Configuration
 
-We can use the `HyFI.compose` function to load a configuration file. In this example, we'll use the default configuration by specifying `path=__task__`.
+We can use the `HyFI.compose` function to load a configuration file. In this example, we'll use the default workflow configuration file.
 
 ```python
-cfg = HyFI.compose("path=__task__")
+cfg = HyFI.compose("workflow=__init__")
 ```
 
 ## Display Configuration

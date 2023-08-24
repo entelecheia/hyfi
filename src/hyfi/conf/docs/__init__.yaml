@@ -3,7 +3,9 @@ _config_name_: __init__
 _config_group_: /docs
 config_docs_dirname: docs/configs
 reference_docs_dirname: docs/reference
-exclude_configs: []
+exclude_configs:
+- docs
+- hydra
 exclude_references:
 - conf
 - __cli__.py

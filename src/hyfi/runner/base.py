@@ -2,14 +2,14 @@ from typing import Dict, List, Optional, Union
 
 from hyfi.pipeline.config import RunningCalls, Running, get_running_configs
 from hyfi.run import Run
-from hyfi.task import BatchTaskConfig
+from hyfi.task import BatchTask
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class Runner(BatchTaskConfig):
+class Runner(BatchTask):
     _config_group_: str = "/runner"
     _config_name_: str = "__init__"
 

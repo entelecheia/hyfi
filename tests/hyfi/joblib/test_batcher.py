@@ -1,5 +1,5 @@
-from hyfi.joblib.batch.apply import Apply
-from hyfi.joblib.batch.apply_batch import ApplyBatch
+from hyfi.joblib.batcher.apply import Apply
+from hyfi.joblib.batcher.apply_batch import ApplyBatch
 from hyfi.joblib import JobLib
 
 

@@ -11,7 +11,7 @@ class DocGenerator(BaseModel):
     _config_name_: str = "__init__"
     _config_group_: str = "/docs"
 
-    config_docs_dir: str = "docs/configs"
+    config_docs_dirname: str = "docs/configs"
 
     exclude_configs: List[str] = []
 
@@ -20,8 +20,12 @@ class DocGenerator(BaseModel):
         return Path(global_hyfi.package_path) / global_hyfi.config_dirname
 
     @property
+    def root_dir(self) -> Path:
+        return Path().cwd()
+
+    @property
     def config_docs_dir(self) -> Path:
-        path_ = Path().cwd() / self.config_docs_dir
+        path_ = self.root_dir / self.config_docs_dirname
         path_.mkdir(parents=True, exist_ok=True)
         return path_
 
@@ -41,8 +45,10 @@ class DocGenerator(BaseModel):
                 f.write(f"Config location: `conf/{dirname}`\n\n")
                 for file in sorted(_path.iterdir()):
                     if file.suffix == ".yaml":
-                        f.write(f"## `{file}`\n\n")
+                        f.write(f"## `{file.name}`\n\n")
                         f.write("```yaml\n")
-                        rel_file = file.relative_to(self.config_docs_dir)
-                        f.write("{% include '" + str(rel_file) + " %}")
+                        lvl = self.config_docs_dir.relative_to(self.root_dir)
+                        lvl = "/".join([".."] * len(lvl.as_posix().split("/")))
+                        rel_path = f"{lvl}/{file.relative_to(self.root_dir)}"
+                        f.write("{% include '" + str(rel_path) + "' %}")
                         f.write("\n```\n\n")

@@ -1,5 +1,5 @@
 from hyfi.main import HyFI
-from hyfi.pipeline import DataframePipeConfig
+from hyfi.pipeline import DataframePipe
 
 
 def test_pipe():
@@ -26,7 +26,7 @@ def test_pipe():
     )
     print(df3)
     config = HyFI.compose("pipe=__dataframe_instance_methods__")
-    pipe_config = DataframePipeConfig(**config)
+    pipe_config = DataframePipe(**config)
     pipe_config.run = {"_target_": "filter", "items": ["id"]}
     print(pipe_config)
     df4 = HyFI.run_pipe(df, pipe_config)

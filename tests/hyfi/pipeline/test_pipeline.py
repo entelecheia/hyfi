@@ -2,8 +2,8 @@ import pandas as pd
 
 from hyfi.composer import Composer
 from hyfi.main import HyFI
-from hyfi.pipeline import PipelineConfig
-from hyfi.pipeline import PipeConfig, RunningConfig
+from hyfi.pipeline import Pipeline
+from hyfi.pipeline import Pipe, Running
 
 
 def test_running_config():
@@ -12,7 +12,7 @@ def test_running_config():
     assert Composer.generate_alias_for_special_keys("_with_") == "run"
     assert Composer.generate_alias_for_special_keys("with") == "run"
 
-    config = RunningConfig(**{"with": {"a": 1, "b": 2}})
+    config = Running(**{"with": {"a": 1, "b": 2}})
     print(config.model_dump())
     print(config.run_config)
     assert config.run_config == {"a": 1, "b": 2}
@@ -24,7 +24,7 @@ def test_pipe():
     config.run.update({"data_files": data_path})
     config.verbose = True
     HyFI.print(config)
-    pipe = PipeConfig(**config)
+    pipe = Pipe(**config)
     HyFI.print(pipe.model_dump())
     print(pipe.run_config)
     assert pipe.run_config["_target_"] == "hyfi.utils.datasets.load.DSLoad.load_dataframes"
@@ -37,7 +37,7 @@ def test_pipeline():
     config = HyFI.compose("pipeline=__test_dataframe__")
     config.pipe1.run.update({"data_files": data_path})
     # HyFI.print(config)
-    config = PipelineConfig(**config)
+    config = Pipeline(**config)
     HyFI.print(config.model_dump(exclude_none=True))
     data = HyFI.run_pipeline(config)
     assert type(data) == pd.DataFrame

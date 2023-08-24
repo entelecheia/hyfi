@@ -1,4 +1,3 @@
-# TODO: #209 add functionality to generate documentation for configs and models automatically
 from pathlib import Path
 from typing import List
 
@@ -48,7 +47,10 @@ class DocGenerator(BaseModel):
     config_docs_dirname: str = "docs/configs"
     reference_docs_dirname: str = "docs/reference"
 
-    exclude_configs: List[str] = []
+    exclude_configs: List[str] = [
+        "docs",
+        "hydra",
+    ]
     exclude_references: List[str] = [
         "conf",
         "__cli__.py",

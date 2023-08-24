@@ -8,6 +8,40 @@ from .model import BaseModel
 
 
 class DocGenerator(BaseModel):
+    """
+    A class for generating reference documentation and configuration documentation.
+
+    This class provides methods for generating reference documentation for modules and configuration documentation for directories.
+
+    Attributes:
+        _config_name_: The name of the configuration.
+        _config_group_: The group of the configuration.
+        config_docs_dirname: The name of the directory for configuration documentation.
+        reference_docs_dirname: The name of the directory for reference documentation.
+        exclude_configs: A list of configurations to exclude.
+        exclude_references: A list of references to exclude.
+
+    Properties:
+        root_dir: The root directory.
+        package_dir: The package directory.
+        package_name: The package name.
+        config_dir: The configuration directory.
+        config_docs_dir: The directory for configuration documentation.
+        reference_docs_dir: The directory for reference documentation.
+
+    Methods:
+        generate_reference_docs: Generates reference documentation for modules.
+        write_ref_doc: Writes reference documentation for a module.
+        generate_config_docs: Generates configuration documentation for directories.
+
+    Example:
+        ```python
+        doc_generator = DocGenerator()
+        doc_generator.generate_reference_docs()
+        doc_generator.generate_config_docs()
+        ```
+    """
+
     _config_name_: str = "__init__"
     _config_group_: str = "/docs"
 

@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 from hyfi.composer import BaseConfig, Composer, field_validator
 from hyfi.env import ProjectEnv
-from hyfi.joblib import JobLibConfig
+from hyfi.joblib import JobLib
 from hyfi.path.project import ProjectPathConfig
 
 logger = Composer.getLogger(__name__)
@@ -28,7 +28,7 @@ class ProjectConfig(BaseConfig, Composer):
     verbose: Union[bool, int] = False
     # Config Classes
     env: ProjectEnv = None
-    joblib: Optional[JobLibConfig] = None
+    joblib: Optional[JobLib] = None
     path: ProjectPathConfig = None
 
     _property_set_methods_ = {

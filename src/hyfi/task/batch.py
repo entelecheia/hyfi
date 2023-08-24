@@ -4,7 +4,7 @@ Configuration class for batch tasks. Inherits from TaskConfig.
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
-from hyfi.batch import BatchConfig
+from hyfi.batch import Batch
 from hyfi.composer import Composer
 from hyfi.path.batch import BatchPathConfig
 from hyfi.utils.logging import LOGGING
@@ -29,7 +29,7 @@ class BatchTaskConfig(TaskConfig):
     _config_name_: str = "__batch__"
 
     batch_name: str = "demo"
-    batch: BatchConfig = BatchConfig()
+    batch: Batch = Batch()
     path: BatchPathConfig = BatchPathConfig()
 
     _property_set_methods_ = {
@@ -180,7 +180,7 @@ class BatchTaskConfig(TaskConfig):
         if batch_num is None:
             batch_num = -1
         if not filepath and batch_num >= 0:
-            batch = BatchConfig(
+            batch = Batch(
                 batch_root=self.batch.batch_root,
                 batch_name=batch_name,
                 batch_num=batch_num,

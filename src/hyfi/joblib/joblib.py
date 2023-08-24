@@ -7,9 +7,9 @@ from hyfi import core
 from hyfi.composer import BaseConfig, PrivateAttr
 from hyfi.utils.logging import LOGGING
 
-from .batch import batcher
-from .batch.apply import decorator_apply
-from .batch.batcher import Batcher
+from .batcher import batcher
+from .batcher.apply import decorator_apply
+from .batcher.batcher import Batcher
 
 logger = LOGGING.getLogger(__name__)
 

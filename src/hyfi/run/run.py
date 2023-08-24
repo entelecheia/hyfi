@@ -11,7 +11,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-class RunConfig(BaseModel):
+class Run(BaseModel):
     """Run Configuration"""
 
     _config_group_: str = "/run"

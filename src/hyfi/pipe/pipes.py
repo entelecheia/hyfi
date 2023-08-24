@@ -6,14 +6,14 @@ from typing import Any
 import pandas as pd
 
 from hyfi.joblib import BATCHER
-from hyfi.pipeline import DataframePipeConfig, PipeConfig
+from hyfi.pipeline import DataframePipe, Pipe
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-def general_instance_methods(obj: Any, config: PipeConfig):
+def general_instance_methods(obj: Any, config: Pipe):
     """
     Applies a general instance method to an object.
 
@@ -37,7 +37,7 @@ def general_instance_methods(obj: Any, config: PipeConfig):
     return obj
 
 
-def general_external_funcs(obj: Any, config: PipeConfig):
+def general_external_funcs(obj: Any, config: Pipe):
     """
     Applies a general external function to an object.
 
@@ -72,7 +72,7 @@ def general_external_funcs(obj: Any, config: PipeConfig):
     return obj
 
 
-def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
+def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipe):
     """
     Applies a dataframe instance method to a dataframe.
 
@@ -83,7 +83,7 @@ def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
     Returns:
         pd.DataFrame: The dataframe with the method applied.
     """
-    config = DataframePipeConfig(**config.model_dump())
+    config = DataframePipe(**config.model_dump())
     run_target = config.run_target
     run_kwargs = config.run_kwargs
     if not run_target:
@@ -103,7 +103,7 @@ def dataframe_instance_methods(data: pd.DataFrame, config: DataframePipeConfig):
     return data
 
 
-def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipeConfig):
+def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipe):
     """
     Applies a dataframe external function to a dataframe.
 
@@ -114,7 +114,7 @@ def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipeConfig):
     Returns:
         pd.DataFrame: The dataframe with the function applied.
     """
-    config = DataframePipeConfig(**config.model_dump())
+    config = DataframePipe(**config.model_dump())
     _fn = config.get_run_func()
     if _fn is None:
         logger.warning("No function found for %s", config)

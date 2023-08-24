@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from hyfi.pipeline.config import RunningCalls, RunningConfig, get_running_configs
+from hyfi.pipeline.config import RunningCalls, Running, get_running_configs
 from hyfi.run import RunConfig
 from hyfi.task import BatchTaskConfig
 from hyfi.utils.contexts import elapsed_timer
@@ -24,7 +24,7 @@ class BaseRunner(BatchTaskConfig):
     def get_running_calls(self) -> RunningCalls:
         return get_running_configs(self.calls or [])
 
-    def run_call(self, rc: RunningConfig) -> None:
+    def run_call(self, rc: Running) -> None:
         method_ = getattr(self, rc.uses, None)
         if method_ and callable(method_):
             method_(**rc.run_kwargs)

@@ -2,8 +2,11 @@ from pathlib import Path
 from typing import List
 
 from hyfi.core import global_hyfi
+from hyfi.utils import LOGGING, ENVs
 
 from .model import BaseModel
+
+logger = LOGGING.getLogger(__name__)
 
 
 class DocGenerator(BaseModel):
@@ -60,9 +63,13 @@ class DocGenerator(BaseModel):
         "__pycache__",
     ]
 
+    def __call__(self) -> None:
+        self.generate_config_docs()
+        self.generate_reference_docs()
+
     @property
     def root_dir(self) -> Path:
-        return Path().cwd()
+        return Path(ENVs.getcwd())
 
     @property
     def package_dir(self) -> Path:
@@ -90,6 +97,7 @@ class DocGenerator(BaseModel):
 
     def generate_reference_docs(self):
         exclude_refs = self.exclude_references or []
+        logger.info("Generating reference documentation excluding %s", exclude_refs)
         for _path in self.package_dir.iterdir():
             module_name = _path.name
             if _path.is_file() or module_name in exclude_refs:
@@ -110,12 +118,18 @@ class DocGenerator(BaseModel):
         module_name = module_name.as_posix().replace("/", ".")
         module_name = f"{self.package_name}.{module_name}"
         ref_file.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(
+            "Writing reference documentation for %s to %s", module_name, ref_file
+        )
         with open(ref_file, "w") as f:
             f.write(f"# `{module_name}`\n\n")
             f.write(f"::: {module_name}\n")
 
     def generate_config_docs(self):
         exclude_configs = self.exclude_configs or []
+        logger.info(
+            "Generating configuration documentation excluding %s", exclude_configs
+        )
         for config_path in sorted(self.config_dir.iterdir()):
             if (
                 config_path.is_file()
@@ -128,6 +142,9 @@ class DocGenerator(BaseModel):
     def write_config_doc(self, config_path: Path):
         dirname = config_path.name
         output_file = self.config_docs_dir / f"{dirname}.md"
+        logger.info(
+            "Writing configuration documentation for %s to %s", dirname, output_file
+        )
         with open(output_file, "w") as f:
             f.write(f"# {dirname}\n\n")
             f.write(f"Config location: `conf/{dirname}`\n\n")

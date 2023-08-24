@@ -1,6 +1,6 @@
-from .joblib import BATCHER, JobLibConfig
+from .joblib import BATCHER, JobLib
 
 __all__ = [
     "BATCHER",
-    "JobLibConfig",
+    "JobLib",
 ]

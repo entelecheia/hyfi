@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from hyfi.pipeline.config import RunningCalls, Running, get_running_configs
+from hyfi.pipeline.config import Running, RunningCalls, get_running_configs
 from hyfi.run import Run
 from hyfi.task import BatchTask
 from hyfi.utils.contexts import elapsed_timer

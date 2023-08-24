@@ -1,4 +1,4 @@
-from hyfi.path.batch import BatchPathConfig
+from hyfi.path.batch import BatchPath
 from pathlib import Path
 from pprint import pprint
 from hyfi import HyFI
@@ -6,7 +6,7 @@ from hyfi import HyFI
 
 def test_path_config():
     HyFI.initialize(project_root=".")
-    config = BatchPathConfig(
+    config = BatchPath(
         task_root="workspace/tasks",
         task_name="test-task",
     )

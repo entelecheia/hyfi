@@ -1,11 +1,11 @@
-from hyfi.path.project import ProjectPathConfig
+from hyfi.path.project import ProjectPath
 from hyfi.utils.envs import ENVs
 from pathlib import Path
 from pprint import pprint
 
 
 def test_path_config():
-    config = ProjectPathConfig(
+    config = ProjectPath(
         project_root="workspace/tmp",
         global_hyfi_root=ENVs.expand_posix_vars("$HOME/.hyfi"),
         project_workspace_name="testspace",

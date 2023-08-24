@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
 from hyfi.module import Module
-from hyfi.path.task import TaskPathConfig
+from hyfi.path.task import TaskPath
 from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
 from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
@@ -21,7 +21,7 @@ class TaskConfig(BaseConfig):
     task_root: str = "workspace"
     version: str = "0.0.0"
     module: Optional[Module] = None
-    path: TaskPathConfig = TaskPathConfig()
+    path: TaskPath = TaskPath()
     pipelines: Optional[List[Union[str, Dict]]] = []
 
     _property_set_methods_ = {

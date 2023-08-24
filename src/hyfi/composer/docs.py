@@ -116,24 +116,29 @@ class DocGenerator(BaseModel):
 
     def generate_config_docs(self):
         exclude_configs = self.exclude_configs or []
-        for _path in self.config_dir.iterdir():
-            dirname = _path.name
+        for config_path in sorted(self.config_dir.iterdir()):
             if (
-                _path.is_file()
-                or dirname in exclude_configs
-                or dirname.startswith("__")
+                config_path.is_file()
+                or config_path.name in exclude_configs
+                or config_path.name.startswith("__")
             ):
                 continue
-            output_file = self.config_docs_dir / f"{dirname}.md"
-            with open(output_file, "w") as f:
-                f.write(f"# {dirname}\n\n")
-                f.write(f"Config location: `conf/{dirname}`\n\n")
-                for file in sorted(_path.iterdir()):
-                    if file.suffix == ".yaml":
-                        f.write(f"## `{file.name}`\n\n")
-                        f.write("```yaml\n")
-                        lvl = self.config_docs_dir.relative_to(self.root_dir)
-                        lvl = "/".join([".."] * len(lvl.as_posix().split("/")))
-                        rel_path = f"{lvl}/{file.relative_to(self.root_dir)}"
-                        f.write("{% include '" + str(rel_path) + "' %}")
-                        f.write("\n```\n\n")
+            self.write_config_doc(config_path)
+
+    def write_config_doc(self, config_path: Path):
+        dirname = config_path.name
+        output_file = self.config_docs_dir / f"{dirname}.md"
+        with open(output_file, "w") as f:
+            f.write(f"# {dirname}\n\n")
+            f.write(f"Config location: `conf/{dirname}`\n\n")
+            for file in sorted(config_path.iterdir()):
+                if file.is_dir():
+                    continue
+                if file.suffix == ".yaml":
+                    f.write(f"## `{file.name}`\n\n")
+                    f.write("```yaml\n")
+                    lvl = self.config_docs_dir.relative_to(self.root_dir)
+                    lvl = "/".join([".."] * len(lvl.as_posix().split("/")))
+                    rel_path = f"{lvl}/{file.relative_to(self.root_dir)}"
+                    f.write("{% include '" + str(rel_path) + "' %}")
+                    f.write("\n```\n\n")

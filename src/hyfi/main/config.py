@@ -15,7 +15,7 @@ from hyfi.composer import (
     field_validator,
 )
 from hyfi.core import global_hyfi
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 from hyfi.utils import UTILs
 
 logger = UTILs.getLogger(__name__)
@@ -76,7 +76,7 @@ class GlobalConfig(UTILs):
     __config__: Optional[HyFIConfig] = None
 
     _about_: Optional[About] = None
-    _project_: Optional[ProjectConfig] = None
+    _project_: Optional[Project] = None
     _version_: str = PrivateAttr(global_hyfi.version)
 
     def __init__(self, **config_kwargs):
@@ -90,7 +90,7 @@ class GlobalConfig(UTILs):
         return self._about_
 
     @property
-    def project(self) -> ProjectConfig:
+    def project(self) -> Project:
         return self._project_
 
     def inititialize(
@@ -155,7 +155,7 @@ class GlobalConfig(UTILs):
             project_kwargs["num_workers"] = num_workers
         project_kwargs["verbose"] = verbose
 
-        self._project_ = ProjectConfig(**project_kwargs)
+        self._project_ = Project(**project_kwargs)
         logger.info("HyFi project [%s] initialized", self._project_.project_name)
 
     def terminate(self) -> None:

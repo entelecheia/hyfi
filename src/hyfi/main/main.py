@@ -15,11 +15,11 @@ from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
 from hyfi.env import Env
 from hyfi.graphics import GRAPHICs
-from hyfi.joblib import BATCHER, JobLibConfig
+from hyfi.joblib import BATCHER, JobLib
 from hyfi.pipeline import PIPELINEs
-from hyfi.project import ProjectConfig
-from hyfi.task import TaskConfig
-from hyfi.workflow import WorkflowConfig
+from hyfi.project import Project
+from hyfi.task import Task
+from hyfi.workflow import Workflow
 
 from .config import GlobalConfigResolver, HyFIConfig, global_config
 
@@ -114,7 +114,7 @@ class HyFI(
         return self.__config__
 
     @property
-    def project(self) -> Optional[ProjectConfig]:
+    def project(self) -> Optional[Project]:
         """Get the project."""
         if global_config.project:
             return global_config.project
@@ -122,12 +122,12 @@ class HyFI(
             raise ValueError("Project not initialized.")
 
     @project.setter
-    def project(self, project: ProjectConfig) -> None:
+    def project(self, project: Project) -> None:
         """Set the project."""
         global_config.project = project
 
     @staticmethod
-    def set_project(project: ProjectConfig) -> None:
+    def set_project(project: Project) -> None:
         """
         Set the project.
 
@@ -293,7 +293,7 @@ class HyFI(
         return Variables(**kwargs)
 
     @staticmethod
-    def JobLibConfig(**kwargs) -> JobLibConfig:
+    def JobLib(**kwargs) -> JobLib:
         """
         Return the joblib pipe.
 
@@ -303,7 +303,7 @@ class HyFI(
         Returns:
             JobLibConfig: An instance of the JobLibConfig class.
         """
-        return JobLibConfig(**kwargs)
+        return JobLib(**kwargs)
 
     @staticmethod
     def Env(**kwargs) -> Env:
@@ -319,7 +319,7 @@ class HyFI(
         return Env(**kwargs)
 
     @staticmethod
-    def TaskConfig(**kwargs) -> TaskConfig:
+    def Task(**kwargs) -> Task:
         """
         Return the TaskConfig.
 
@@ -329,10 +329,10 @@ class HyFI(
         Returns:
             TaskConfig: An instance of the TaskConfig class.
         """
-        return TaskConfig(**kwargs)
+        return Task(**kwargs)
 
     @staticmethod
-    def WorkflowConfig(**kwargs) -> WorkflowConfig:
+    def Workflow(**kwargs) -> Workflow:
         """
         Return the WorkflowConfig.
 
@@ -342,7 +342,7 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        return WorkflowConfig(**kwargs)
+        return Workflow(**kwargs)
 
     ###############################
     # Pipeline related functions
@@ -414,13 +414,13 @@ class HyFI(
                 cmd_name = "copy_conf"
 
         if cmd_name == "run_workflow":
-            workflow = HyFI.WorkflowConfig(**config)
+            workflow = HyFI.Workflow(**config)
             HyFI.run_workflow(workflow, dryrun=dryrun)
         elif cmd_name == "run_task":
             project = (
                 HyFI.initialize(**config["project"]) if "project" in config else None
             )
-            task = HyFI.TaskConfig(**config["task"])
+            task = HyFI.Task(**config["task"])
             HyFI.run_task(task, project=project, dryrun=dryrun)
         elif cmd_name == "copy_conf":
             copier_cfg = config["copier"]

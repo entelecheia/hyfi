@@ -1,3 +1,3 @@
-# `hyfienv`
+# `hyfi.env`
 
 ::: hyfi.env

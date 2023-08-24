@@ -1,12 +1,12 @@
 import os
-from hyfi.task.batch import BatchTaskConfig
+from hyfi.task.batch import BatchTask
 from pathlib import Path
 from pprint import pprint
 
 
 def test_batch_task_config():
     os.environ["HYFI_LOG_LEVEL"] = "DEBUG"
-    config = BatchTaskConfig(
+    config = BatchTask(
         task_name="demo2",
         batch_name="batch11",
         verbose=True,

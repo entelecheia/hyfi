@@ -3,11 +3,11 @@ A class to run a pipeline.
 """
 from typing import Any, Dict, Optional, Union
 
-from hyfi.task import TaskConfig
+from hyfi.task import Task
 from hyfi.utils.logging import LOGGING
-from hyfi.workflow import WorkflowConfig
+from hyfi.workflow import Workflow
 
-from .config import PipeConfig, PipelineConfig, run_pipe
+from .config import Pipe, Pipeline, run_pipe
 
 logger = LOGGING.getLogger(__name__)
 
@@ -19,9 +19,9 @@ class PIPELINEs:
 
     @staticmethod
     def run_pipeline(
-        config: Union[Dict, PipelineConfig],
+        config: Union[Dict, Pipeline],
         initial_object: Optional[Any] = None,
-        task: Optional[TaskConfig] = None,
+        task: Optional[Task] = None,
     ) -> Any:
         """
         Run a pipeline given a config
@@ -35,13 +35,13 @@ class PIPELINEs:
             The result of the pipeline
         """
         if task is None:
-            task = TaskConfig()
+            task = Task()
         return task.run_pipeline(config, initial_object)
 
     @staticmethod
     def run_pipe(
         obj: Any,
-        config: Union[Dict, PipeConfig],
+        config: Union[Dict, Pipe],
     ) -> Any:
         """
         Run a pipe on an object
@@ -57,7 +57,7 @@ class PIPELINEs:
 
     @staticmethod
     def run_task(
-        task: TaskConfig,
+        task: Task,
         dryrun: bool = False,
     ):
         """
@@ -73,7 +73,7 @@ class PIPELINEs:
         task.run()
 
     @staticmethod
-    def run_workflow(workflow: WorkflowConfig, dryrun: bool = False):
+    def run_workflow(workflow: Workflow, dryrun: bool = False):
         """
         Run the tasks specified in the workflow
 
@@ -86,7 +86,7 @@ class PIPELINEs:
         workflow.run()
 
     @staticmethod
-    def pipe(**kwargs) -> PipeConfig:
+    def pipe(**kwargs) -> Pipe:
         """
         Return the PipeConfig.
 
@@ -96,4 +96,4 @@ class PIPELINEs:
         Returns:
             PipeConfig: An instance of the PipeConfig class.
         """
-        return PipeConfig(**kwargs)
+        return Pipe(**kwargs)

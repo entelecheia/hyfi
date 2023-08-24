@@ -19,7 +19,7 @@ __hyfi_homepage__: str = "https://hyfi.entelecheia.ai"
 __hyfi_license__: str = "MIT"
 
 
-class AboutConfig(BaseModel):
+class About(BaseModel):
     """A Pydantic BaseModel that contains metadata about the package.
 
     Attributes:

@@ -2,12 +2,12 @@ from pathlib import Path
 
 from hyfi.utils.logging import LOGGING
 
-from .base import BasePathConfig
+from .base import BasePath
 
 logger = LOGGING.getLogger(__name__)
 
 
-class ProjectPathConfig(BasePathConfig):
+class ProjectPath(BasePath):
     _config_name_: str = "__project__"
 
     # internal paths for hyfi

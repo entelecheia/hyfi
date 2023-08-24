@@ -2,17 +2,17 @@ from pathlib import Path
 from typing import Optional, Union
 
 from hyfi.composer import BaseConfig
-from hyfi.path.dirnames import DirnamesConfig
+from hyfi.path.dirnames import Dirnames
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class BasePathConfig(BaseConfig):
+class BasePath(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "/path"
 
-    dirnames: DirnamesConfig = DirnamesConfig()
+    dirnames: Dirnames = Dirnames()
 
     @property
     def name(self) -> str:

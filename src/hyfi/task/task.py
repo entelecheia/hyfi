@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseConfig, Composer
-from hyfi.module import ModuleConfig
-from hyfi.path.task import TaskPathConfig
-from hyfi.pipeline.config import PipelineConfig, Pipelines, run_pipe
+from hyfi.module import Module
+from hyfi.path.task import TaskPath
+from hyfi.pipeline.config import Pipeline, Pipelines, run_pipe
 from hyfi.utils.contexts import change_directory, elapsed_timer
 from hyfi.utils.logging import LOGGING
 from hyfi.utils.packages import PKGs
@@ -13,15 +13,15 @@ from hyfi.utils.packages import PKGs
 logger = LOGGING.getLogger(__name__)
 
 
-class TaskConfig(BaseConfig):
+class Task(BaseConfig):
     _config_name_: str = "__init__"
     _config_group_: str = "/task"
 
     task_name: str = "demo-task"
     task_root: str = "workspace"
     version: str = "0.0.0"
-    module: Optional[ModuleConfig] = None
-    path: TaskPathConfig = TaskPathConfig()
+    module: Optional[Module] = None
+    path: TaskPath = TaskPath()
     pipelines: Optional[List[Union[str, Dict]]] = []
 
     _property_set_methods_ = {
@@ -128,7 +128,7 @@ class TaskConfig(BaseConfig):
         pipelines: Pipelines = []
         for name in self.pipelines:
             if isinstance(name, str) and isinstance(getattr(self, name), dict):
-                pipeline = PipelineConfig(**getattr(self, name))
+                pipeline = Pipeline(**getattr(self, name))
                 if not pipeline.name:
                     pipeline.name = name
                 pipelines.append(pipeline)
@@ -164,7 +164,7 @@ class TaskConfig(BaseConfig):
 
     def run_pipeline(
         self,
-        pipeline: Union[Dict, PipelineConfig],
+        pipeline: Union[Dict, Pipeline],
         initial_object: Optional[Any] = None,
     ) -> Any:
         """
@@ -179,8 +179,8 @@ class TaskConfig(BaseConfig):
             The result of the pipeline
         """
         # If config is not a PipelineConfig object it will be converted to a PipelineConfig object.
-        if not isinstance(pipeline, PipelineConfig):
-            pipeline = PipelineConfig(**Composer.to_dict(pipeline))
+        if not isinstance(pipeline, Pipeline):
+            pipeline = Pipeline(**Composer.to_dict(pipeline))
         pipes = pipeline.get_pipes()
         if (
             initial_object is None
@@ -197,7 +197,7 @@ class TaskConfig(BaseConfig):
         logger.info("Applying %s pipes: %s", len(pipe_names), pipe_names)
         # Run the task in the current directory.
         if self is None:
-            self = TaskConfig()
+            self = Task()
         with elapsed_timer(format_time=True) as elapsed:
             with change_directory(self.workspace_dir):
                 rst = reduce(run_pipe, pipes, initial_object)

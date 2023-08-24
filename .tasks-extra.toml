@@ -3,13 +3,9 @@ cmd = "poetry install --with ipython"
 help = "install ipython dependencies"
 
 [tool.poe.tasks.install-mkdocs]
-cmd = "poetry install --with mkdocs"
+cmd = "pip install -U -r docs/requirements.txt"
 help = "install mkdocs dependencies"
 
 [tool.poe.tasks.build-docs]
 cmd = "mkdocs build"
 help = "build documentation"
-
-[tool.poe.tasks.generate-config-docs]
-cmd = "python scripts/generate_config_docs.py"
-help = "generate configuration documentation"

@@ -1,15 +1,15 @@
 from typing import Dict, List, Optional, Union
 
-from hyfi.pipeline.config import RunningCalls, RunningConfig, get_running_configs
-from hyfi.run import RunConfig
-from hyfi.task import BatchTaskConfig
+from hyfi.pipeline.config import Running, RunningCalls, get_running_configs
+from hyfi.run import Run
+from hyfi.task import BatchTask
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
 
 
-class BaseRunner(BatchTaskConfig):
+class Runner(BatchTask):
     _config_group_: str = "/runner"
     _config_name_: str = "__init__"
 
@@ -24,7 +24,7 @@ class BaseRunner(BatchTaskConfig):
     def get_running_calls(self) -> RunningCalls:
         return get_running_configs(self.calls or [])
 
-    def run_call(self, rc: RunningConfig) -> None:
+    def run_call(self, rc: Running) -> None:
         method_ = getattr(self, rc.uses, None)
         if method_ and callable(method_):
             method_(**rc.run_kwargs)
@@ -49,9 +49,9 @@ class BaseRunner(BatchTaskConfig):
                 )
 
 
-class TestRunner(BaseRunner):
+class TestRunner(Runner):
     _config_name_: str = "__test__"
-    load_args: RunConfig = RunConfig(_config_name_="load_data")
+    load_args: Run = Run(_config_name_="load_data")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

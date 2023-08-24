@@ -16,7 +16,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-class BaseRunConfig(BaseModel):
+class BaseRun(BaseModel):
     """Run Configuration"""
 
     run: Optional[Union[str, Dict[str, Any]]] = {}
@@ -52,19 +52,19 @@ class BaseRunConfig(BaseModel):
         return _kwargs
 
 
-class RunningConfig(BaseRunConfig):
+class Running(BaseRun):
     """Running Configuration"""
 
     uses: str = ""
 
 
-RunningSteps = List[RunningConfig]
-RunningPipelines = List[RunningConfig]
-RunningTasks = List[RunningConfig]
-RunningCalls = List[RunningConfig]
+RunningSteps = List[Running]
+RunningPipelines = List[Running]
+RunningTasks = List[Running]
+RunningCalls = List[Running]
 
 
-class PipeConfig(BaseRunConfig):
+class Pipe(BaseRun):
     """Pipe Configuration"""
 
     pipe_target: str = ""
@@ -107,7 +107,7 @@ class PipeConfig(BaseRunConfig):
             return None
 
 
-class DataframePipeConfig(PipeConfig):
+class DataframePipe(Pipe):
     columns_to_apply: Optional[Union[str, List[str]]] = []
     use_batcher: bool = True
     num_workers: int = 1
@@ -130,10 +130,10 @@ class DataframePipeConfig(PipeConfig):
         )
 
 
-Pipes = List[PipeConfig]
+Pipes = List[Pipe]
 
 
-class PipelineConfig(BaseRunConfig):
+class Pipeline(BaseRun):
     """Pipeline Configuration"""
 
     name: Optional[str] = ""
@@ -157,7 +157,7 @@ class PipelineConfig(BaseRunConfig):
 
     def update_configs(
         self,
-        rc: Union[Dict, RunningConfig],
+        rc: Union[Dict, Running],
     ):
         """
         Update running config with values from another config
@@ -167,7 +167,7 @@ class PipelineConfig(BaseRunConfig):
         """
         # If rc is a dict or dict it will be converted to RunningConfig.
         if isinstance(rc, dict):
-            rc = RunningConfig(**rc)
+            rc = Running(**rc)
         self.name = rc.name or self.name
         self.desc = rc.desc or self.desc
 
@@ -188,7 +188,7 @@ class PipelineConfig(BaseRunConfig):
             # Add a pipe to the pipeline.
             config = getattr(self, rc.uses, None)
             if isinstance(config, dict):
-                pipe = PipeConfig(**Composer.update(config, rc.model_dump()))
+                pipe = Pipe(**Composer.update(config, rc.model_dump()))
                 # Set the task to be used for the pipe.
                 # if task is not None:
                 #     pipe.task = task
@@ -196,10 +196,10 @@ class PipelineConfig(BaseRunConfig):
         return pipes
 
 
-Pipelines = List[PipelineConfig]
+Pipelines = List[Pipeline]
 
 
-def get_running_configs(steps: list) -> List[RunningConfig]:
+def get_running_configs(steps: list) -> List[Running]:
     """
     Parses and returns list of running configs
 
@@ -209,7 +209,7 @@ def get_running_configs(steps: list) -> List[RunningConfig]:
     Returns:
         list of : class : `RunningConfig` objects
     """
-    RCs: List[RunningConfig] = []
+    RCs: List[Running] = []
     # Return the list of running RCs
     if not steps:
         logger.warning("No running configs provided")
@@ -218,9 +218,9 @@ def get_running_configs(steps: list) -> List[RunningConfig]:
     for rc in steps:
         # Append a running config to the RCs list.
         if isinstance(rc, str):
-            RCs.append(RunningConfig(uses=rc))
+            RCs.append(Running(uses=rc))
         elif isinstance(rc, dict):
-            RCs.append(RunningConfig(**rc))
+            RCs.append(Running(**rc))
         else:
             raise ValueError(f"Invalid running config: {rc}")
     return RCs
@@ -228,7 +228,7 @@ def get_running_configs(steps: list) -> List[RunningConfig]:
 
 def run_pipe(
     obj: Any,
-    config: Union[Dict, PipeConfig],
+    config: Union[Dict, Pipe],
 ) -> Any:
     """
     Run a pipe on an object
@@ -241,8 +241,8 @@ def run_pipe(
         The result of the pipe
     """
     # Create a PipeConfig object if not already a PipeConfig.
-    if not isinstance(config, PipeConfig):
-        config = PipeConfig(**Composer.to_dict(config))
+    if not isinstance(config, Pipe):
+        config = Pipe(**Composer.to_dict(config))
     pipe_fn = config.get_pipe_func()
     # Return the object that is being used to execute the pipe function.
     if pipe_fn is None:

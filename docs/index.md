@@ -1,7 +1,6 @@
 {!README.md!}
 
-Check out the [usage](usage) section for further information.
-
+Check out the [usage](usage/index.md) section for further information.
 
 !!! note
 

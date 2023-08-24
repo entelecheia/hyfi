@@ -2,14 +2,14 @@ from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseModel, Composer, model_validator
 from hyfi.pipeline.config import (
-    PipelineConfig,
+    Pipeline,
     Pipelines,
-    RunningConfig,
+    Running,
     RunningTasks,
     get_running_configs,
 )
-from hyfi.project import ProjectConfig
-from hyfi.task import TaskConfig
+from hyfi.project import Project
+from hyfi.task import Task
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
@@ -18,14 +18,14 @@ logger = LOGGING.getLogger(__name__)
 Tasks = List[Any]
 
 
-class WorkflowConfig(BaseModel):
+class Workflow(BaseModel):
     _config_group_: str = "/workflow"
     _config_name_: str = "__init__"
     _auto_populate_: bool = True
 
     workflow_name: str = _config_name_
-    project: Optional[ProjectConfig] = None
-    task: Optional[TaskConfig] = None
+    project: Optional[Project] = None
+    task: Optional[Task] = None
     tasks: Optional[List[Union[str, Dict]]] = []
     pipelines: Optional[List[Union[str, Dict]]] = []
     verbose: bool = False
@@ -38,7 +38,7 @@ class WorkflowConfig(BaseModel):
     def get_running_tasks(self) -> RunningTasks:
         return get_running_configs(self.tasks or [])
 
-    def get_running_task(self, rc: RunningConfig) -> Any:
+    def get_running_task(self, rc: Running) -> Any:
         config = getattr(self, rc.uses, None)
         if rc.uses and isinstance(config, dict):
             if Composer.is_instantiatable(config):
@@ -46,13 +46,13 @@ class WorkflowConfig(BaseModel):
                 if task is not None and getattr(task, "__call__", None):
                     return task
             else:
-                task = TaskConfig(**config)
+                task = Task(**config)
                 task.name = rc.uses
                 return task
         return None
 
     def get_task(self):
-        return self.task or TaskConfig()
+        return self.task or Task()
 
     def run(self):
         """
@@ -66,11 +66,11 @@ class WorkflowConfig(BaseModel):
                 task = self.get_running_task(rc)
                 task_name = (
                     task.task_name
-                    if isinstance(task, TaskConfig)
+                    if isinstance(task, Task)
                     else getattr(task, "_config_name_", "unknown")
                 )
                 logger.info("Running task [%s] with [%s]", task_name, rc)
-                if isinstance(task, TaskConfig):
+                if isinstance(task, Task):
                     # Run the task if verbose is true.
                     task.run()
                 elif task is not None and getattr(task, "__call__", None):
@@ -111,7 +111,7 @@ class WorkflowConfig(BaseModel):
         pipelines: Pipelines = []
         for name in self.pipelines:
             if isinstance(name, str) and isinstance(getattr(self, name), dict):
-                pipeline = PipelineConfig(**getattr(self, name))
+                pipeline = Pipeline(**getattr(self, name))
                 if not pipeline.name:
                     pipeline.name = name
                 pipelines.append(pipeline)

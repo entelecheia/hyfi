@@ -1,6 +1,6 @@
 from hyfi.main import HyFI
-from hyfi.task import TaskConfig
-from hyfi.project import ProjectConfig
+from hyfi.task import Task
+from hyfi.project import Project
 
 
 def test_task_config():
@@ -8,7 +8,7 @@ def test_task_config():
         project_name="run_task", project_root="workspace/run_task", num_workers=2
     )
 
-    task = TaskConfig(_config_name_="__test__")
+    task = Task(_config_name_="__test__")
     HyFI.print(task.model_dump())
     HyFI.run_task(task)
     HyFI.print(task.model_dump())

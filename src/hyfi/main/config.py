@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 
 from omegaconf import DictConfig
 
-from hyfi.about import AboutConfig
+from hyfi.about import About
 from hyfi.composer import (
     BaseModel,
     ConfigDict,
@@ -15,7 +15,7 @@ from hyfi.composer import (
     field_validator,
 )
 from hyfi.core import global_hyfi
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 from hyfi.utils import UTILs
 
 logger = UTILs.getLogger(__name__)
@@ -75,8 +75,8 @@ class GlobalConfig(UTILs):
 
     __config__: Optional[HyFIConfig] = None
 
-    _about_: Optional[AboutConfig] = None
-    _project_: Optional[ProjectConfig] = None
+    _about_: Optional[About] = None
+    _project_: Optional[Project] = None
     _version_: str = PrivateAttr(global_hyfi.version)
 
     def __init__(self, **config_kwargs):
@@ -84,13 +84,13 @@ class GlobalConfig(UTILs):
             self.__config__ = HyFIConfig(**config_kwargs)
 
     @property
-    def about(self) -> AboutConfig:
+    def about(self) -> About:
         if self._about_ is None:
-            self._about_ = AboutConfig()
+            self._about_ = About()
         return self._about_
 
     @property
-    def project(self) -> ProjectConfig:
+    def project(self) -> Project:
         return self._project_
 
     def inititialize(
@@ -155,7 +155,7 @@ class GlobalConfig(UTILs):
             project_kwargs["num_workers"] = num_workers
         project_kwargs["verbose"] = verbose
 
-        self._project_ = ProjectConfig(**project_kwargs)
+        self._project_ = Project(**project_kwargs)
         logger.info("HyFi project [%s] initialized", self._project_.project_name)
 
     def terminate(self) -> None:
@@ -210,7 +210,7 @@ class GlobalConfig(UTILs):
                 else global_hyfi.package_name
             )
             kwargs = {"_config_name_": config_name}
-        self._about_ = AboutConfig(**kwargs)
+        self._about_ = About(**kwargs)
         pkg_name = self.package_name
         name = self.app_name
         print()

@@ -44,14 +44,14 @@ def test_cli_run_workflow_pipelines() -> None:
 
 def test_workflow() -> None:
     """Test workflow"""
-    wf = HyFI.WorkflowConfig(_config_name_="__test__")
+    wf = HyFI.Workflow(_config_name_="__test__")
     HyFI.print(wf.model_dump())
     HyFI.run_workflow(wf)
 
 
 def test_workflow_pipelines() -> None:
     """Test workflow"""
-    wf = HyFI.WorkflowConfig(_config_name_="__test_pipelines__")
+    wf = HyFI.Workflow(_config_name_="__test_pipelines__")
     HyFI.print(wf.model_dump())
     HyFI.run_workflow(wf)
 

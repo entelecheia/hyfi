@@ -1,3 +1,3 @@
-from .about import AboutConfig
+from .about import About
 
-__all__ = ["AboutConfig"]
+__all__ = ["About"]

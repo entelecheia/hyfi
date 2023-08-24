@@ -1,3 +1,3 @@
-from .run import RunConfig
+from .run import Run
 
-__all__ = ["RunConfig"]
+__all__ = ["Run"]

@@ -3,7 +3,7 @@ from pathlib import Path
 from hyfi.main.config import global_config
 from hyfi.utils.logging import LOGGING
 
-from .base import BasePathConfig
+from .base import BasePath
 
 logger = LOGGING.getLogger(__name__)
 
@@ -11,7 +11,7 @@ __default_task_name__ = "demo-task"
 __default_task_root__ = "workspace"
 
 
-class TaskPathConfig(BasePathConfig):
+class TaskPath(BasePath):
     _config_name_: str = "__task__"
 
     task_name: str = __default_task_name__

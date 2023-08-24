@@ -4,13 +4,13 @@ from typing import Optional, Union
 
 from hyfi.composer import BaseConfig, Composer, field_validator
 from hyfi.env import ProjectEnv
-from hyfi.joblib import JobLibConfig
-from hyfi.path.project import ProjectPathConfig
+from hyfi.joblib import JobLib
+from hyfi.path.project import ProjectPath
 
 logger = Composer.getLogger(__name__)
 
 
-class ProjectConfig(BaseConfig, Composer):
+class Project(BaseConfig, Composer):
     """Project Config"""
 
     _config_name_: str = "__init__"
@@ -28,8 +28,8 @@ class ProjectConfig(BaseConfig, Composer):
     verbose: Union[bool, int] = False
     # Config Classes
     env: ProjectEnv = None
-    joblib: Optional[JobLibConfig] = None
-    path: ProjectPathConfig = None
+    joblib: Optional[JobLib] = None
+    path: ProjectPath = None
 
     _property_set_methods_ = {
         "project_name": "set_project_name",
@@ -139,7 +139,7 @@ class ProjectConfig(BaseConfig, Composer):
 
         local_token = HfFolder.get_token()
         if local_token is None:
-            if ProjectConfig.is_notebook():
+            if Project.is_notebook():
                 notebook_login()
             else:
                 logger.info(

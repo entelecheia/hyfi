@@ -1,12 +1,12 @@
 import os
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 from pathlib import Path
 from pprint import pprint
 
 
 def test_project_config():
     os.environ["HYFI_PROJECT_NAME"] = "hyfi-test"
-    config = ProjectConfig(
+    config = Project(
         project_root="./workspace/tmp", num_workers=2
     )
     # config.init_project()

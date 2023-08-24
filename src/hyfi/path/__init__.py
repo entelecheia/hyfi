@@ -1,5 +1,5 @@
-from .dirnames import DirnamesConfig
+from .dirnames import Dirnames
 
 __all__ = [
-    "DirnamesConfig",
+    "Dirnames",
 ]

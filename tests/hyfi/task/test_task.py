@@ -1,4 +1,4 @@
-from hyfi.task import TaskConfig
+from hyfi.task import Task
 from pathlib import Path
 from pprint import pprint
 from hyfi.main import HyFI
@@ -6,7 +6,7 @@ from hyfi.main import HyFI
 
 def test_task_config():
     HyFI.initialize(project_root=".")
-    config = TaskConfig(
+    config = Task(
         task_name="demo2",
         verbose=True,
     )

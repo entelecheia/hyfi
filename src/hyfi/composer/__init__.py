@@ -11,6 +11,7 @@ from pydantic_settings import PydanticBaseSettingsSource, SettingsConfigDict
 
 from .composer import Composer, SpecialKeys
 from .config import BaseConfig
+from .docs import DocGenerator
 from .generator import GENERATOR, PipeTargetTypes
 from .model import BaseModel
 from .settings import BaseSettings
@@ -21,6 +22,7 @@ __all__ = [
     "BaseSettings",
     "Composer",
     "ConfigDict",
+    "DocGenerator",
     "field_validator",
     "Field",
     "FieldValidationInfo",

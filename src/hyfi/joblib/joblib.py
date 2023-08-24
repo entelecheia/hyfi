@@ -7,14 +7,14 @@ from hyfi import core
 from hyfi.composer import BaseConfig, PrivateAttr
 from hyfi.utils.logging import LOGGING
 
-from .batch import batcher
-from .batch.apply import decorator_apply
-from .batch.batcher import Batcher
+from .batcher import batcher
+from .batcher.apply import decorator_apply
+from .batcher.batcher import Batcher
 
 logger = LOGGING.getLogger(__name__)
 
 
-class JobLibConfig(BaseConfig):
+class JobLib(BaseConfig):
     """JobLib Configuration"""
 
     _config_name_: str = "__init__"
@@ -95,7 +95,7 @@ class BATCHER:
         num_workers: Optional[int] = None,
         **kwargs,
     ):
-        batcher_instance = JobLibConfig()._batcher_instance_
+        batcher_instance = JobLib()._batcher_instance_
         if use_batcher and batcher_instance is not None:
             batcher_minibatch_size = batcher_instance.minibatch_size
             if minibatch_size is None:

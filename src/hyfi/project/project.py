@@ -10,7 +10,7 @@ from hyfi.path.project import ProjectPath
 logger = Composer.getLogger(__name__)
 
 
-class ProjectConfig(BaseConfig, Composer):
+class Project(BaseConfig, Composer):
     """Project Config"""
 
     _config_name_: str = "__init__"
@@ -139,7 +139,7 @@ class ProjectConfig(BaseConfig, Composer):
 
         local_token = HfFolder.get_token()
         if local_token is None:
-            if ProjectConfig.is_notebook():
+            if Project.is_notebook():
                 notebook_login()
             else:
                 logger.info(

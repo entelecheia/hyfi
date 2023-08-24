@@ -9,12 +9,12 @@ from hyfi.composer import Composer
 from hyfi.path.batch import BatchPath
 from hyfi.utils.logging import LOGGING
 
-from .task import TaskConfig
+from .task import Task
 
 logger = LOGGING.getLogger(__name__)
 
 
-class BatchTaskConfig(TaskConfig):
+class BatchTask(Task):
     """
     Configuration class for batch tasks. Inherits from TaskConfig.
 

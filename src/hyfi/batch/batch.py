@@ -28,7 +28,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-class BatchConfig(BaseConfig):
+class Batch(BaseConfig):
     """
     Configuration class for batch processing.
 

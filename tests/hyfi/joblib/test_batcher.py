@@ -1,11 +1,11 @@
 from hyfi.joblib.batch.apply import Apply
 from hyfi.joblib.batch.apply_batch import ApplyBatch
-from hyfi.joblib import JobLibConfig
+from hyfi.joblib import JobLib
 
 
 def batcher_test(backend):
     print(f"Testing backend: {backend}")
-    joblib = JobLibConfig(backend=backend, num_workers=2, minibatch_size=2)
+    joblib = JobLib(backend=backend, num_workers=2, minibatch_size=2)
     # b = Batcher(minibatch_size=2, backend=backend, procs=2)
     joblib.initialize()
     b = joblib._batcher_instance_

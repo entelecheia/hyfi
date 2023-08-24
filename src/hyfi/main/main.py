@@ -293,7 +293,7 @@ class HyFI(
         return Variables(**kwargs)
 
     @staticmethod
-    def JobLibConfig(**kwargs) -> JobLib:
+    def JobLib(**kwargs) -> JobLib:
         """
         Return the joblib pipe.
 
@@ -319,7 +319,7 @@ class HyFI(
         return Env(**kwargs)
 
     @staticmethod
-    def TaskConfig(**kwargs) -> Task:
+    def Task(**kwargs) -> Task:
         """
         Return the TaskConfig.
 
@@ -332,7 +332,7 @@ class HyFI(
         return Task(**kwargs)
 
     @staticmethod
-    def WorkflowConfig(**kwargs) -> Workflow:
+    def Workflow(**kwargs) -> Workflow:
         """
         Return the WorkflowConfig.
 
@@ -414,13 +414,13 @@ class HyFI(
                 cmd_name = "copy_conf"
 
         if cmd_name == "run_workflow":
-            workflow = HyFI.WorkflowConfig(**config)
+            workflow = HyFI.Workflow(**config)
             HyFI.run_workflow(workflow, dryrun=dryrun)
         elif cmd_name == "run_task":
             project = (
                 HyFI.initialize(**config["project"]) if "project" in config else None
             )
-            task = HyFI.TaskConfig(**config["task"])
+            task = HyFI.Task(**config["task"])
             HyFI.run_task(task, project=project, dryrun=dryrun)
         elif cmd_name == "copy_conf":
             copier_cfg = config["copier"]

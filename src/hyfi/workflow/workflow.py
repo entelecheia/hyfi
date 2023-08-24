@@ -9,7 +9,7 @@ from hyfi.pipeline.config import (
     get_running_configs,
 )
 from hyfi.project import Project
-from hyfi.task import TaskConfig
+from hyfi.task import Task
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
 
@@ -25,7 +25,7 @@ class WorkflowConfig(BaseModel):
 
     workflow_name: str = _config_name_
     project: Optional[Project] = None
-    task: Optional[TaskConfig] = None
+    task: Optional[Task] = None
     tasks: Optional[List[Union[str, Dict]]] = []
     pipelines: Optional[List[Union[str, Dict]]] = []
     verbose: bool = False
@@ -46,13 +46,13 @@ class WorkflowConfig(BaseModel):
                 if task is not None and getattr(task, "__call__", None):
                     return task
             else:
-                task = TaskConfig(**config)
+                task = Task(**config)
                 task.name = rc.uses
                 return task
         return None
 
     def get_task(self):
-        return self.task or TaskConfig()
+        return self.task or Task()
 
     def run(self):
         """
@@ -66,11 +66,11 @@ class WorkflowConfig(BaseModel):
                 task = self.get_running_task(rc)
                 task_name = (
                     task.task_name
-                    if isinstance(task, TaskConfig)
+                    if isinstance(task, Task)
                     else getattr(task, "_config_name_", "unknown")
                 )
                 logger.info("Running task [%s] with [%s]", task_name, rc)
-                if isinstance(task, TaskConfig):
+                if isinstance(task, Task):
                     # Run the task if verbose is true.
                     task.run()
                 elif task is not None and getattr(task, "__call__", None):

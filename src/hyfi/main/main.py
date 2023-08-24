@@ -19,7 +19,7 @@ from hyfi.joblib import BATCHER, JobLib
 from hyfi.pipeline import PIPELINEs
 from hyfi.project import Project
 from hyfi.task import Task
-from hyfi.workflow import WorkflowConfig
+from hyfi.workflow import Workflow
 
 from .config import GlobalConfigResolver, HyFIConfig, global_config
 
@@ -332,7 +332,7 @@ class HyFI(
         return Task(**kwargs)
 
     @staticmethod
-    def WorkflowConfig(**kwargs) -> WorkflowConfig:
+    def WorkflowConfig(**kwargs) -> Workflow:
         """
         Return the WorkflowConfig.
 
@@ -342,7 +342,7 @@ class HyFI(
         Returns:
             WorkflowConfig: An instance of the WorkflowConfig class.
         """
-        return WorkflowConfig(**kwargs)
+        return Workflow(**kwargs)
 
     ###############################
     # Pipeline related functions

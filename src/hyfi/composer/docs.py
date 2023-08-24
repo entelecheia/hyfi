@@ -35,6 +35,7 @@ class DocGenerator(BaseModel):
         generate_reference_docs: Generates reference documentation for modules.
         write_ref_doc: Writes reference documentation for a module.
         generate_config_docs: Generates configuration documentation for directories.
+        write_config_doc: Writes configuration documentation for a directory.
 
     Example:
         ```python

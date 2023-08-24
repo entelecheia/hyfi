@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Optional, Union
 
 from hyfi.composer import BaseModel, Composer, model_validator
 from hyfi.pipeline.config import (
-    PipelineConfig,
+    Pipeline,
     Pipelines,
-    RunningConfig,
+    Running,
     RunningTasks,
     get_running_configs,
 )
@@ -38,7 +38,7 @@ class WorkflowConfig(BaseModel):
     def get_running_tasks(self) -> RunningTasks:
         return get_running_configs(self.tasks or [])
 
-    def get_running_task(self, rc: RunningConfig) -> Any:
+    def get_running_task(self, rc: Running) -> Any:
         config = getattr(self, rc.uses, None)
         if rc.uses and isinstance(config, dict):
             if Composer.is_instantiatable(config):
@@ -111,7 +111,7 @@ class WorkflowConfig(BaseModel):
         pipelines: Pipelines = []
         for name in self.pipelines:
             if isinstance(name, str) and isinstance(getattr(self, name), dict):
-                pipeline = PipelineConfig(**getattr(self, name))
+                pipeline = Pipeline(**getattr(self, name))
                 if not pipeline.name:
                     pipeline.name = name
                 pipelines.append(pipeline)

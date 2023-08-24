@@ -3,7 +3,7 @@ A class to run a pipeline.
 """
 from typing import Any, Dict, Optional, Union
 
-from hyfi.task import TaskConfig
+from hyfi.task import Task
 from hyfi.utils.logging import LOGGING
 from hyfi.workflow import WorkflowConfig
 
@@ -21,7 +21,7 @@ class PIPELINEs:
     def run_pipeline(
         config: Union[Dict, Pipeline],
         initial_object: Optional[Any] = None,
-        task: Optional[TaskConfig] = None,
+        task: Optional[Task] = None,
     ) -> Any:
         """
         Run a pipeline given a config
@@ -35,7 +35,7 @@ class PIPELINEs:
             The result of the pipeline
         """
         if task is None:
-            task = TaskConfig()
+            task = Task()
         return task.run_pipeline(config, initial_object)
 
     @staticmethod
@@ -57,7 +57,7 @@ class PIPELINEs:
 
     @staticmethod
     def run_task(
-        task: TaskConfig,
+        task: Task,
         dryrun: bool = False,
     ):
         """

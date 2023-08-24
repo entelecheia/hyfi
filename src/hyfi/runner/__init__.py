@@ -1,3 +1,3 @@
-from .base import BaseRunner
+from .base import Runner
 
-__all__ = ["BaseRunner"]
+__all__ = ["Runner"]

@@ -1,10 +1,10 @@
-from hyfi.runner.base import BaseRunner, TestRunner
+from hyfi.runner.base import Runner, TestRunner
 from hyfi import HyFI
 
 
 def test_runner() -> None:
     """Test runner"""
-    print(BaseRunner.generate_config())
+    print(Runner.generate_config())
     print(TestRunner().load_args.kwargs)
     cfg = HyFI.compose("runner=__test__")
     cfg.calls = ["hello", "world"]

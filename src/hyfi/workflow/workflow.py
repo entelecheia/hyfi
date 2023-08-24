@@ -8,7 +8,7 @@ from hyfi.pipeline.config import (
     RunningTasks,
     get_running_configs,
 )
-from hyfi.project import ProjectConfig
+from hyfi.project import Project
 from hyfi.task import TaskConfig
 from hyfi.utils.contexts import elapsed_timer
 from hyfi.utils.logging import LOGGING
@@ -24,7 +24,7 @@ class WorkflowConfig(BaseModel):
     _auto_populate_: bool = True
 
     workflow_name: str = _config_name_
-    project: Optional[ProjectConfig] = None
+    project: Optional[Project] = None
     task: Optional[TaskConfig] = None
     tasks: Optional[List[Union[str, Dict]]] = []
     pipelines: Optional[List[Union[str, Dict]]] = []

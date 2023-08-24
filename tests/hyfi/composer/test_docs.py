@@ -14,5 +14,5 @@ def test_docs_generate_refs():
 
 
 if __name__ == "__main__":
-    # test_docs_generate_configs()
+    test_docs_generate_configs()
     test_docs_generate_refs()

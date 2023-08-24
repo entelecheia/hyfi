@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional, Union
 
 from hyfi.task import Task
 from hyfi.utils.logging import LOGGING
-from hyfi.workflow import WorkflowConfig
+from hyfi.workflow import Workflow
 
 from .config import Pipe, Pipeline, run_pipe
 
@@ -73,7 +73,7 @@ class PIPELINEs:
         task.run()
 
     @staticmethod
-    def run_workflow(workflow: WorkflowConfig, dryrun: bool = False):
+    def run_workflow(workflow: Workflow, dryrun: bool = False):
         """
         Run the tasks specified in the workflow
 

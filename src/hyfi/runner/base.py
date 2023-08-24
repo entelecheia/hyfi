@@ -9,7 +9,7 @@ from hyfi.utils.logging import LOGGING
 logger = LOGGING.getLogger(__name__)
 
 
-class BaseRunner(BatchTaskConfig):
+class Runner(BatchTaskConfig):
     _config_group_: str = "/runner"
     _config_name_: str = "__init__"
 
@@ -49,7 +49,7 @@ class BaseRunner(BatchTaskConfig):
                 )
 
 
-class TestRunner(BaseRunner):
+class TestRunner(Runner):
     _config_name_: str = "__test__"
     load_args: Run = Run(_config_name_="load_data")
 

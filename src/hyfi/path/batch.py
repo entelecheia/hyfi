@@ -2,12 +2,12 @@ from pathlib import Path
 
 from hyfi.utils.logging import LOGGING
 
-from .task import TaskPathConfig
+from .task import TaskPath
 
 logger = LOGGING.getLogger(__name__)
 
 
-class BatchPathConfig(TaskPathConfig):
+class BatchPath(TaskPath):
     _config_name_: str = "__batch__"
 
     batch_name: str = "demo-batch"

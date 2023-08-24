@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 
 from omegaconf import DictConfig
 
-from hyfi.about import AboutConfig
+from hyfi.about import About
 from hyfi.composer import (
     BaseModel,
     ConfigDict,
@@ -75,7 +75,7 @@ class GlobalConfig(UTILs):
 
     __config__: Optional[HyFIConfig] = None
 
-    _about_: Optional[AboutConfig] = None
+    _about_: Optional[About] = None
     _project_: Optional[ProjectConfig] = None
     _version_: str = PrivateAttr(global_hyfi.version)
 
@@ -84,9 +84,9 @@ class GlobalConfig(UTILs):
             self.__config__ = HyFIConfig(**config_kwargs)
 
     @property
-    def about(self) -> AboutConfig:
+    def about(self) -> About:
         if self._about_ is None:
-            self._about_ = AboutConfig()
+            self._about_ = About()
         return self._about_
 
     @property
@@ -210,7 +210,7 @@ class GlobalConfig(UTILs):
                 else global_hyfi.package_name
             )
             kwargs = {"_config_name_": config_name}
-        self._about_ = AboutConfig(**kwargs)
+        self._about_ = About(**kwargs)
         pkg_name = self.package_name
         name = self.app_name
         print()

@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.32.2 (2023-08-25)
+
+### Fix
+
+* **hyfi:** Improved about method in GlobalConfig class; remove conditional in application name method ([`c4af792`](https://github.com/entelecheia/hyfi/commit/c4af792e5678e4e4ec1d4bbdc24b7afa2168ded4))
+
 ## v1.32.1 (2023-08-24)
 
 ### Fix

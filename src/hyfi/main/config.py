@@ -86,7 +86,13 @@ class GlobalConfig(UTILs):
     @property
     def about(self) -> About:
         if self._about_ is None:
-            self._about_ = About()
+            config_name = (
+                "__init__"
+                if global_hyfi.package_name == "hyfi"
+                else global_hyfi.package_name
+            )
+            kwargs = {"_config_name_": config_name}
+            self._about_ = About(**kwargs)
         return self._about_
 
     @property
@@ -193,7 +199,7 @@ class GlobalConfig(UTILs):
         """
         Get the name of the application.
         """
-        return self.about.name if self.about else global_hyfi.hyfi_name
+        return self.about.name
 
     @property
     def package_name(self):

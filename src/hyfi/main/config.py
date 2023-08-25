@@ -109,6 +109,10 @@ class GlobalConfig(UTILs):
         global_workspace_name: Optional[str] = None,
         num_workers: Optional[int] = None,
         logging_level: Optional[str] = None,
+        plugins: Optional[List[str]] = None,
+        user_config_path: Optional[str] = None,
+        dotenv_file: Optional[str] = None,
+        secrets_dir: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
@@ -127,14 +131,29 @@ class GlobalConfig(UTILs):
             global_workspace_name: Name of the global hierachical workspace directory.
             num_workers: Number of workers to run.
             log_level: Log level for the log.
+            plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
+            user_config_path: Path to the user configuration directory. e.g. `./config`
+            config_dirname: Name of the configuration directory. e.g. `conf`
+            dotenv_file: Name of the dotenv file. e.g. `.env`
+            secrets_dir: Name of the secrets directory. e.g. `secrets`
+            reinit: Whether to reinitialize the global config.
             autotime: Whether to automatically set time and / or keep track of run times.
             retina: Whether to use retina or not.
             verbose: Enables or disables logging
         """
+        if self.project and not reinit:
+            return
         # Set the log level to the given log level.
         if logging_level:
             GlobalConfig.setLogger(logging_level)
             logger.setLevel(logging_level)
+
+        global_hyfi.reinitialize(
+            plugins=plugins,
+            user_config_path=user_config_path,
+            dotenv_file=dotenv_file,
+            secrets_dir=secrets_dir,
+        )
 
         # Load the extentions for the autotime extension.
         if autotime:
@@ -142,8 +161,6 @@ class GlobalConfig(UTILs):
         # Set the retina matplotlib formats.
         if retina:
             GlobalConfig.set_matplotlib_formats("retina")
-        if self.project and not reinit:
-            return
         if project_name:
             project_kwargs["project_name"] = project_name
         if project_description:

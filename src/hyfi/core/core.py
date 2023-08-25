@@ -83,13 +83,8 @@ class GlobalHyFIConfig(BaseModel):
     ) -> None:
         """
         Initializes the global HyFI instance.
-
         This function should be called before any other HyFI function.
-
         A plugin is a python module which contains a configuration module.
-
-        Be careful!
-        It does not check if the plugin is importable.
 
         Args:
             package_path: Path to the package root folder. e.g. `./src/hyfi`
@@ -125,6 +120,31 @@ class GlobalHyFIConfig(BaseModel):
                 setattr(self, key, value)
             else:
                 logger.warning("Invalid key: %s", key)
+
+    def reinitialize(
+        self,
+        plugins: Optional[List[str]] = None,
+        user_config_path: Optional[str] = None,
+        dotenv_file: Optional[str] = None,
+        secrets_dir: Optional[str] = None,
+    ) -> None:
+        """
+        Re-initializes the global HyFI instance.
+
+        Args:
+            plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
+            user_config_path: Path to the user configuration directory. e.g. `./config`
+            dotenv_file: Name of the dotenv file. e.g. `.env`
+            secrets_dir: Name of the secrets directory. e.g. `secrets`
+        """
+        if plugins:
+            self.__plugins__ = self.init_plugins(plugins)
+        if user_config_path:
+            self.__user_config_path__ = user_config_path
+        if dotenv_file:
+            self.__dotenv_file__ = dotenv_file
+        if secrets_dir:
+            self.__secrets_dir__ = secrets_dir
 
     @property
     def dotenv_file(self) -> str:

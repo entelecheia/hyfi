@@ -147,6 +147,10 @@ class HyFI(
         global_workspace_name: Optional[str] = None,
         num_workers: Optional[int] = None,
         logging_level: Optional[str] = None,
+        plugins: Optional[List[str]] = None,
+        user_config_path: Optional[str] = None,
+        dotenv_file: Optional[str] = None,
+        secrets_dir: Optional[str] = None,
         reinit: bool = True,
         autotime: bool = True,
         retina: bool = True,
@@ -165,6 +169,12 @@ class HyFI(
             global_workspace_name: Name of the global hierachical workspace directory.
             num_workers: Number of workers to run.
             logging_level: Log level for the log.
+            plugins: A list of plugins to load. e.g. `["hyfi.conf"]`
+            user_config_path: Path to the user configuration directory. e.g. `./config`
+            config_dirname: Name of the configuration directory. e.g. `conf`
+            dotenv_file: Name of the dotenv file. e.g. `.env`
+            secrets_dir: Name of the secrets directory. e.g. `secrets`
+            reinit: Whether to reinitialize the global config.
             autotime: Whether to automatically set time and / or keep track of run times.
             retina: Whether to use retina or not.
             verbose: Enables or disables logging
@@ -178,6 +188,10 @@ class HyFI(
             global_workspace_name=global_workspace_name,
             num_workers=num_workers,
             logging_level=logging_level,
+            plugins=plugins,
+            user_config_path=user_config_path,
+            dotenv_file=dotenv_file,
+            secrets_dir=secrets_dir,
             reinit=reinit,
             autotime=autotime,
             retina=retina,
@@ -209,13 +223,8 @@ class HyFI(
     ) -> None:
         """
         Initializes the global HyFI instance.
-
         This function should be called before any other HyFI function.
-
         A plugin is a python module which contains a configuration module.
-
-        Be careful!
-        It does not check if the plugin is importable.
 
         Args:
             package_path: Path to the package root folder. e.g. `./src/hyfi`

@@ -1,5 +1,14 @@
 <!--next-version-placeholder-->
 
+## v1.33.0 (2023-08-25)
+
+### Feature
+
+* **tests:** Add user_config_path in initialize method and compose workflow test configuration ([`8518905`](https://github.com/entelecheia/hyfi/commit/8518905a9218304e0f09cc31452c1411e82c3f85))
+* **HyFI:** Add plugin and path options to main class ([`86b6e64`](https://github.com/entelecheia/hyfi/commit/86b6e6494d479b2736987214c43ce3d7c253546a))
+* **config:** Add new optional parameters in GlobalConfig class, reinitialize with new parameters in GlobalConfig class ([`60945c9`](https://github.com/entelecheia/hyfi/commit/60945c97e1ba73681a1e83e48986d9a33dffcac0))
+* **core:** Add reinitialize method to GlobalHyFIConfig class ([`531de35`](https://github.com/entelecheia/hyfi/commit/531de35aa1ecb621ffbd4452fc70e53d06abd0cf))
+
 ## v1.32.2 (2023-08-25)
 
 ### Fix

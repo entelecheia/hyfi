@@ -62,6 +62,12 @@ Config location: `conf/run`
 {% include '../../src/hyfi/conf/run/dataframe_split_str_column.yaml' %}
 ```
 
+## `dict_to_dataframe.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/run/dict_to_dataframe.yaml' %}
+```
+
 ## `filter_and_sample_data.yaml`
 
 ```yaml
@@ -108,6 +114,12 @@ Config location: `conf/run`
 
 ```yaml
 {% include '../../src/hyfi/conf/run/merge_dataframes.yaml' %}
+```
+
+## `records_to_dataframe.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/run/records_to_dataframe.yaml' %}
 ```
 
 ## `sample_data.yaml`

@@ -98,6 +98,12 @@ Config location: `conf/pipe`
 {% include '../../src/hyfi/conf/pipe/dataset_to_pandas.yaml' %}
 ```
 
+## `dict_to_dataframe.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/dict_to_dataframe.yaml' %}
+```
+
 ## `filter_and_sample_data.yaml`
 
 ```yaml
@@ -144,6 +150,12 @@ Config location: `conf/pipe`
 
 ```yaml
 {% include '../../src/hyfi/conf/pipe/merge_dataframes.yaml' %}
+```
+
+## `records_to_dataframe.yaml`
+
+```yaml
+{% include '../../src/hyfi/conf/pipe/records_to_dataframe.yaml' %}
 ```
 
 ## `sample_data.yaml`

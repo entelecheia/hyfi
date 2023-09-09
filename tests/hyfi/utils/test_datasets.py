@@ -52,7 +52,17 @@ def test_data_load_and_concat():
     print(concated_data.tail())
 
 
+def test_dataset_utils():
+    HyFI.generate_pipe_config(
+        HyFI.dict_to_dataframe,
+    )
+    HyFI.generate_pipe_config(
+        HyFI.records_to_dataframe,
+    )
+
+
 if __name__ == "__main__":
     test_datasets()
     test_dataframe_load_and_save()
     test_data_load_and_concat()
+    test_dataset_utils()

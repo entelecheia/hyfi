@@ -41,12 +41,12 @@ repos:
         stages: [commit-msg]
         language: system
         require_serial: true
-      - id: black
-        name: black
-        entry: black
-        require_serial: true
-        language: system
-        types: [python]
+      # - id: black
+      #   name: black
+      #   entry: black
+      #   require_serial: true
+      #   language: system
+      #   types: [python]
       # Prevent committing .rej files
       - id: forbidden-files
         name: forbidden files

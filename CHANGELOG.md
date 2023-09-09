@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.34.0 (2023-09-09)
+
+### Feature
+
+* **docs:** Add dict_to_dataframe and records_to_dataframe sections ([`df849ed`](https://github.com/entelecheia/hyfi/commit/df849ed585b4021789fbe15cbe6fba81aebb2088))
+* **hyfi:** Add dict_to_dataframe and records_to_dataframe configurations ([`1135657`](https://github.com/entelecheia/hyfi/commit/11356575b654d1ead53e4a153abf3d916d053176))
+
 ## v1.33.0 (2023-08-25)
 
 ### Feature

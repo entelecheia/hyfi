@@ -1227,18 +1227,18 @@ protobuf = ["grpcio-tools (>=1.57.0)"]
 
 [[package]]
 name = "huggingface-hub"
-version = "0.17.3"
+version = "0.18.0"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "huggingface_hub-0.17.3-py3-none-any.whl", hash = "sha256:545eb3665f6ac587add946e73984148f2ea5c7877eac2e845549730570c1933a"},
-    {file = "huggingface_hub-0.17.3.tar.gz", hash = "sha256:40439632b211311f788964602bf8b0d9d6b7a2314fba4e8d67b2ce3ecea0e3fd"},
+    {file = "huggingface_hub-0.18.0-py3-none-any.whl", hash = "sha256:ee0b6b68acbf6aeb6d083ea081e981c277a1104b82ab67fdf6780ff5396830af"},
+    {file = "huggingface_hub-0.18.0.tar.gz", hash = "sha256:10eda12b9c1cfa800b4b7c096b3ace8843734c3f28d69d1c243743fb7d7a2e81"},
 ]
 
 [package.dependencies]
 filelock = "*"
-fsspec = "*"
+fsspec = ">=2023.5.0"
 packaging = ">=20.9"
 pyyaml = ">=5.1"
 requests = "*"
@@ -4103,4 +4103,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1, <3.12"
-content-hash = "e61c55a6a4c6c4293f3fd54fdc15c06576f91216bda137a444d86f2fab81b508"
+content-hash = "8382848b86f818d69a4b8f1b588d423810d28715083a0073962360f342978a0b"

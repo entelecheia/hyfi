@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v1.34.1 (2023-11-04)
+
+### Fix
+
+* **hyfi-main-config:** Replace FieldValidationInfo with ValidationInfo ([`c3137cd`](https://github.com/entelecheia/hyfi/commit/c3137cd720fe4a69049d05925939fa0c6e2efc75))
+* **batch:** Replace FieldValidationInfo with ValidationInfo ([`d9b6a34`](https://github.com/entelecheia/hyfi/commit/d9b6a345dee4d796ac10a34b07697f1acef1cba3))
+* **composer:** Replace FieldValidationInfo with ValidationInfo ([`21369f8`](https://github.com/entelecheia/hyfi/commit/21369f85371eff2634ef800b65e78337f753711a))
+
 ## v1.34.0 (2023-09-09)
 
 ### Feature

@@ -22,7 +22,7 @@ import random
 from pathlib import Path
 from typing import Optional
 
-from hyfi.composer import BaseConfig, FieldValidationInfo, field_validator
+from hyfi.composer import BaseConfig, ValidationInfo, field_validator
 from hyfi.utils.logging import LOGGING
 
 logger = LOGGING.getLogger(__name__)
@@ -117,7 +117,7 @@ class Batch(BaseConfig):
         return v if v is not None else -1
 
     @field_validator("batch_num_auto", mode="before")
-    def _validate_batch_num_auto(cls, v, info: FieldValidationInfo):
+    def _validate_batch_num_auto(cls, v, info: ValidationInfo):
         """
         Validates the batch number auto flag.
 
@@ -131,13 +131,13 @@ class Batch(BaseConfig):
         return batch_num is None or batch_num < 0
 
     @field_validator("seed")
-    def _validate_seed(cls, v, info: FieldValidationInfo):
+    def _validate_seed(cls, v, info: ValidationInfo):
         """
         Validates the seed.
 
         Args:
             v (int): Seed.
-            info (FieldValidationInfo): Validation information.
+            info (ValidationInfo): Validation information.
 
         Returns:
             int: Validated seed.

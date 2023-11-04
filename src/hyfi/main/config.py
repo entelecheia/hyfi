@@ -10,8 +10,8 @@ from hyfi.about import About
 from hyfi.composer import (
     BaseModel,
     ConfigDict,
-    FieldValidationInfo,
     PrivateAttr,
+    ValidationInfo,
     field_validator,
 )
 from hyfi.core import global_hyfi
@@ -58,7 +58,7 @@ class HyFIConfig(BaseModel, UTILs):
     )  # type: ignore
 
     @field_validator("logging_level")
-    def _validate_logging_level(cls, v, info: FieldValidationInfo):
+    def _validate_logging_level(cls, v, info: ValidationInfo):
         """
         Validate and set the logging level
         """

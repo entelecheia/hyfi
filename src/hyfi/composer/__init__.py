@@ -1,9 +1,9 @@
 from pydantic import (
     ConfigDict,
     Field,
-    FieldValidationInfo,
     PrivateAttr,
     SecretStr,
+    ValidationInfo,
     field_validator,
     model_validator,
 )
@@ -25,7 +25,6 @@ __all__ = [
     "DocGenerator",
     "field_validator",
     "Field",
-    "FieldValidationInfo",
     "GENERATOR",
     "model_validator",
     "PipeTargetTypes",
@@ -34,4 +33,5 @@ __all__ = [
     "SecretStr",
     "SettingsConfigDict",
     "SpecialKeys",
+    "ValidationInfo",
 ]

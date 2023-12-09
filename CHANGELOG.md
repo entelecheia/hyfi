@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v1.35.0 (2023-12-09)
+
+### Feature
+
+* **dependencies:** Bemp the minimum python version to 3.9 ([`89d9ddc`](https://github.com/entelecheia/hyfi/commit/89d9ddc861ae479bd97b574c37bef6dd08dc9c60))
+
+### Fix
+
+* **pyproject.toml:** Update 'black' dependency version and 'exclude' rule to 'extend-exclude' ([`3a818d6`](https://github.com/entelecheia/hyfi/commit/3a818d6409047272e28bc72eea800c9fde805fb6))
+
 ## v1.34.1 (2023-11-04)
 
 ### Fix

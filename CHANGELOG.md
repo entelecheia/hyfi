@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.35.1 (2023-12-10)
+
+### Fix
+
+* **dependencies:** Upgrade pandas to <=2.1.4, fix numpy version to <=1.26.2 and >=1.26.0, upgrade numba to ^0.58.0 and upgrade cryptography to ^41.0.7. ([`2c5547d`](https://github.com/entelecheia/hyfi/commit/2c5547d4aba50b9668c67ad3bb97089efb558cd3))
+
 ## v1.35.0 (2023-12-09)
 
 ### Feature

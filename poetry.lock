@@ -1132,13 +1132,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gdown"
-version = "4.6.6"
+version = "4.7.1"
 description = "Google Drive direct download of big files."
 optional = false
 python-versions = "*"
 files = [
-    {file = "gdown-4.6.6-py3-none-any.whl", hash = "sha256:3f921fdaa428cd37db5334332c38e6ec9e1037a0cc2c9f0b6b0de03f9b879985"},
-    {file = "gdown-4.6.6.tar.gz", hash = "sha256:33dc0dc2927b2dcfb8bd6bb300c17b2809a917aa9553d6a9feaafc0cc695d85d"},
+    {file = "gdown-4.7.1-py3-none-any.whl", hash = "sha256:65d495699e7c2c61af0d0e9c32748fb4f79abaf80d747a87456c7be14aac2560"},
+    {file = "gdown-4.7.1.tar.gz", hash = "sha256:347f23769679aaf7efa73e5655270fcda8ca56be65eb84a4a21d143989541045"},
 ]
 
 [package.dependencies]
@@ -4217,4 +4217,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9, <=3.12"
-content-hash = "fd8ca94e19270a68d3c52115133c11e65cf8f958b93f2f00c1bff3014ca5a7b3"
+content-hash = "9dcc613a5fbbb2797ac91dc588a625a6a6a37f16e81155e996ff6fcd4d27fea2"

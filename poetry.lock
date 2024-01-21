@@ -1122,21 +1122,23 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gdown"
-version = "4.7.3"
-description = "Google Drive direct download of big files."
+version = "5.0.0"
+description = "Google Drive Public File/Folder Downloader"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "gdown-4.7.3-py3-none-any.whl", hash = "sha256:aeb7b979b35efd007d0c12fee17350f007aeb5fa84a9def09381d765075ba9ce"},
-    {file = "gdown-4.7.3.tar.gz", hash = "sha256:37edc3a0edda1a7fe5ebcc631c3aad0612582766460630ee52f481ba1ec7aefe"},
+    {file = "gdown-5.0.0-py3-none-any.whl", hash = "sha256:f8c709a07262054ad8076ce718700ac1cc708617b482844c55281d4be4826412"},
+    {file = "gdown-5.0.0.tar.gz", hash = "sha256:ac3142150a4178a9fb7a3a536c9df9590e488c2e6fa02c3ed391d26a6fc19527"},
 ]
 
 [package.dependencies]
 beautifulsoup4 = "*"
 filelock = "*"
 requests = {version = "*", extras = ["socks"]}
-six = "*"
 tqdm = "*"
+
+[package.extras]
+test = ["build", "mypy", "pytest", "ruff", "twine", "types-requests"]
 
 [[package]]
 name = "gitdb"
@@ -3117,6 +3119,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -4087,4 +4090,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9, <=3.12.1"
-content-hash = "1a6950711a8aef260f63305bf4250161c8babe0772813ab4898e9672228ce61a"
+content-hash = "c74a244d23d039bc6d8703643cdec29bb5895dd619b56466172bb8265bd8e5fe"

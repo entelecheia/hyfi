@@ -1122,13 +1122,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gdown"
-version = "5.0.0"
+version = "5.0.1"
 description = "Google Drive Public File/Folder Downloader"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gdown-5.0.0-py3-none-any.whl", hash = "sha256:f8c709a07262054ad8076ce718700ac1cc708617b482844c55281d4be4826412"},
-    {file = "gdown-5.0.0.tar.gz", hash = "sha256:ac3142150a4178a9fb7a3a536c9df9590e488c2e6fa02c3ed391d26a6fc19527"},
+    {file = "gdown-5.0.1-py3-none-any.whl", hash = "sha256:3f595fcfd4b1bccd5cf73453f60984c5fa1c18eed499277a52b23337238c2670"},
+    {file = "gdown-5.0.1.tar.gz", hash = "sha256:173557b4d33aad9f7dc75ce2ff963d8b313f36371e15da4b5ebb35ac6c7d5af6"},
 ]
 
 [package.dependencies]
@@ -4064,4 +4064,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9, <=3.12.1"
-content-hash = "55934269dcb31f0172785c5f704128f100371e5c3549796d4d5110bba89d5a0f"
+content-hash = "03f54f02d21c50992771c7f45ef3a033aa86414e971d9d417d5f30f4de9e2b12"

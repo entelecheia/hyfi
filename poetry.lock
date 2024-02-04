@@ -1122,13 +1122,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gdown"
-version = "5.0.1"
+version = "5.1.0"
 description = "Google Drive Public File/Folder Downloader"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gdown-5.0.1-py3-none-any.whl", hash = "sha256:3f595fcfd4b1bccd5cf73453f60984c5fa1c18eed499277a52b23337238c2670"},
-    {file = "gdown-5.0.1.tar.gz", hash = "sha256:173557b4d33aad9f7dc75ce2ff963d8b313f36371e15da4b5ebb35ac6c7d5af6"},
+    {file = "gdown-5.1.0-py3-none-any.whl", hash = "sha256:421530fd238fa15d41ba43219a79fdc28efe8ac11022173abad333701b77de2c"},
+    {file = "gdown-5.1.0.tar.gz", hash = "sha256:550a72dc5ca2819fe4bcc15d80d05d7c98c0b90e57256254b77d0256b9df4683"},
 ]
 
 [package.dependencies]
@@ -1138,7 +1138,7 @@ requests = {version = "*", extras = ["socks"]}
 tqdm = "*"
 
 [package.extras]
-test = ["build", "mypy", "pytest", "ruff", "twine", "types-requests"]
+test = ["build", "mypy", "pytest", "pytest-xdist", "ruff", "twine", "types-requests"]
 
 [[package]]
 name = "gitdb"
@@ -4068,4 +4068,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9, <=3.12.1"
-content-hash = "5c4a79e963ddc9d8c2e4463278ee217f51f81f9f5d9ed4a321695b09a1e6d4e3"
+content-hash = "2a02e71d0e195ef86bc1a4ceed9f3ff22748a7dc0e827da5613a0ab7fe7b8e54"

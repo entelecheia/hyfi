@@ -1173,13 +1173,13 @@ test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre
 
 [[package]]
 name = "huggingface-hub"
-version = "0.21.2"
+version = "0.21.3"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "huggingface_hub-0.21.2-py3-none-any.whl", hash = "sha256:16955c2b60bcff32a0778f84b9e9ae8f61d7f003da6aa1fbb7bc897a0c37b28c"},
-    {file = "huggingface_hub-0.21.2.tar.gz", hash = "sha256:839f2fc69fc51797b76dcffa7edbf7fb1150176f74cb1dc2d87ca00e5e0b5611"},
+    {file = "huggingface_hub-0.21.3-py3-none-any.whl", hash = "sha256:b183144336fdf2810a8c109822e0bb6ef1fd61c65da6fb60e8c3f658b7144016"},
+    {file = "huggingface_hub-0.21.3.tar.gz", hash = "sha256:26a15b604e4fc7bad37c467b76456543ec849386cbca9cd7e1e135f53e500423"},
 ]
 
 [package.dependencies]
@@ -4074,4 +4074,4 @@ ipython = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9, <=3.12.1"
-content-hash = "2f3b2e8a898641d14b182daa155d19f399dacd5959db7ed1bb0394d7f77bfa53"
+content-hash = "3f695fd508ca16fc92c5c7a264820d9d0e2598155727f8857a52af1fc252fdd4"

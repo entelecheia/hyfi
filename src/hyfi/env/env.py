@@ -1,6 +1,7 @@
 """
 Configuration class for environment variables in HyFI.
 """
+
 from typing import Optional, Union
 
 from hyfi.composer import BaseSettings, Field, SecretStr

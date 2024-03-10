@@ -1,4 +1,5 @@
 """Command line interface for HyFI"""
+
 import os
 import sys
 from typing import List, Optional

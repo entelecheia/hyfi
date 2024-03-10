@@ -1,6 +1,7 @@
 """
     Pipeline Functions
 """
+
 from typing import Any
 
 import pandas as pd
@@ -61,9 +62,7 @@ def general_external_funcs(obj: Any, config: Pipe):
         obj_ = (
             _fn(**obj_arg)
             if obj_arg
-            else _fn(obj)
-            if obj is not None and config.use_pipe_obj
-            else _fn()
+            else _fn(obj) if obj is not None and config.use_pipe_obj else _fn()
         )
         # return original data if no return value to continue pipeline
         obj = obj if config.return_pipe_obj or obj_ is None else obj_
@@ -151,9 +150,7 @@ def dataframe_external_funcs(data: pd.DataFrame, config: DataframePipe):
             data_ = (
                 _fn(**data_arg)
                 if data_arg
-                else _fn(data)
-                if data is not None and config.use_pipe_obj
-                else _fn()
+                else _fn(data) if data is not None and config.use_pipe_obj else _fn()
             )
             # return original data if no return value to continue pipeline
             data = data if config.return_pipe_obj or data_ is None else data_

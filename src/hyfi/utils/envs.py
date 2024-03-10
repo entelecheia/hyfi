@@ -1,4 +1,5 @@
 """Environment variable utilities"""
+
 import os
 import sys
 from collections import defaultdict

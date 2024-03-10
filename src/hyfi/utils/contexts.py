@@ -23,9 +23,9 @@ def elapsed_timer(format_time=False):
     start = default_timer()
     # elapser = lambda: default_timer() - start
     elapser = partial(_elapser_timer, start)
-    yield lambda: str(
-        datetime.timedelta(seconds=elapser())
-    ) if format_time else elapser()
+    yield lambda: (
+        str(datetime.timedelta(seconds=elapser())) if format_time else elapser()
+    )
     end = default_timer()
     # elapser = lambda: end - start
     elapser = partial(_elapser, start, end)

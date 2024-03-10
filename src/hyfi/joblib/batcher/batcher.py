@@ -1,4 +1,5 @@
 """Batcher class for handling parallel jobs on minibatches"""
+
 import contextlib
 import multiprocessing
 from contextlib import closing

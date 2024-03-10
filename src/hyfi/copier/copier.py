@@ -111,9 +111,7 @@ class Copier:
         exclude = (
             []
             if self.exclude is None or len(self.exclude) == 0
-            else [self.exclude]
-            if isinstance(self.exclude, str)
-            else self.exclude
+            else [self.exclude] if isinstance(self.exclude, str) else self.exclude
         )
 
         test_files = ["_test_*", "__test_*"]

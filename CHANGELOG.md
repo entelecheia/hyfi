@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.35.3 (2024-03-10)
+
+### Fix
+
+* **hyfi:** Remove unnecessary blank lines ([`0fee11a`](https://github.com/entelecheia/hyfi/commit/0fee11a660aed8de3fb4484f8d6a1c95407bf939))
+
 ## v1.35.2 (2024-03-10)
 
 ### Fix

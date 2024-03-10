@@ -147,6 +147,7 @@ per-file-ignores = [
     '*:E501,E203',
     'notebook.py:F821,E501',
     'motion.py:W605,E501',
+    'config.py:E704',
 ]
 
 [tool.mypy]

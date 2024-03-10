@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.35.2 (2024-03-10)
+
+### Fix
+
+* **dependencies:** Update python version constraint ([`e7c60cd`](https://github.com/entelecheia/hyfi/commit/e7c60cd0aa89b4b99c014b26a34648d5deb45c32))
+
 ## v1.35.1 (2023-12-10)
 
 ### Fix

@@ -1,6 +1,7 @@
 """
     HiFY Base Config
 """
+
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Union
 

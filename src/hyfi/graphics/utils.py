@@ -1,4 +1,5 @@
 """Image utils."""
+
 import io
 import os
 import platform

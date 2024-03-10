@@ -7,6 +7,7 @@
 
     Other module folders are plural, e.g. `utils` instead of `util`.
 """
+
 from typing import List, Optional
 
 from hyfi.__cli__ import hydra_main, hyfi_main

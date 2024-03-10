@@ -70,8 +70,7 @@ class initialize_config:
         )
         Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
 
-    def __enter__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __enter__(self, *args: Any, **kwargs: Any) -> None: ...
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         restore_gh_from_backup(self._gh_backup)
@@ -130,9 +129,7 @@ def create_config_search_path(
         path = (
             config_module
             if config_module.startswith("pkg://")
-            else f"pkg://{config_module}"
-            if "." in config_module
-            else ""
+            else f"pkg://{config_module}" if "." in config_module else ""
         )
         append_search_path("main", path, search_path)
 

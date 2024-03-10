@@ -1,6 +1,7 @@
 """
 A class to run a pipeline.
 """
+
 from typing import Any, Dict, Optional, Union
 
 from hyfi.task import Task

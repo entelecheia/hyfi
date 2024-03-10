@@ -18,6 +18,7 @@ Example usage:
                          resume_latest=False, device="cuda", num_devices=2, num_workers=4,
                          config_yaml="config.yaml", config_json="config.json", config_dirname="configs")
 """
+
 import random
 from pathlib import Path
 from typing import Optional

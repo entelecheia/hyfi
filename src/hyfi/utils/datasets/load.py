@@ -1,6 +1,7 @@
 """
 Load data from a file or a list of files
 """
+
 import os
 from pathlib import Path
 from typing import Dict, Mapping, Optional, Sequence, Union

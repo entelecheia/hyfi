@@ -1,6 +1,7 @@
 """
     HiFY Base Model Class
 """
+
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
 

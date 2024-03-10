@@ -1,4 +1,5 @@
 """Utility functions for hyfi"""
+
 import ast
 import itertools
 import re

@@ -1,4 +1,5 @@
 """Motion image processing functions."""
+
 import os
 import subprocess
 from pathlib import Path

@@ -1,6 +1,7 @@
 """
 HyFI Base Settings Class
 """
+
 import os
 from typing import Optional, Tuple, Type
 

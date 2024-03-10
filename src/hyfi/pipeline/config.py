@@ -1,6 +1,7 @@
 """
     Configuration for HyFi Pipelines
 """
+
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from hyfi.composer import (

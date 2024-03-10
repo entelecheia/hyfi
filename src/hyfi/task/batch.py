@@ -1,6 +1,7 @@
 """
 Configuration class for batch tasks. Inherits from TaskConfig.
 """
+
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 

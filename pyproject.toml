@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyfi"
-version = "1.35.1"
+version = "1.35.3"
 description = "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
 authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
 license = "MIT"
@@ -147,6 +147,7 @@ per-file-ignores = [
     '*:E501,E203',
     'notebook.py:F821,E501',
     'motion.py:W605,E501',
+    'config.py:E704',
 ]
 
 [tool.mypy]

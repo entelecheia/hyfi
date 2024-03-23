@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Optional, Union
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from hyfi.cached_path import cached_path
 from hyfi.composer import BaseConfig, Composer
 from hyfi.copier import Copier
 from hyfi.core import GlobalHyFIResolver, global_hyfi
@@ -61,7 +60,6 @@ OmegaConf.register_new_resolver("mkdir", Composer.mkdir)
 OmegaConf.register_new_resolver("dirname", os.path.dirname)
 OmegaConf.register_new_resolver("basename", os.path.basename)
 OmegaConf.register_new_resolver("check_path", Composer.check_path)
-OmegaConf.register_new_resolver("cached_path", cached_path)
 OmegaConf.register_new_resolver(
     "lower_case_with_underscores", Composer.lower_case_with_underscores
 )

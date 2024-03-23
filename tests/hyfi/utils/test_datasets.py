@@ -62,7 +62,7 @@ def test_dataset_utils():
 
 
 if __name__ == "__main__":
-    test_datasets()
-    test_dataframe_load_and_save()
+    # test_datasets()
+    # test_dataframe_load_and_save()
     test_data_load_and_concat()
-    test_dataset_utils()
+    # test_dataset_utils()

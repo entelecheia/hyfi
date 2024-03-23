@@ -166,7 +166,7 @@ def _cached_path(
     cache_dir: str = "",
 ):
     try:
-        from cached_path import _cpath
+        import cached_path as _cpath
     except ImportError:
         _cpath = None
 

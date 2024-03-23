@@ -4,8 +4,6 @@ from pathlib import Path
 
 import gdown
 
-from hyfi.cached_path import _cached_path
-
 from .iolibs import IOLIBs
 from .logging import LOGGING
 
@@ -54,7 +52,7 @@ class CACHED:
 
         try:
             if url_or_filename.startswith("gd://"):
-                _path = IOLIBs.cached_gdown(
+                _path = CACHED.cached_gdown(
                     url_or_filename,
                     verbose=verbose,
                     extract_archive=extract_archive,
@@ -63,18 +61,8 @@ class CACHED:
                 )
                 _path = Path(_path) if isinstance(_path, str) else None
             else:
-                if _cached_path is None:
-                    raise ImportError(
-                        "Error importing required libraries 'cached-path'. "
-                        "Please install them using 'pip install cached-path' and try again."
-                    )
 
-                if cache_dir:
-                    cache_dir = str(Path(cache_dir) / "cached_path")
-                else:
-                    cache_dir = str(Path.home() / ".hyfi" / ".cache" / "cached_path")
-
-                _path = _cached_path.cached_path(
+                _path = _cached_path(
                     url_or_filename,
                     extract_archive=extract_archive,
                     force_extract=force_extract,
@@ -92,7 +80,7 @@ class CACHED:
                 return None
 
             return _parent_dir.as_posix() if return_parent_dir else _path
-        except Exception as e:
+        except (ValueError, IOError) as e:
             logger.error(e)
             return None
 
@@ -156,7 +144,7 @@ class CACHED:
 
             if extract_archive:
                 extraction_path, files = IOLIBs.extractall(
-                    cache_path, force_extract=force_extract
+                    str(cache_path), force_extract=force_extract
                 )
 
                 if not fname or not files:
@@ -169,3 +157,33 @@ class CACHED:
         else:
             logger.warning("Unknown url: %s", url)
             return None
+
+
+def _cached_path(
+    url_or_filename: str,
+    extract_archive: bool = False,
+    force_extract: bool = False,
+    cache_dir: str = "",
+):
+    try:
+        import cached_path as _cpath
+    except ImportError:
+        _cpath = None
+
+    if _cpath is None:
+        raise ImportError(
+            "Error importing required libraries 'cached-path'. "
+            "Please install them using 'pip install cached-path' and try again."
+        )
+
+    if cache_dir:
+        cache_dir = str(Path(cache_dir) / "cached_path")
+    else:
+        cache_dir = str(Path.home() / ".hyfi" / ".cache" / "cached_path")
+
+    return _cpath.cached_path(
+        url_or_filename,
+        extract_archive=extract_archive,
+        force_extract=force_extract,
+        cache_dir=cache_dir,
+    )

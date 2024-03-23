@@ -84,6 +84,7 @@ numba = "^0.58.0"
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "ipywidgets"]
 cache = ["cached-path"]
+all = ["cached-path", "ipython", "ipython-autotime", "ipywidgets", "loky", "ray", "p-tqdm", "numba"]
 
 [tool.poetry.group.dev]
 optional = true

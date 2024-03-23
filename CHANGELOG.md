@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.36.0 (2024-03-23)
+
+### Feature
+
+* **cached:** Optimize cached path function and import statement ([`f56b57e`](https://github.com/entelecheia/hyfi/commit/f56b57eb60f96f53d173668ebff91ae477cadb3c))
+
 ## v1.35.3 (2024-03-10)
 
 ### Fix

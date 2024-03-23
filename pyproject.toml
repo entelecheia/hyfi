@@ -33,52 +33,14 @@ matplotlib = "<=3.7.1"
 numpy = ">=1.26.0,<=1.26.4"
 gdown = "<=5.1.0"
 datasets = ">=2.0.0,<=2.18.0"
-
-[tool.poetry.group.cache]
-optional = true
-
-[tool.poetry.group.cache.dependencies]
-# A list of all of the optional dependencies, some of which are included in the
-# below `extras`. They can be opted into by apps.
-cached-path = "^1.6.2"
-# cached-path = "<=1.6.2"
-# requests = "^2.27.1"
-# filelock = ">=3.4,<=3.13.1"
-# rich = ">=12.1,<14.0"
-
-[tool.poetry.group.ipython]
-optional = true
-
-[tool.poetry.group.ipython.dependencies]
-# A list of all of the optional dependencies, some of which are included in the
-# below `extras`. They can be opted into by apps.
-ipython = "<=8.12.2"
-ipython-autotime = "^0.3.1"
-ipywidgets = "^8.0.6"
-
-[tool.poetry.group.loky]
-optional = true
-
-[tool.poetry.group.loky.dependencies]
-loky = "^3.4.1"
-
-[tool.poetry.group.ray]
-optional = true
-
-[tool.poetry.group.ray.dependencies]
-ray = "^2.5.1"
-
-[tool.poetry.group.p_tqdm]
-optional = true
-
-[tool.poetry.group.p_tqdm.dependencies]
-p-tqdm = "^1.4.0"
-
-[tool.poetry.group.numba]
-optional = true
-
-[tool.poetry.group.numba.dependencies]
-numba = "^0.58.0"
+cached-path = { version = "^1.6.2", optional = true }
+ipython = { version = "<=8.12.2", optional = true }
+ipython-autotime = { version = "^0.3.1", optional = true }
+ipywidgets = { version = "^8.0.6", optional = true }
+loky = { version = "^3.4.1", optional = true }
+ray = { version = "^2.5.1", optional = true }
+p-tqdm = { version = "^1.4.0", optional = true }
+numba = { version = "^0.58.0", optional = true }
 
 [tool.poetry.extras]
 ipython = ["ipython", "ipython-autotime", "ipywidgets"]

@@ -79,7 +79,7 @@ cmd = "poetry install --without dev"
 help = "install dependencies"
 
 [tool.poe.tasks.install-dev]
-cmd = "poetry install --with dev,ipython,cache"
+cmd = "poetry install --with dev --extras cache --extras ipython"
 help = "install dev dependencies"
 
 [tool.poe.tasks.update]

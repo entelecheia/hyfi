@@ -17,7 +17,7 @@ from hyfi.composer import (
 )
 from hyfi.core import global_hyfi
 from hyfi.project import Project
-from hyfi.utils import UTILs, ENVs
+from hyfi.utils import ENVs, UTILs
 
 logger = UTILs.getLogger(__name__)
 

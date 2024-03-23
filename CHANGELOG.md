@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.36.1 (2024-03-23)
+
+### Fix
+
+* **pyproject.toml:** Update optional dependencies ([`2ade60d`](https://github.com/entelecheia/hyfi/commit/2ade60df14d1cd89658f50072c93493a13214031))
+
 ## v1.36.0 (2024-03-23)
 
 ### Feature

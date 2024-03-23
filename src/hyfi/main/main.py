@@ -425,11 +425,10 @@ class HyFI(
             workflow = HyFI.Workflow(**config)
             HyFI.run_workflow(workflow, dryrun=dryrun)
         elif cmd_name == "run_task":
-            project = (
-                HyFI.initialize(**config["project"]) if "project" in config else None
-            )
+            if "project" in config:
+                HyFI.initialize(**config["project"])
             task = HyFI.Task(**config["task"])
-            HyFI.run_task(task, project=project, dryrun=dryrun)
+            HyFI.run_task(task, dryrun=dryrun)
         elif cmd_name == "copy_conf":
             copier_cfg = config["copier"]
             copier_cfg["dryrun"] = dryrun

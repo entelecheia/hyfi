@@ -17,7 +17,7 @@ from hyfi.composer import (
 )
 from hyfi.core import global_hyfi
 from hyfi.project import Project
-from hyfi.utils import UTILs
+from hyfi.utils import UTILs, ENVs
 
 logger = UTILs.getLogger(__name__)
 
@@ -27,7 +27,7 @@ __default_project_root__ = "."
 __default_workspace_name__ = "workspace"
 
 
-class HyFIConfig(BaseModel, UTILs):
+class HyFIConfig(BaseModel):
     """HyFI root config class.  This class is used to store the configuration"""
 
     _config_name_: str = "config"
@@ -86,6 +86,15 @@ class GlobalConfig(UTILs):
 
     @property
     def about(self) -> About:
+        """
+        Returns the About object associated with the configuration.
+
+        If the About object is not yet created, it will be created using the
+        configuration's package name.
+
+        Returns:
+            The About object associated with the configuration.
+        """
         if self._about_ is None:
             config_name = (
                 "__init__"
@@ -97,7 +106,13 @@ class GlobalConfig(UTILs):
         return self._about_
 
     @property
-    def project(self) -> Project:
+    def project(self) -> Optional[Project]:
+        """
+        Returns the project associated with the configuration.
+
+        Returns:
+            Optional[Project]: The project associated with the configuration, or None if no project is set.
+        """
         return self._project_
 
     def inititialize(
@@ -167,12 +182,14 @@ class GlobalConfig(UTILs):
         if project_description:
             project_kwargs["project_description"] = project_description
         if project_root:
-            project_kwargs["project_root"] = project_root
+            project_kwargs["project_root"] = ENVs.expand_posix_vars(project_root)
         if project_workspace_name:
             project_kwargs["project_workspace_name"] = project_workspace_name
         # Expand the hyfi_root environment variable.
         if global_hyfi_root:
-            project_kwargs["global_hyfi_root"] = global_hyfi_root
+            project_kwargs["global_hyfi_root"] = ENVs.expand_posix_vars(
+                global_hyfi_root
+            )
         if global_workspace_name:
             project_kwargs["global_workspace_name"] = global_workspace_name
         if num_workers:
@@ -286,6 +303,10 @@ global_config = GlobalConfig()
 
 
 class GlobalConfigResolver:
+    """
+    A class that resolves global configuration paths for HyFI.
+    """
+
     @staticmethod
     def __project_root_path__() -> str:
         """Global HyFI config path for the project root."""
@@ -300,5 +321,12 @@ class GlobalConfigResolver:
     def __get_path__(path_name: str, base_dir: Optional[str] = None) -> str:
         """
         Get the path to a directory or file.
+
+        Args:
+            path_name (str): The name of the path.
+            base_dir (Optional[str], optional): The base directory to resolve the path from. Defaults to None.
+
+        Returns:
+            str: The resolved path.
         """
         return str(global_config.get_path(path_name, base_dir=base_dir) or "")

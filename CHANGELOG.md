@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.36.3 (2024-03-24)
+
+### Fix
+
+* **docs:** Update deploy branch in deploy-docs workflow ([`a490505`](https://github.com/entelecheia/hyfi/commit/a4905057ffc5359ba6f691a223f2574ad9dd152d))
+* **config:** Open homepage link on command execution ([`54b62fd`](https://github.com/entelecheia/hyfi/commit/54b62fdd92dbc67d55277ccf1173fef1bfea1738))
+
 ## v1.36.2 (2024-03-24)
 
 ### Fix

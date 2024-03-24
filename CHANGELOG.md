@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.36.2 (2024-03-24)
+
+### Fix
+
+* **main:** Simplify project initialization in run_task command ([`eb00109`](https://github.com/entelecheia/hyfi/commit/eb0010998a6999a110ede3e035a344cc92e18fa9))
+
 ## v1.36.1 (2024-03-23)
 
 ### Fix

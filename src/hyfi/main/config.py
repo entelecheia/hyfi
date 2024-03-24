@@ -2,6 +2,7 @@
 Hyfi configuration file.
 """
 
+import webbrowser
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -262,6 +263,8 @@ class GlobalConfig(UTILs):
         print(f"{'version':11} : {self.app_version}")
         if pkg_name:
             print(f"\nExecute `{pkg_name} --help` to see what you can do with {name}")
+        if kwargs.get("_open_link_", False) and kwargs.get("homepage"):
+            webbrowser.open_new_tab(kwargs["homepage"])
 
     @property
     def project_dir(self) -> Path:

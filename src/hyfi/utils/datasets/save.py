@@ -24,6 +24,31 @@ class DSSave:
         pass
 
     @staticmethod
+    def save_dataframe(
+        data: pd.DataFrame,
+        data_file: str,
+        data_dir: Optional[str] = None,
+        columns: Optional[Sequence[str]] = None,
+        index: bool = False,
+        filetype: Optional[str] = "parquet",
+        suffix: Optional[str] = None,
+        verbose: bool = False,
+        **kwargs,
+    ):
+        """Save data to a file"""
+        DSSave.save_dataframes(
+            data,
+            data_file,
+            data_dir=data_dir,
+            columns=columns,
+            index=index,
+            filetype=filetype,
+            suffix=suffix,
+            verbose=verbose,
+            **kwargs,
+        )
+
+    @staticmethod
     def save_dataframes(
         data: Union[pd.DataFrame, dict],
         data_file: str,

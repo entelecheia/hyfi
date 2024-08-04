@@ -2598,12 +2598,12 @@ PyYAML = ">=5.1.0"
 
 [[package]]
 name = "p-tqdm"
-version = "1.4.0"
+version = "1.4.1"
 description = "Parallel processing with progress bars"
 optional = true
 python-versions = "*"
 files = [
-    {file = "p_tqdm-1.4.0.tar.gz", hash = "sha256:0d12aa223443f387244cce5e74a0aecc472d1f98189d58ccdfcda86772772bfc"},
+    {file = "p_tqdm-1.4.1.tar.gz", hash = "sha256:877f33e2418b612ad498c6c14872faa68a049d4b1f146d42ca8ada24fc0b79ec"},
 ]
 
 [package.dependencies]

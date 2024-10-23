@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.37.0 (2024-10-23)
+
+### Feature
+
+* **deps:** Update numpy version constraint to allow up to 2.0.2 ([`ce8c597`](https://github.com/entelecheia/hyfi/commit/ce8c597c601877177df93028bbf1143e99a2847d))
+
 ## v1.36.4 (2024-05-03)
 
 ### Fix

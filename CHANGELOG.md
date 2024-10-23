@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.36.4 (2024-05-03)
+
+### Fix
+
+* **datasets:** Improve save_dataframe function signature and implementation ([`1caa604`](https://github.com/entelecheia/hyfi/commit/1caa6046f4fc4f7dd6057557fb800f2dc38f4bd7))
+
 ## v1.36.3 (2024-03-24)
 
 ### Fix

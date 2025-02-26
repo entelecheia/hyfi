@@ -1,5 +1,5 @@
 """
-    HiFY Base Model Class
+HiFY Base Model Class
 """
 
 from pathlib import Path

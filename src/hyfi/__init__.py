@@ -1,11 +1,11 @@
 """
-    HyFI: Hydra Fast Interface (Hydra and Pydantic based interface framework)
+HyFI: Hydra Fast Interface (Hydra and Pydantic based interface framework)
 
-    All names of configuration folders and their counterparts folders for pydantic models
-    are singular, e.g. `conf` instead of `configs`.
-    All matching pydantic models are named `Config`, e.g. `BatchConfig` instead of `BatchConfigs`.
+All names of configuration folders and their counterparts folders for pydantic models
+are singular, e.g. `conf` instead of `configs`.
+All matching pydantic models are named `Config`, e.g. `BatchConfig` instead of `BatchConfigs`.
 
-    Other module folders are plural, e.g. `utils` instead of `util`.
+Other module folders are plural, e.g. `utils` instead of `util`.
 """
 
 from typing import List, Optional

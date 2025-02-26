@@ -1,5 +1,5 @@
 """
-    Hydra configuration management
+Hydra configuration management
 """
 
 import collections.abc

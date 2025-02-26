@@ -1,6 +1,6 @@
 """
-    This module contains the primary class for the hyfi config package, HyFI,
-    as well as various utility functions and imports.
+This module contains the primary class for the hyfi config package, HyFI,
+as well as various utility functions and imports.
 """
 
 import os

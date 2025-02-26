@@ -1,5 +1,5 @@
 """
-    Configuration for function calls.
+Configuration for function calls.
 """
 
 from pathlib import Path

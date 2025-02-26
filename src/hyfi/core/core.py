@@ -1,5 +1,5 @@
 """
-    HyFI Core Module
+HyFI Core Module
 """
 
 import os

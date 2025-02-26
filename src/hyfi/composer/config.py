@@ -1,5 +1,5 @@
 """
-    HiFY Base Config
+HiFY Base Config
 """
 
 from pathlib import Path

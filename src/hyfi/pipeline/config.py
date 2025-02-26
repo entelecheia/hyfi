@@ -1,5 +1,5 @@
 """
-    Configuration for HyFi Pipelines
+Configuration for HyFi Pipelines
 """
 
 from typing import Any, Callable, Dict, List, Optional, Union

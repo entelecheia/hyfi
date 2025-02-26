@@ -70,8 +70,6 @@ pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 ipykernel = "^6.22.0"
 flaky = "^3.7.0"
-responses = "^0.23.1"
-cryptography = "^43.0.1"
 
 [tool.poe]
 include = [".tasks.toml", ".tasks-extra.toml"]

@@ -2287,15 +2287,15 @@ files = [
 
 [[package]]
 name = "loky"
-version = "3.4.1"
+version = "3.5.1"
 description = "A robust implementation of concurrent.futures.ProcessPoolExecutor"
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 groups = ["main"]
 markers = "extra == \"all\""
 files = [
-    {file = "loky-3.4.1-py3-none-any.whl", hash = "sha256:7132da80d1a057b5917ff32c7867b65ed164aae84c259a1dbc44375791280c87"},
-    {file = "loky-3.4.1.tar.gz", hash = "sha256:66db350de68c301299c882ace3b8f06ba5c4cb2c45f8fcffd498160ce8280753"},
+    {file = "loky-3.5.1-py3-none-any.whl", hash = "sha256:434d303966a112ffed81c00c673eb33b9ba4f0b6572bc18c866d05fb387b4035"},
+    {file = "loky-3.5.1.tar.gz", hash = "sha256:bcd1d718f005d06b099da856305cb337be36f552d49794f0b86df628a885eefe"},
 ]
 
 [package.dependencies]

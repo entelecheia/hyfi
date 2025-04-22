@@ -2470,19 +2470,22 @@ files = [
 
 [[package]]
 name = "loky"
-version = "3.5.1"
+version = "3.5.2"
 description = "A robust implementation of concurrent.futures.ProcessPoolExecutor"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
 markers = "extra == \"all\""
 files = [
-    {file = "loky-3.5.1-py3-none-any.whl", hash = "sha256:434d303966a112ffed81c00c673eb33b9ba4f0b6572bc18c866d05fb387b4035"},
-    {file = "loky-3.5.1.tar.gz", hash = "sha256:bcd1d718f005d06b099da856305cb337be36f552d49794f0b86df628a885eefe"},
+    {file = "loky-3.5.2-py3-none-any.whl", hash = "sha256:b49170b3c1be6743f0c00dfeef2b7e6ff70009455aef52e25366a7fd550a45a0"},
+    {file = "loky-3.5.2.tar.gz", hash = "sha256:f42914d8fbe55fc73ce6a240f29713fe3402aabac6c13632cf2144932c9a9700"},
 ]
 
 [package.dependencies]
 cloudpickle = "*"
+
+[package.extras]
+tests = ["packaging", "psutil", "pytest"]
 
 [[package]]
 name = "markdown-it-py"

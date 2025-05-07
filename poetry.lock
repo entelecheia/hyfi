@@ -351,22 +351,22 @@ crt = ["awscrt (==0.23.8)"]
 
 [[package]]
 name = "cached-path"
-version = "1.7.2"
+version = "1.7.3"
 description = "A file utility for accessing both local and remote files through a unified interface"
 optional = true
 python-versions = ">3.8"
 groups = ["main"]
 markers = "extra == \"all\" or extra == \"cache\""
 files = [
-    {file = "cached_path-1.7.2-py3-none-any.whl", hash = "sha256:5023c88d1a7d5161f7dcd496157cfd9662193a274f129a36a70333899c8693d4"},
-    {file = "cached_path-1.7.2.tar.gz", hash = "sha256:15bbc3e1cd8ef93231610e0517103b5954a3aef8bc1088d090adf79c6d0d2791"},
+    {file = "cached_path-1.7.3-py3-none-any.whl", hash = "sha256:fe2b396b4816205c95d6e961efb35c66288966c4f96b82cd87c4fb03d4d037d1"},
+    {file = "cached_path-1.7.3.tar.gz", hash = "sha256:956d21b5ac92d64ae6d76b2a1a043c5d660e3421d513e735157d56aca9a31d8e"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.0,<2.0"
 filelock = ">=3.4,<4.0"
 google-cloud-storage = ">=1.32.0,<3.0"
-huggingface-hub = ">=0.8.1,<0.28.0"
+huggingface-hub = ">=0.8.1,<1.0"
 requests = "*"
 rich = ">=12.1,<14.0"
 

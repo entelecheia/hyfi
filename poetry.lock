@@ -357,27 +357,28 @@ crt = ["awscrt (==0.23.8)"]
 
 [[package]]
 name = "cached-path"
-version = "1.7.3"
+version = "1.8.0"
 description = "A file utility for accessing both local and remote files through a unified interface"
 optional = true
-python-versions = ">3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 markers = "extra == \"all\" or extra == \"cache\""
 files = [
-    {file = "cached_path-1.7.3-py3-none-any.whl", hash = "sha256:fe2b396b4816205c95d6e961efb35c66288966c4f96b82cd87c4fb03d4d037d1"},
-    {file = "cached_path-1.7.3.tar.gz", hash = "sha256:956d21b5ac92d64ae6d76b2a1a043c5d660e3421d513e735157d56aca9a31d8e"},
+    {file = "cached_path-1.8.0-py3-none-any.whl", hash = "sha256:e24aefa67e41722274e1ecac8453d0d908a6eabdb02cb9fafe1a99520ed1a453"},
+    {file = "cached_path-1.8.0.tar.gz", hash = "sha256:265adb13c8f2c8ec14219029e770475a1cf886eeeeec87c45195fd8718af2652"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.0,<2.0"
 filelock = ">=3.4,<4.0"
 google-cloud-storage = ">=1.32.0,<3.0"
-huggingface-hub = ">=0.8.1,<1.0"
+huggingface-hub = ">=0.8.1,<2.0"
+packaging = "*"
 requests = "*"
 rich = ">=12.1,<14.0"
 
 [package.extras]
-dev = ["Sphinx (>=6.0,<8.0)", "beaker-py (>=1.13.2,<2.0)", "black (>=23.1.0,<25.0)", "build", "flaky", "furo (==2024.1.29)", "isort (>=5.12.0,<6.0)", "mypy (>=1.6.0,<2.0)", "myst-parser (>=1.0.0,<3.0)", "packaging", "pytest", "responses (==0.21.0)", "ruff", "setuptools", "sphinx-autobuild (==2021.3.14)", "sphinx-autodoc-typehints", "sphinx-copybutton (==0.5.2)", "twine (>=1.11.0)", "types-requests", "wheel"]
+dev = ["Sphinx (>=6.0,<8.0)", "beaker-py (<3.0)", "black (>=23.1.0,<25.0)", "build", "flaky", "furo (==2024.1.29)", "isort (>=5.12.0,<6.0)", "mypy (>=1.6.0,<2.0)", "myst-parser (>=1.0.0,<3.0)", "pytest", "responses (==0.21.0)", "ruff", "setuptools", "sphinx-autobuild (==2021.3.14)", "sphinx-autodoc-typehints", "sphinx-copybutton (==0.5.2)", "twine (>=1.11.0)", "types-requests", "wheel"]
 
 [[package]]
 name = "cachetools"

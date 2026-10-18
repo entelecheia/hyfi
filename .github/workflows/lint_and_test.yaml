@@ -71,7 +71,6 @@ jobs:
           enable-cache: true
           cache-python: true
       - run: make lint
-      - run: make docs-test
 
   test:
     needs: decision

@@ -17,40 +17,88 @@ concurrency:
   group: lint-and-test-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  UV_LOCKED: "1"
+
 jobs:
-  quality:
+  # One build per commit: a main push whose tree equals a PR head that already
+  # passed this workflow skips the matrix (workspace CI standard, maru `decision`).
+  decision:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      UV_PYTHON: "3.13"
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      run_full: ${{ steps.dedupe.outputs.run_full }}
+    steps:
+      - id: dedupe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          run_full=true
+          reason="this event requires full validation"
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            reason="no successful pull request run for the same tree"
+            pr=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" \
+              --jq "[.[] | select(.merge_commit_sha == \"$GITHUB_SHA\")] | last | .head.sha // empty" 2>/dev/null)
+            if [ -n "$pr" ]; then
+              push_tree=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq .tree.sha)
+              head_tree=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$pr" --jq .tree.sha)
+              conclusion=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/lint_and_test.yaml/runs?event=pull_request&head_sha=$pr&status=completed" \
+                --jq '[.workflow_runs[]] | sort_by(.run_started_at) | last | .conclusion // ""')
+              if [ "$push_tree" = "$head_tree" ] && [ "$conclusion" = "success" ]; then
+                run_full=false
+                reason="PR head $pr passed on the identical tree $push_tree"
+              fi
+            fi
+          fi
+          echo "run_full=$run_full" >> "$GITHUB_OUTPUT"
+          echo "decision: $reason" | tee -a "$GITHUB_STEP_SUMMARY"
+
+  quality:
+    needs: decision
+    if: needs.decision.outputs.run_full == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
+          python-version: "3.13"
           enable-cache: true
-      - run: uv sync --locked
+          cache-python: true
       - run: make lint
       - run: make docs-test
 
   test:
+    needs: decision
+    if: needs.decision.outputs.run_full == 'true'
     name: Python ${{ matrix.python-version }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
-    env:
-      UV_PYTHON: ${{ matrix.python-version }}
+        include:
+          # Pure-Python package: macOS covers path handling at the support edges only.
+          - { os: macos-latest, python-version: "3.11" }
+          - { os: macos-latest, python-version: "3.15" }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
+          python-version: ${{ matrix.python-version }}
           enable-cache: true
-      - run: uv sync --locked --no-default-groups --group test
+          cache-python: true
+      - run: uv sync --no-default-groups --group test
       - run: uv run --no-sync pytest --cov --cov-report=term-missing
       - name: Installed wheel works outside the checkout
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.15'
         run: |
           uv build
           wheel="$(ls "$PWD"/dist/*.whl)"
@@ -59,9 +107,11 @@ jobs:
           uvx --from "$wheel" hyfi config show --json
 
   dependency-bounds:
+    needs: decision
+    if: needs.decision.outputs.run_full == 'true'
     name: deps ${{ matrix.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -73,11 +123,26 @@ jobs:
             python: "3.14"
             args: --prerelease allow --with 'hydra-core>=1.4.0rc1'
     env:
-      UV_PYTHON: ${{ matrix.python }}
+      UV_LOCKED: "0" # these jobs resolve on purpose
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
+          python-version: ${{ matrix.python }}
           enable-cache: true
+          cache-python: true
       - run: uv run --isolated ${{ matrix.args }} --no-default-groups --group test python -c "import hydra, omegaconf, pydantic; print(hydra.__version__, omegaconf.__version__, pydantic.VERSION)"
       - run: uv run --isolated ${{ matrix.args }} --no-default-groups --group test pytest -q
+
+  # Single required check that is green whether the matrix ran or was deduplicated.
+  ci-ok:
+    if: always()
+    needs: [decision, quality, test, dependency-bounds]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          echo "$RESULTS" | grep -Eq '"(failure|cancelled)"' && exit 1 || exit 0

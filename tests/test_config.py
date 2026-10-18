@@ -158,3 +158,17 @@ def test_removed_1x_names_point_to_migration(name):
     assert out.returncode != 0
     assert "docs/migration.md" in out.stderr
     assert "HYFI_NEVER_SET" not in os.environ
+
+
+def test_compose_emits_no_warnings(project):
+    # Hydra 1.4 deprecates version_base; compose must not trigger its migration warning.
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        compose()
+
+
+def test_workspace_interpolation_has_a_real_default(project):
+    cfg = compose(["+out=${project.workspace}/out.csv"])
+    assert cfg.out == "./workspace/out.csv"

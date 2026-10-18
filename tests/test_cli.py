@@ -98,3 +98,18 @@ def test_usage_error_exits_2(capsys):
     with pytest.raises(SystemExit) as e:
         main([])
     assert e.value.code == 2
+
+
+def test_rerun_from_elsewhere_writes_to_recorded_root(project, capsys, monkeypatch, tmp_path):
+    assert main(["run", "workflow=plug", "--json"]) == 0
+    first = json.loads(capsys.readouterr().out)
+    assert first["argv"] == ["hyfi", "run", "workflow=plug", "--json"]
+    assert first["config"]["project"]["root"] == str(project.resolve())
+    other = tmp_path / "other"
+    other.mkdir()
+    monkeypatch.chdir(other)
+    assert main(["rerun", first["run_id"], "--root", str(project), "--json"]) == 0
+    second = json.loads(capsys.readouterr().out)
+    assert (project / ".hyfi" / "runs" / second["run_id"] / "manifest.json").is_file()
+    assert not (other / ".hyfi").exists()
+    assert main(["rerun", second["run_id"], "--root", str(project)]) == 0

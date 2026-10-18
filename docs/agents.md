@@ -10,4 +10,6 @@ A safe loop for an agent:
 4. **Run**: same command without `--dry-run`. Read `status` and `steps[*].status` from the JSON output.
 5. **Reproduce**: `hyfi rerun <run_id> --json`; the manifest is at `<project.root>/.hyfi/runs/<run_id>/manifest.json`.
 
+Manifests hold the fully resolved config, so values interpolated from the environment (keys, tokens) appear there in plain text. Do not paste manifests into issues or chat.
+
 Always pass `--allow` when the config was written or changed by someone other than the person who asked for the run.

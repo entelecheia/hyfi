@@ -1,3 +1,4 @@
+import os
 import sys
 import textwrap
 from pathlib import Path
@@ -67,6 +68,6 @@ def project(tmp_path, monkeypatch):
     work = tmp_path / "work"
     work.mkdir()
     monkeypatch.chdir(work)
-    for key in [k for k in list(__import__("os").environ) if k.startswith("HYFI_")]:
+    for key in [k for k in list(os.environ) if k.startswith("HYFI_")]:
         monkeypatch.delenv(key)
     return work

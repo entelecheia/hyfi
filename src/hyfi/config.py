@@ -108,12 +108,11 @@ def compose(
         all_overrides.append(f"hydra.searchpath=[{','.join(extras)}]")
     # ponytail: clears any outer Hydra context (as 1.x did); nested use inside @hydra.main loses it.
     GlobalHydra.instance().clear()
+    version: dict[str, Any] = {} if _HYDRA_GE_14 else {"version_base": None}
     if primary.startswith("file://"):
-        init: Any = initialize_config_dir(
-            config_dir=primary.removeprefix("file://"), version_base=None
-        )
+        init: Any = initialize_config_dir(config_dir=primary.removeprefix("file://"), **version)
     else:
-        init = initialize_config_module(config_module=HYFI_CONFIG_MODULE, version_base=None)
+        init = initialize_config_module(config_module=HYFI_CONFIG_MODULE, **version)
     with init:
         return _hydra_compose(config_name=config_name, overrides=all_overrides)
 

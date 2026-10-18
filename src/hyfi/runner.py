@@ -39,6 +39,8 @@ def run_workflow(
     """
     resolved = to_dict(config)
     project, workflow = load_workflow(resolved)
+    # Record absolute paths so a rerun from another directory writes to the same project.
+    resolved["project"] = {**(resolved.get("project") or {}), **project.model_dump(mode="json")}
     manifest = RunManifest(
         rerun_of=rerun_of,
         argv=list(argv),

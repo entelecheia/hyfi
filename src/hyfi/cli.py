@@ -126,7 +126,7 @@ def cmd_run(ns: argparse.Namespace) -> int:
         overrides=ns.overrides,
         config_name=ns.config_name,
         config_dir=ns.config_dir,
-        argv=sys.argv,
+        argv=ns.argv,
         allow=allow,
     )
     return _report(manifest, ns.json)
@@ -144,7 +144,7 @@ def cmd_rerun(ns: argparse.Namespace) -> int:
         overrides=original.overrides,
         config_name=original.config_name,
         config_dir=original.config_dir,
-        argv=sys.argv,
+        argv=ns.argv,
         rerun_of=original.run_id,
         allow=allow,
     )
@@ -185,7 +185,9 @@ def build_parser() -> argparse.ArgumentParser:
     rerun = sub.add_parser("rerun", help="run a recorded config again")
     rerun.add_argument("run_id")
     rerun.add_argument(
-        "--root", help="project root holding .hyfi/runs (default: $HYFI_PROJECT_ROOT or .)"
+        "--root",
+        help="where to find .hyfi/runs (default: $HYFI_PROJECT_ROOT or .); "
+        "the rerun writes to the recorded project root",
     )
     rerun.add_argument("--dry-run", action="store_true")
     rerun.add_argument(
@@ -198,7 +200,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     logging.basicConfig(level=os.environ.get("HYFI_LOG_LEVEL", "WARNING"), stream=sys.stderr)
-    ns = build_parser().parse_args(argv)
+    args = list(sys.argv[1:] if argv is None else argv)
+    ns = build_parser().parse_args(args)
+    ns.argv = ["hyfi", *args]
     try:
         code: int = ns.func(ns)
     except Exception as e:  # report every failure the same way, then exit non-zero

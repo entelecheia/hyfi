@@ -35,7 +35,7 @@ The `project` node becomes a `hyfi.Project`:
 |---|---|---|
 | `name` | `hyfi-project` | `HYFI_PROJECT_NAME` |
 | `root` | `.` | `HYFI_PROJECT_ROOT` |
-| `workspace` | `<root>/workspace` | `HYFI_PROJECT_WORKSPACE` |
+| `workspace` | `<root>/workspace` (`${project.workspace}` in configs) | `HYFI_PROJECT_WORKSPACE` |
 
 Run manifests go to `<root>/.hyfi/runs/`.
 
@@ -69,6 +69,8 @@ hyfi rerun 20261019T010203Z-a1b2c3      # run the recorded resolved config again
 ```
 
 The manifest records the run id, status, start and end time, HyFI and Python versions, platform, argv, config name and directory, overrides, the allowlist, the fully resolved config, git SHA and dirty flag, the SHA-256 of `uv.lock`, and per-step status, seconds, and error.
+
+The manifest stores the config fully resolved, including values read from the environment or `.env` (API keys, tokens). Keep `.hyfi/` out of version control and do not share manifests of configs that interpolate secrets. Project `root` and `workspace` are recorded as absolute paths, so a rerun writes to the original project even when started elsewhere.
 
 `hyfi rerun` does not recompose: it executes the recorded config, so interpolations such as `${now:...}` keep their recorded values.
 

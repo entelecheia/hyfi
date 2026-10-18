@@ -41,17 +41,27 @@ def is_allowed(target: str, allow: Sequence[str]) -> bool:
     return any(target == p or (p.endswith(".*") and target.startswith(p[:-1])) for p in allow)
 
 
+def target_name(target: Any) -> str:
+    """The dotted name Hydra would execute for a ``_target_`` string or callable."""
+    if isinstance(target, str):
+        return target
+    module = getattr(target, "__module__", None) or ""
+    qualname = getattr(target, "__qualname__", None) or getattr(target, "__name__", repr(target))
+    return f"{module}.{qualname}" if module else str(qualname)
+
+
 def iter_targets(config: Any) -> Iterator[str]:
-    """Every ``_target_`` string in a nested config."""
-    data = to_dict(config, resolve=False)
-    stack = [data]
+    """Every ``_target_`` (string or callable) in a nested config of dicts, lists, and tuples."""
+    stack = [to_dict(config, resolve=False)]
     while stack:
         node = stack.pop()
+        if isinstance(node, DictConfig | ListConfig | BaseModel):
+            node = to_dict(node, resolve=False)
         if isinstance(node, dict):
-            if isinstance(node.get("_target_"), str):
-                yield node["_target_"]
+            if "_target_" in node:
+                yield target_name(node["_target_"])
             stack.extend(node.values())
-        elif isinstance(node, list):
+        elif isinstance(node, list | tuple):
             stack.extend(node)
 
 
@@ -156,7 +166,8 @@ def instantiate(config: Any, *args: Any, allow: Sequence[str] | None = None, **k
         config = config.model_dump(by_alias=True)
     kwargs.setdefault("_convert_", "all")
     if allow is not None:
-        check_allowed(config, allow)
+        # Hydra also builds nested targets passed at the call site, so check those too.
+        check_allowed([config, list(args), kwargs], allow)
         if _HYDRA_HAS_WHITELIST:
             kwargs["_execution_whitelist_"] = list(allow)
     return _hydra_instantiate(config, *args, **kwargs)

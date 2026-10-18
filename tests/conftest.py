@@ -22,6 +22,9 @@ PLUGIN_FILES = {
 
         def boom(*args, **kwargs):
             raise ValueError("boom")
+
+        def fail_with(msg):
+            raise ValueError(f"failed with {msg}")
     """,
     "fakeplug/conf/__init__.py": "",
     "fakeplug/conf/workflow/plug.yaml": """

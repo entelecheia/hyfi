@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import re
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any
@@ -12,6 +14,52 @@ from hyfi.config import to_dict
 from hyfi.manifest import RunManifest, git_info, lock_sha256
 from hyfi.project import Project
 from hyfi.workflow import Workflow, WorkflowError, execute
+
+ENV_REF = re.compile(r"oc\.env:\s*([A-Za-z_][A-Za-z0-9_]*)")
+MIN_REDACT_LEN = 4  # shorter values (flags, "1", ".") would mangle unrelated text
+
+
+def env_secrets(raw: Any) -> dict[str, str]:
+    """Map the current value of every env var named in an ``oc.env:`` reference to its interpolation."""
+    names: set[str] = set()
+    stack = [raw]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, dict):
+            stack.extend(node.values())
+        elif isinstance(node, list | tuple):
+            stack.extend(node)
+        elif isinstance(node, str):
+            names.update(ENV_REF.findall(node))
+    found: dict[str, str] = {}
+    for name in sorted(names):
+        value = os.environ.get(name, "")
+        if len(value) >= MIN_REDACT_LEN:
+            found.setdefault(value, "${oc.env:" + name + "}")
+    return found
+
+
+def redact(obj: Any, secrets: dict[str, str]) -> Any:
+    """Replace every occurrence of a secret value in every string (keys included) of ``obj``."""
+    if not secrets:
+        return obj
+    ordered = sorted(secrets, key=len, reverse=True)
+
+    def fix(text: str) -> str:
+        for value in ordered:
+            text = text.replace(value, secrets[value])
+        return text
+
+    def walk(node: Any) -> Any:
+        if isinstance(node, str):
+            return fix(node)
+        if isinstance(node, dict):
+            return {walk(k): walk(v) for k, v in node.items()}
+        if isinstance(node, list | tuple):
+            return [walk(v) for v in node]
+        return node
+
+    return walk(obj)
 
 
 def keep_env_interpolations(resolved: Any, raw: Any) -> Any:
@@ -28,12 +76,13 @@ def keep_env_interpolations(resolved: Any, raw: Any) -> Any:
     return resolved
 
 
-def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Return ``(resolved, recorded)`` views of a composed or recorded config.
+def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
+    """Return ``(resolved, recorded, secrets)`` for a composed or recorded config.
 
-    ``resolved`` is what runs. ``recorded`` is the only view written to manifests, ``--json`` run
-    output, and dry-run plans: ``${oc.env:...}`` leaves stay unresolved, and ``project.root`` /
-    ``project.workspace`` become absolute paths so a rerun writes to the original project.
+    ``resolved`` is what runs. ``recorded`` is the config view written to manifests and printed:
+    ``${oc.env:...}`` leaves stay unresolved, ``project.root`` / ``project.workspace`` become
+    absolute paths, and every env value from ``secrets`` is replaced by its interpolation.
+    Callers apply :func:`redact` with ``secrets`` to anything else they emit (names, errors).
     """
     # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
     cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
@@ -46,7 +95,8 @@ def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any]]:
             "root": str(project.root),
             "workspace": str(project.workspace),
         }
-    return resolved, recorded
+    secrets = env_secrets(to_dict(cfg, resolve=False))
+    return resolved, redact(recorded, secrets), secrets
 
 
 def load_workflow(config: Any) -> tuple[Project, Workflow]:
@@ -74,7 +124,7 @@ def run_workflow(
     ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
     ``allow`` is the execution allowlist (see :func:`hyfi.config.instantiate`).
     """
-    resolved, recorded = record_config(config)
+    resolved, recorded, secrets = record_config(config)
     project, workflow = load_workflow(resolved)
     manifest = RunManifest(
         rerun_of=rerun_of,
@@ -88,7 +138,11 @@ def run_workflow(
         lock_sha256=lock_sha256(project.root),
     )
     runs_dir = project.runs_dir
-    manifest.write(runs_dir)
+
+    def redacted() -> RunManifest:  # step names and errors can carry env values too
+        return RunManifest.model_validate(redact(manifest.model_dump(mode="json"), secrets))
+
+    redacted().write(runs_dir)
     try:
         _, manifest.steps = execute(workflow, allow=allow)
         manifest.status = "ok"
@@ -96,5 +150,6 @@ def run_workflow(
         manifest.steps, manifest.status, manifest.error = e.records, "error", str(e)
     finally:
         manifest.finished_at = datetime.now(UTC)
-        manifest.write(runs_dir)
-    return manifest
+        result = redacted()
+        result.write(runs_dir)
+    return result

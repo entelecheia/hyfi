@@ -179,3 +179,52 @@ def test_project_env_values_are_not_recorded(project, monkeypatch):
     assert m.config["project"]["root"] == str(project.resolve())  # paths are the exception
     path = Project(root=project).runs_dir / m.run_id / "manifest.json"
     assert "private-name" not in path.read_text()
+
+
+SECRET = "s3cr3t-value"
+
+
+def test_redaction_covers_aliases_names_and_errors(project, monkeypatch, capsys):
+    from hyfi.cli import main
+
+    monkeypatch.setenv("HYFI_TEST_SECRET", SECRET)
+    args = [
+        "run",
+        "workflow=plug",
+        "+secret=${oc.env:HYFI_TEST_SECRET}",
+        "+alias=${secret}",
+        "+nested.alias=prefix-${secret}",
+        "workflow.name=${secret}",
+        "+workflow.steps.0.name=${secret}",
+        "workflow.steps.2.run=fakeplug.steps.fail_with",
+        "+workflow.steps.2.with.msg=${secret}",
+        "+workflow.steps.2.pipe=false",
+    ]
+    assert main([*args, "--dry-run", "--json"]) == 0
+    dry = capsys.readouterr().out
+    assert SECRET not in dry
+    assert main([*args, "--json"]) == 1  # the extra step fails on purpose
+    out = capsys.readouterr().out
+    assert SECRET not in out
+    m = RunManifest.model_validate_json(out)
+    assert m.config["alias"] == "${oc.env:HYFI_TEST_SECRET}"
+    assert m.config["nested"]["alias"] == "prefix-${oc.env:HYFI_TEST_SECRET}"
+    assert m.steps[0].name == "${oc.env:HYFI_TEST_SECRET}"
+    assert "${oc.env:HYFI_TEST_SECRET}" in m.steps[2].error
+    path = Project(root=project).runs_dir / m.run_id / "manifest.json"
+    assert SECRET not in path.read_text()
+    assert main(["run", *args[1:]]) == 1  # text output is redacted too
+    assert SECRET not in capsys.readouterr().out
+    # rerun re-reads the environment and records the same config
+    again = run_workflow(m.config, rerun_of=m.run_id)
+    assert again.config_json() == m.config_json()
+    assert SECRET not in again.model_dump_json()
+
+
+def test_short_env_values_are_not_redacted(monkeypatch):
+    from hyfi.runner import env_secrets
+
+    monkeypatch.setenv("HYFI_SHORT", "abc")
+    monkeypatch.setenv("HYFI_LONG", "abcd")
+    raw = {"a": "${oc.env:HYFI_SHORT}", "b": ["x-${oc.env: HYFI_LONG}"]}
+    assert env_secrets(raw) == {"abcd": "${oc.env:HYFI_LONG}"}

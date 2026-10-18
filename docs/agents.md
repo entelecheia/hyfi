@@ -10,6 +10,6 @@ A safe loop for an agent:
 4. **Run**: same command without `--dry-run`. Read `status` and `steps[*].status` from the JSON output.
 5. **Reproduce**: `hyfi rerun <run_id> --json`; the manifest is at `<project.root>/.hyfi/runs/<run_id>/manifest.json`.
 
-Manifests and `hyfi run --json` keep `${oc.env:...}` values as interpolations, so they carry no secrets. `hyfi config show` resolves everything; use `--no-resolve` before sharing its output.
+Manifests, `hyfi run` output, and dry-run plans replace the value of every `${oc.env:...}` variable (4+ characters) with its interpolation, so they carry no secrets. `hyfi config show` resolves everything; use `--no-resolve` before sharing its output.
 
 Always pass `--allow` when the config was written or changed by someone other than the person who asked for the run.

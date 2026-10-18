@@ -44,6 +44,7 @@ UV_PYTHON=3.14 uv run --isolated --prerelease allow --with 'hydra-core>=1.4.0rc1
 ## Things the agent gets wrong
 
 - 2026-10-19, Hydra version drift: Hydra 1.4 deprecates `version_base` and warns on `instantiate` without an execution whitelist. Call Hydra through `hyfi.config` helpers, which branch on the installed version; do not call `hydra.utils.instantiate` directly elsewhere. Revisit when Hydra 1.5 ships.
+- 2026-10-19, env values leaking (three review rounds): anything printed or written from a resolved config (manifest fields, plan entries, names, errors) must pass through `runner.redact` with the secrets from `runner.record_config`. Do not add per-field redaction. Revisit if a new output path is added.
 - 2026-10-19, tests leaking state: tests that compose must use the `project` fixture (`tests/conftest.py`), which isolates cwd, `HYFI_*` env, and the fake plugin. Revisit if the fixture changes.
 
 ---

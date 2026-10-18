@@ -62,3 +62,32 @@ def test_cli_allow(project, capsys, monkeypatch):
     assert main(["rerun", first["run_id"], "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["allow"] == first["allow"]
     assert main(["rerun", first["run_id"], "--allow", "nope.*"]) == 1
+
+
+def test_allowlist_covers_every_executable_form(project):
+    import builtins
+
+    # tuple-hidden nested target
+    with pytest.raises(TargetNotAllowed, match=r"builtins\.str"):
+        instantiate(
+            {"_target_": "builtins.len", "obj": ({"_target_": "builtins.str", "object": 1},)},
+            allow=["builtins.len"],
+        )
+    # nested target passed through call-site kwargs
+    with pytest.raises(TargetNotAllowed, match=r"builtins\.str"):
+        instantiate(
+            {"_target_": "builtins.dict"},
+            allow=["builtins.dict"],
+            x={"_target_": "builtins.str", "object": 1},
+        )
+    # nested target passed through call-site args
+    with pytest.raises(TargetNotAllowed, match=r"builtins\.str"):
+        instantiate(
+            {"_target_": "builtins.len"},
+            {"_target_": "builtins.str", "object": 1},
+            allow=["builtins.len"],
+        )
+    # callable target
+    with pytest.raises(TargetNotAllowed, match=r"builtins\.len"):
+        instantiate({"_target_": builtins.len, "obj": [1, 2]}, allow=["other.*"])
+    assert instantiate({"_target_": builtins.len, "_args_": [[1, 2]]}, allow=["builtins.len"]) == 2

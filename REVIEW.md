@@ -13,12 +13,12 @@ Run these passes and tag every finding with its pass:
 
 ## Repo focus
 
-- Importing `hyfi` has no side effects: no OmegaConf resolver, no `GlobalHydra` initialization, no `os.environ` change. Enforced by `tests/test_config.py:16`. Environment changes happen only inside `compose()` (`src/hyfi/config.py:107`), and Hydra global state is cleared only there (`src/hyfi/config.py:111`).
-- With an allowlist, every nested `_target_` is checked before Hydra runs anything (`src/hyfi/config.py:159`, `check_allowed` at `src/hyfi/config.py:58`), on every Hydra version. Workflow steps go through that path (`src/hyfi/workflow.py:118`). `plan()` imports every target, nested ones included, but never calls them (`src/hyfi/workflow.py:90`).
+- Importing `hyfi` has no side effects: no OmegaConf resolver, no `GlobalHydra` initialization, no `os.environ` change. Enforced by `tests/test_config.py:16`. Environment changes happen only inside `compose()` (`src/hyfi/config.py:117`), and Hydra global state is cleared only there (`src/hyfi/config.py:121`).
+- With an allowlist, every `_target_` Hydra would execute is checked first, on every Hydra version: strings and callables, in dicts, lists, and tuples, in the config and in call-site `*args` / `**kwargs` (`src/hyfi/config.py:53`, `src/hyfi/config.py:170`; `tests/test_allow.py:67`). Workflow steps go through that path (`src/hyfi/workflow.py:118`). `plan()` imports every target but never calls them (`src/hyfi/workflow.py:90`).
 - Search-path precedence is user directory, then plugins, then HyFI's groups, whether or not the user directory has a primary config (`tests/test_config.py:60`, `tests/test_config.py:91`). `src/hyfi/_primary/` holds only `config.yaml`.
-- Values written as `${oc.env:...}` never reach manifests, `hyfi run --json`, or dry-run plans: all three go through `record_config` (`src/hyfi/runner.py:31`, used at `src/hyfi/cli.py:110`). Only `project.root` and `project.workspace` are recorded resolved, as absolute paths. Tests: `tests/test_workflow.py:153`, `tests/test_workflow.py:174`, `tests/test_cli.py:103`.
-- A run writes its manifest before the first step and after the last (`src/hyfi/runner.py:91`, `src/hyfi/runner.py:99`); writes are atomic via a temp file (`src/hyfi/manifest.py:82`).
-- CLI exit codes: 1 for a failed run or dry-run (`src/hyfi/cli.py:117`, `src/hyfi/cli.py:130`), 2 for usage errors (`src/hyfi/cli.py:227`) and any raised error (`src/hyfi/cli.py:235`); with `--json`, both print `{"error": ...}`.
+- Env redaction is value-based at the output boundary: the value (4+ characters) of every variable named in an `oc.env:` reference is replaced by its interpolation in every string of a manifest, `hyfi run` output, and dry-run plan (`env_secrets` at `src/hyfi/runner.py:22`, `redact` at `src/hyfi/runner.py:42`, applied at `src/hyfi/runner.py:145`, `src/hyfi/runner.py:154`, `src/hyfi/cli.py:113`). A new output path that skips `redact` is Important. Tests: `tests/test_workflow.py:187`, `tests/test_cli.py:103`.
+- A run writes its manifest before the first step and after the last (`src/hyfi/runner.py:145`, `src/hyfi/runner.py:154`); writes are atomic via a temp file (`src/hyfi/manifest.py:82`).
+- CLI exit codes: 1 for a failed run or dry-run (`src/hyfi/cli.py:114`, `src/hyfi/cli.py:127`), 2 for usage errors (`src/hyfi/cli.py:224`) and any raised error (`src/hyfi/cli.py:232`); with `--json`, both print `{"error": ...}`.
 
 ## Findings
 

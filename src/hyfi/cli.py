@@ -22,7 +22,7 @@ from hyfi._version import __version__
 from hyfi.config import compose, to_dict
 from hyfi.manifest import RunManifest
 from hyfi.project import Project
-from hyfi.runner import load_workflow, record_config, run_workflow
+from hyfi.runner import load_workflow, record_config, redact, run_workflow
 from hyfi.workflow import Workflow, plan
 
 logger = logging.getLogger("hyfi")
@@ -107,13 +107,10 @@ def _allow(ns: argparse.Namespace, recorded: list[str] | None = None) -> list[st
 
 
 def _dry_run(config: Any, as_json: bool, allow: list[str] | None) -> int:
-    resolved, recorded = record_config(config)
+    resolved, _, secrets = record_config(config)
     _, workflow = load_workflow(resolved)
-    _, shown = load_workflow(recorded)
     steps = plan(workflow, allow=allow)
-    for entry, step in zip(steps, shown.steps, strict=True):  # print the recorded view only
-        entry["run"], entry["with"] = step.run, step.with_
-    _emit({"workflow": workflow.name, "steps": steps}, as_json)
+    _emit(redact({"workflow": workflow.name, "steps": steps}, secrets), as_json)
     return 0 if all(s["ok"] for s in steps) else 1
 
 

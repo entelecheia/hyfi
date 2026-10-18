@@ -72,7 +72,7 @@ hyfi rerun 20261019T010203Z-a1b2c3      # run the recorded resolved config again
 
 The manifest records the run id, status, start and end time, HyFI and Python versions, platform, argv, config name and directory, overrides, the allowlist, the fully resolved config, git SHA and dirty flag, the SHA-256 of `uv.lock`, and per-step status, seconds, and error.
 
-The manifest stores the resolved config, except values read from the environment: a value written as `${oc.env:NAME}` (directly or inside a larger string) is recorded as that interpolation and read again on rerun, so API keys and tokens never land in manifests or `--json` output. If the environment changed, a rerun sees the new value. Project `root` and `workspace` are recorded as absolute paths, so a rerun writes to the original project even when started elsewhere.
+The manifest stores the resolved config with environment values taken out. HyFI collects every variable your config names in `${oc.env:NAME}` and, wherever its current value appears in a manifest, `hyfi run` output, or a dry-run plan (config values, aliases such as `${secret}`, step names, error messages), writes `${oc.env:NAME}` instead. A rerun reads the environment again; if it changed, the rerun sees the new value. Values shorter than 4 characters are not redacted, so keep secrets out of short variables. Project `root` and `workspace` are recorded as absolute paths (unless they came from the environment), so a rerun writes to the original project even when started elsewhere.
 
 `hyfi rerun` does not recompose: it executes the recorded config, so interpolations such as `${now:...}` keep their recorded values.
 
@@ -85,7 +85,7 @@ hyfi run workflow=clean --allow 'mypkg.*' --allow builtins.len
 HYFI_ALLOW='mypkg.*,builtins.len' hyfi run workflow=clean
 ```
 
-A pattern is an exact target or `pkg.*` for everything under a package. Every `_target_` in a step, including nested ones, must match. On Hydra 1.4+ the list is also passed to Hydra's execution whitelist. `hyfi rerun` reuses the recorded list unless you pass `--allow`. Without a list, Hydra's default applies (Hydra 1.4 warns; 1.5 plans to refuse).
+A pattern is an exact target or `pkg.*` for everything under a package. Every `_target_` in a step, including nested ones (in mappings, lists, or tuples, as strings or callables), must match; from Python, `hyfi.instantiate(..., allow=...)` also checks targets passed as call-site arguments. On Hydra 1.4+ the list is also passed to Hydra's execution whitelist. `hyfi rerun` reuses the recorded list unless you pass `--allow`. Without a list, Hydra's default applies (Hydra 1.4 warns; 1.5 plans to refuse).
 
 ## Typed config groups
 

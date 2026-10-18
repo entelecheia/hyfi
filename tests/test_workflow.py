@@ -135,3 +135,37 @@ def test_git_and_lock_info(tmp_path):
     assert len(info["sha"]) == 40
     assert info["dirty"] is True  # the untracked uv.lock
     assert len(lock_sha256(tmp_path)) == 64
+
+
+def test_step_rejects_target_inside_with():
+    with pytest.raises(ValueError, match="put the callable in `run`"):
+        Step.model_validate({"run": "fakeplug.steps.load", "with": {"_target_": "os.system"}})
+
+
+def test_plan_resolves_nested_targets(project):
+    steps = plan(
+        wf({"run": "fakeplug.steps.double", "with": {"xs": {"_target_": "fakeplug.steps.nope"}}})
+    )
+    assert steps[0]["ok"] is False
+    assert "nope" in steps[0]["error"]
+
+
+def test_env_values_are_not_recorded(project, monkeypatch, capsys):
+    from hyfi.cli import main
+
+    monkeypatch.setenv("HYFI_TEST_SECRET", "s3cr3t-value")
+    overrides = ["workflow=plug", "+secret=${oc.env:HYFI_TEST_SECRET}"]
+    assert main(["run", *overrides, "--json"]) == 0
+    out = capsys.readouterr().out
+    assert "s3cr3t-value" not in out
+    first = RunManifest.model_validate_json(out)
+    assert first.config["secret"] == "${oc.env:HYFI_TEST_SECRET}"
+    path = Project(root=project).runs_dir / first.run_id / "manifest.json"
+    assert "s3cr3t-value" not in path.read_text()
+    # rerun re-reads the environment and records the same config
+    again = run_workflow(first.config, rerun_of=first.run_id)
+    assert again.status == "ok"
+    assert again.config_json() == first.config_json()
+    monkeypatch.delenv("HYFI_TEST_SECRET")
+    with pytest.raises(Exception, match="HYFI_TEST_SECRET"):
+        run_workflow(first.config)

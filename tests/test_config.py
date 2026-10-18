@@ -72,19 +72,28 @@ def test_user_dir_overrides_plugin(project, with_primary):
 
 def test_search_path_order(project, tmp_path):
     primary, extras = search_path()
-    assert primary == "pkg://hyfi.conf"
-    assert extras == ["pkg://fakeplug.conf"]  # ghost plugin is not importable, so skipped
+    assert primary == "pkg://hyfi._primary"
+    # ghost plugin is not importable, so skipped; HyFI's groups always come last
+    assert extras == ["pkg://fakeplug.conf", "pkg://hyfi.conf"]
     (project / "conf").mkdir()
     primary, extras = search_path(plugins=False)
-    assert primary == "pkg://hyfi.conf"
-    assert extras == [f"file://{(project / 'conf').resolve()}"]
+    assert primary == "pkg://hyfi._primary"
+    assert extras == [f"file://{(project / 'conf').resolve()}", "pkg://hyfi.conf"]
     explicit = tmp_path / "elsewhere"
     explicit.mkdir()
     (explicit / "app.yaml").write_text("a: 1\n")
     primary, extras = search_path(explicit, "app")
     assert primary == f"file://{explicit.resolve()}"
-    assert extras[-1] == "pkg://hyfi.conf"
+    assert extras == ["pkg://fakeplug.conf", "pkg://hyfi.conf"]
     assert compose(config_dir=explicit, config_name="app").a == 1
+
+
+def test_user_dir_overrides_hyfi_defaults_without_primary(project):
+    # A user option with the same name as HyFI's wins even with no conf/config.yaml.
+    write_tree(project, {"conf/project/default.yaml": "name: mine\nroot: /srv/mine\n"})
+    cfg = compose()
+    assert cfg.project.name == "mine"
+    assert cfg.project.root == "/srv/mine"
 
 
 def test_plugins_discover(project):

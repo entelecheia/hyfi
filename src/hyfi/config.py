@@ -23,7 +23,8 @@ from pydantic import BaseModel, ConfigDict
 
 from hyfi import plugins as _plugins
 
-HYFI_CONFIG_MODULE = "hyfi.conf"
+HYFI_PRIMARY_MODULE = "hyfi._primary"  # only config.yaml, so it never shadows a group option
+HYFI_CONFIG_MODULE = "hyfi.conf"  # HyFI's config groups, always last on the search path
 DEFAULT_CONFIG_DIR = "conf"
 DEFAULT_CONFIG_NAME = "config"
 
@@ -75,16 +76,18 @@ def search_path(
 ) -> tuple[str, list[str]]:
     """Return the primary config source and the extra search-path entries, highest priority first.
 
-    The user directory is primary when it holds ``<config_name>.yaml``; otherwise ``hyfi.conf`` is
-    primary and the user directory, when present, comes first among the extras. Either way the
-    user directory takes precedence over plugins.
+    The user directory is primary when it holds ``<config_name>.yaml``; otherwise
+    ``hyfi._primary`` (which holds only ``config.yaml``) is, and the user directory comes first
+    among the extras. HyFI's own groups are always last, so group options resolve
+    user > plugins > HyFI in both cases.
     """
     user_dir = resolve_config_dir(config_dir)
     plugin_entries = [f"pkg://{m}" for m in _plugins.config_modules()] if plugins else []
+    hyfi_groups = f"pkg://{HYFI_CONFIG_MODULE}"
     if user_dir is not None and (user_dir / f"{config_name}.yaml").is_file():
-        return f"file://{user_dir}", [*plugin_entries, f"pkg://{HYFI_CONFIG_MODULE}"]
+        return f"file://{user_dir}", [*plugin_entries, hyfi_groups]
     user_entries = [f"file://{user_dir}"] if user_dir is not None and user_dir.is_dir() else []
-    return f"pkg://{HYFI_CONFIG_MODULE}", [*user_entries, *plugin_entries]
+    return f"pkg://{HYFI_PRIMARY_MODULE}", [*user_entries, *plugin_entries, hyfi_groups]
 
 
 def compose(
@@ -103,16 +106,14 @@ def compose(
     if dotenv:
         load_dotenv(find_dotenv(usecwd=True), override=False)
     primary, extras = search_path(config_dir, config_name, plugins)
-    all_overrides = list(overrides)
-    if extras:
-        all_overrides.append(f"hydra.searchpath=[{','.join(extras)}]")
+    all_overrides = [*overrides, f"hydra.searchpath=[{','.join(extras)}]"]
     # ponytail: clears any outer Hydra context (as 1.x did); nested use inside @hydra.main loses it.
     GlobalHydra.instance().clear()
     version: dict[str, Any] = {} if _HYDRA_GE_14 else {"version_base": None}
     if primary.startswith("file://"):
         init: Any = initialize_config_dir(config_dir=primary.removeprefix("file://"), **version)
     else:
-        init = initialize_config_module(config_module=HYFI_CONFIG_MODULE, **version)
+        init = initialize_config_module(config_module=HYFI_PRIMARY_MODULE, **version)
     with init:
         return _hydra_compose(config_name=config_name, overrides=all_overrides)
 

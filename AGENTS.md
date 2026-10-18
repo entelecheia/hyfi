@@ -39,7 +39,7 @@ UV_PYTHON=3.14 uv run --isolated --prerelease allow --with 'hydra-core>=1.4.0rc1
 - `plugins.py`: `hyfi.plugins` entry point discovery.
 - `project.py`, `workflow.py`, `runner.py`, `manifest.py`: paths, steps, execution, run records.
 - `cli.py`: argparse subcommands only; logic stays in the modules above.
-- `conf/`: HyFI's own config groups. Keep them minimal; every option here can collide with user and plugin options.
+- `conf/`: HyFI's own config groups, always last on the search path. `_primary/`: only `config.yaml`; never add group options there, or they would shadow user and plugin options.
 
 ## Things the agent gets wrong
 

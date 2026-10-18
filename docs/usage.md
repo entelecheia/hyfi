@@ -8,6 +8,8 @@ HyFI looks for configs in three places, highest priority first:
 2. Installed plugins (the `hyfi.plugins` entry point group), in name order.
 3. HyFI's own defaults (`hyfi.conf`): a `project` group and an empty `workflow` slot.
 
+This order holds whether or not your directory has its own `config.yaml`.
+
 If your directory holds `config.yaml` it becomes the primary config. Start it from HyFI's defaults:
 
 ```yaml
@@ -70,7 +72,7 @@ hyfi rerun 20261019T010203Z-a1b2c3      # run the recorded resolved config again
 
 The manifest records the run id, status, start and end time, HyFI and Python versions, platform, argv, config name and directory, overrides, the allowlist, the fully resolved config, git SHA and dirty flag, the SHA-256 of `uv.lock`, and per-step status, seconds, and error.
 
-The manifest stores the config fully resolved, including values read from the environment or `.env` (API keys, tokens). Keep `.hyfi/` out of version control and do not share manifests of configs that interpolate secrets. Project `root` and `workspace` are recorded as absolute paths, so a rerun writes to the original project even when started elsewhere.
+The manifest stores the resolved config, except values read from the environment: a value written as `${oc.env:NAME}` (directly or inside a larger string) is recorded as that interpolation and read again on rerun, so API keys and tokens never land in manifests or `--json` output. If the environment changed, a rerun sees the new value. Project `root` and `workspace` are recorded as absolute paths, so a rerun writes to the original project even when started elsewhere.
 
 `hyfi rerun` does not recompose: it executes the recorded config, so interpolations such as `${now:...}` keep their recorded values.
 

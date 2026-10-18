@@ -6,10 +6,26 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any
 
+from omegaconf import DictConfig, OmegaConf
+
 from hyfi.config import to_dict
 from hyfi.manifest import RunManifest, git_info, lock_sha256
 from hyfi.project import Project
 from hyfi.workflow import Workflow, WorkflowError, execute
+
+
+def keep_env_interpolations(resolved: Any, raw: Any) -> Any:
+    """``resolved``, except leaves whose unresolved form reads ``${oc.env:...}`` stay unresolved.
+
+    Values from the environment (often secrets) are re-read on rerun instead of being recorded.
+    """
+    if isinstance(resolved, dict) and isinstance(raw, dict):
+        return {k: keep_env_interpolations(v, raw.get(k)) for k, v in resolved.items()}
+    if isinstance(resolved, list) and isinstance(raw, list) and len(resolved) == len(raw):
+        return [keep_env_interpolations(a, b) for a, b in zip(resolved, raw, strict=True)]
+    if isinstance(raw, str) and "oc.env:" in raw:
+        return raw
+    return resolved
 
 
 def load_workflow(config: Any) -> tuple[Project, Workflow]:
@@ -37,10 +53,13 @@ def run_workflow(
     ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
     ``allow`` is the execution allowlist (see :func:`hyfi.config.instantiate`).
     """
-    resolved = to_dict(config)
+    # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
+    cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
+    resolved = to_dict(cfg)
     project, workflow = load_workflow(resolved)
+    recorded = keep_env_interpolations(resolved, to_dict(cfg, resolve=False))
     # Record absolute paths so a rerun from another directory writes to the same project.
-    resolved["project"] = {**(resolved.get("project") or {}), **project.model_dump(mode="json")}
+    recorded["project"] = {**(recorded.get("project") or {}), **project.model_dump(mode="json")}
     manifest = RunManifest(
         rerun_of=rerun_of,
         argv=list(argv),
@@ -48,7 +67,7 @@ def run_workflow(
         config_dir=config_dir,
         overrides=list(overrides),
         allow=list(allow) if allow is not None else None,
-        config=resolved,
+        config=recorded,
         git=git_info(project.root),
         lock_sha256=lock_sha256(project.root),
     )

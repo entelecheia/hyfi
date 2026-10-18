@@ -22,7 +22,7 @@ from typing import Any
 from hydra.utils import get_object
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from hyfi.config import TargetNotAllowed, check_allowed, instantiate
+from hyfi.config import TargetNotAllowed, check_allowed, instantiate, iter_targets
 
 
 class Step(BaseModel):
@@ -35,6 +35,8 @@ class Step(BaseModel):
 
     @model_validator(mode="after")
     def _default_name(self) -> Step:
+        if "_target_" in self.with_:
+            raise ValueError("put the callable in `run`, not `_target_` inside `with`")
         if not self.name:
             self.name = self.run.rsplit(".", 1)[-1]
         return self
@@ -81,9 +83,11 @@ def plan(workflow: Workflow, allow: Sequence[str] | None = None) -> list[dict[st
             "error": None,
         }
         try:
+            config = step_config(step)
             if allow is not None:
-                check_allowed(step_config(step), allow)
-            get_object(step.run)
+                check_allowed(config, allow)
+            for target in iter_targets(config):  # nested `_target_` values in `with` too
+                get_object(target)
         except TargetNotAllowed as e:
             entry["ok"], entry["error"] = False, str(e)
         except Exception as e:  # get_object wraps import failures in various types

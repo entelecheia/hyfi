@@ -1,30 +1,38 @@
-"""
-HyFI: Hydra Fast Interface (Hydra and Pydantic based interface framework)
+"""HyFI: compose Hydra configs, validate them with Pydantic, and run reproducible workflows."""
 
-All names of configuration folders and their counterparts folders for pydantic models
-are singular, e.g. `conf` instead of `configs`.
-All matching pydantic models are named `Config`, e.g. `BatchConfig` instead of `BatchConfigs`.
+from typing import Any
 
-Other module folders are plural, e.g. `utils` instead of `util`.
-"""
-
-from typing import List, Optional
-
-from hyfi.__cli__ import hydra_main, hyfi_main
-from hyfi.core import global_hyfi
-from hyfi.main import HyFI
-from hyfi.main import HyFI as H
-from hyfi.main import HyFI as HI
-from hyfi.main import global_config
-from hyfi.utils.logging import LOGGING
+from hyfi._version import __version__
+from hyfi.config import BaseConfig, compose, compose_group, instantiate, to_dict
+from hyfi.manifest import RunManifest
+from hyfi.project import Project
+from hyfi.runner import run_workflow
+from hyfi.workflow import Step, Workflow, plan
 
 __all__ = [
-    "global_config",
-    "global_hyfi",
-    "hydra_main",
-    "hyfi_main",
-    "HyFI",
-    "H",
-    "HI",
-    "LOGGING",
+    "BaseConfig",
+    "Project",
+    "RunManifest",
+    "Step",
+    "Workflow",
+    "__version__",
+    "compose",
+    "compose_group",
+    "instantiate",
+    "plan",
+    "run_workflow",
+    "to_dict",
 ]
+
+_REMOVED_1X = {"HyFI", "hyfi_main"}
+MIGRATION_URL = "https://hyfi.entelecheia.ai/migration/"
+
+
+def __getattr__(name: str) -> Any:
+    if name in _REMOVED_1X:
+        # ImportError, not AttributeError: `from hyfi import HyFI` would replace the message.
+        raise ImportError(
+            f"hyfi.{name} was removed in HyFI 2.0. Pin 'hyfi<2' to keep 1.x, "
+            f"or see docs/migration.md ({MIGRATION_URL})."
+        )
+    raise AttributeError(f"module 'hyfi' has no attribute {name!r}")

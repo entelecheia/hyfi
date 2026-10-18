@@ -1,3 +1,0 @@
-# `hyfi.core`
-
-::: hyfi.core

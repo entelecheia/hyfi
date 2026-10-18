@@ -44,11 +44,11 @@ If you are proposing a feature:
 
 Ready to contribute? Here's how to set up `HyFI: Hydra Fast Interface` for local development.
 
-1. Fork the repo on GitHub.
-2. Clone your fork locally.
-3. Create a branch for local development and make changes locally.
-4. Commit your changes and push your branch to GitHub.
-5. Submit a pull request through the GitHub website.
+1. Fork the repo on GitHub and clone your fork.
+2. Install [uv](https://docs.astral.sh/uv/) and run `make install`.
+3. Create a branch, make your change, and add a test for it.
+4. Run `make verify` (lint, type check, tests with coverage) until it passes.
+5. Commit with a [conventional commit](https://www.conventionalcommits.org/) message and open a pull request.
 
 ## Code of Conduct
 

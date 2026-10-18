@@ -1,6 +1,0 @@
-# @package _global_
-defaults:
-  - __init__
-  - /workflow: __init__
-
-cmd_name: run_workflow

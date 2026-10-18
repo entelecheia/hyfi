@@ -1,0 +1,31 @@
+---
+name: docs
+
+# The docs build reads docs/, README.md (included in the index), and src/ docstrings,
+# so it runs on exactly those changes; lint & test ignores docs-only changes.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ["docs/**", "*.md", "mkdocs.yaml", "src/**", "pyproject.toml", "uv.lock", ".github/workflows/docs.yaml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.1" # pin the uv CLI; bump with uv.lock-affecting changes
+          python-version: "3.13"
+          enable-cache: true
+          cache-python: true
+      - run: uv sync --locked --no-default-groups --group docs
+      - run: uv run --no-sync mkdocs build --strict

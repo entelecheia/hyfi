@@ -1,3 +1,0 @@
-# `hyfi.pipeline`
-
-::: hyfi.pipeline

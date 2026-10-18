@@ -1,3 +1,0 @@
-_target_: hyfi.utils.datasets.slice.DSSlice.filter_data_by_queries
-queries: null
-verbose: false

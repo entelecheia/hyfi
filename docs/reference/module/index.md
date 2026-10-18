@@ -1,3 +1,0 @@
-# `hyfi.module`
-
-::: hyfi.module

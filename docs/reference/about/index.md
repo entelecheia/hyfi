@@ -1,3 +1,0 @@
-# `hyfi.about`
-
-::: hyfi.about

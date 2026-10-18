@@ -1,18 +1,12 @@
 site_name: "HyFI: Hydra Fast Interface"
 site_url: https://hyfi.entelecheia.ai
-site_author: Young Joon Lee <entelecheia@hotmail.com>
-site_description: >-
-  Hydra Fast Interface (Hydra and Pydantic based interface framework)
-# Repository
+site_author: Young Joon Lee
+site_description: Compose Hydra configs, validate them with Pydantic, and run reproducible workflows
 repo_name: entelecheia/hyfi
 repo_url: https://github.com/entelecheia/hyfi
 edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2023 Young Joon Lee
 
-# Copyright
-copyright: |
-  Copyright &copy; 2023 <a href="https://github.com/entelecheia"  target="_blank" rel="noopener">Young Joon Lee</a>
-
-# Configuration
 theme:
   name: material
   palette:
@@ -20,82 +14,33 @@ theme:
   features:
     - navigation.instant
     - navigation.top
-    - navigation.path
-    # - navigation.expand
-    - navigation.indexes
-    - content.action.edit
-    - content.action.view
-    - content.code.annotate
     - content.code.copy
-    # - content.tabs.link
-    - content.tooltips
     - search.highlight
-    - search.share
-    - search.suggest
-    - toc.follow
-  favicon: https://assets.entelecheia.ai/favicon.png # favicon: Path to the favicon image
-  logo: https://assets.entelecheia.ai/logo.png # logo: Path to the book logo
+  favicon: https://assets.entelecheia.ai/favicon.png
+  logo: https://assets.entelecheia.ai/logo.png
 
-# Extensions
 markdown_extensions:
-  - markdown_include.include:
-      base_path: .
-  - pymdownx.arithmatex:
-      generic: true
   - admonition
-  - pymdownx.caret
-  - pymdownx.details
-  # - pymdownx.emoji:
-  #     emoji_generator: "!!python/name:materialx.emoji.to_svg"
-  #     emoji_index: "!!python/name:materialx.emoji.twemoji"
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.keys
-  - pymdownx.snippets
-  - pymdownx.mark
-  - pymdownx.smartsymbols
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: "!!python/name:pymdownx.superfences.fence_code_format"
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - pymdownx.tilde
-  - mkdocs-click
-  - codehilite
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets:
+      check_paths: true
 
-# Plugins
 plugins:
   - search
-  - include-markdown
   - mkdocstrings:
       handlers:
-        # See: https://mkdocstrings.github.io/python/usage/
         python:
+          paths: [src]
           options:
-            docstring_style: google
+            show_source: false
+            members_order: source
 
-# Customization
-extra_javascript:
-  - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-extra:
-  analytics:
-    provider: google
-    property: G-RGCZCJ4ZZF
-  social:
-    - icon: fontawesome/brands/github-alt
-      link: https://github.com/entelecheia
-    - icon: fontawesome/brands/linkedin
-      link: https://linkedin.com/in/entelecheia
-# Page tree
-# nav:
-#  - Home: index.md
-#  - Usage: usage.md
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Writing a plugin: plugins.md
+  - Agents: agents.md
+  - Migrating from 1.x: migration.md
+  - API: api.md

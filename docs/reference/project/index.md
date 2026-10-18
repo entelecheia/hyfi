@@ -1,3 +1,0 @@
-# `hyfi.project`
-
-::: hyfi.project

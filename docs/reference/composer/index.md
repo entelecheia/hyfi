@@ -1,3 +1,0 @@
-# `hyfi.composer`
-
-::: hyfi.composer

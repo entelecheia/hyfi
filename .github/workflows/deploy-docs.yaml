@@ -1,42 +1,30 @@
 ---
 name: deploy-docs
+
 on:
-  workflow_call:
   workflow_dispatch:
   push:
-    branches:
-      - release
-    # Paths can be used to only trigger actions when you have edited certain files, such as a file within the /docs directory
-    paths:
-      - "README.md"
-      - "mkdocs.yaml"
-      - "docs/**.md"
-      - "docs/images/**"
-      - ".github/workflows/deploy-docs.yaml"
-      - "src/**"
+    branches: [release]
+    paths: ["README.md", "mkdocs.yaml", "docs/**", "src/**", ".github/workflows/deploy-docs.yaml"]
 
 permissions:
   contents: write
 
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
-
-      # set up python
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          python-version: 3.9
-
-      # install the source code
-      - name: Install the source code
-        run: pip install .
-
-      - uses: actions/cache@v4
-        with:
-          key: ${{ github.ref }}
-          path: .cache
-      - run: |
-          pip install -r docs/requirements.txt
-          mkdocs gh-deploy --force
+          version: "0.13.1" # pin the uv CLI; bump with uv.lock-affecting changes
+          python-version: "3.13"
+          enable-cache: true
+          cache-python: true
+      - run: uv sync --locked --no-default-groups --group docs
+      - run: uv run --no-sync mkdocs gh-deploy --force

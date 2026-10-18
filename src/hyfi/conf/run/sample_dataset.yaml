@@ -1,8 +1,0 @@
-_target_: hyfi.utils.datasets.slice.DSSlice.sample_dataset
-split: null
-sample_size: 100
-sample_seed: 42
-randomize: true
-num_heads: 1
-num_tails: 1
-verbose: false

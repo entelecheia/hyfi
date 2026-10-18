@@ -1,66 +1,63 @@
 # HyFI: Hydra Fast Interface
 
 [![pypi-image]][pypi-url]
-[![version-image]][release-url]
-[![release-date-image]][release-url]
 [![license-image]][license-url]
 [![DOI][zenodo-image]][zenodo-url]
-[![codecov][codecov-image]][codecov-url]
-[![codefactor][codefactor-image]][codefactor-url]
-[![codacy][codacy-image]][codacy-url]
 
-HyFI, short for Hydra Fast Interface, is a powerful Python framework built atop the foundations of [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/). Its main objective is to provide a streamlined interface for configuring, structuring, executing, and scaling Python applications and workflows.
+HyFI composes [Hydra](https://hydra.cc) configs, validates them with [Pydantic](https://docs.pydantic.dev/), and runs reproducible workflows. Every run writes a manifest with the resolved config, the code version, and per-step results, so the same run can be repeated later, by a person or by a coding agent.
 
 - [Documentation][docs-url]
-- [GitHub Repository][repo-url]
-- [PyPI Package][pypi-url]
+- [Migrating from 1.x](https://hyfi.entelecheia.ai/migration/)
 
-## Overview
+HyFI 2.0 is a rewrite. The 1.x line stays on the `v1` branch; pin `hyfi<2` to keep it.
 
-In the modern world of software and data science, creating scalable, reproducible, and modular Python workflows is vital. HyFI is here to make that process not just feasible but also efficient and straightforward. It has been meticulously crafted to help developers and researchers build pipeline-oriented projects and promote shareable and reproducible workflows.
+## Install
 
-## Core Features
+```bash
+uv add hyfi          # or: pip install hyfi
+uvx hyfi --version   # run without installing
+```
 
-### **1. Dynamic Configuration Management**
+Python 3.11 or newer. Core dependencies: hydra-core, omegaconf, pydantic, python-dotenv.
 
-- **Modular Configuration**: Harness the power of [Hydra](https://hydra.cc) and [Pydantic](https://docs.pydantic.dev/latest/) to manage your application configurations dynamically and modularity.
-- **Seamless Command Line Overrides**: Experiment swiftly without the clutter of multiple similar configuration files.
-- **Jupyter Notebook Integration**: The **HyFI** class allows for easy composition of configurations even in a jupyter notebook setting.
+## Quick start
 
-### **2. Zero Boilerplate**
+Put configs in `./conf`:
 
-Stay focused on your core problems. HyFI takes care of the usual overheads such as command line flags, loading configuration files, and logging.
+```yaml
+# conf/workflow/charcount.yaml
+name: charcount
+steps:
+  - run: pathlib.Path
+    with: {_args_: [README.md]}
+  - run: pathlib.Path.read_text   # receives the previous result as its first argument
+  - run: builtins.len
+```
 
-### **3. Structured Workflows**
+```bash
+hyfi run workflow=charcount --dry-run   # resolve every step without running it
+hyfi run workflow=charcount             # run it and write .hyfi/runs/<run_id>/manifest.json
+hyfi rerun <run_id>                     # run the recorded config again
+```
 
-- **Configurable Automated Processes**: Divide your research into unit jobs or tasks, and then bundle them into workflows.
+From Python or a notebook:
 
-- **Versatility**: Have the liberty to create multiple workflows, with each performing varied sets of tasks.
+```python
+import hyfi
 
-### **4. Reproducibility and Sharing**
+cfg = hyfi.compose(["workflow=charcount"])
+manifest = hyfi.run_workflow(cfg)
+print(manifest.status, [s.status for s in manifest.steps])
+```
 
-- **Sharing Capability**: Share your datasets, models, and configurations effortlessly.
+## What is in the box
 
-- **Reproducibility**: Sharing configurations alongside datasets and models ensures that every piece of research can be replicated.
-
-- **Granular or Holistic**: Choose to share individual unit jobs or an entire workflow, as per your need.
-
-### **5. Support for Plugins**
-
-- **Integration of HyFI-based Applications**: Enhance your project by plugging in several HyFI-based applications. This allows you to leverage the functionalities of plugins along with their specific configuration files.
-- **Modular Design Enablement**: The plugin support fosters a truly modular design approach, enabling seamless integration of various components and features, thereby promoting greater flexibility and extensibility in your projects.
-
-## Other Noteworthy Features:
-
-- **Workspace Management**: Automatic workspace creation and environment variable management.
-- **Task Pipelining**: Chain and parallelize jobs and steps seamlessly.
-- **Optimized Parallelism**: Efficient job batching with the help of Joblib.
-- **Dotenv Integration**: Manage configurations via .env files with ease.
-- **Built-in Commands**: Simplify processes like initializing projects, running pipelines, and copying files.
-- **Extensibility**: Easily extend HyFI's capabilities by crafting new Config classes and utilizing the building blocks it offers.
-- **Command Line Interface (CLI)**: Access a suite of commands and workflows directly from the command line.
-- **Advanced Logging**: Make use of the integrated logging configurations, complemented by Hydra logging.
-- **Robust Caching**: Cache both files and data efficiently.
+- `compose()` / `instantiate()` / `BaseConfig`: Hydra composition with Pydantic validation, from the CLI, code, or notebooks. Nothing happens at import time.
+- Plugins: any package can ship config groups through the `hyfi.plugins` entry point.
+- Workflows: ordered steps, each a Python callable built with Hydra `instantiate`; results pipe into the next step.
+- Run manifests: resolved config, git SHA, `uv.lock` hash, Python and platform, timings, errors.
+- Execution allowlist: `--allow 'mypkg.*'` limits which callables a config may run (forwarded to Hydra 1.4's execution whitelist).
+- Agent-friendly CLI: `--json` on every command, `hyfi config schema` for JSON Schema, non-zero exit codes on failure.
 
 ## Citation
 
@@ -68,7 +65,6 @@ Stay focused on your core problems. HyFI takes care of the usual overheads such 
 @software{lee_2023_8247719,
   author       = {Young Joon Lee},
   title        = {HyFI: Hydra Fast Interface},
-  month        = aug,
   year         = 2023,
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.8247719},
@@ -76,48 +72,14 @@ Stay focused on your core problems. HyFI takes care of the usual overheads such 
 }
 ```
 
-```tex
-@software{lee_2023_hyfi,
-  author       = {Young Joon Lee},
-  title        = {HyFI: Hydra Fast Interface},
-  year         = 2023,
-  publisher    = {GitHub},
-  url          = {https://github.com/entelecheia/hyfi}
-}
-```
-
-## Changelog
-
-See the [CHANGELOG] for more information.
-
-## Contributing
-
-Contributions are welcome! Please see the [contributing guidelines] for more information.
-
 ## License
 
-This project is released under the [MIT License][license-url].
-
-<!-- Links: -->
+[MIT][license-url]
 
 [zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.8247719.svg
 [zenodo-url]: https://doi.org/10.5281/zenodo.8247719
-[codecov-image]: https://codecov.io/gh/entelecheia/hyfi/branch/main/graph/badge.svg?token=HCYTYW1WVF
-[codecov-url]: https://codecov.io/gh/entelecheia/hyfi
 [pypi-image]: https://img.shields.io/pypi/v/hyfi
+[pypi-url]: https://pypi.org/project/hyfi
 [license-image]: https://img.shields.io/github/license/entelecheia/hyfi
 [license-url]: https://github.com/entelecheia/hyfi/blob/main/LICENSE
-[version-image]: https://img.shields.io/github/v/release/entelecheia/hyfi?sort=semver
-[release-date-image]: https://img.shields.io/github/release-date/entelecheia/hyfi
-[release-url]: https://github.com/entelecheia/hyfi/releases
-[codefactor-image]: https://www.codefactor.io/repository/github/entelecheia/hyfi/badge
-[codefactor-url]: https://www.codefactor.io/repository/github/entelecheia/hyfi
-[codacy-image]: https://app.codacy.com/project/badge/Grade/6be6d2ecfbfe40b9ab8490ca25327a96
-[codacy-url]: https://app.codacy.com/gh/entelecheia/hyfi/dashboard?utm_source=github.com&utm_medium=referral&utm_content=entelecheia/hyfi&utm_campaign=Badge_grade
-[repo-url]: https://github.com/entelecheia/hyfi
-[pypi-url]: https://pypi.org/project/hyfi
 [docs-url]: https://hyfi.entelecheia.ai
-[changelog]: https://github.com/entelecheia/hyfi/blob/main/CHANGELOG.md
-[contributing guidelines]: https://github.com/entelecheia/hyfi/blob/main/CONTRIBUTING.md
-
-<!-- Links: -->

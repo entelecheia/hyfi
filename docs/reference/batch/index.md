@@ -1,3 +1,0 @@
-# `hyfi.batch`
-
-::: hyfi.batch

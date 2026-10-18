@@ -145,4 +145,16 @@ def test_public_api():
     assert set(hyfi.__all__) <= set(dir(hyfi))
     with pytest.raises(AttributeError):
         _ = hyfi.not_a_thing
+
+
+@pytest.mark.parametrize("name", ["HyFI", "hyfi_main"])
+def test_removed_1x_names_point_to_migration(name):
+    # AC8
+    with pytest.raises(ImportError, match=r"docs/migration\.md"):
+        getattr(hyfi, name)
+    out = subprocess.run(
+        [sys.executable, "-c", f"from hyfi import {name}"], capture_output=True, text=True
+    )
+    assert out.returncode != 0
+    assert "docs/migration.md" in out.stderr
     assert "HYFI_NEVER_SET" not in os.environ

@@ -2,65 +2,52 @@
 name: semantic-release
 
 on:
-  workflow_call:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["lint & test"]
-    branches:
-      - release*
-    types:
-      - completed
-  # push:
-  #   branches:
-  #     - release*
-  #   paths:
-  #     - 'src/**'
-  #     - 'pyproject.toml'
+  push:
+    branches: [release]
+    paths: ["src/**", "pyproject.toml"]
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+concurrency:
+  group: release-publication
+  cancel-in-progress: false
 
 jobs:
-  build:
-    # Name the Job
-    name: semantic-release
-    # check if the workflow result is success
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    # Set the agent to run on
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.10]
+  validate:
+    uses: ./.github/workflows/lint_and_test.yaml
+    permissions:
+      contents: read
 
-    # Load all steps #
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      id-token: write # PyPI trusted publishing
+      contents: write
     steps:
-      # Checkout the code base #
-      - name: Checkout Code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-
-      # set env variable
-      - name: Set env variable
-        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
-      # install poetry
-      - name: Install poetry
-        run: pipx install poetry>=1.3.2
-
-      # install dependencies
-      - name: Install dependencies
-        run: poetry install --with dev
-
-      - name: Python Semantic Release to PyPI
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          poetry run semantic-release publish --verbosity=DEBUG --define=branch=${{ env.BRANCH }}
+          ref: ${{ github.sha }}
+      - name: Pin the release branch to the workflow sha
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY_USERNAME: __token__
-          REPOSITORY_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          RELEASE_BRANCH: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: git checkout -B "$RELEASE_BRANCH" "$RELEASE_SHA"
+      - name: Semantic version release
+        id: release
+        uses: python-semantic-release/python-semantic-release@9a026e9303981c866c3425723009becb2437c757 # v10.6.2
+        with:
+          build: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        if: steps.release.outputs.released == 'true'
+      - name: Upload GitHub release assets
+        uses: python-semantic-release/publish-action@6d89e2de8d40ecb3717316ecbbf15a6fa8ea9039 # v10.6.2
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}

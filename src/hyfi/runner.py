@@ -29,11 +29,13 @@ def run_workflow(
     config_dir: str | None = None,
     argv: Sequence[str] = (),
     rerun_of: str | None = None,
+    allow: Sequence[str] | None = None,
 ) -> RunManifest:
     """Execute the workflow and write ``<project.root>/.hyfi/runs/<run_id>/manifest.json``.
 
     The manifest is written before the first step and again at the end, so a crash leaves a
     ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
+    ``allow`` is the execution allowlist (see :func:`hyfi.config.instantiate`).
     """
     resolved = to_dict(config)
     project, workflow = load_workflow(resolved)
@@ -43,6 +45,7 @@ def run_workflow(
         config_name=config_name,
         config_dir=config_dir,
         overrides=list(overrides),
+        allow=list(allow) if allow is not None else None,
         config=resolved,
         git=git_info(project.root),
         lock_sha256=lock_sha256(project.root),
@@ -50,7 +53,7 @@ def run_workflow(
     runs_dir = project.runs_dir
     manifest.write(runs_dir)
     try:
-        _, manifest.steps = execute(workflow)
+        _, manifest.steps = execute(workflow, allow=allow)
         manifest.status = "ok"
     except WorkflowError as e:
         manifest.steps, manifest.status, manifest.error = e.records, "error", str(e)

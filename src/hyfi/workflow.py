@@ -16,13 +16,13 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from typing import Any
 
 from hydra.utils import get_object
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from hyfi.config import instantiate
+from hyfi.config import TargetNotAllowed, check_allowed, instantiate
 
 
 class Step(BaseModel):
@@ -61,8 +61,15 @@ class WorkflowError(RuntimeError):
         self.records = records
 
 
-def plan(workflow: Workflow) -> list[dict[str, Any]]:
-    """Resolve every step target without calling it. ``ok`` is False when the import fails."""
+def step_config(step: Step) -> dict[str, Any]:
+    return {"_target_": step.run, **step.with_}
+
+
+def plan(workflow: Workflow, allow: Sequence[str] | None = None) -> list[dict[str, Any]]:
+    """Resolve every step target without calling it.
+
+    ``ok`` is False when a target cannot be imported or, with ``allow``, is outside the allowlist.
+    """
     out = []
     for step in workflow.steps:
         entry: dict[str, Any] = {
@@ -74,7 +81,11 @@ def plan(workflow: Workflow) -> list[dict[str, Any]]:
             "error": None,
         }
         try:
+            if allow is not None:
+                check_allowed(step_config(step), allow)
             get_object(step.run)
+        except TargetNotAllowed as e:
+            entry["ok"], entry["error"] = False, str(e)
         except Exception as e:  # get_object wraps import failures in various types
             entry["ok"] = False
             entry["error"] = f"{type(e).__name__}: {e}"
@@ -85,12 +96,14 @@ def plan(workflow: Workflow) -> list[dict[str, Any]]:
 def execute(
     workflow: Workflow,
     on_record: Callable[[StepRecord], None] | None = None,
+    allow: Sequence[str] | None = None,
 ) -> tuple[Any, list[StepRecord]]:
     """Run the steps in order and return the last result and one record per step.
 
     With ``pipe`` (the default) a step receives the previous step's result as its first positional
     argument when that result is not None. On failure the remaining steps are marked ``skipped``
-    and :class:`WorkflowError` carries the records.
+    and :class:`WorkflowError` carries the records. ``allow`` is the execution allowlist passed to
+    :func:`hyfi.config.instantiate`.
     """
     records = [StepRecord(name=s.name, run=s.run) for s in workflow.steps]
     prev: Any = None
@@ -98,7 +111,7 @@ def execute(
         args = (prev,) if step.pipe and prev is not None else ()
         started = time.perf_counter()
         try:
-            prev = instantiate({"_target_": step.run, **step.with_}, *args)
+            prev = instantiate(step_config(step), *args, allow=allow)
         except Exception as e:
             rec.status, rec.error = "error", f"{type(e).__name__}: {e}"
             rec.seconds = round(time.perf_counter() - started, 6)

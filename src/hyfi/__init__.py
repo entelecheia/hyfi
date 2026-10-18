@@ -24,13 +24,15 @@ __all__ = [
     "to_dict",
 ]
 
-_COMPAT = {"HyFI", "hyfi_main"}
+_REMOVED_1X = {"HyFI", "hyfi_main"}
+MIGRATION_URL = "https://hyfi.entelecheia.ai/migration/"
 
 
 def __getattr__(name: str) -> Any:
-    # 1.x names load lazily so the DeprecationWarning fires on use, not on `import hyfi`.
-    if name in _COMPAT:
-        from hyfi import compat
-
-        return getattr(compat, name)
+    if name in _REMOVED_1X:
+        # ImportError, not AttributeError: `from hyfi import HyFI` would replace the message.
+        raise ImportError(
+            f"hyfi.{name} was removed in HyFI 2.0. Pin 'hyfi<2' to keep 1.x, "
+            f"or see docs/migration.md ({MIGRATION_URL})."
+        )
     raise AttributeError(f"module 'hyfi' has no attribute {name!r}")

@@ -5,11 +5,14 @@ Nothing here runs at import time: no resolvers, no global Hydra state, no enviro
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import inspect
+import re
+from collections.abc import Iterator, Sequence
 from pathlib import Path
 from typing import Any, ClassVar, Self
 
 from dotenv import find_dotenv, load_dotenv
+from hydra import __version__ as _hydra_version
 from hydra import compose as _hydra_compose
 from hydra import initialize_config_dir, initialize_config_module
 from hydra.core.global_hydra import GlobalHydra
@@ -23,6 +26,38 @@ from hyfi import plugins as _plugins
 HYFI_CONFIG_MODULE = "hyfi.conf"
 DEFAULT_CONFIG_DIR = "conf"
 DEFAULT_CONFIG_NAME = "config"
+
+_HYDRA_GE_14 = tuple(int(x) for x in re.findall(r"\d+", _hydra_version)[:2]) >= (1, 4)
+_HYDRA_HAS_WHITELIST = "_execution_whitelist_" in inspect.signature(_hydra_instantiate).parameters
+
+
+class TargetNotAllowed(PermissionError):
+    """A ``_target_`` is outside the execution allowlist."""
+
+
+def is_allowed(target: str, allow: Sequence[str]) -> bool:
+    """Exact match, or a ``pkg.*`` pattern matching everything under ``pkg``."""
+    return any(target == p or (p.endswith(".*") and target.startswith(p[:-1])) for p in allow)
+
+
+def iter_targets(config: Any) -> Iterator[str]:
+    """Every ``_target_`` string in a nested config."""
+    data = to_dict(config, resolve=False)
+    stack = [data]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, dict):
+            if isinstance(node.get("_target_"), str):
+                yield node["_target_"]
+            stack.extend(node.values())
+        elif isinstance(node, list):
+            stack.extend(node)
+
+
+def check_allowed(config: Any, allow: Sequence[str]) -> None:
+    for target in iter_targets(config):
+        if not is_allowed(target, allow):
+            raise TargetNotAllowed(f"_target_ {target!r} is not in the execution allowlist")
 
 
 def resolve_config_dir(config_dir: str | Path | None) -> Path | None:
@@ -110,14 +145,20 @@ def to_dict(cfg: Any, resolve: bool = True) -> Any:
     return cfg
 
 
-def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
+def instantiate(config: Any, *args: Any, allow: Sequence[str] | None = None, **kwargs: Any) -> Any:
     """``hydra.utils.instantiate`` that also accepts Pydantic models and passes plain containers.
 
-    A Pydantic model as ``_target_`` is validated by its own constructor.
+    A Pydantic model as ``_target_`` is validated by its own constructor. ``allow`` is an
+    execution allowlist (exact targets or ``pkg.*``): every nested ``_target_`` must match it,
+    and it is forwarded to Hydra's ``_execution_whitelist_`` on Hydra 1.4+.
     """
     if isinstance(config, BaseModel):
         config = config.model_dump(by_alias=True)
     kwargs.setdefault("_convert_", "all")
+    if allow is not None:
+        check_allowed(config, allow)
+        if _HYDRA_HAS_WHITELIST:
+            kwargs["_execution_whitelist_"] = list(allow)
     return _hydra_instantiate(config, *args, **kwargs)
 
 

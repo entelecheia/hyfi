@@ -62,6 +62,7 @@ class RunManifest(BaseModel):
     config_name: str | None = None
     config_dir: str | None = None
     overrides: list[str] = Field(default_factory=list)
+    allow: list[str] | None = None
     config: dict[str, Any] = Field(default_factory=dict)
     git: dict[str, Any] | None = None
     lock_sha256: str | None = None

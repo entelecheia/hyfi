@@ -28,6 +28,7 @@ from hyfi.workflow import Workflow, plan
 logger = logging.getLogger("hyfi")
 
 SCHEMAS: dict[str, type[BaseModel]] = {"project": Project, "workflow": Workflow}
+ALLOW_HELP = "allowed step target, exact or pkg.* (repeatable; also $HYFI_ALLOW, comma-separated)"
 
 
 def _emit(data: Any, as_json: bool) -> None:
@@ -88,9 +89,16 @@ def cmd_plugins(ns: argparse.Namespace) -> int:
     return 0
 
 
-def _dry_run(config: Any, as_json: bool) -> int:
+def _allow(ns: argparse.Namespace, recorded: list[str] | None = None) -> list[str] | None:
+    """``--allow`` flags plus ``HYFI_ALLOW``; None (no checks) when neither is given."""
+    env = [p.strip() for p in os.environ.get("HYFI_ALLOW", "").split(",") if p.strip()]
+    given = [*(ns.allow or []), *env]
+    return given or recorded
+
+
+def _dry_run(config: Any, as_json: bool, allow: list[str] | None) -> int:
     _, workflow = load_workflow(config)
-    steps = plan(workflow)
+    steps = plan(workflow, allow=allow)
     _emit({"workflow": workflow.name, "steps": steps}, as_json)
     return 0 if all(s["ok"] for s in steps) else 1
 
@@ -109,14 +117,16 @@ def _report(manifest: RunManifest, as_json: bool) -> int:
 
 def cmd_run(ns: argparse.Namespace) -> int:
     cfg = _compose(ns)
+    allow = _allow(ns)
     if ns.dry_run:
-        return _dry_run(cfg, ns.json)
+        return _dry_run(cfg, ns.json, allow)
     manifest = run_workflow(
         cfg,
         overrides=ns.overrides,
         config_name=ns.config_name,
         config_dir=ns.config_dir,
         argv=sys.argv,
+        allow=allow,
     )
     return _report(manifest, ns.json)
 
@@ -125,8 +135,9 @@ def cmd_rerun(ns: argparse.Namespace) -> int:
     root = Path(ns.root or os.environ.get("HYFI_PROJECT_ROOT") or ".")
     runs_dir = Project(root=root).runs_dir
     original = RunManifest.load(ns.run_id, runs_dir)
+    allow = _allow(ns, recorded=original.allow)
     if ns.dry_run:
-        return _dry_run(original.config, ns.json)
+        return _dry_run(original.config, ns.json, allow)
     manifest = run_workflow(
         original.config,
         overrides=original.overrides,
@@ -134,6 +145,7 @@ def cmd_rerun(ns: argparse.Namespace) -> int:
         config_dir=original.config_dir,
         argv=sys.argv,
         rerun_of=original.run_id,
+        allow=allow,
     )
     return _report(manifest, ns.json)
 
@@ -166,6 +178,7 @@ def build_parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run", help="run the selected workflow and write a manifest")
     _compose_args(run)
     run.add_argument("--dry-run", action="store_true", help="resolve steps without running them")
+    run.add_argument("--allow", action="append", metavar="PATTERN", help=ALLOW_HELP)
     run.set_defaults(func=cmd_run)
 
     rerun = sub.add_parser("rerun", help="run a recorded config again")
@@ -174,6 +187,9 @@ def build_parser() -> argparse.ArgumentParser:
         "--root", help="project root holding .hyfi/runs (default: $HYFI_PROJECT_ROOT or .)"
     )
     rerun.add_argument("--dry-run", action="store_true")
+    rerun.add_argument(
+        "--allow", action="append", metavar="PATTERN", help=ALLOW_HELP + "; default: as recorded"
+    )
     rerun.add_argument("--json", action="store_true")
     rerun.set_defaults(func=cmd_rerun)
     return parser

@@ -222,9 +222,9 @@ def test_redaction_covers_aliases_names_and_errors(project, monkeypatch, capsys)
 
 
 def test_short_env_values_are_not_redacted(monkeypatch):
-    from hyfi.runner import env_secrets
+    from hyfi.runner import env_replacements
 
     monkeypatch.setenv("HYFI_SHORT", "abc")
     monkeypatch.setenv("HYFI_LONG", "abcd")
     raw = {"a": "${oc.env:HYFI_SHORT}", "b": ["x-${oc.env: HYFI_LONG}"]}
-    assert env_secrets(raw) == {"abcd": "${oc.env:HYFI_LONG}"}
+    assert env_replacements(raw) == {"abcd": "${oc.env:HYFI_LONG}"}

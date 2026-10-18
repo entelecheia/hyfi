@@ -107,10 +107,10 @@ def _allow(ns: argparse.Namespace, recorded: list[str] | None = None) -> list[st
 
 
 def _dry_run(config: Any, as_json: bool, allow: list[str] | None) -> int:
-    resolved, _, secrets = record_config(config)
+    resolved, _, replacements = record_config(config)
     _, workflow = load_workflow(resolved)
     steps = plan(workflow, allow=allow)
-    _emit(redact({"workflow": workflow.name, "steps": steps}, secrets), as_json)
+    _emit(redact({"workflow": workflow.name, "steps": steps}, replacements), as_json)
     return 0 if all(s["ok"] for s in steps) else 1
 
 

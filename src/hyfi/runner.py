@@ -19,7 +19,7 @@ ENV_REF = re.compile(r"oc\.env:\s*([A-Za-z_][A-Za-z0-9_]*)")
 MIN_REDACT_LEN = 4  # shorter values (flags, "1", ".") would mangle unrelated text
 
 
-def env_secrets(raw: Any) -> dict[str, str]:
+def env_replacements(raw: Any) -> dict[str, str]:
     """Map the current value of every env var named in an ``oc.env:`` reference to its interpolation."""
     names: set[str] = set()
     stack = [raw]
@@ -39,15 +39,15 @@ def env_secrets(raw: Any) -> dict[str, str]:
     return found
 
 
-def redact(obj: Any, secrets: dict[str, str]) -> Any:
+def redact(obj: Any, replacements: dict[str, str]) -> Any:
     """Replace every occurrence of a secret value in every string (keys included) of ``obj``."""
-    if not secrets:
+    if not replacements:
         return obj
-    ordered = sorted(secrets, key=len, reverse=True)
+    ordered = sorted(replacements, key=len, reverse=True)
 
     def fix(text: str) -> str:
         for value in ordered:
-            text = text.replace(value, secrets[value])
+            text = text.replace(value, replacements[value])
         return text
 
     def walk(node: Any) -> Any:
@@ -77,12 +77,12 @@ def keep_env_interpolations(resolved: Any, raw: Any) -> Any:
 
 
 def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
-    """Return ``(resolved, recorded, secrets)`` for a composed or recorded config.
+    """Return ``(resolved, recorded, replacements)`` for a composed or recorded config.
 
     ``resolved`` is what runs. ``recorded`` is the config view written to manifests and printed:
     ``${oc.env:...}`` leaves stay unresolved, ``project.root`` / ``project.workspace`` become
-    absolute paths, and every env value from ``secrets`` is replaced by its interpolation.
-    Callers apply :func:`redact` with ``secrets`` to anything else they emit (names, errors).
+    absolute paths, and every env value from ``replacements`` is replaced by its interpolation.
+    Callers apply :func:`redact` with ``replacements`` to anything else they emit (names, errors).
     """
     # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
     cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
@@ -95,8 +95,8 @@ def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str
             "root": str(project.root),
             "workspace": str(project.workspace),
         }
-    secrets = env_secrets(to_dict(cfg, resolve=False))
-    return resolved, redact(recorded, secrets), secrets
+    replacements = env_replacements(to_dict(cfg, resolve=False))
+    return resolved, redact(recorded, replacements), replacements
 
 
 def load_workflow(config: Any) -> tuple[Project, Workflow]:
@@ -124,7 +124,7 @@ def run_workflow(
     ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
     ``allow`` is the execution allowlist (see :func:`hyfi.config.instantiate`).
     """
-    resolved, recorded, secrets = record_config(config)
+    resolved, recorded, replacements = record_config(config)
     project, workflow = load_workflow(resolved)
     manifest = RunManifest(
         rerun_of=rerun_of,
@@ -140,7 +140,7 @@ def run_workflow(
     runs_dir = project.runs_dir
 
     def redacted() -> RunManifest:  # step names and errors can carry env values too
-        return RunManifest.model_validate(redact(manifest.model_dump(mode="json"), secrets))
+        return RunManifest.model_validate(redact(manifest.model_dump(mode="json"), replacements))
 
     redacted().write(runs_dir)
     try:

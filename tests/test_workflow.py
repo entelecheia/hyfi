@@ -102,9 +102,12 @@ def test_run_records_failure(project):
     assert RunManifest.load(m.run_id, Project(root=project).runs_dir).status == "error"
 
 
-def test_manifest_load_missing(tmp_path):
+def test_manifest_load_missing_or_invalid(tmp_path):
     with pytest.raises(FileNotFoundError):
-        RunManifest.load("nope", tmp_path)
+        RunManifest.load("20261019T000000Z-abcdef", tmp_path)
+    for bad in ["nope", "../../etc/x", "20261019T000000Z-abcdef/../x"]:
+        with pytest.raises(ValueError, match="not a run id"):
+            RunManifest.load(bad, tmp_path)
 
 
 def test_git_and_lock_info(tmp_path):

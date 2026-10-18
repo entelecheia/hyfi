@@ -18,7 +18,7 @@ defaults:
   - _self_
 ```
 
-Select group options and change values with ordinary Hydra overrides:
+Select group options and change values with ordinary Hydra overrides (except `hydra.searchpath`, which HyFI sets itself; add directories with `--config-dir` or a plugin instead):
 
 ```bash
 hyfi config show workflow=charcount project.name=demo

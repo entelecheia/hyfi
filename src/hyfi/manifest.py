@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import platform
+import re
 import secrets
 import subprocess  # nosec B404: fixed git argv only
 import sys
@@ -18,6 +19,7 @@ from hyfi._version import __version__
 from hyfi.workflow import StepRecord
 
 MANIFEST_NAME = "manifest.json"
+RUN_ID_RE = re.compile(r"\d{8}T\d{6}Z-[0-9a-f]{6}")
 
 
 def new_run_id() -> str:
@@ -82,6 +84,8 @@ class RunManifest(BaseModel):
 
     @classmethod
     def load(cls, run_id: str, runs_dir: Path) -> RunManifest:
+        if not RUN_ID_RE.fullmatch(run_id):
+            raise ValueError(f"not a run id: {run_id!r}")
         path = runs_dir / run_id / MANIFEST_NAME
         if not path.is_file():
             raise FileNotFoundError(f"no manifest for run {run_id!r} under {runs_dir}")

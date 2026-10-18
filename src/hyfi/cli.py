@@ -109,7 +109,8 @@ def _report(manifest: RunManifest, as_json: bool) -> int:
     else:
         print(f"run {manifest.run_id}: {manifest.status}")
         for s in manifest.steps:
-            print(f"  {s.status:8} {s.name} ({s.seconds}s){'  ' + s.error if s.error else ''}")
+            took = f" ({s.seconds}s)" if s.seconds is not None else ""
+            print(f"  {s.status:8} {s.name}{took}{'  ' + s.error if s.error else ''}")
         runs_dir = Project.model_validate(manifest.config.get("project") or {}).runs_dir
         print(f"manifest: {runs_dir / manifest.run_id / 'manifest.json'}")
     return 0 if manifest.status == "ok" else 1

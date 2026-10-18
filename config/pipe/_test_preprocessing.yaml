@@ -1,3 +1,0 @@
-defaults:
-  - __dataframe_external_funcs__
-  - /run: preprocessing_esg_ratings

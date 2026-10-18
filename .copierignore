@@ -1,7 +1,0 @@
-.copierignore
-.gitignore
-.tasks-extra.toml
-CHANGELOG.md
-pyproject.toml
-docs/usage.md
-README.md

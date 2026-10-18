@@ -1,7 +1,0 @@
-{
-    "recommendations": [
-        "ms-python.black-formatter",
-        "tamasfe.even-better-toml",
-        "sourcery.sourcery"
-    ]
-}

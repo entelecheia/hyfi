@@ -1,0 +1,4 @@
+defaults:
+  - project: default
+  - workflow: null
+  - _self_

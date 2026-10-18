@@ -1,9 +1,0 @@
-defaults:
-  - __init__
-
-project_name: __test__
-project_description: A test project for HyFI
-global_hyfi_root: ${get_original_cwd:}
-global_workspace_name: workspace
-num_workers: 2
-verbose: true

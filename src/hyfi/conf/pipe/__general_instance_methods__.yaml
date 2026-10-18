@@ -1,4 +1,0 @@
-defaults:
-  - __init__
-
-pipe_target: hyfi.pipe.general_instance_methods

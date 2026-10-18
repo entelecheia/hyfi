@@ -1,6 +1,0 @@
-# @package _global_
-defaults:
-  - __init__
-  - /task: __init__
-
-cmd_name: run_task

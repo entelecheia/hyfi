@@ -122,3 +122,18 @@ def test_rerun_from_elsewhere_writes_to_recorded_root(project, capsys, monkeypat
     assert (project / ".hyfi" / "runs" / second["run_id"] / "manifest.json").is_file()
     assert not (other / ".hyfi").exists()
     assert main(["rerun", second["run_id"], "--root", str(project)]) == 0
+
+
+def test_error_output_is_redacted(project, capsys, monkeypatch):
+    monkeypatch.setenv("HYFI_TEST_SECRET", "s3cr3t-value")
+    for extra in ([], ["--dry-run"]):
+        bad = "+workflow.bogus=${oc.env:HYFI_TEST_SECRET}"  # ValidationError quotes the input
+        assert main(["run", "workflow=plug", bad, "--json", *extra]) == 2
+        out, err = capsys.readouterr()
+        assert "s3cr3t-value" not in out + err
+        assert "${oc.env:HYFI_TEST_SECRET}" in json.loads(out)["error"]
+
+
+def test_missing_config_dir_is_an_error(project, capsys):
+    assert main(["config", "show", "--config-dir", "nope", "--json"]) == 2
+    assert "config directory not found" in json.loads(capsys.readouterr().out)["error"]

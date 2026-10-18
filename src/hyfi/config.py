@@ -72,9 +72,12 @@ def check_allowed(config: Any, allow: Sequence[str]) -> None:
 
 
 def resolve_config_dir(config_dir: str | Path | None) -> Path | None:
-    """The user config directory: the given one, else ``./conf`` when it exists."""
+    """The user config directory: the given one (which must exist), else ``./conf`` if present."""
     if config_dir is not None:
-        return Path(config_dir).expanduser().resolve()
+        path = Path(config_dir).expanduser().resolve()
+        if not path.is_dir():
+            raise FileNotFoundError(f"config directory not found: {path}")
+        return path
     default = Path.cwd() / DEFAULT_CONFIG_DIR
     return default.resolve() if default.is_dir() else None
 

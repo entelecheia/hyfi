@@ -15,6 +15,7 @@
 
 from __future__ import annotations
 
+import logging
 import time
 from collections.abc import Callable, Sequence
 from typing import Any
@@ -86,8 +87,13 @@ def plan(workflow: Workflow, allow: Sequence[str] | None = None) -> list[dict[st
             config = step_config(step)
             if allow is not None:
                 check_allowed(config, allow)
-            for target in iter_targets(config):  # nested `_target_` values in `with` too
-                get_object(target)
+            hydra_log = logging.getLogger("hydra.utils")
+            previous, hydra_log.disabled = hydra_log.disabled, True  # error goes in the entry
+            try:
+                for target in iter_targets(config):  # nested `_target_` values in `with` too
+                    get_object(target)
+            finally:
+                hydra_log.disabled = previous
         except TargetNotAllowed as e:
             entry["ok"], entry["error"] = False, str(e)
         except Exception as e:  # get_object wraps import failures in various types

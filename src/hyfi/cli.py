@@ -22,7 +22,7 @@ from hyfi._version import __version__
 from hyfi.config import compose, to_dict
 from hyfi.manifest import RunManifest
 from hyfi.project import Project
-from hyfi.runner import load_workflow, record_config, redact, run_workflow
+from hyfi.runner import env_replacements, load_workflow, record_config, redact, run_workflow
 from hyfi.workflow import Workflow, plan
 
 logger = logging.getLogger("hyfi")
@@ -129,6 +129,7 @@ def _report(manifest: RunManifest, as_json: bool) -> int:
 
 def cmd_run(ns: argparse.Namespace) -> int:
     cfg = _compose(ns)
+    ns.replacements = env_replacements(to_dict(cfg, resolve=False))  # for the error path in main
     allow = _allow(ns)
     if ns.dry_run:
         return _dry_run(cfg, ns.json, allow)
@@ -147,6 +148,7 @@ def cmd_rerun(ns: argparse.Namespace) -> int:
     root = Path(ns.root or os.environ.get("HYFI_PROJECT_ROOT") or ".")
     runs_dir = Project(root=root).runs_dir
     original = RunManifest.load(ns.run_id, runs_dir)
+    ns.replacements = env_replacements(original.config)  # for the error path in main
     allow = _allow(ns, recorded=original.allow)
     if ns.dry_run:
         return _dry_run(original.config, ns.json, allow)
@@ -226,9 +228,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         code: int = ns.func(ns)
     except Exception as e:  # report every failure the same way, then exit non-zero
+        # Validation errors quote their input, which may be an env value.
+        message = redact(f"{type(e).__name__}: {e}", getattr(ns, "replacements", {}))
         if getattr(ns, "json", False):
-            print(json.dumps({"error": f"{type(e).__name__}: {e}"}), file=sys.stdout)
-        print(f"hyfi: error: {type(e).__name__}: {e}", file=sys.stderr)
+            print(json.dumps({"error": message}), file=sys.stdout)
+        print(f"hyfi: error: {message}", file=sys.stderr)
         return 2
     return code
 

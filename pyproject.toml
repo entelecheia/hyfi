@@ -1,6 +1,6 @@
 [project]
 name = "hyfi"
-version = "1.37.0"
+version = "2.0.0"
 description = "HyFI: compose Hydra configs, validate them with Pydantic, and run reproducible workflows"
 authors = [{ name = "Young Joon Lee", email = "entelecheia@hotmail.com" }]
 license = "MIT"

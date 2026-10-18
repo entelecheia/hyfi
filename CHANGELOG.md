@@ -1,5 +1,208 @@
 <!--next-version-placeholder-->
 
+## v2.0.0 (2026-10-18)
+
+### Build System
+
+- Update Python version constraints and dependency markers for compatibility
+  ([`6fb913d`](https://github.com/entelecheia/hyfi/commit/6fb913d9f2d6965a4bd054015928d4aa80272171))
+
+### Chores
+
+- Remove unused setuptools_scm configuration from pyproject.toml
+  ([`7137ff6`](https://github.com/entelecheia/hyfi/commit/7137ff6d210fdacdde2c6991ea8c70f745531828))
+
+- Update poetry lock
+  ([`34253eb`](https://github.com/entelecheia/hyfi/commit/34253eb6df9d51873c04e07ef4d21084b900631f))
+
+- Update poetry lock
+  ([`4fe4728`](https://github.com/entelecheia/hyfi/commit/4fe4728852c12bf0422b5d2dc7612b1071c70618))
+
+- Update poetry lock
+  ([`0de1200`](https://github.com/entelecheia/hyfi/commit/0de12007474f32bf2d1ea93f4e8aecf00edfb35f))
+
+- **deps**: Bump actions/checkout from 4 to 5
+  ([`dc956ea`](https://github.com/entelecheia/hyfi/commit/dc956ea990a0ec8b32d86e0daedb1d717011e790))
+
+- **deps**: Bump actions/setup-python from 5 to 6
+  ([`4d866d5`](https://github.com/entelecheia/hyfi/commit/4d866d5cb332da36c3afad0667af99b185abed60))
+
+- **deps**: Bump aiohttp from 3.11.16 to 3.12.14
+  ([`d03d963`](https://github.com/entelecheia/hyfi/commit/d03d963bef4ce2c8d8c7f1d4de9ae75250ce9431))
+
+- **deps**: Bump cached-path from 1.6.7 to 1.7.1
+  ([`3d363ac`](https://github.com/entelecheia/hyfi/commit/3d363aceb665960c59e2404f6dfd9e0eab50c2ca))
+
+- **deps**: Bump cached-path from 1.7.1 to 1.7.2
+  ([`da78535`](https://github.com/entelecheia/hyfi/commit/da78535a8a8ed6454ce6254ce6d97a7f477d545d))
+
+- **deps**: Bump cached-path from 1.7.2 to 1.7.3
+  ([`754fb8e`](https://github.com/entelecheia/hyfi/commit/754fb8ec05282ba7f2e4bec09b65dba144fe8fa0))
+
+- **deps**: Bump click from 8.1.7 to 8.1.8
+  ([`6905d99`](https://github.com/entelecheia/hyfi/commit/6905d9983ad0a5c81816d88aa608255c6e7c37eb))
+
+- **deps**: Bump codecov/codecov-action from 4 to 5
+  ([`e54c12b`](https://github.com/entelecheia/hyfi/commit/e54c12bb7a83553da62e55c84b0fe56d71e0a9e2))
+
+- **deps**: Bump datasets from 2.21.0 to 3.5.0
+  ([`99d7651`](https://github.com/entelecheia/hyfi/commit/99d7651e386009672e8590f615d9be4c0b504353))
+
+- **deps**: Bump datasets from 3.5.0 to 3.5.1
+  ([`c5c99f4`](https://github.com/entelecheia/hyfi/commit/c5c99f4caadfd97cda5603ba8cee6b7299e8a36c))
+
+- **deps**: Bump datasets from 3.5.1 to 3.6.0
+  ([`5fcc476`](https://github.com/entelecheia/hyfi/commit/5fcc476c1fe3327d5588c0df6bc4c3ad204d7956))
+
+- **deps**: Bump datasets from 3.6.0 to 4.0.0
+  ([`612798c`](https://github.com/entelecheia/hyfi/commit/612798c396fffbd9362511577d33451db9d1267e))
+
+- **deps**: Bump datasets from 4.0.0 to 4.1.1
+  ([`2c5f6f5`](https://github.com/entelecheia/hyfi/commit/2c5f6f5e56017980c237d24de9d66b8ff214f790))
+
+- **deps**: Bump ipywidgets from 8.1.5 to 8.1.6
+  ([`9fe9a77`](https://github.com/entelecheia/hyfi/commit/9fe9a777adec509d8625e70c7de4bf2d4bbb2684))
+
+- **deps**: Bump ipywidgets from 8.1.6 to 8.1.7
+  ([`1ba1c87`](https://github.com/entelecheia/hyfi/commit/1ba1c87ea5a5caa7a118c66df835cd1884620035))
+
+- **deps**: Bump joblib from 1.4.2 to 1.5.0
+  ([`d1ec002`](https://github.com/entelecheia/hyfi/commit/d1ec002b666ba3e224d517a01e3dbc0c2c234692))
+
+- **deps**: Bump joblib from 1.5.0 to 1.5.1
+  ([`d3c5098`](https://github.com/entelecheia/hyfi/commit/d3c50987a55ed71579de254579341d7479fb2cab))
+
+- **deps**: Bump loky from 3.4.1 to 3.5.1
+  ([`87562bb`](https://github.com/entelecheia/hyfi/commit/87562bb139e32188c4ff947114d444172a36b1d6))
+
+- **deps**: Bump loky from 3.5.1 to 3.5.2
+  ([`8f979f5`](https://github.com/entelecheia/hyfi/commit/8f979f52c1cee179424ab83b8e0feaf393de3ae4))
+
+- **deps**: Bump loky from 3.5.2 to 3.5.3
+  ([`b9cb33c`](https://github.com/entelecheia/hyfi/commit/b9cb33c3f59aab6e8787cc7f90dd0cde2f410685))
+
+- **deps**: Bump loky from 3.5.3 to 3.5.5
+  ([`758f357`](https://github.com/entelecheia/hyfi/commit/758f35790e6d269ff1f92ac08371abddc4a06e04))
+
+- **deps**: Bump loky from 3.5.5 to 3.5.6
+  ([`7e45ff1`](https://github.com/entelecheia/hyfi/commit/7e45ff1464a00d38b62866a44086e58f5e15a5e1))
+
+- **deps**: Bump matplotlib from 3.9.2 to 3.9.4
+  ([`f4f24b2`](https://github.com/entelecheia/hyfi/commit/f4f24b26b82e0e9c4409a66d07aa26872a673d95))
+
+- **deps**: Bump pandas from 2.2.2 to 2.2.3
+  ([`13acec1`](https://github.com/entelecheia/hyfi/commit/13acec14274e72a771402fd69746ae8ecc2745d5))
+
+- **deps**: Bump pandas from 2.2.3 to 2.3.0
+  ([`432453f`](https://github.com/entelecheia/hyfi/commit/432453f1262c2539b0f7cf23b0ff88de0affce59))
+
+- **deps**: Bump pandas from 2.3.0 to 2.3.1
+  ([`a429ee7`](https://github.com/entelecheia/hyfi/commit/a429ee7955ea350a44c32fea01b583bef475c776))
+
+- **deps**: Bump pandas from 2.3.1 to 2.3.2
+  ([`b5e0a8c`](https://github.com/entelecheia/hyfi/commit/b5e0a8c5229450a94a527c4f6a37fecfa2c652db))
+
+- **deps**: Bump protobuf from 6.30.2 to 6.31.1
+  ([`d016705`](https://github.com/entelecheia/hyfi/commit/d01670501adbca3aa8e9c3fb5e728a1752ff3068))
+
+- **deps**: Bump pyarrow from 17.0.0 to 19.0.1
+  ([`8d41281`](https://github.com/entelecheia/hyfi/commit/8d4128178d7d173acc6412664e8dd67671823ce5))
+
+- **deps**: Bump pyarrow from 19.0.1 to 20.0.0
+  ([`866c58a`](https://github.com/entelecheia/hyfi/commit/866c58a763e8aedde891d8c577a50b09c821c3a3))
+
+- **deps**: Bump pyarrow from 20.0.0 to 21.0.0
+  ([`782fca6`](https://github.com/entelecheia/hyfi/commit/782fca6a068c6ccf2582c7a82d6110c992389339))
+
+- **deps**: Bump pydantic from 2.10.6 to 2.11.1
+  ([`51265ad`](https://github.com/entelecheia/hyfi/commit/51265adef3134be2c7ddb856757d703978577ec4))
+
+- **deps**: Bump pydantic from 2.11.1 to 2.11.2
+  ([`520338c`](https://github.com/entelecheia/hyfi/commit/520338c70362a89e3f254254264e35f5c9d0789e))
+
+- **deps**: Bump pydantic from 2.11.2 to 2.11.3
+  ([`4112f38`](https://github.com/entelecheia/hyfi/commit/4112f389c0d40697a04bb4fde2d96f75aa6769c1))
+
+- **deps**: Bump pydantic from 2.11.3 to 2.11.4
+  ([`efd2b3a`](https://github.com/entelecheia/hyfi/commit/efd2b3a7eeaeac68057693e49f972c4f410887d3))
+
+- **deps**: Bump pydantic from 2.11.4 to 2.11.5
+  ([`511f941`](https://github.com/entelecheia/hyfi/commit/511f9418c81238d4730a2632988c416002c89a8a))
+
+- **deps**: Bump pydantic from 2.11.5 to 2.11.7
+  ([`59489a7`](https://github.com/entelecheia/hyfi/commit/59489a7b949564a27060b06503fcbfd2c5817828))
+
+- **deps**: Bump pydantic from 2.11.7 to 2.11.9
+  ([`a928122`](https://github.com/entelecheia/hyfi/commit/a928122c969158b54775470883ae603244d2a811))
+
+- **deps**: Bump pydantic-settings from 2.10.0 to 2.10.1
+  ([`5a06528`](https://github.com/entelecheia/hyfi/commit/5a065282a0666c8c7422ccc55149b62d48a37c30))
+
+- **deps**: Bump pydantic-settings from 2.10.1 to 2.11.0
+  ([`18ebdeb`](https://github.com/entelecheia/hyfi/commit/18ebdebe9db9204fc905c6af7c0bb7325a069bcb))
+
+- **deps**: Bump pydantic-settings from 2.8.0 to 2.8.1
+  ([`3e7dce1`](https://github.com/entelecheia/hyfi/commit/3e7dce1c1f9aee29d086ba2c6dc42d636e4caddb))
+
+- **deps**: Bump pydantic-settings from 2.8.1 to 2.9.1
+  ([`ef11311`](https://github.com/entelecheia/hyfi/commit/ef113115143bcb72e2f1b024c625c8d0aaf1ec8e))
+
+- **deps**: Bump pydantic-settings from 2.9.1 to 2.10.0
+  ([`290c964`](https://github.com/entelecheia/hyfi/commit/290c964c5c05756096764a3fd7332c48e81e4368))
+
+- **deps**: Bump python-dotenv from 1.0.1 to 1.1.0
+  ([`9b143e8`](https://github.com/entelecheia/hyfi/commit/9b143e8a76df34d67ecad29273eba76b73ca23f3))
+
+- **deps**: Bump python-dotenv from 1.1.0 to 1.1.1
+  ([`0818b0a`](https://github.com/entelecheia/hyfi/commit/0818b0a72bd1b534f225bcf3f067a93bd779d5e1))
+
+- **deps**: Bump ray from 2.42.1 to 2.44.0
+  ([`fc77b38`](https://github.com/entelecheia/hyfi/commit/fc77b384667726625a7ef6ce3e72b905ba0ac6a8))
+
+- **deps**: Bump ray from 2.44.0 to 2.44.1
+  ([`e846f4f`](https://github.com/entelecheia/hyfi/commit/e846f4f2a6f733f3692645b74c2367b525e5cb71))
+
+- **deps**: Bump ray from 2.44.1 to 2.45.0
+  ([`c853153`](https://github.com/entelecheia/hyfi/commit/c853153a1694fe2c767932b6a1fc035a172f5c36))
+
+- **deps**: Bump ray from 2.45.0 to 2.46.0
+  ([`e529936`](https://github.com/entelecheia/hyfi/commit/e529936a2a194974d2624a2c6bb7ca304ef36490))
+
+- **deps**: Bump ray from 2.46.0 to 2.47.0
+  ([`52e31d7`](https://github.com/entelecheia/hyfi/commit/52e31d7200ca64e9260c909616a8dcdd9ab1526a))
+
+- **deps**: Bump ray from 2.47.0 to 2.47.1
+  ([`28504cc`](https://github.com/entelecheia/hyfi/commit/28504cc92753daa9c373e61b804878d07d3f3ce9))
+
+- **deps**: Bump ray from 2.47.1 to 2.48.0
+  ([`84b07f3`](https://github.com/entelecheia/hyfi/commit/84b07f37404dca7011f435483c919c4fb9147ca8))
+
+- **deps**: Bump ray from 2.48.0 to 2.49.1
+  ([`49b2ee8`](https://github.com/entelecheia/hyfi/commit/49b2ee8a7bf70b02cc247cd92d650dec5d76fcd5))
+
+- **deps**: Bump ray from 2.49.1 to 2.49.2
+  ([`413d98f`](https://github.com/entelecheia/hyfi/commit/413d98fbdf695e3ccedc1e787ec631307d567961))
+
+- **deps**: Update cryptography version to ^43.0.1
+  ([`e868542`](https://github.com/entelecheia/hyfi/commit/e8685422cc2c760121623cc7c300843903170bd9))
+
+### Features
+
+- HyFI 2.0 core rewrite ([#467](https://github.com/entelecheia/hyfi/pull/467),
+  [`4b248d3`](https://github.com/entelecheia/hyfi/commit/4b248d3ba59f600cc40efe4db382991125e72f63))
+
+### Refactoring
+
+- **docs**: Remove leading whitespace in module docstrings
+  ([`d546006`](https://github.com/entelecheia/hyfi/commit/d54600631b507501ac5223cadbf69c5c3c56bf40))
+
+### Breaking Changes
+
+- The 1.x API (HyFI class, hyfi_main, composer models, pipe/pipeline/task/batch config groups,
+  hyfi-run CLI) is removed and Python 3.11+ is required. Pin hyfi<2 to keep 1.x; see
+  docs/migration.md.
+
+
 ## v1.37.0 (2024-10-23)
 
 ### Feature

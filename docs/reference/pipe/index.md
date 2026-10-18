@@ -1,3 +1,0 @@
-# `hyfi.pipe`
-
-::: hyfi.pipe

@@ -1,199 +1,106 @@
-[tool.poetry]
+[project]
 name = "hyfi"
 version = "1.37.0"
-description = "Hydra Fast Interface (Hydra and Pydantic based interface framework)"
-authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
+description = "HyFI: compose Hydra configs, validate them with Pydantic, and run reproducible workflows"
+authors = [{ name = "Young Joon Lee", email = "entelecheia@hotmail.com" }]
 license = "MIT"
-homepage = "https://hyfi.entelecheia.ai"
-repository = "https://github.com/entelecheia/hyfi"
 readme = "README.md"
-packages = [{ include = "hyfi", from = "src" }]
-
-[tool.poetry.scripts]
-hyfi = 'hyfi.__cli__:hyfi_main'
-hyfi-run = 'hyfi.__click__:cli'
-
-[tool.poetry.dependencies]
-python = ">3.9.1, <3.13"
-hydra-core = "^1.3.2"
-hydra-colorlog = "^1.2.0"
-pydantic = "^2.3.0"
-pydantic-settings = "^2.0.1"
-chardet = "<=5.2.0"
-python-dotenv = "^1.0.0"
-tqdm = "^4.64.1"
-colorama = "^0.4.3"
-pathspec = ">=0.9.0"
-click = "<=8.1.8"
-pyarrow = "<=21.0.0"
-joblib = ">=1.2.0,<=1.5.1"
-pandas = ">=1.5.3,<=2.3.2"
-scipy = ">1.10.0,<=1.13.1"
-matplotlib = "<=3.9.4"
-numpy = ">=1.26.0,<=2.0.2"
-gdown = "<=5.2.0"
-datasets = ">=2.0.0,<=4.1.1"
-cached-path = { version = "^1.6.2", optional = true }
-ipython = { version = "<=8.18.1", optional = true }
-ipython-autotime = { version = "^0.3.1", optional = true }
-ipywidgets = { version = "^8.0.6", optional = true }
-loky = { version = "^3.4.1", optional = true }
-ray = { version = "^2.5.1", optional = true }
-p-tqdm = { version = "^1.4.0", optional = true }
-numba = { version = ">=0.58,<0.61", optional = true }
-
-[tool.poetry.extras]
-ipython = ["ipython", "ipython-autotime", "ipywidgets"]
-cache = ["cached-path"]
-all = [
-    "cached-path",
-    "ipython",
-    "ipython-autotime",
-    "ipywidgets",
-    "loky",
-    "ray",
-    "p-tqdm",
-    "numba",
+requires-python = ">=3.11"
+keywords = ["hydra", "pydantic", "configuration", "workflow", "reproducibility"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hydra-core>=1.3.7",
+    "omegaconf>=2.3.1",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
 ]
 
-[tool.poetry.group.dev]
-optional = true
+[project.urls]
+Homepage = "https://hyfi.entelecheia.ai"
+Repository = "https://github.com/entelecheia/hyfi"
+Documentation = "https://hyfi.entelecheia.ai"
+Changelog = "https://github.com/entelecheia/hyfi/blob/main/CHANGELOG.md"
 
-[tool.poetry.group.dev.dependencies]
-python-semantic-release = "^7.33.1"
-isort = "^5.12.0"
-black = ">=23.0.0"
-flake8 = "^6.0.0"
-mypy = "^1.0.0"
-flake8-pyproject = "^1.2.2"
-pytest = "^7.2.1"
-pytest-cov = "^4.0.0"
-ipykernel = "^6.22.0"
-flaky = "^3.7.0"
+[project.scripts]
+hyfi = "hyfi.cli:main"
 
-[tool.poe]
-include = [".tasks.toml", ".tasks-extra.toml"]
+[dependency-groups]
+test = ["pytest>=8", "pytest-cov>=5"]
+lint = ["ruff>=0.15", "mypy>=1.13"]
+docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.26"]
+dev = [{ include-group = "test" }, { include-group = "lint" }, { include-group = "docs" }]
 
-[tool.black]
-# 'extend-exclude' excludes files or directories in addition to the defaults
-extend-exclude = '''
-# A regex preceded with ^/ will apply only to files and directories
-# in the root of the project.
-(
-  _version.py
-  | .refs
-  | tests
-  | docs
-  | book
-  | _build
-  | node_modules
-)
-'''
+[tool.uv]
+default-groups = ["dev"]
 
-[tool.isort]
-profile = "black"
-skip = [
-    '_version.py',
-    'node_modules',
-    '_build',
-    'config',
-    'docs',
-    'tests',
-    'venv',
-    '.copier-template',
-    '.refs',
-    "cpath",
-]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.flake8]
-exclude = [
-    "node_modules",
-    "_build",
-    "docs",
-    'config',
-    "tests",
-    "venv",
-    ".copier-template",
-    ".refs",
-    "cached_path",
-]
-ignore = ["E501", "W503"]
-per-file-ignores = [
-    '__init__.py:F401,F403',
-    '_version.py:W292',
-    '*:E501,E203',
-    'notebook.py:F821,E501',
-    'motion.py:W605,E501',
-    'config.py:E704',
-]
+[tool.hatch.build.targets.wheel]
+packages = ["src/hyfi"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "S", "C4", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S603", "S607"]
 
 [tool.mypy]
-namespace_packages = true
-exclude = [
-    "node_modules",
-    "build",
-    "_build",
-    'config',
-    "dist",
-    "docs",
-    "tests",
-    "venv",
-    ".copier-template",
-    ".refs",
-    "cpath",
-]
-# 3rd party import
+python_version = "3.11"
+files = ["src/hyfi"]
+strict = true
 ignore_missing_imports = true
-# dynamic typing
-disallow_any_unimported = false
-disallow_any_expr = false
-disallow_any_decorated = false
-disallow_any_explicit = false
-disallow_any_generics = false
-disallow_subclassing_any = false
-# platform
-python_version = "3.8"
-# untyped
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-disallow_untyped_decorators = false
-# None and Optional
-no_implicit_optional = false
-# Warnings
-warn_return_any = false
-warn_unreachable = true
-# Misc
-pretty = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-p no:cacheprovider" # deactivating pytest caching.
+addopts = "-p no:cacheprovider"
+filterwarnings = ["error::DeprecationWarning:hyfi.*"]
+
+[tool.coverage.run]
+branch = true
+source = ["hyfi"]
 
 [tool.coverage.report]
-exclude_lines = ['if __name__ == "__main__":']
-
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "1.0.1"
-tag_format = "v$version"
+fail_under = 85
+skip_empty = true
+show_missing = true
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", 'if __name__ == "__main__":']
 
 [tool.semantic_release]
-branch = "main"
-version_variable = "src/hyfi/_version.py:__version__"
-version_toml = "pyproject.toml:tool.poetry.version"
-version_source = "tag"
-commit_version_number = true                                    # required for version_source = "tag"
-commit_subject = "chore(release): :rocket: {version} [skip ci]"
-prerelease_tag = "rc"
+tag_format = "v{version}"
+commit_parser = "conventional"
 major_on_zero = true
-tag_commit = true
-changelog_file = "CHANGELOG.md"
-upload_to_repository = true
-upload_to_release = true
-build_command = "poetry build --no-cache"
-hvcs = "github"                                                 # hosting version control system, gitlab is also supported
+version_source = "tag"
+commit_message = ":rocket: {version}\n\nAutomatically generated by python-semantic-release"
+build_command = "pip install uv && uv build"
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/hyfi/_version.py:__version__"]
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.semantic_release.branches.main]
+match = "release"
+prerelease = false
+
+[tool.semantic_release.changelog]
+insertion_flag = "<!--next-version-placeholder-->"
+mode = "update"
+
+[tool.semantic_release.remote]
+type = "github"
+token = { env = "GH_TOKEN" }

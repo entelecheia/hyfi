@@ -1,4 +1,0 @@
-defaults:
-  - __init__
-
-_target_: hyfi.pipe.test.preprocessing_esg_ratings

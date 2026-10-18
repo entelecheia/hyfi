@@ -1,9 +1,0 @@
-# @package _global_
-defaults:
-  - __init__
-  - /copier: __init__
-
-cmd_name: copy_conf
-copier:
-  src_path: ${__hyfi_path__:}/conf
-  dst_path: workpsace/tmp/conf

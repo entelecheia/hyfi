@@ -1,6 +1,0 @@
-_open_link_: false
-name: HyFI
-authors: Young Joon Lee <entelecheia@hotmail.com>
-description: Hydra Fast Interface (Hydra and Pydantic based interface framework)
-homepage: https://hyfi.entelecheia.ai
-license: MIT

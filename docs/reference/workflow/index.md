@@ -1,3 +1,0 @@
-# `hyfi.workflow`
-
-::: hyfi.workflow

@@ -1,3 +1,0 @@
-# `hyfi.copier`
-
-::: hyfi.copier

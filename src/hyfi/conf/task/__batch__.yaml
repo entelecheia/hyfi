@@ -1,7 +1,0 @@
-defaults:
-  - __init__
-  - /batch: __init__
-  - override /path: __batch__
-
-_config_name_: __batch__
-batch_name: ${._config_name_}

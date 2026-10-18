@@ -1,5 +1,0 @@
-# @package _global_
-defaults:
-  - __init__
-
-cmd_name: about

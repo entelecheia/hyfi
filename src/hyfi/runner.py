@@ -1,0 +1,60 @@
+"""Run the ``workflow`` node of a composed config and record a manifest."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from datetime import UTC, datetime
+from typing import Any
+
+from hyfi.config import to_dict
+from hyfi.manifest import RunManifest, git_info, lock_sha256
+from hyfi.project import Project
+from hyfi.workflow import Workflow, WorkflowError, execute
+
+
+def load_workflow(config: Any) -> tuple[Project, Workflow]:
+    """Validate the ``project`` and ``workflow`` nodes of a composed (or recorded) config."""
+    data = to_dict(config)
+    if not data.get("workflow"):
+        raise ValueError("no workflow selected: pass an override such as workflow=<name>")
+    project = Project.model_validate(data.get("project") or {})
+    return project, Workflow.model_validate(data["workflow"])
+
+
+def run_workflow(
+    config: Any,
+    *,
+    overrides: Sequence[str] = (),
+    config_name: str | None = None,
+    config_dir: str | None = None,
+    argv: Sequence[str] = (),
+    rerun_of: str | None = None,
+) -> RunManifest:
+    """Execute the workflow and write ``<project.root>/.hyfi/runs/<run_id>/manifest.json``.
+
+    The manifest is written before the first step and again at the end, so a crash leaves a
+    ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
+    """
+    resolved = to_dict(config)
+    project, workflow = load_workflow(resolved)
+    manifest = RunManifest(
+        rerun_of=rerun_of,
+        argv=list(argv),
+        config_name=config_name,
+        config_dir=config_dir,
+        overrides=list(overrides),
+        config=resolved,
+        git=git_info(project.root),
+        lock_sha256=lock_sha256(project.root),
+    )
+    runs_dir = project.runs_dir
+    manifest.write(runs_dir)
+    try:
+        _, manifest.steps = execute(workflow)
+        manifest.status = "ok"
+    except WorkflowError as e:
+        manifest.steps, manifest.status, manifest.error = e.records, "error", str(e)
+    finally:
+        manifest.finished_at = datetime.now(UTC)
+        manifest.write(runs_dir)
+    return manifest

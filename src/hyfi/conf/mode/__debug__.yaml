@@ -1,7 +1,0 @@
-# @package _global_
-defaults:
-  - __info__
-
-debug_mode: true
-ignore_warnings: false
-logging_level: DEBUG

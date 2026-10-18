@@ -1,0 +1,3 @@
+name: ${oc.env:HYFI_PROJECT_NAME,hyfi-project}
+root: ${oc.env:HYFI_PROJECT_ROOT,.}
+workspace: ${oc.env:HYFI_PROJECT_WORKSPACE,null}

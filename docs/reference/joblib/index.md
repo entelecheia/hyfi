@@ -1,3 +1,0 @@
-# `hyfi.joblib`
-
-::: hyfi.joblib

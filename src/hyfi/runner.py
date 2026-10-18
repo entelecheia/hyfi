@@ -28,6 +28,27 @@ def keep_env_interpolations(resolved: Any, raw: Any) -> Any:
     return resolved
 
 
+def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Return ``(resolved, recorded)`` views of a composed or recorded config.
+
+    ``resolved`` is what runs. ``recorded`` is the only view written to manifests, ``--json`` run
+    output, and dry-run plans: ``${oc.env:...}`` leaves stay unresolved, and ``project.root`` /
+    ``project.workspace`` become absolute paths so a rerun writes to the original project.
+    """
+    # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
+    cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
+    resolved: dict[str, Any] = to_dict(cfg)
+    recorded: dict[str, Any] = keep_env_interpolations(resolved, to_dict(cfg, resolve=False))
+    if "project" in resolved:
+        project = Project.model_validate(resolved.get("project") or {})
+        recorded["project"] = {
+            **(recorded.get("project") or {}),
+            "root": str(project.root),
+            "workspace": str(project.workspace),
+        }
+    return resolved, recorded
+
+
 def load_workflow(config: Any) -> tuple[Project, Workflow]:
     """Validate the ``project`` and ``workflow`` nodes of a composed (or recorded) config."""
     data = to_dict(config)
@@ -53,13 +74,8 @@ def run_workflow(
     ``running`` record. Step failures are recorded, not raised; check ``manifest.status``.
     ``allow`` is the execution allowlist (see :func:`hyfi.config.instantiate`).
     """
-    # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
-    cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
-    resolved = to_dict(cfg)
+    resolved, recorded = record_config(config)
     project, workflow = load_workflow(resolved)
-    recorded = keep_env_interpolations(resolved, to_dict(cfg, resolve=False))
-    # Record absolute paths so a rerun from another directory writes to the same project.
-    recorded["project"] = {**(recorded.get("project") or {}), **project.model_dump(mode="json")}
     manifest = RunManifest(
         rerun_of=rerun_of,
         argv=list(argv),

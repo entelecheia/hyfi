@@ -39,7 +39,6 @@ coverage.xml
 htmlcov/
 pytest-coverage.*
 
-tests/data/saved-data.csv
 # uv / hyfi 2.0
 .venv/
 .ruff_cache/

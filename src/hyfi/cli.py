@@ -12,7 +12,7 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, NoReturn
 
 from omegaconf import OmegaConf
 from pydantic import BaseModel
@@ -22,10 +22,20 @@ from hyfi._version import __version__
 from hyfi.config import compose, to_dict
 from hyfi.manifest import RunManifest
 from hyfi.project import Project
-from hyfi.runner import load_workflow, run_workflow
+from hyfi.runner import load_workflow, record_config, run_workflow
 from hyfi.workflow import Workflow, plan
 
 logger = logging.getLogger("hyfi")
+
+
+class UsageError(Exception):
+    pass
+
+
+class _Parser(argparse.ArgumentParser):
+    def error(self, message: str) -> NoReturn:
+        raise UsageError(f"{self.prog}: {message}")
+
 
 SCHEMAS: dict[str, type[BaseModel]] = {"project": Project, "workflow": Workflow}
 ALLOW_HELP = "allowed step target, exact or pkg.* (repeatable; also $HYFI_ALLOW, comma-separated)"
@@ -97,8 +107,12 @@ def _allow(ns: argparse.Namespace, recorded: list[str] | None = None) -> list[st
 
 
 def _dry_run(config: Any, as_json: bool, allow: list[str] | None) -> int:
-    _, workflow = load_workflow(config)
+    resolved, recorded = record_config(config)
+    _, workflow = load_workflow(resolved)
+    _, shown = load_workflow(recorded)
     steps = plan(workflow, allow=allow)
+    for entry, step in zip(steps, shown.steps, strict=True):  # print the recorded view only
+        entry["run"], entry["with"] = step.run, step.with_
     _emit({"workflow": workflow.name, "steps": steps}, as_json)
     return 0 if all(s["ok"] for s in steps) else 1
 
@@ -152,7 +166,7 @@ def cmd_rerun(ns: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="hyfi", description=__doc__.splitlines()[0])
+    parser = _Parser(prog="hyfi", description=__doc__.splitlines()[0])
     parser.add_argument("--version", action="version", version=f"hyfi {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -169,6 +183,9 @@ def build_parser() -> argparse.ArgumentParser:
         nargs="?",
         default="workflow",
         help="project, workflow, or a dotted Pydantic model",
+    )
+    schema.add_argument(
+        "--json", action="store_true", help="accepted for uniformity; output is JSON"
     )
     schema.set_defaults(func=cmd_config_schema)
 
@@ -201,7 +218,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     logging.basicConfig(level=os.environ.get("HYFI_LOG_LEVEL", "WARNING"), stream=sys.stderr)
     args = list(sys.argv[1:] if argv is None else argv)
-    ns = build_parser().parse_args(args)
+    try:
+        ns = build_parser().parse_args(args)
+    except UsageError as e:
+        if "--json" in args:
+            print(json.dumps({"error": f"UsageError: {e}"}))
+        print(f"{e}\nRun 'hyfi --help' for usage.", file=sys.stderr)
+        return 2
     ns.argv = ["hyfi", *args]
     try:
         code: int = ns.func(ns)

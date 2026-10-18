@@ -169,3 +169,13 @@ def test_env_values_are_not_recorded(project, monkeypatch, capsys):
     monkeypatch.delenv("HYFI_TEST_SECRET")
     with pytest.raises(Exception, match="HYFI_TEST_SECRET"):
         run_workflow(first.config)
+
+
+def test_project_env_values_are_not_recorded(project, monkeypatch):
+    monkeypatch.setenv("HYFI_PROJECT_NAME", "private-name")
+    m = run_workflow(compose(["workflow=plug"]))
+    assert m.status == "ok"
+    assert m.config["project"]["name"] == "${oc.env:HYFI_PROJECT_NAME,hyfi-project}"
+    assert m.config["project"]["root"] == str(project.resolve())  # paths are the exception
+    path = Project(root=project).runs_dir / m.run_id / "manifest.json"
+    assert "private-name" not in path.read_text()

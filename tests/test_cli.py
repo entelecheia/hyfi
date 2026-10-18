@@ -2,8 +2,6 @@ import json
 import subprocess
 import sys
 
-import pytest
-
 from hyfi.cli import main
 
 
@@ -95,9 +93,20 @@ def test_run_failure_exit_codes(project, capsys):
 
 
 def test_usage_error_exits_2(capsys):
-    with pytest.raises(SystemExit) as e:
-        main([])
-    assert e.value.code == 2
+    assert main([]) == 2
+    assert "hyfi --help" in capsys.readouterr().err
+    assert main(["bogus", "--json"]) == 2
+    assert json.loads(capsys.readouterr().out)["error"].startswith("UsageError:")
+    assert main(["config", "schema", "project", "--json"]) == 0
+
+
+def test_dry_run_does_not_print_env_values(project, capsys, monkeypatch):
+    monkeypatch.setenv("HYFI_TEST_SECRET", "s3cr3t-value")
+    args = ["run", "workflow=plug", "+workflow.steps.2.with.token=${oc.env:HYFI_TEST_SECRET}"]
+    assert main([*args, "--dry-run", "--json"]) == 0
+    out = capsys.readouterr().out
+    assert "s3cr3t-value" not in out
+    assert json.loads(out)["steps"][2]["with"]["token"] == "${oc.env:HYFI_TEST_SECRET}"
 
 
 def test_rerun_from_elsewhere_writes_to_recorded_root(project, capsys, monkeypatch, tmp_path):

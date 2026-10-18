@@ -1,6 +1,6 @@
 # Using HyFI from coding agents
 
-Every command takes `--json` and exits non-zero on failure (1: the run or check failed, 2: usage or config error, with `{"error": ...}` on stdout).
+Every command takes `--json` and exits non-zero on failure (1: the run or check failed, 2: usage or config error, with `{"error": ...}` on stdout when `--json` is given).
 
 A safe loop for an agent:
 

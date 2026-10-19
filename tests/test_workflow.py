@@ -238,3 +238,16 @@ def test_null_project_uses_the_default(project):
     _, recorded, _ = record_config(cfg)
     assert recorded["project"]["root"] == str(project.resolve())
     assert run_workflow(cfg).status == "ok"
+
+
+@pytest.mark.parametrize("root", ["outputs", "./nested/proj"])
+def test_relative_project_root_is_not_doubled(project, root):
+    # review of #478: a relative root must not be joined twice into the workspace
+    from hyfi.runner import record_config
+
+    cfg = compose(["workflow=plug", f"project.root={root}", "+out=${project.workspace}/a.txt"])
+    resolved, recorded, _ = record_config(cfg)
+    expected = str((project / root).resolve() / "workspace" / "a.txt")
+    assert resolved["out"] == expected
+    assert recorded["out"] == expected
+    assert recorded["project"]["workspace"] == str((project / root).resolve() / "workspace")

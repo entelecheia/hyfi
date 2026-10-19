@@ -93,8 +93,12 @@ def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str
         if cfg.project is None:  # `project: null` means the default project
             cfg.project = {}
         # Absolute project paths before resolving, so ${project.workspace}/... is absolute too.
+        # Root first: the default workspace (${.root}/workspace) must not see a relative root,
+        # or Project would join that root a second time.
+        cfg.project.root = str(
+            Project.model_validate({"root": cfg.project.get("root") or "."}).root
+        )
         project = Project.model_validate(to_dict(cfg.project) or {})
-        cfg.project.root = str(project.root)
         cfg.project.workspace = str(project.workspace)
     resolved: dict[str, Any] = to_dict(cfg)
     recorded: dict[str, Any] = keep_env_interpolations(resolved, to_dict(cfg, resolve=False))

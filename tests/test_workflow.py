@@ -235,6 +235,6 @@ def test_null_project_uses_the_default(project):
     from hyfi.runner import record_config
 
     cfg = {"project": None, "workflow": {"name": "empty", "steps": []}}
-    resolved, recorded, _ = record_config(cfg)
+    _, recorded, _ = record_config(cfg)
     assert recorded["project"]["root"] == str(project.resolve())
     assert run_workflow(cfg).status == "ok"

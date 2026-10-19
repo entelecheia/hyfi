@@ -228,3 +228,13 @@ def test_short_env_values_are_not_redacted(monkeypatch):
     monkeypatch.setenv("HYFI_LONG", "abcd")
     raw = {"a": "${oc.env:HYFI_SHORT}", "b": ["x-${oc.env: HYFI_LONG}"]}
     assert env_replacements(raw) == {"abcd": "${oc.env:HYFI_LONG}"}
+
+
+def test_null_project_uses_the_default(project):
+    # review of #478: `project: null` must not break run or dry-run
+    from hyfi.runner import record_config
+
+    cfg = {"project": None, "workflow": {"name": "empty", "steps": []}}
+    resolved, recorded, _ = record_config(cfg)
+    assert recorded["project"]["root"] == str(project.resolve())
+    assert run_workflow(cfg).status == "ok"

@@ -90,6 +90,8 @@ def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str
     replacements = env_replacements(raw)  # before project paths are rewritten below
     cfg = OmegaConf.create(raw)  # a copy: the caller's config is not mutated
     if "project" in cfg:
+        if cfg.project is None:  # `project: null` means the default project
+            cfg.project = {}
         # Absolute project paths before resolving, so ${project.workspace}/... is absolute too.
         project = Project.model_validate(to_dict(cfg.project) or {})
         cfg.project.root = str(project.root)

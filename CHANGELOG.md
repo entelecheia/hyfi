@@ -1,5 +1,52 @@
 <!--next-version-placeholder-->
 
+## v2.0.1 (2026-10-19)
+
+### Bug Fixes
+
+- Anchor the project root before resolving the workspace
+  ([#478](https://github.com/entelecheia/hyfi/pull/478),
+  [`6d074a6`](https://github.com/entelecheia/hyfi/commit/6d074a617c3dd8791c37e19510f4eaad762084de))
+
+- Escape only the backslashes Hydra unescapes ([#473](https://github.com/entelecheia/hyfi/pull/473),
+  [`f0e9b50`](https://github.com/entelecheia/hyfi/commit/f0e9b504eb3db788db7aacf1143ce4e4bf5e1f3c))
+
+- Fail the release build when uv.lock cannot be refreshed
+  ([#475](https://github.com/entelecheia/hyfi/pull/475),
+  [`6412972`](https://github.com/entelecheia/hyfi/commit/641297248fb76e3c249bcbf9bc02197090c068dc))
+
+- Make project paths absolute before resolving run configs
+  ([#478](https://github.com/entelecheia/hyfi/pull/478),
+  [`6d074a6`](https://github.com/entelecheia/hyfi/commit/6d074a617c3dd8791c37e19510f4eaad762084de))
+
+- Quote search-path entries and tolerate an invalid HYFI_LOG_LEVEL
+  ([#473](https://github.com/entelecheia/hyfi/pull/473),
+  [`f0e9b50`](https://github.com/entelecheia/hyfi/commit/f0e9b504eb3db788db7aacf1143ce4e4bf5e1f3c))
+
+- Treat project: null as the default project when anchoring paths
+  ([#478](https://github.com/entelecheia/hyfi/pull/478),
+  [`6d074a6`](https://github.com/entelecheia/hyfi/commit/6d074a617c3dd8791c37e19510f4eaad762084de))
+
+- Update uv.lock in the semantic-release build step
+  ([#475](https://github.com/entelecheia/hyfi/pull/475),
+  [`6412972`](https://github.com/entelecheia/hyfi/commit/641297248fb76e3c249bcbf9bc02197090c068dc))
+
+### Chores
+
+- **release**: Sync uv.lock with 2.0.0 ([#474](https://github.com/entelecheia/hyfi/pull/474),
+  [`7802fe1`](https://github.com/entelecheia/hyfi/commit/7802fe11434b88ebed98a3e5092c586009df460e))
+
+### Documentation
+
+- Drop Zenodo from the README (#471, #472) ([#476](https://github.com/entelecheia/hyfi/pull/476),
+  [`87108fd`](https://github.com/entelecheia/hyfi/commit/87108fd4b8894eb3331aedaa42668f2a3bb36db6))
+
+### Testing
+
+- Drop an unused binding ([#478](https://github.com/entelecheia/hyfi/pull/478),
+  [`6d074a6`](https://github.com/entelecheia/hyfi/commit/6d074a617c3dd8791c37e19510f4eaad762084de))
+
+
 ## v2.0.0 (2026-10-18)
 
 ### Build System

@@ -72,8 +72,13 @@ def check_allowed(config: Any, allow: Sequence[str]) -> None:
 
 
 def _quote_override(value: str) -> str:
-    """A single-quoted Hydra override string (backslashes and quotes escaped)."""
-    return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+    """A single-quoted Hydra override string that Hydra parses back to ``value``.
+
+    Hydra unescapes backslashes only right before a quote or at the end of the string, so only
+    those runs are doubled; every other backslash stays literal.
+    """
+    escaped = re.sub(r"(\\+)(?='|$)", lambda m: m.group(1) * 2, value).replace("'", "\\'")
+    return f"'{escaped}'"
 
 
 def resolve_config_dir(config_dir: str | Path | None) -> Path | None:

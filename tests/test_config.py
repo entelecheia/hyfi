@@ -181,3 +181,10 @@ def test_compose_emits_no_warnings(project):
 def test_workspace_interpolation_has_a_real_default(project):
     cfg = compose(["+out=${project.workspace}/out.csv"])
     assert cfg.out == "./workspace/out.csv"
+
+
+@pytest.mark.parametrize("dirname", ["with,comma", "with'quote", "with space"])
+def test_config_dir_with_special_characters(project, dirname):
+    # hyfi#469: search-path entries are quoted, so commas and quotes in paths work
+    write_tree(project, {f"{dirname}/workflow/odd.yaml": "name: odd\nsteps: []\n"})
+    assert compose(["workflow=odd"], config_dir=project / dirname).workflow.name == "odd"

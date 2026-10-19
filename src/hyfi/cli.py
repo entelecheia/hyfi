@@ -215,7 +215,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    logging.basicConfig(level=os.environ.get("HYFI_LOG_LEVEL", "WARNING"), stream=sys.stderr)
+    level = os.environ.get("HYFI_LOG_LEVEL", "WARNING").upper()
+    if not isinstance(logging.getLevelName(level), int):
+        print(f"hyfi: warning: unknown HYFI_LOG_LEVEL {level!r}, using WARNING", file=sys.stderr)
+        level = "WARNING"
+    logging.basicConfig(level=level, stream=sys.stderr)
     args = list(sys.argv[1:] if argv is None else argv)
     try:
         ns = build_parser().parse_args(args)

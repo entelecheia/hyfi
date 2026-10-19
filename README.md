@@ -2,7 +2,6 @@
 
 [![pypi-image]][pypi-url]
 [![license-image]][license-url]
-[![DOI][zenodo-image]][zenodo-url]
 
 HyFI composes [Hydra](https://hydra.cc) configs, validates them with [Pydantic](https://docs.pydantic.dev/), and runs reproducible workflows. Every run writes a manifest with the resolved config, the code version, and per-step results, so the same run can be repeated later, by a person or by a coding agent.
 
@@ -62,13 +61,11 @@ print(manifest.status, [s.status for s in manifest.steps])
 ## Citation
 
 ```tex
-@software{lee_2023_8247719,
-  author       = {Young Joon Lee},
-  title        = {HyFI: Hydra Fast Interface},
-  year         = 2023,
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.8247719},
-  url          = {https://doi.org/10.5281/zenodo.8247719}
+@software{lee_hyfi,
+  author = {Young Joon Lee},
+  title  = {HyFI: Hydra Fast Interface},
+  year   = 2023,
+  url    = {https://github.com/entelecheia/hyfi}
 }
 ```
 
@@ -76,8 +73,6 @@ print(manifest.status, [s.status for s in manifest.steps])
 
 [MIT][license-url]
 
-[zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.8247719.svg
-[zenodo-url]: https://doi.org/10.5281/zenodo.8247719
 [pypi-image]: https://img.shields.io/pypi/v/hyfi
 [pypi-url]: https://pypi.org/project/hyfi
 [license-image]: https://img.shields.io/github/license/entelecheia/hyfi

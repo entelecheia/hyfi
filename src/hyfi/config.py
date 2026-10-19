@@ -71,6 +71,16 @@ def check_allowed(config: Any, allow: Sequence[str]) -> None:
             raise TargetNotAllowed(f"_target_ {target!r} is not in the execution allowlist")
 
 
+def _quote_override(value: str) -> str:
+    """A single-quoted Hydra override string that Hydra parses back to ``value``.
+
+    Hydra unescapes backslashes only right before a quote or at the end of the string, so only
+    those runs are doubled; every other backslash stays literal.
+    """
+    escaped = re.sub(r"(\\+)(?='|$)", lambda m: m.group(1) * 2, value).replace("'", "\\'")
+    return f"'{escaped}'"
+
+
 def resolve_config_dir(config_dir: str | Path | None) -> Path | None:
     """The user config directory: the given one (which must exist), else ``./conf`` if present."""
     if config_dir is not None:
@@ -119,7 +129,8 @@ def compose(
     if dotenv:
         load_dotenv(find_dotenv(usecwd=True), override=False)
     primary, extras = search_path(config_dir, config_name, plugins)
-    all_overrides = [*overrides, f"hydra.searchpath=[{','.join(extras)}]"]
+    quoted = ",".join(_quote_override(e) for e in extras)  # paths may contain commas
+    all_overrides = [*overrides, f"hydra.searchpath=[{quoted}]"]
     # ponytail: clears any outer Hydra context (as 1.x did); nested use inside @hydra.main loses it.
     GlobalHydra.instance().clear()
     version: dict[str, Any] = {} if _HYDRA_GE_14 else {"version_base": None}

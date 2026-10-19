@@ -181,3 +181,23 @@ def test_compose_emits_no_warnings(project):
 def test_workspace_interpolation_has_a_real_default(project):
     cfg = compose(["+out=${project.workspace}/out.csv"])
     assert cfg.out == "./workspace/out.csv"
+
+
+@pytest.mark.parametrize("dirname", ["with,comma", "with'quote", "with space", "with\\slash"])
+def test_config_dir_with_special_characters(project, dirname):
+    # hyfi#469: search-path entries are quoted, so commas and quotes in paths work
+    write_tree(project, {f"{dirname}/workflow/odd.yaml": "name: odd\nsteps: []\n"})
+    assert compose(["workflow=odd"], config_dir=project / dirname).workflow.name == "odd"
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["plain", "a,b", "it's", "back\\slash", "end\\", "q\\'x", "two\\\\'", "file:///tmp/x y"],
+)
+def test_quote_override_round_trips(value):
+    from hydra.core.override_parser.overrides_parser import OverridesParser
+
+    from hyfi.config import _quote_override
+
+    parsed = OverridesParser.create().parse_override(f"key={_quote_override(value)}")
+    assert parsed.value() == value

@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import OmegaConf
 
 from hyfi.config import to_dict
 from hyfi.manifest import RunManifest, git_info, lock_sha256
@@ -80,22 +80,22 @@ def record_config(config: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str
     """Return ``(resolved, recorded, replacements)`` for a composed or recorded config.
 
     ``resolved`` is what runs. ``recorded`` is the config view written to manifests and printed:
-    ``${oc.env:...}`` leaves stay unresolved, ``project.root`` / ``project.workspace`` become
-    absolute paths, and every env value from ``replacements`` is replaced by its interpolation.
+    ``${oc.env:...}`` leaves stay unresolved and every env value from ``replacements`` is replaced
+    by its interpolation. ``project.root`` / ``project.workspace`` are made absolute before
+    resolving, in both views, so values that interpolate them are absolute as well.
     Callers apply :func:`redact` with ``replacements`` to anything else they emit (names, errors).
     """
     # ponytail: a recorded literal "${...}" (escaped in the original) is re-read as interpolation.
-    cfg = config if isinstance(config, DictConfig) else OmegaConf.create(to_dict(config))
+    raw = to_dict(config, resolve=False)
+    replacements = env_replacements(raw)  # before project paths are rewritten below
+    cfg = OmegaConf.create(raw)  # a copy: the caller's config is not mutated
+    if "project" in cfg:
+        # Absolute project paths before resolving, so ${project.workspace}/... is absolute too.
+        project = Project.model_validate(to_dict(cfg.project) or {})
+        cfg.project.root = str(project.root)
+        cfg.project.workspace = str(project.workspace)
     resolved: dict[str, Any] = to_dict(cfg)
     recorded: dict[str, Any] = keep_env_interpolations(resolved, to_dict(cfg, resolve=False))
-    if "project" in resolved:
-        project = Project.model_validate(resolved.get("project") or {})
-        recorded["project"] = {
-            **(recorded.get("project") or {}),
-            "root": str(project.root),
-            "workspace": str(project.workspace),
-        }
-    replacements = env_replacements(to_dict(cfg, resolve=False))
     return resolved, redact(recorded, replacements), replacements
 
 

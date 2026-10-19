@@ -30,7 +30,7 @@ UV_PYTHON=3.14 uv run --isolated --prerelease allow --with 'hydra-core>=1.4.0rc1
 - Python `>=3.11`; ruff targets py311, line length 100. Development pins 3.13 (`.python-version`).
 - Core runtime dependencies are exactly hydra-core, omegaconf, pydantic, python-dotenv. Adding one needs a spec decision in #466.
 - Conventional commits; python-semantic-release versions from tags on the `release` branch. Never hand-edit `src/hyfi/_version.py` or the version in `pyproject.toml`.
-- A release whose PyPI upload failed: rerun `semantic-release` via workflow_dispatch with `tag=vX.Y.Z` (rebuilds that tag and uploads; never re-tag).
+- A release whose PyPI upload failed: rerun `semantic-release` via workflow_dispatch with `tag=vX.Y.Z` (re-runs lint & test on that tag, then rebuilds and uploads it; never re-tag).
 - `uv.lock` is committed; re-run `uv lock` after editing dependencies or `make lint` fails.
 - CLI output for agents: every command keeps `--json`, and exit codes stay 0 ok, 1 run or check failed, 2 usage or config error.
 

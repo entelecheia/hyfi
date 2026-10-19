@@ -137,3 +137,37 @@ def test_error_output_is_redacted(project, capsys, monkeypatch):
 def test_missing_config_dir_is_an_error(project, capsys):
     assert main(["config", "show", "--config-dir", "nope", "--json"]) == 2
     assert "config directory not found" in json.loads(capsys.readouterr().out)["error"]
+
+
+def test_invalid_log_level_falls_back(project, capsys, monkeypatch):
+    # hyfi#469: a bad HYFI_LOG_LEVEL warns instead of crashing
+    monkeypatch.setenv("HYFI_LOG_LEVEL", "BOGUS")
+    assert main(["config", "show", "--json"]) == 0
+    out, err = capsys.readouterr()
+    assert "unknown HYFI_LOG_LEVEL" in err
+    assert json.loads(out)["project"]
+
+
+def test_interpolated_project_paths_are_absolute_and_survive_rerun(
+    project, capsys, monkeypatch, tmp_path
+):
+    # hyfi#477: ${project.workspace} in step arguments resolves to the absolute project path
+    args = [
+        "run",
+        "workflow=plug",
+        "workflow.steps.2.run=fakeplug.steps.touch",
+        "+workflow.steps.2.with.target=${project.workspace}/artifact.txt",
+        "+workflow.steps.2.pipe=false",
+        "--json",
+    ]
+    assert main(args) == 0
+    first = json.loads(capsys.readouterr().out)
+    target = first["config"]["workflow"]["steps"][2]["with"]["target"]
+    assert target == str(project.resolve() / "workspace" / "artifact.txt")
+    (project / "workspace" / "artifact.txt").unlink()
+    other = tmp_path / "elsewhere"
+    other.mkdir()
+    monkeypatch.chdir(other)
+    assert main(["rerun", first["run_id"], "--root", str(project), "--json"]) == 0
+    assert (project / "workspace" / "artifact.txt").is_file()
+    assert not (other / "workspace").exists()

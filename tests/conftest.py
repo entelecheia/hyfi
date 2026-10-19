@@ -23,6 +23,13 @@ PLUGIN_FILES = {
         def boom(*args, **kwargs):
             raise ValueError("boom")
 
+        def touch(target):
+            import pathlib
+            p = pathlib.Path(target)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text("ok")
+            return str(p)
+
         def fail_with(msg):
             raise ValueError(f"failed with {msg}")
     """,

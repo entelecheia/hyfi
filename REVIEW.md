@@ -7,6 +7,7 @@ Read by the required OCR delegation reviewer (Claude Code, Codex, or Kimi Code),
 Run these passes and tag every finding with its pass:
 
 - Bugs: logic errors, broken edge cases, regressions.
+- Error messages: a new or changed error, refusal or failure message a person or agent sees names the cause (what failed and why) and the next step (the command, setting or target that fixes it). When secrets, ids or paths must stay out, it names the cause class and how to check it. A message missing either is a finding; Important when it is the only signal of a blocked action (a CLI exit, a refused tool call), otherwise a nit.
 - Security: configs choose which Python callables run, so look for paths where a `_target_` escapes the allowlist, for shell or `eval` use, and for secrets reaching manifests or logs.
 - Compliance: the change matches issue #466 (spec and dated decision lines). Workflow changes (`.github/workflows/`) are checked against the workspace CI standard: every job has `timeout-minutes`, PR runs cancel in progress, docs-only changes skip the test matrix but still run the docs build, actions are pinned by SHA.
 - Instruction prose (AGENTS.md, REVIEW.md): does each directive name the failure it prevents, and did rationale or history land here instead of README.md? Nits unless runtime behavior changes.
